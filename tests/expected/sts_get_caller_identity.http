@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sts.us-east-1.amazonaws.com
+x-amz-content-sha256: ab821ae955788b0e33ebd34c208442ccfc2d406e2edc5e7a39bd6458fbb4f843
+x-amz-date: 20150830T123600Z
+content-length: 43
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/sts/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=6567888e97d0df0cdee9d5381d1e49d42a414c6ccae9eb2da39a7fcf520232dc
+Connection: close
+
+Action=GetCallerIdentity&Version=2011-06-15

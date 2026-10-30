@@ -19,6 +19,9 @@ Coverage (the inputs are chosen to exercise each serialization trait):
     generator, same as the binding.rs synthetic coverage.
   * query (SimpleDB) — a flat form-urlencoded body with scalars, a flattened
     list and a boolean (GetAttributes), signed via core `sign_request` (POST "/").
+  * query (STS) — the empty-input body (GetCallerIdentity: Action/Version only)
+    and optional scalar members incl. an integer and a url-encoding value
+    (GetSessionToken); STS is the first generated-is-product service (#355).
   * ec2 (EC2) — the ec2 key variant: Capitalized keys + an always-flattened list
     (MonitorInstances).
 
@@ -256,12 +259,31 @@ def ec2_monitor_instances():
     return query_sign("ec2", regional_host("ec2"), body)
 
 
+def sts_get_caller_identity():
+    # Empty input: only the Action/Version pair.
+    body = form_body("GetCallerIdentity", "2011-06-15", [])
+    return query_sign("sts", regional_host("sts"), body)
+
+
+def sts_get_session_token():
+    # Optional scalars in model order; the MFA serial url-encodes (`:` / `/`).
+    body = form_body("GetSessionToken", "2011-06-15", [
+        ("DurationSeconds", "3600"),
+        ("SerialNumber", "arn:aws:iam::123456789012:mfa/user"),
+        ("TokenCode", "123456"),
+        ("MinimumSessionTokenSize", "1024"),
+    ])
+    return query_sign("sts", regional_host("sts"), body)
+
+
 FIXTURES = {
     "cloudfront_create_invalidation": cf_create_invalidation,
     "cloudfront_create_oai": cf_create_oai,
     "restxml_synth_put_thing": synth_put_thing,
     "sdb_get_attributes": sdb_get_attributes,
     "ec2_monitor_instances": ec2_monitor_instances,
+    "sts_get_caller_identity": sts_get_caller_identity,
+    "sts_get_session_token": sts_get_session_token,
 }
 
 

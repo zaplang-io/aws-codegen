@@ -14,7 +14,15 @@ multiple services; the **rest-json** (restJson1) protocol
 and the XML family — **rest-xml** (CloudFront) and **query**/**ec2** (SimpleDB /
 EC2) ([#354](https://github.com/zaplang-io/aws-codegen/issues/354)), through the
 hand-written `aws.restxml` / `aws.query` codecs. Wiring the output into the `aws`
-package, and the full XML-family services (STS, S3, SNS/IAM/EC2), are later tickets.
+package, and the remaining broad-coverage services (S3, SNS/IAM/EC2), are later
+tickets.
+
+**Generated clients are the product.** The generated clients are the shipping
+SDK; the hand-written `aws.core` runtime and protocol codecs stay as the runtime
+and as the byte-diff oracle, and hand-written service clients retire as generated
+equivalents land. See [DECISIONS.md](DECISIONS.md) (D-0001). **STS**
+([#355](https://github.com/zaplang-io/aws-codegen/issues/355)) is the first
+service to land under this policy — there is no hand-written STS client.
 
 ## Services
 
@@ -30,6 +38,7 @@ regenerates each from its pinned model and fails on any drift.
 | **CloudFront** | **rest-xml** | `models/cloudfront/2015-09-17/` | `generated/cloudfront/cloudfront.zap` | The **rest-xml** proof (#354): XML document bodies (default namespace, nested structs, wrapped lists) over the `aws.binding` + `aws.restxml` codec; `CreateInvalidation` / `CreateCloudFrontOriginAccessIdentity` byte-diffed. Complex payloads (`DistributionConfig`) are v0-skipped. |
 | **SimpleDB** | **query** | `models/sdb/2009-04-15/` | `generated/sdb/sdb.zap` | The **query** (awsQuery) proof (#354): flat form-urlencoded bodies via the `aws.query` codec; `GetAttributes` (scalars + a flattened list + a boolean) byte-diffed. |
 | **EC2** | **ec2** | `models/ec2/2014-09-01/` | `generated/ec2/ec2.zap` | The **ec2** variant proof (#354): Capitalized keys + always-flattened lists; `MonitorInstances` byte-diffed. A deliberately small/old pin — EC2 productionization is a later ticket. |
+| **STS** | **query** | `models/sts/2011-06-15/` | `generated/sts/sts.zap` | First service under the **generated-is-product** policy ([#355](https://github.com/zaplang-io/aws-codegen/issues/355); DECISIONS.md D-0001) — no hand-written client. `query` protocol; `AssumeRole` (scalars + an int) and `GetCallerIdentity` (empty input) byte-diffed against the `aws.query` oracle. Unblocks the assume-role / SSO / web-identity credential providers. |
 
 The awsJson services span both wire versions (1.0 and 1.1) and three protocol
 prefixes; Lambda adds the REST binding path; CloudFront/SimpleDB/EC2 add the XML
