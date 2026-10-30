@@ -1,0 +1,210 @@
+name: model-bump automation
+
+# Scheduled "bump the pinned botocore" automation (#363), built on top of the #6
+# model-sourcing pipeline (the pin lives in models/manifest.json, mirrored into
+# models/BOTOCORE_VERSION + tools/requirements.txt; tools/sync-models.py is the
+# snapshotter; the model-sync drift check is the guard).
+#
+# Each run: detect the latest botocore on PyPI, bump the pin, re-run
+# sync-models.py to refresh models/, regenerate every client with `make generate`,
+# and — only if that produced a diff — open OR update a single review-only pull
+# request carrying the change, labelled with a conservative semver-impact guess.
+#
+# This workflow NEVER merges. It just prepares the PR; the PR's own CI (the "CI
+# gate" + the model-sync drift check) is what validates the regenerated output,
+# and the maintainer merges aws-codegen PRs by hand. See README.md > "Automated
+# model bumps" and DECISIONS.md D-0003.
+
+on:
+  schedule:
+    # Weekly, Mondays 06:00 UTC. Cheap and non-spammy: a run with no new botocore
+    # release, or one that produces no diff, opens nothing.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Pin this exact botocore version instead of the latest on PyPI (optional)"
+        required: false
+        type: string
+
+# Never run two bumps at once; let an in-flight run finish rather than cancel it
+# (it may be mid-push).
+concurrency:
+  group: model-bump
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  # A PAT (repo contents + PRs) lets the opened PR trigger the pull_request CI
+  # workflows; the default GITHUB_TOKEN cannot (GitHub suppresses workflow events
+  # on token-created PRs to avoid recursion). Falls back to GITHUB_TOKEN so the
+  # workflow still opens the PR even before the secret is configured — in that
+  # case the maintainer re-runs the PR's CI once by hand. See README.md.
+  GH_TOKEN: ${{ secrets.MODEL_BUMP_TOKEN || secrets.GITHUB_TOKEN }}
+  BUMP_BRANCH: automation/botocore-bump
+
+jobs:
+  bump:
+    name: bump pinned botocore
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history + the PAT (when set) so the bump branch can be pushed and
+          # the opened PR triggers CI.
+          fetch-depth: 0
+          token: ${{ secrets.MODEL_BUMP_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Bump the pin to the latest botocore
+        id: bump
+        # Rewrites the pin in all three files (manifest + BOTOCORE_VERSION +
+        # requirements) in lockstep, verifying the new wheel's SHA-256. Stdlib
+        # only — no pip install. Emits changed / old_version / new_version /
+        # botocore_major_bump.
+        run: |
+          python3 tools/bump-botocore.py ${{ inputs.version && format('--version {0}', inputs.version) || '' }} >> "$GITHUB_OUTPUT"
+
+      - name: Refresh model snapshots from the new pin
+        if: steps.bump.outputs.changed == 'true'
+        # Downloads the newly-pinned botocore wheel, re-verifies its SHA-256, and
+        # re-extracts models/<svc>/. Byte-stable by construction.
+        run: python3 tools/sync-models.py
+
+      - name: Regenerate every client
+        if: steps.bump.outputs.changed == 'true'
+        # The generator rebuilds generated/<svc>/{zap.toml, src/<svc>.zap} from the
+        # refreshed models. cargo is preinstalled on ubuntu-latest; no Docker.
+        run: make generate
+
+      - name: Open or update the review-only bump PR
+        if: steps.bump.outputs.changed == 'true'
+        env:
+          OLD_VERSION: ${{ steps.bump.outputs.old_version }}
+          NEW_VERSION: ${{ steps.bump.outputs.new_version }}
+          MAJOR_BUMP: ${{ steps.bump.outputs.botocore_major_bump }}
+        run: |
+          set -euo pipefail
+
+          BASE="$(git rev-parse HEAD)"   # the main commit we bumped on top of
+
+          # Nothing regenerated? (defensive — a successful pin rewrite always
+          # touches tracked files) → open nothing. --porcelain catches untracked
+          # new files (e.g. a brand-new service dir) that `git diff` would miss.
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "botocore moved $OLD_VERSION -> $NEW_VERSION but produced no file diff; nothing to open."
+            exit 0
+          fi
+
+          # --- conservative semver-impact heuristic (documented in README/DECISIONS) ---
+          #   major  : botocore MAJOR component increased (blunt upstream-breaking signal)
+          #   minor  : a generated client's source changed (service API surface moved)
+          #   patch  : only model snapshots / the pin moved, no client-visible change
+          # The label is advisory and errs toward "review carefully"; the human sets
+          # the real release semver.
+          if [ "$MAJOR_BUMP" = "true" ]; then
+            LABEL="major"
+          elif ! git diff --quiet "$BASE" -- generated/ 2>/dev/null \
+               || git status --porcelain -- generated/ | grep -q .; then
+            LABEL="minor"
+          else
+            LABEL="patch"
+          fi
+          echo "semver-impact: $LABEL"
+
+          # Which services moved (for the PR body).
+          changed_services() {
+            git status --porcelain -- "$1" | awk '{print $2}' \
+              | sed -E "s#^$1/([^/]+)/.*#\1#" | sort -u | paste -sd', ' -
+          }
+          MODELS_CHANGED="$(changed_services models)"
+          CLIENTS_CHANGED="$(changed_services generated)"
+          [ -n "$MODELS_CHANGED" ] || MODELS_CHANGED="(none)"
+          [ -n "$CLIENTS_CHANGED" ] || CLIENTS_CHANGED="(none)"
+
+          TITLE="chore(models): bump botocore $OLD_VERSION -> $NEW_VERSION (semver: $LABEL)"
+
+          cat > /tmp/pr-body.md <<EOF
+          ## Automated botocore model bump
+
+          The scheduled \`model-bump\` workflow (#363) bumped the pinned botocore
+          release and regenerated the affected clients. **Review only — do not
+          auto-merge.** This PR's own CI (the *CI gate* + the *model-sync drift
+          check*) is what validates the regenerated output.
+
+          | | |
+          |---|---|
+          | botocore | \`$OLD_VERSION\` → \`$NEW_VERSION\` |
+          | semver-impact (heuristic) | **$LABEL** |
+          | models changed | $MODELS_CHANGED |
+          | clients regenerated | $CLIENTS_CHANGED |
+
+          ### Semver heuristic
+          Conservative and advisory — the maintainer sets the real release semver:
+          - **major** — botocore's MAJOR component increased (upstream may have
+            breaking changes).
+          - **minor** — a generated client's source changed (service API surface
+            moved; additive-vs-breaking is not auto-distinguished, so review the diff).
+          - **patch** — only the model snapshots / the pin moved; no client changed.
+
+          <sub>Opened by \`.github/workflows/model-bump.yml\`. Re-runs update this
+          same PR in place rather than opening a second.</sub>
+
+          🤖 Generated with [Claude Code](https://claude.com/claude-code)
+          EOF
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BUMP_BRANCH"
+          git add -A
+          git commit -m "$TITLE" -m "Automated by .github/workflows/model-bump.yml (#363).
+
+          Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
+
+          # Idempotent / non-spammy: if the remote bump branch already carries this
+          # exact content, don't force-push a no-op (it would churn the PR's CI).
+          if git fetch origin "$BUMP_BRANCH" 2>/dev/null; then
+            if git diff --quiet FETCH_HEAD -- .; then
+              echo "Remote $BUMP_BRANCH already holds this bump; leaving the open PR untouched."
+              exit 0
+            fi
+          fi
+          git push --force origin "HEAD:refs/heads/$BUMP_BRANCH"
+
+          # Ensure the semver labels exist (first run), then open or update the PR.
+          gh label create "semver:patch" --color BFD4F2 --description "Model bump: no client-visible change" 2>/dev/null || true
+          gh label create "semver:minor" --color FBCA04 --description "Model bump: a generated client's API surface changed" 2>/dev/null || true
+          gh label create "semver:major" --color D93F0B --description "Model bump: botocore MAJOR increased (possible breaking changes)" 2>/dev/null || true
+
+          PR_NUMBER="$(gh pr list --head "$BUMP_BRANCH" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$PR_NUMBER" ]; then
+            echo "Updating existing PR #$PR_NUMBER in place."
+            gh pr edit "$PR_NUMBER" --title "$TITLE" --body-file /tmp/pr-body.md
+          else
+            echo "Opening a new review-only PR."
+            gh pr create --base main --head "$BUMP_BRANCH" \
+              --title "$TITLE" --body-file /tmp/pr-body.md
+            PR_NUMBER="$(gh pr list --head "$BUMP_BRANCH" --state open --json number --jq '.[0].number')"
+          fi
+
+          # Set the current semver label; clear the other two in case a prior
+          # update classified the still-open PR differently. Never touches merge.
+          OTHERS="$(printf 'semver:patch\nsemver:minor\nsemver:major\n' | grep -v "semver:$LABEL" | paste -sd, -)"
+          gh pr edit "$PR_NUMBER" --add-label "semver:$LABEL" --remove-label "$OTHERS" 2>/dev/null || \
+            gh pr edit "$PR_NUMBER" --add-label "semver:$LABEL" || true
