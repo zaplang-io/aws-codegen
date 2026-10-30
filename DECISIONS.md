@@ -142,3 +142,64 @@ in lockstep (the same three files `sync-models.py` asserts agree). It touches ne
 `pull_request` workflows. The workflow therefore uses an optional `MODEL_BUMP_TOKEN`
 secret (PAT) when present so the bump PR's CI runs automatically, falling back to
 `GITHUB_TOKEN` (maintainer re-runs CI once by hand) when it is not configured.
+
+## D-0004 — Broad rollout to every supported-protocol service (2026-10-30)
+
+**Status:** accepted. Implements #364 on top of the full protocol matrix
+(awsJson/rest-json/rest-xml/query/ec2) and D-0001 (generated clients are the
+product).
+
+**Context.** With all five wire protocols supported and the byte-diff oracle in
+place, the manifest still listed only 11 curated services. The generator is
+mechanical per-service once a protocol is covered, so the remaining long tail was
+unshipped only because it was not listed.
+
+**Decision.** `models/manifest.json` lists **every botocore service on a protocol
+the generator supports**, and the whole SDK is manifest-driven end to end.
+
+- **Scope.** Every service in the pinned botocore snapshot whose
+  `metadata.protocol` is `json`, `rest-json`, `rest-xml`, `query`, or `ec2` is
+  manifested and generated — 410 services as of botocore 1.43.121. Services on an
+  unsupported protocol (`smithy-rpc-v2-cbor`, 25 of them) are omitted entirely
+  (#428). The pin is unchanged; existing services keep their originally pinned
+  `api_version` (so e.g. CloudFront stays `2015-09-17`, not the latest), new
+  services take the snapshot's latest.
+- **Single source of truth.** `tools/manifest_services.py` prints the work list
+  from the manifest; the Makefile `generate` target, the CI "generated output is
+  current" step, and the `all_checked_in_packages_are_current` Rust test all
+  consume it. Adding/removing a service is a one-line manifest edit — nothing else
+  drifts. The package name/dir is the service name with `-`→`_` (a valid Zap
+  identifier/module name); for pre-rollout services (no hyphen) this is a no-op, so
+  their output is byte-identical.
+
+**Skip policy (what lands vs. what is deferred).**
+
+- **Per-operation skips are kept, not blockers.** The generator emits every
+  operation it can serialize byte-faithfully and skips the rest with a documented
+  reason in the client footer. A service that generates with *some* (or even zero)
+  methods still ships its package — it is valid Zap (structs, enums, error set) and
+  gains methods as the gaps close. 12,233 of 18,536 operations get a method;
+  6,303 are skipped. The categorized long tail is tracked in #424–#427 (+ #428 for
+  the excluded protocol); see `docs/coverage.md`.
+- **A whole service is skipped only if it cannot generate at all** — an unsupported
+  protocol, or a model the generator errors/panics on. In this rollout only the
+  25 cbor services hit this (all 410 supported-protocol models generate cleanly);
+  no broken package is committed.
+- **Byte-diff goldens stay representative per protocol, not per service.** Each
+  golden is an independently-validated SigV4 vector; the protocol codec + binding
+  path is shared across every service of that protocol, so one clean golden per
+  protocol already exercises the code every service of that protocol runs. Adding
+  one per service would multiply fragile hand-authored vectors for no additional
+  codec coverage and endanger the green gate, so the broad-rollout gate is:
+  models-match-pin + byte-identical determinism of all generated output + the
+  existing per-protocol oracles + (CI, best-effort) toolchain compile.
+
+**Validation (host-only; Docker not run — it kernel-panics the maintainer's
+host).** `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test` (incl. the
+byte-diff reconstructions and the all-packages determinism test), the Python SigV4
+oracles, and the model-drift check all pass host-side. A current `zap` front-end
+(`zap ir`) was run on a five-protocol sample and a parse-level sweep over all 410
+clients: the only diagnostic is the tracked generators-as-methods limitation
+(#429, paginator methods), which affects the pre-rollout clients equally and is
+why the toolchain *compile* CI step is best-effort. The authoritative full
+compile/byte-diff under the toolchain image is CI's job.

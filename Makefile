@@ -1,22 +1,11 @@
 # Convenience targets for aws-codegen. The CI gate runs the same checks directly;
 # these are for local use. See README.md.
 
-# service:api_version pairs — each regenerates the zenv package generated/<svc>/
-# (zap.toml + src/<svc>.zap) from models/<svc>/<api_version>/service-2.json.
-# Keep in sync with models/manifest.json and the CI "generated output is current"
-# step.
-SERVICES = \
-	dynamodb:2012-08-10 \
-	sqs:2012-11-05 \
-	kinesis:2013-12-02 \
-	lambda:2015-03-31 \
-	cloudfront:2015-09-17 \
-	sdb:2009-04-15 \
-	ec2:2016-11-15 \
-	sts:2011-06-15 \
-	s3:2006-03-01 \
-	sns:2010-03-31 \
-	iam:2010-05-08
+# The set of generated services is driven entirely by models/manifest.json
+# (#364 broad rollout): tools/manifest_services.py prints one
+# "<service>\t<api_version>\t<package>" line per entry, and the generate target,
+# the CI "generated output is current" step and the Rust determinism test all
+# consume that same list. Adding/removing a service is a one-line manifest edit.
 
 .PHONY: sync sync-check generate test fmt check
 
@@ -30,11 +19,11 @@ sync-check:
 
 ## generate: regenerate every checked-in client package from its snapshot model
 generate:
-	@for pair in $(SERVICES); do \
-		svc=$${pair%%:*}; ver=$${pair##*:}; \
+	@cargo build --quiet --locked
+	@python3 tools/manifest_services.py | while IFS="$$(printf '\t')" read -r svc ver pkg; do \
 		model=models/$$svc/$$ver/service-2.json; \
-		echo "aws-codegen $$model -> generated/$$svc/ (package)"; \
-		cargo run --quiet --locked -- "$$model" --package "generated/$$svc" --name "$$svc"; \
+		echo "aws-codegen $$model -> generated/$$pkg/ (package)"; \
+		./target/debug/aws-codegen "$$model" --package "generated/$$pkg" --name "$$pkg"; \
 	done
 
 ## test: the host-only fidelity gate (no Zap toolchain / Docker)
