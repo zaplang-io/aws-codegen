@@ -7,6 +7,7 @@
 //! `aws.awsjson` codec, returning ready-to-send signed request text.
 
 use crate::binding::{plan_operation, BindFmt, OpBinding, PayloadBody, QueryListBind, ScalarBind};
+use crate::cborbody::{compute_cbor_serializable, CborSer};
 use crate::jsonbody::{compute_json_serializable, plan_enc, JsonSer};
 use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
@@ -29,6 +30,9 @@ enum Protocol {
     Query,
     /// ec2 — the query variant with capitalized keys + always-flattened lists.
     Ec2,
+    /// smithy-rpc-v2-cbor — RPC-style, whole input shape as one canonical CBOR
+    /// POST body to `/service/{Svc}/operation/{Op}`, signed over the CBOR bytes.
+    Cbor,
 }
 
 impl Protocol {
@@ -130,6 +134,9 @@ struct Generator<'a> {
     /// `_bind_bool` helper).
     bind_needs_datetime: Cell<bool>,
     bind_needs_bool: Cell<bool>,
+    /// Set while emitting CBOR serializers (#428): whether some member is a
+    /// timestamp, so `imports` adds `import datetime`.
+    cbor_needs_datetime: Cell<bool>,
 }
 
 impl<'a> Generator<'a> {
@@ -150,6 +157,7 @@ impl<'a> Generator<'a> {
             "rest-xml" => Protocol::RestXml,
             "query" => Protocol::Query,
             "ec2" => Protocol::Ec2,
+            "smithy-rpc-v2-cbor" => Protocol::Cbor,
             _ => Protocol::AwsJson,
         };
         // rest-json renders bound enum members in its input carrier structs as
@@ -181,6 +189,7 @@ impl<'a> Generator<'a> {
             xml_needs_bool: Cell::new(false),
             bind_needs_datetime: Cell::new(false),
             bind_needs_bool: Cell::new(false),
+            cbor_needs_datetime: Cell::new(false),
         }
     }
 
@@ -317,6 +326,11 @@ impl<'a> Generator<'a> {
                 self.sigv4_service(),
                 md.api_version
             )),
+            Protocol::Cbor => h.push_str(&format!(
+                "# Protocol: smithy-rpc-v2-cbor (SigV4 service {}, service shape {})\n",
+                self.sigv4_service(),
+                md.target_prefix
+            )),
         }
         h.push_str("# Source: botocore service-2.json (Apache-2.0); documentation stripped.\n");
         h.push_str("#\n");
@@ -332,6 +346,9 @@ impl<'a> Generator<'a> {
             ),
             Protocol::Query | Protocol::Ec2 => h.push_str(
                 "# Imports the aws_core package (core + query) via #283 module imports — see\n",
+            ),
+            Protocol::Cbor => h.push_str(
+                "# Imports the aws_core package (core + endpoints + cbor) via #283 module\n# imports — see\n",
             ),
         }
         h.push_str(
@@ -350,6 +367,9 @@ impl<'a> Generator<'a> {
             Protocol::Query | Protocol::Ec2 => h.push_str(
                 "# HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body\n# (Action + Version + the members), the AWS query wire format.\n",
             ),
+            Protocol::Cbor => h.push_str(
+                "# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item\n# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a\n# cbor operation returns `bytes` (not request text).\n",
+            ),
         }
         h.push_str("# Paginators additionally use the live transport (core.send /\n");
         h.push_str(
@@ -362,6 +382,7 @@ impl<'a> Generator<'a> {
             Protocol::RestXml => "rest-xml",
             Protocol::Query => "query",
             Protocol::Ec2 => "ec2",
+            Protocol::Cbor => "smithy-rpc-v2-cbor",
         };
         h.push_str(&format!(
             "# Coverage ({label}): {} operations — {} with a generated method,\n",
@@ -376,6 +397,7 @@ impl<'a> Generator<'a> {
             Protocol::Query | Protocol::Ec2 => {
                 "a member type is not yet serializable (nesting/map)"
             }
+            Protocol::Cbor => "input has a non-text-keyed map member",
         };
         h.push_str(&format!(
             "#   {} skipped ({skip_reason}).\n",
@@ -436,6 +458,10 @@ impl<'a> Generator<'a> {
             Protocol::Query | Protocol::Ec2 => {
                 mods.push("query");
             }
+            Protocol::Cbor => {
+                mods.push("endpoints");
+                mods.push("cbor");
+            }
         }
         let mut s = String::new();
         s.push_str("# Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/\n");
@@ -453,7 +479,10 @@ impl<'a> Generator<'a> {
         }
         // datetime is pulled in by the explicit JSON serializers (#424) and by a
         // timestamp bound to a URI/query/header slot (#425).
-        if self.json_needs_datetime.get() || self.bind_needs_datetime.get() {
+        if self.json_needs_datetime.get()
+            || self.bind_needs_datetime.get()
+            || self.cbor_needs_datetime.get()
+        {
             s.push_str("import datetime\n");
         }
         s
@@ -486,6 +515,13 @@ impl<'a> Generator<'a> {
                 format!(
                     "# The {} {flavor} protocol: SigV4 service \"{}\" (also the endpoint prefix\n# for host resolution). Each operation POSTs a flat form-urlencoded body built\n# with the aws.query codec.\ndef {}_service() -> str:\n{IND}return \"{}\"\n",
                     self.type_prefix, svc, self.fn_prefix, svc,
+                )
+            }
+            Protocol::Cbor => {
+                let svc = self.sigv4_service();
+                format!(
+                    "# The {} smithy-rpc-v2-cbor protocol: SigV4 service \"{}\" (also the endpoint\n# prefix for host resolution). Each operation POSTs the input as one canonical\n# CBOR data item to /service/{}/operation/<Op>, signed over the CBOR body via\n# the aws.cbor codec.\ndef {}_service() -> str:\n{IND}return \"{}\"\n",
+                    self.type_prefix, svc, md.target_prefix, self.fn_prefix, svc,
                 )
             }
             Protocol::AwsJson => {
@@ -763,6 +799,7 @@ impl<'a> Generator<'a> {
             Protocol::RestXml => "rest-xml `<Error><Code>` element",
             Protocol::Query => "query `<ErrorResponse><Error><Code>` element",
             Protocol::Ec2 => "ec2 `<Response><Errors><Error><Code>` element",
+            Protocol::Cbor => "smithy-rpc-v2-cbor body `__type` (cbor.cbor_error_type)",
         };
         let mut out = String::new();
         out.push_str(&format!(
@@ -795,6 +832,9 @@ impl<'a> Generator<'a> {
             Protocol::Query | Protocol::Ec2 => {
                 "# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's\n# error helpers) to a variant.".to_string()
             }
+            Protocol::Cbor => {
+                "# Map a smithy-rpc-v2-cbor error code to a variant. The code is the body's\n# `__type` (cbor.cbor_error_type / cbor.cbor_error.code); it is namespaced like\n# awsJson (e.g. \"com.amazonaws.<svc>#<Name>\"), so strip to the bare shape name\n# (the text after the last '#') before dispatching.".to_string()
+            }
         };
         out.push_str(&format!(
             "{classifier_doc}\ndef {}_error_from_code(str code) -> {enum_name}:\n",
@@ -819,6 +859,7 @@ impl<'a> Generator<'a> {
             Protocol::RestJson => return self.rest_client_section(cov),
             Protocol::RestXml => return self.xml_client_section(cov),
             Protocol::Query | Protocol::Ec2 => return self.query_client_section(cov),
+            Protocol::Cbor => return self.cbor_client_section(cov),
             Protocol::AwsJson => {}
         }
         let client_name = format!("{}Client", self.type_prefix);
@@ -2135,6 +2176,163 @@ impl<'a> Generator<'a> {
             "{i2}return query.query_request(self.creds, {svc}_service(), self.region, p)\n"
         ));
         b
+    }
+
+    // --- smithy-rpc-v2-cbor client -----------------------------------------
+
+    /// The smithy-rpc-v2-cbor counterpart to `client_section`: a method per
+    /// operation that serializes the whole input as one canonical CBOR body (an
+    /// explicit `<shape>_to_cbor` builds the `cbor.CborValue` tree, the aws_core
+    /// `cbor` codec encodes it), resolves the regional host + SigV4 timestamp, and
+    /// signs over the CBOR bytes. The CBOR wire form is binary, so every method
+    /// returns `bytes`. An operation whose input the emitter cannot serialize (a
+    /// non-text-keyed map, transitively) is skipped with a documented reason.
+    /// Pagination over CBOR responses is a follow-up (no `next_page_cbor` runtime
+    /// yet), so paginated operations are noted but not surfaced.
+    fn cbor_client_section(&self, cov: &mut Coverage) -> String {
+        let client_name = format!("{}Client", self.type_prefix);
+        let serializable = compute_cbor_serializable(self.model);
+        let mut ser = CborSer::new(self.model, &serializable);
+        // Every operation input is a serializer root (unlike JSON there is no
+        // derive fast path, so each reachable serializable struct gets a
+        // `_to_cbor`).
+        let roots: Vec<String> = self
+            .model
+            .operations
+            .values()
+            .filter_map(|op| op.input.as_ref().map(|r| r.shape.clone()))
+            .collect();
+        ser.plan_roots(&roots);
+
+        let mut methods = String::new();
+        let mut skipped: Vec<String> = Vec::new();
+
+        for op_name in self.model.sorted_operation_names() {
+            cov.operations_total += 1;
+            let op = &self.model.operations[op_name];
+            let errors_doc = if op.errors.is_empty() {
+                String::new()
+            } else {
+                let mut es: Vec<&str> = op.errors.iter().map(|e| e.shape.as_str()).collect();
+                es.sort_unstable();
+                format!("{IND}# errors: {}\n", es.join(", "))
+            };
+            let method = snake_case(op_name);
+
+            let input_struct = op.input.as_ref().map(|r| r.shape.as_str()).and_then(|s| {
+                self.model
+                    .shape(s)
+                    .filter(|sh| sh.is_structure())
+                    .map(|sh| (s, sh))
+            });
+
+            match input_struct {
+                // An input structure the emitter can serialize (even an empty one,
+                // which encodes to the empty CBOR map `a0`, matching botocore).
+                Some((sname, _)) if *serializable.get(sname).unwrap_or(&false) => {
+                    let ty = escape_ident(sname).0;
+                    let body = ser.body_expr(sname, "input");
+                    methods.push_str(&format!("{IND}# {op_name}\n"));
+                    methods.push_str(&errors_doc);
+                    methods.push_str(&format!(
+                        "{IND}def {method}(self, {ty} input) -> bytes:\n{IND}{IND}auto body = {body}\n"
+                    ));
+                    methods.push_str(&self.cbor_dispatch(op_name));
+                    methods.push('\n');
+                    cov.operations_methods += 1;
+                }
+                // No input shape -> an empty body (`b''`), matching botocore.
+                None => {
+                    methods.push_str(&format!("{IND}# {op_name}\n"));
+                    methods.push_str(&errors_doc);
+                    methods.push_str(&format!(
+                        "{IND}def {method}(self) -> bytes:\n{IND}{IND}list[int64] empty = []\n{IND}{IND}auto body = bytes(empty)\n"
+                    ));
+                    methods.push_str(&self.cbor_dispatch(op_name));
+                    methods.push('\n');
+                    cov.operations_methods += 1;
+                }
+                // Input with a non-text-keyed map member -> skip.
+                Some((sname, _)) => {
+                    skipped.push(format!("{op_name} (input {sname})"));
+                    cov.operations_skipped += 1;
+                }
+            }
+        }
+
+        let serializers = ser.emit_serializers();
+        if ser.needs_datetime() {
+            self.cbor_needs_datetime.set(true);
+        }
+
+        let mut out = String::new();
+        if !skipped.is_empty() {
+            out.push_str(
+                "# Operations skipped (an input member type is not yet serializable by the CBOR\n# emitter — a map with a non-text key):\n",
+            );
+            for s in &skipped {
+                out.push_str(&format!("#   {s}\n"));
+            }
+            out.push('\n');
+        }
+        self.cbor_paginators_not_surfaced_note(&mut out, cov);
+
+        if !serializers.is_empty() {
+            out.push_str(
+                "# CBOR body serializers: each builds a `cbor.CborValue` map for its shape\n# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/\n# zap#428).\n\n",
+            );
+            out.push_str(&serializers);
+        }
+
+        out.push_str(&format!(
+            "# A bound {} client: credentials + region, threaded into every operation.\n",
+            self.type_prefix
+        ));
+        out.push_str(&format!("struct {client_name}:\n"));
+        out.push_str(&format!("{IND}core.Credentials creds\n{IND}str region\n"));
+        if methods.is_empty() {
+            out.push_str(&format!(
+                "\n{IND}# no serializable operations were generated for this service\n"
+            ));
+        } else {
+            out.push('\n');
+            out.push_str(&methods);
+        }
+        out.push_str(&format!(
+            "# Construct a {} bound to credentials + region.\ndef {}_client(core.Credentials creds, str region) -> {client_name}:\n{IND}return {client_name}(creds=creds, region=region)\n",
+            client_name, self.fn_prefix
+        ));
+        out
+    }
+
+    /// The common tail of a cbor operation method: resolve the regional host and
+    /// SigV4 timestamp, build the rpc-v2 request (POST to
+    /// `/service/<targetPrefix>/operation/<Op>`), and sign over the CBOR `body`
+    /// bytes. Returns the ready-to-send request bytes.
+    fn cbor_dispatch(&self, op_name: &str) -> String {
+        let svc = &self.fn_prefix;
+        let shape = &self.model.metadata.target_prefix;
+        format!(
+            "{IND}{IND}auto host = endpoints.regional_host({svc}_service(), self.region)\n{IND}{IND}auto t = core.signing_time_now()\n{IND}{IND}auto req = cbor.cbor_build_request({svc}_service(), self.region, host, \"{shape}\", \"{op_name}\", body, t.amz_date)\n{IND}{IND}return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)\n"
+        )
+    }
+
+    /// Note any paginated operations we did not surface for the cbor protocol
+    /// (CBOR-response pagination — `next_page_cbor` — is a runtime follow-up) and
+    /// record them as skipped.
+    fn cbor_paginators_not_surfaced_note(&self, out: &mut String, cov: &mut Coverage) {
+        let names = self.paginators.sorted_operation_names();
+        if names.is_empty() {
+            return;
+        }
+        out.push_str(
+            "# Paginated operations (paginators-1.json) are not surfaced for this protocol —\n# CBOR-response pagination (next_page_cbor) is a runtime follow-up:\n",
+        );
+        for n in &names {
+            out.push_str(&format!("#   {n}\n"));
+            cov.paginators_skipped += 1;
+        }
+        out.push('\n');
     }
 
     /// For the XML-family protocols, note any paginated operations we did not

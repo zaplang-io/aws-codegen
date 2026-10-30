@@ -17,6 +17,14 @@ fn dynamodb_model() -> String {
     read_model("models/dynamodb/2012-08-10/service-2.json")
 }
 
+fn cloudwatch_model() -> String {
+    read_model("models/cloudwatch/2010-08-01/service-2.json")
+}
+
+fn translate_model() -> String {
+    read_model("models/translate/2017-07-01/service-2.json")
+}
+
 fn lambda_model() -> String {
     read_model("models/lambda/2015-03-31/service-2.json")
 }
@@ -145,12 +153,73 @@ fn awsjson_contract_shape() {
     assert!(src.contains("ResourceNotFoundException"));
 }
 
+// --- smithy-rpc-v2-cbor (CloudWatch / Translate) -----------------------------
+
+#[test]
+fn cbor_contract_shape() {
+    // Translate is a clean cbor service (no non-text-keyed maps): every operation
+    // gets a method that builds a CBOR body and signs over the bytes.
+    let src = aws_codegen::generate_from_json(&translate_model())
+        .unwrap()
+        .0;
+    // The protocol helper returns the SigV4 service name (also the host prefix).
+    assert!(src.contains("def translate_service() -> str:"));
+    // A cbor method returns `bytes` (binary wire form) and dispatches through the
+    // aws_core cbor codec to /service/<targetPrefix>/operation/<Op>.
+    assert!(src.contains("def translate_text(self, TranslateTextRequest input) -> bytes:"));
+    assert!(src.contains("auto body = cbor.cbor_encode(translate_text_request_to_cbor(input))"));
+    assert!(src.contains(
+        "cbor.cbor_build_request(translate_service(), self.region, host, \"AWSShineFrontendService_20170701\", \"TranslateText\", body, t.amz_date)"
+    ));
+    assert!(src.contains("return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)"));
+    // The body serializer builds a cbor.CborValue map in model order.
+    assert!(src
+        .contains("def translate_text_request_to_cbor(TranslateTextRequest v) -> cbor.CborValue:"));
+    assert!(src.contains("keys.append(\"Text\")"));
+    assert!(src.contains("vals.append(cbor.cbor_text(v.Text))"));
+    // Imports: core + endpoints + cbor (the codec), never awsjson/query/restxml.
+    assert!(src.contains("import aws_core.cbor"));
+    assert!(!src.contains("import aws_core.awsjson"));
+    // Error dispatch from the body `__type`.
+    assert!(src.contains("def translate_error_from_code(str code) -> TranslateError:"));
+}
+
+#[test]
+fn cbor_cloudwatch_float_and_timestamp_encoding() {
+    // CloudWatch (query->cbor upstream) exercises the fidelity-critical encodings:
+    // a `double` member is cbor_double (ai 27), an integer is cbor_int, a
+    // timestamp is tag-1 epoch via datetime.to_timestamp, and a list of doubles
+    // nests through cbor_list. These drive the byte-diff gate (tests/cbor_byte_diff.rs).
+    let (src, cov) = aws_codegen::generate_from_json(&cloudwatch_model()).unwrap();
+    assert!(src.contains("def put_metric_data(self, PutMetricDataInput input) -> bytes:"));
+    assert!(src.contains("def metric_datum_to_cbor(MetricDatum v) -> cbor.CborValue:"));
+    assert!(src.contains("vals.append(cbor.cbor_double(u")); // Value: double shape
+    assert!(src.contains("vals.append(cbor.cbor_int(u")); // StorageResolution: integer
+    assert!(src.contains("cbor.cbor_timestamp(datetime.to_timestamp(u")); // Timestamp
+    assert!(src.contains("import datetime")); // pulled in by the timestamp member
+                                              // targetPrefix is the rpc-v2 service shape in the URI (NOT "CloudWatch").
+    assert!(src.contains("\"GraniteServiceVersion20100801\""));
+    // CloudWatch has no non-text-keyed maps, so every op is covered.
+    assert_eq!(
+        cov.operations_skipped, 0,
+        "no cbor op should be skipped for CloudWatch"
+    );
+    assert!(cov.operations_methods >= 50);
+}
+
 #[test]
 fn supported_protocols_accepted_unknown_rejected() {
-    // The emitter now spans the awsJson, rest-json, rest-xml and query/ec2
-    // protocols; all are accepted. A protocol it does not emit yet (e.g. the
-    // RPCv2 CBOR protocol) is rejected with a clear message.
-    for proto in ["json", "rest-json", "rest-xml", "query", "ec2"] {
+    // The emitter now spans the awsJson, rest-json, rest-xml, query/ec2 and
+    // smithy-rpc-v2-cbor protocols; all are accepted. A protocol it does not emit
+    // yet is rejected with a clear message.
+    for proto in [
+        "json",
+        "rest-json",
+        "rest-xml",
+        "query",
+        "ec2",
+        "smithy-rpc-v2-cbor",
+    ] {
         let m = format!(
             r#"{{"metadata":{{"protocol":"{proto}","apiVersion":"2021-01-01","endpointPrefix":"x"}},"operations":{{}},"shapes":{{}}}}"#
         );
@@ -159,9 +228,11 @@ fn supported_protocols_accepted_unknown_rejected() {
             "protocol {proto} should be accepted"
         );
     }
-    let m = r#"{"metadata":{"protocol":"smithy-rpc-v2-cbor","endpointPrefix":"x"},"operations":{},"shapes":{}}"#;
+    // A made-up / event-stream-only protocol the generator does not emit is
+    // rejected with a clear message.
+    let m = r#"{"metadata":{"protocol":"smithy-rpc-v2-protobuf","endpointPrefix":"x"},"operations":{},"shapes":{}}"#;
     let err = aws_codegen::generate_from_json(m).unwrap_err();
-    assert!(err.contains("smithy-rpc-v2-cbor"), "{err}");
+    assert!(err.contains("smithy-rpc-v2-protobuf"), "{err}");
     assert!(err.contains("unsupported protocol"), "{err}");
 }
 

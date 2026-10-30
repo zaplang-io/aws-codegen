@@ -33,6 +33,7 @@ test:
 	python3 tools/verify_goldens.py
 	python3 tools/verify_lambda_requests.py
 	python3 tools/verify_xml_requests.py
+	python3 tools/verify_cbor_requests.py
 
 ## fmt: format the Rust sources
 fmt:
