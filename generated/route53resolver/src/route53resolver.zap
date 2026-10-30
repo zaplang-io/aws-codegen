@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Route53Resolver)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1593,9 +1595,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by route53resolver_error_from_code.
-enum Route53ResolverError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Route53ResolverErrorKind:
     AccessDeniedException
     ConflictException
     InternalServiceErrorException
@@ -1615,43 +1624,91 @@ enum Route53ResolverError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def route53resolver_error_from_code(str code) -> Route53ResolverError:
-    if code == "AccessDeniedException":
-        return Route53ResolverError.AccessDeniedException
-    if code == "ConflictException":
-        return Route53ResolverError.ConflictException
-    if code == "InternalServiceErrorException":
-        return Route53ResolverError.InternalServiceErrorException
-    if code == "InvalidNextTokenException":
-        return Route53ResolverError.InvalidNextTokenException
-    if code == "InvalidParameterException":
-        return Route53ResolverError.InvalidParameterException
-    if code == "InvalidPolicyDocument":
-        return Route53ResolverError.InvalidPolicyDocument
-    if code == "InvalidRequestException":
-        return Route53ResolverError.InvalidRequestException
-    if code == "InvalidTagException":
-        return Route53ResolverError.InvalidTagException
-    if code == "LimitExceededException":
-        return Route53ResolverError.LimitExceededException
-    if code == "ResourceExistsException":
-        return Route53ResolverError.ResourceExistsException
-    if code == "ResourceInUseException":
-        return Route53ResolverError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return Route53ResolverError.ResourceNotFoundException
-    if code == "ResourceUnavailableException":
-        return Route53ResolverError.ResourceUnavailableException
-    if code == "ServiceQuotaExceededException":
-        return Route53ResolverError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return Route53ResolverError.ThrottlingException
-    if code == "UnknownResourceException":
-        return Route53ResolverError.UnknownResourceException
-    if code == "ValidationException":
-        return Route53ResolverError.ValidationException
-    return Route53ResolverError.Unknown(code=code)
+# Classify an AWS error code into `Route53ResolverErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def route53resolver_error_kind(str code) -> Route53ResolverErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Route53ResolverErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return Route53ResolverErrorKind.ConflictException
+    if name == "InternalServiceErrorException":
+        return Route53ResolverErrorKind.InternalServiceErrorException
+    if name == "InvalidNextTokenException":
+        return Route53ResolverErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterException":
+        return Route53ResolverErrorKind.InvalidParameterException
+    if name == "InvalidPolicyDocument":
+        return Route53ResolverErrorKind.InvalidPolicyDocument
+    if name == "InvalidRequestException":
+        return Route53ResolverErrorKind.InvalidRequestException
+    if name == "InvalidTagException":
+        return Route53ResolverErrorKind.InvalidTagException
+    if name == "LimitExceededException":
+        return Route53ResolverErrorKind.LimitExceededException
+    if name == "ResourceExistsException":
+        return Route53ResolverErrorKind.ResourceExistsException
+    if name == "ResourceInUseException":
+        return Route53ResolverErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return Route53ResolverErrorKind.ResourceNotFoundException
+    if name == "ResourceUnavailableException":
+        return Route53ResolverErrorKind.ResourceUnavailableException
+    if name == "ServiceQuotaExceededException":
+        return Route53ResolverErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return Route53ResolverErrorKind.ThrottlingException
+    if name == "UnknownResourceException":
+        return Route53ResolverErrorKind.UnknownResourceException
+    if name == "ValidationException":
+        return Route53ResolverErrorKind.ValidationException
+    return Route53ResolverErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def route53resolver_error_name(Route53ResolverErrorKind k) -> str:
+    match k:
+        case Route53ResolverErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Route53ResolverErrorKind.ConflictException:
+            return "ConflictException"
+        case Route53ResolverErrorKind.InternalServiceErrorException:
+            return "InternalServiceErrorException"
+        case Route53ResolverErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case Route53ResolverErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Route53ResolverErrorKind.InvalidPolicyDocument:
+            return "InvalidPolicyDocument"
+        case Route53ResolverErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case Route53ResolverErrorKind.InvalidTagException:
+            return "InvalidTagException"
+        case Route53ResolverErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Route53ResolverErrorKind.ResourceExistsException:
+            return "ResourceExistsException"
+        case Route53ResolverErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case Route53ResolverErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Route53ResolverErrorKind.ResourceUnavailableException:
+            return "ResourceUnavailableException"
+        case Route53ResolverErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Route53ResolverErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Route53ResolverErrorKind.UnknownResourceException:
+            return "UnknownResourceException"
+        case Route53ResolverErrorKind.ValidationException:
+            return "ValidationException"
+        case Route53ResolverErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

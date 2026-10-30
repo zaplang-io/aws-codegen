@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix secretsmanager)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -546,9 +548,16 @@ struct ValidationErrorsEntry:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by secretsmanager_error_from_code.
-enum Secrets_ManagerError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Secrets_ManagerErrorKind:
     DecryptionFailure
     EncryptionFailure
     InternalServiceError
@@ -563,33 +572,71 @@ enum Secrets_ManagerError:
     ResourceNotFoundException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def secretsmanager_error_from_code(str code) -> Secrets_ManagerError:
-    if code == "DecryptionFailure":
-        return Secrets_ManagerError.DecryptionFailure
-    if code == "EncryptionFailure":
-        return Secrets_ManagerError.EncryptionFailure
-    if code == "InternalServiceError":
-        return Secrets_ManagerError.InternalServiceError
-    if code == "InvalidNextTokenException":
-        return Secrets_ManagerError.InvalidNextTokenException
-    if code == "InvalidParameterException":
-        return Secrets_ManagerError.InvalidParameterException
-    if code == "InvalidRequestException":
-        return Secrets_ManagerError.InvalidRequestException
-    if code == "LimitExceededException":
-        return Secrets_ManagerError.LimitExceededException
-    if code == "MalformedPolicyDocumentException":
-        return Secrets_ManagerError.MalformedPolicyDocumentException
-    if code == "PreconditionNotMetException":
-        return Secrets_ManagerError.PreconditionNotMetException
-    if code == "PublicPolicyException":
-        return Secrets_ManagerError.PublicPolicyException
-    if code == "ResourceExistsException":
-        return Secrets_ManagerError.ResourceExistsException
-    if code == "ResourceNotFoundException":
-        return Secrets_ManagerError.ResourceNotFoundException
-    return Secrets_ManagerError.Unknown(code=code)
+# Classify an AWS error code into `Secrets_ManagerErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def secretsmanager_error_kind(str code) -> Secrets_ManagerErrorKind:
+    auto name = errors.error_code(code)
+    if name == "DecryptionFailure":
+        return Secrets_ManagerErrorKind.DecryptionFailure
+    if name == "EncryptionFailure":
+        return Secrets_ManagerErrorKind.EncryptionFailure
+    if name == "InternalServiceError":
+        return Secrets_ManagerErrorKind.InternalServiceError
+    if name == "InvalidNextTokenException":
+        return Secrets_ManagerErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterException":
+        return Secrets_ManagerErrorKind.InvalidParameterException
+    if name == "InvalidRequestException":
+        return Secrets_ManagerErrorKind.InvalidRequestException
+    if name == "LimitExceededException":
+        return Secrets_ManagerErrorKind.LimitExceededException
+    if name == "MalformedPolicyDocumentException":
+        return Secrets_ManagerErrorKind.MalformedPolicyDocumentException
+    if name == "PreconditionNotMetException":
+        return Secrets_ManagerErrorKind.PreconditionNotMetException
+    if name == "PublicPolicyException":
+        return Secrets_ManagerErrorKind.PublicPolicyException
+    if name == "ResourceExistsException":
+        return Secrets_ManagerErrorKind.ResourceExistsException
+    if name == "ResourceNotFoundException":
+        return Secrets_ManagerErrorKind.ResourceNotFoundException
+    return Secrets_ManagerErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def secretsmanager_error_name(Secrets_ManagerErrorKind k) -> str:
+    match k:
+        case Secrets_ManagerErrorKind.DecryptionFailure:
+            return "DecryptionFailure"
+        case Secrets_ManagerErrorKind.EncryptionFailure:
+            return "EncryptionFailure"
+        case Secrets_ManagerErrorKind.InternalServiceError:
+            return "InternalServiceError"
+        case Secrets_ManagerErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case Secrets_ManagerErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Secrets_ManagerErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case Secrets_ManagerErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Secrets_ManagerErrorKind.MalformedPolicyDocumentException:
+            return "MalformedPolicyDocumentException"
+        case Secrets_ManagerErrorKind.PreconditionNotMetException:
+            return "PreconditionNotMetException"
+        case Secrets_ManagerErrorKind.PublicPolicyException:
+            return "PublicPolicyException"
+        case Secrets_ManagerErrorKind.ResourceExistsException:
+            return "ResourceExistsException"
+        case Secrets_ManagerErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Secrets_ManagerErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

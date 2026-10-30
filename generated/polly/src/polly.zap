@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service polly)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -634,9 +635,16 @@ struct Voice:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by polly_error_from_code.
-enum PollyError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum PollyErrorKind:
     EngineNotSupportedException
     InvalidLexiconException
     InvalidNextTokenException
@@ -663,58 +671,119 @@ enum PollyError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def polly_error_from_code(str code) -> PollyError:
-    if code == "EngineNotSupportedException":
-        return PollyError.EngineNotSupportedException
-    if code == "InvalidLexiconException":
-        return PollyError.InvalidLexiconException
-    if code == "InvalidNextTokenException":
-        return PollyError.InvalidNextTokenException
-    if code == "InvalidS3BucketException":
-        return PollyError.InvalidS3BucketException
-    if code == "InvalidS3KeyException":
-        return PollyError.InvalidS3KeyException
-    if code == "InvalidSampleRateException":
-        return PollyError.InvalidSampleRateException
-    if code == "InvalidSnsTopicArnException":
-        return PollyError.InvalidSnsTopicArnException
-    if code == "InvalidSsmlException":
-        return PollyError.InvalidSsmlException
-    if code == "InvalidTaskIdException":
-        return PollyError.InvalidTaskIdException
-    if code == "LanguageNotSupportedException":
-        return PollyError.LanguageNotSupportedException
-    if code == "LexiconNotFoundException":
-        return PollyError.LexiconNotFoundException
-    if code == "LexiconSizeExceededException":
-        return PollyError.LexiconSizeExceededException
-    if code == "MarksNotSupportedForFormatException":
-        return PollyError.MarksNotSupportedForFormatException
-    if code == "MaxLexemeLengthExceededException":
-        return PollyError.MaxLexemeLengthExceededException
-    if code == "MaxLexiconsNumberExceededException":
-        return PollyError.MaxLexiconsNumberExceededException
-    if code == "ServiceFailureException":
-        return PollyError.ServiceFailureException
-    if code == "ServiceQuotaExceededException":
-        return PollyError.ServiceQuotaExceededException
-    if code == "SsmlMarksNotSupportedForTextTypeException":
-        return PollyError.SsmlMarksNotSupportedForTextTypeException
-    if code == "SynthesisTaskNotFoundException":
-        return PollyError.SynthesisTaskNotFoundException
-    if code == "TextLengthExceededException":
-        return PollyError.TextLengthExceededException
-    if code == "ThrottlingException":
-        return PollyError.ThrottlingException
-    if code == "UnsupportedPlsAlphabetException":
-        return PollyError.UnsupportedPlsAlphabetException
-    if code == "UnsupportedPlsLanguageException":
-        return PollyError.UnsupportedPlsLanguageException
-    if code == "ValidationException":
-        return PollyError.ValidationException
-    return PollyError.Unknown(code=code)
+# Classify an AWS error code into `PollyErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def polly_error_kind(str code) -> PollyErrorKind:
+    auto name = errors.error_code(code)
+    if name == "EngineNotSupportedException":
+        return PollyErrorKind.EngineNotSupportedException
+    if name == "InvalidLexiconException":
+        return PollyErrorKind.InvalidLexiconException
+    if name == "InvalidNextTokenException":
+        return PollyErrorKind.InvalidNextTokenException
+    if name == "InvalidS3BucketException":
+        return PollyErrorKind.InvalidS3BucketException
+    if name == "InvalidS3KeyException":
+        return PollyErrorKind.InvalidS3KeyException
+    if name == "InvalidSampleRateException":
+        return PollyErrorKind.InvalidSampleRateException
+    if name == "InvalidSnsTopicArnException":
+        return PollyErrorKind.InvalidSnsTopicArnException
+    if name == "InvalidSsmlException":
+        return PollyErrorKind.InvalidSsmlException
+    if name == "InvalidTaskIdException":
+        return PollyErrorKind.InvalidTaskIdException
+    if name == "LanguageNotSupportedException":
+        return PollyErrorKind.LanguageNotSupportedException
+    if name == "LexiconNotFoundException":
+        return PollyErrorKind.LexiconNotFoundException
+    if name == "LexiconSizeExceededException":
+        return PollyErrorKind.LexiconSizeExceededException
+    if name == "MarksNotSupportedForFormatException":
+        return PollyErrorKind.MarksNotSupportedForFormatException
+    if name == "MaxLexemeLengthExceededException":
+        return PollyErrorKind.MaxLexemeLengthExceededException
+    if name == "MaxLexiconsNumberExceededException":
+        return PollyErrorKind.MaxLexiconsNumberExceededException
+    if name == "ServiceFailureException":
+        return PollyErrorKind.ServiceFailureException
+    if name == "ServiceQuotaExceededException":
+        return PollyErrorKind.ServiceQuotaExceededException
+    if name == "SsmlMarksNotSupportedForTextTypeException":
+        return PollyErrorKind.SsmlMarksNotSupportedForTextTypeException
+    if name == "SynthesisTaskNotFoundException":
+        return PollyErrorKind.SynthesisTaskNotFoundException
+    if name == "TextLengthExceededException":
+        return PollyErrorKind.TextLengthExceededException
+    if name == "ThrottlingException":
+        return PollyErrorKind.ThrottlingException
+    if name == "UnsupportedPlsAlphabetException":
+        return PollyErrorKind.UnsupportedPlsAlphabetException
+    if name == "UnsupportedPlsLanguageException":
+        return PollyErrorKind.UnsupportedPlsLanguageException
+    if name == "ValidationException":
+        return PollyErrorKind.ValidationException
+    return PollyErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def polly_error_name(PollyErrorKind k) -> str:
+    match k:
+        case PollyErrorKind.EngineNotSupportedException:
+            return "EngineNotSupportedException"
+        case PollyErrorKind.InvalidLexiconException:
+            return "InvalidLexiconException"
+        case PollyErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case PollyErrorKind.InvalidS3BucketException:
+            return "InvalidS3BucketException"
+        case PollyErrorKind.InvalidS3KeyException:
+            return "InvalidS3KeyException"
+        case PollyErrorKind.InvalidSampleRateException:
+            return "InvalidSampleRateException"
+        case PollyErrorKind.InvalidSnsTopicArnException:
+            return "InvalidSnsTopicArnException"
+        case PollyErrorKind.InvalidSsmlException:
+            return "InvalidSsmlException"
+        case PollyErrorKind.InvalidTaskIdException:
+            return "InvalidTaskIdException"
+        case PollyErrorKind.LanguageNotSupportedException:
+            return "LanguageNotSupportedException"
+        case PollyErrorKind.LexiconNotFoundException:
+            return "LexiconNotFoundException"
+        case PollyErrorKind.LexiconSizeExceededException:
+            return "LexiconSizeExceededException"
+        case PollyErrorKind.MarksNotSupportedForFormatException:
+            return "MarksNotSupportedForFormatException"
+        case PollyErrorKind.MaxLexemeLengthExceededException:
+            return "MaxLexemeLengthExceededException"
+        case PollyErrorKind.MaxLexiconsNumberExceededException:
+            return "MaxLexiconsNumberExceededException"
+        case PollyErrorKind.ServiceFailureException:
+            return "ServiceFailureException"
+        case PollyErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case PollyErrorKind.SsmlMarksNotSupportedForTextTypeException:
+            return "SsmlMarksNotSupportedForTextTypeException"
+        case PollyErrorKind.SynthesisTaskNotFoundException:
+            return "SynthesisTaskNotFoundException"
+        case PollyErrorKind.TextLengthExceededException:
+            return "TextLengthExceededException"
+        case PollyErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case PollyErrorKind.UnsupportedPlsAlphabetException:
+            return "UnsupportedPlsAlphabetException"
+        case PollyErrorKind.UnsupportedPlsLanguageException:
+            return "UnsupportedPlsLanguageException"
+        case PollyErrorKind.ValidationException:
+            return "ValidationException"
+        case PollyErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

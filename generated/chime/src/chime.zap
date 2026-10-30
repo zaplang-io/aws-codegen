@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service chime)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1170,9 +1171,16 @@ struct VoiceConnectorSettings:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by chime_error_from_code.
-enum ChimeError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ChimeErrorKind:
     AccessDeniedException
     BadRequestException
     ConflictException
@@ -1186,32 +1194,67 @@ enum ChimeError:
     UnprocessableEntityException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def chime_error_from_code(str code) -> ChimeError:
-    if code == "AccessDeniedException":
-        return ChimeError.AccessDeniedException
-    if code == "BadRequestException":
-        return ChimeError.BadRequestException
-    if code == "ConflictException":
-        return ChimeError.ConflictException
-    if code == "ForbiddenException":
-        return ChimeError.ForbiddenException
-    if code == "NotFoundException":
-        return ChimeError.NotFoundException
-    if code == "ResourceLimitExceededException":
-        return ChimeError.ResourceLimitExceededException
-    if code == "ServiceFailureException":
-        return ChimeError.ServiceFailureException
-    if code == "ServiceUnavailableException":
-        return ChimeError.ServiceUnavailableException
-    if code == "ThrottledClientException":
-        return ChimeError.ThrottledClientException
-    if code == "UnauthorizedClientException":
-        return ChimeError.UnauthorizedClientException
-    if code == "UnprocessableEntityException":
-        return ChimeError.UnprocessableEntityException
-    return ChimeError.Unknown(code=code)
+# Classify an AWS error code into `ChimeErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def chime_error_kind(str code) -> ChimeErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return ChimeErrorKind.AccessDeniedException
+    if name == "BadRequestException":
+        return ChimeErrorKind.BadRequestException
+    if name == "ConflictException":
+        return ChimeErrorKind.ConflictException
+    if name == "ForbiddenException":
+        return ChimeErrorKind.ForbiddenException
+    if name == "NotFoundException":
+        return ChimeErrorKind.NotFoundException
+    if name == "ResourceLimitExceededException":
+        return ChimeErrorKind.ResourceLimitExceededException
+    if name == "ServiceFailureException":
+        return ChimeErrorKind.ServiceFailureException
+    if name == "ServiceUnavailableException":
+        return ChimeErrorKind.ServiceUnavailableException
+    if name == "ThrottledClientException":
+        return ChimeErrorKind.ThrottledClientException
+    if name == "UnauthorizedClientException":
+        return ChimeErrorKind.UnauthorizedClientException
+    if name == "UnprocessableEntityException":
+        return ChimeErrorKind.UnprocessableEntityException
+    return ChimeErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def chime_error_name(ChimeErrorKind k) -> str:
+    match k:
+        case ChimeErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case ChimeErrorKind.BadRequestException:
+            return "BadRequestException"
+        case ChimeErrorKind.ConflictException:
+            return "ConflictException"
+        case ChimeErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case ChimeErrorKind.NotFoundException:
+            return "NotFoundException"
+        case ChimeErrorKind.ResourceLimitExceededException:
+            return "ResourceLimitExceededException"
+        case ChimeErrorKind.ServiceFailureException:
+            return "ServiceFailureException"
+        case ChimeErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case ChimeErrorKind.ThrottledClientException:
+            return "ThrottledClientException"
+        case ChimeErrorKind.UnauthorizedClientException:
+            return "UnauthorizedClientException"
+        case ChimeErrorKind.UnprocessableEntityException:
+            return "UnprocessableEntityException"
+        case ChimeErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

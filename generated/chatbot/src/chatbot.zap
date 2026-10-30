@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service chatbot)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -748,9 +749,16 @@ struct UpdateTeamsChannelConfigurationResult:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by chatbot_error_from_code.
-enum chatbotError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum chatbotErrorKind:
     ConflictException
     CreateChimeWebhookConfigurationException
     CreateSlackChannelConfigurationException
@@ -785,74 +793,151 @@ enum chatbotError:
     UpdateTeamsChannelConfigurationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def chatbot_error_from_code(str code) -> chatbotError:
-    if code == "ConflictException":
-        return chatbotError.ConflictException
-    if code == "CreateChimeWebhookConfigurationException":
-        return chatbotError.CreateChimeWebhookConfigurationException
-    if code == "CreateSlackChannelConfigurationException":
-        return chatbotError.CreateSlackChannelConfigurationException
-    if code == "CreateTeamsChannelConfigurationException":
-        return chatbotError.CreateTeamsChannelConfigurationException
-    if code == "DeleteChimeWebhookConfigurationException":
-        return chatbotError.DeleteChimeWebhookConfigurationException
-    if code == "DeleteMicrosoftTeamsUserIdentityException":
-        return chatbotError.DeleteMicrosoftTeamsUserIdentityException
-    if code == "DeleteSlackChannelConfigurationException":
-        return chatbotError.DeleteSlackChannelConfigurationException
-    if code == "DeleteSlackUserIdentityException":
-        return chatbotError.DeleteSlackUserIdentityException
-    if code == "DeleteSlackWorkspaceAuthorizationFault":
-        return chatbotError.DeleteSlackWorkspaceAuthorizationFault
-    if code == "DeleteTeamsChannelConfigurationException":
-        return chatbotError.DeleteTeamsChannelConfigurationException
-    if code == "DeleteTeamsConfiguredTeamException":
-        return chatbotError.DeleteTeamsConfiguredTeamException
-    if code == "DescribeChimeWebhookConfigurationsException":
-        return chatbotError.DescribeChimeWebhookConfigurationsException
-    if code == "DescribeSlackChannelConfigurationsException":
-        return chatbotError.DescribeSlackChannelConfigurationsException
-    if code == "DescribeSlackUserIdentitiesException":
-        return chatbotError.DescribeSlackUserIdentitiesException
-    if code == "DescribeSlackWorkspacesException":
-        return chatbotError.DescribeSlackWorkspacesException
-    if code == "GetAccountPreferencesException":
-        return chatbotError.GetAccountPreferencesException
-    if code == "GetTeamsChannelConfigurationException":
-        return chatbotError.GetTeamsChannelConfigurationException
-    if code == "InternalServiceError":
-        return chatbotError.InternalServiceError
-    if code == "InvalidParameterException":
-        return chatbotError.InvalidParameterException
-    if code == "InvalidRequestException":
-        return chatbotError.InvalidRequestException
-    if code == "LimitExceededException":
-        return chatbotError.LimitExceededException
-    if code == "ListMicrosoftTeamsConfiguredTeamsException":
-        return chatbotError.ListMicrosoftTeamsConfiguredTeamsException
-    if code == "ListMicrosoftTeamsUserIdentitiesException":
-        return chatbotError.ListMicrosoftTeamsUserIdentitiesException
-    if code == "ListTeamsChannelConfigurationsException":
-        return chatbotError.ListTeamsChannelConfigurationsException
-    if code == "ResourceNotFoundException":
-        return chatbotError.ResourceNotFoundException
-    if code == "ServiceUnavailableException":
-        return chatbotError.ServiceUnavailableException
-    if code == "TooManyTagsException":
-        return chatbotError.TooManyTagsException
-    if code == "UnauthorizedException":
-        return chatbotError.UnauthorizedException
-    if code == "UpdateAccountPreferencesException":
-        return chatbotError.UpdateAccountPreferencesException
-    if code == "UpdateChimeWebhookConfigurationException":
-        return chatbotError.UpdateChimeWebhookConfigurationException
-    if code == "UpdateSlackChannelConfigurationException":
-        return chatbotError.UpdateSlackChannelConfigurationException
-    if code == "UpdateTeamsChannelConfigurationException":
-        return chatbotError.UpdateTeamsChannelConfigurationException
-    return chatbotError.Unknown(code=code)
+# Classify an AWS error code into `chatbotErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def chatbot_error_kind(str code) -> chatbotErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConflictException":
+        return chatbotErrorKind.ConflictException
+    if name == "CreateChimeWebhookConfigurationException":
+        return chatbotErrorKind.CreateChimeWebhookConfigurationException
+    if name == "CreateSlackChannelConfigurationException":
+        return chatbotErrorKind.CreateSlackChannelConfigurationException
+    if name == "CreateTeamsChannelConfigurationException":
+        return chatbotErrorKind.CreateTeamsChannelConfigurationException
+    if name == "DeleteChimeWebhookConfigurationException":
+        return chatbotErrorKind.DeleteChimeWebhookConfigurationException
+    if name == "DeleteMicrosoftTeamsUserIdentityException":
+        return chatbotErrorKind.DeleteMicrosoftTeamsUserIdentityException
+    if name == "DeleteSlackChannelConfigurationException":
+        return chatbotErrorKind.DeleteSlackChannelConfigurationException
+    if name == "DeleteSlackUserIdentityException":
+        return chatbotErrorKind.DeleteSlackUserIdentityException
+    if name == "DeleteSlackWorkspaceAuthorizationFault":
+        return chatbotErrorKind.DeleteSlackWorkspaceAuthorizationFault
+    if name == "DeleteTeamsChannelConfigurationException":
+        return chatbotErrorKind.DeleteTeamsChannelConfigurationException
+    if name == "DeleteTeamsConfiguredTeamException":
+        return chatbotErrorKind.DeleteTeamsConfiguredTeamException
+    if name == "DescribeChimeWebhookConfigurationsException":
+        return chatbotErrorKind.DescribeChimeWebhookConfigurationsException
+    if name == "DescribeSlackChannelConfigurationsException":
+        return chatbotErrorKind.DescribeSlackChannelConfigurationsException
+    if name == "DescribeSlackUserIdentitiesException":
+        return chatbotErrorKind.DescribeSlackUserIdentitiesException
+    if name == "DescribeSlackWorkspacesException":
+        return chatbotErrorKind.DescribeSlackWorkspacesException
+    if name == "GetAccountPreferencesException":
+        return chatbotErrorKind.GetAccountPreferencesException
+    if name == "GetTeamsChannelConfigurationException":
+        return chatbotErrorKind.GetTeamsChannelConfigurationException
+    if name == "InternalServiceError":
+        return chatbotErrorKind.InternalServiceError
+    if name == "InvalidParameterException":
+        return chatbotErrorKind.InvalidParameterException
+    if name == "InvalidRequestException":
+        return chatbotErrorKind.InvalidRequestException
+    if name == "LimitExceededException":
+        return chatbotErrorKind.LimitExceededException
+    if name == "ListMicrosoftTeamsConfiguredTeamsException":
+        return chatbotErrorKind.ListMicrosoftTeamsConfiguredTeamsException
+    if name == "ListMicrosoftTeamsUserIdentitiesException":
+        return chatbotErrorKind.ListMicrosoftTeamsUserIdentitiesException
+    if name == "ListTeamsChannelConfigurationsException":
+        return chatbotErrorKind.ListTeamsChannelConfigurationsException
+    if name == "ResourceNotFoundException":
+        return chatbotErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return chatbotErrorKind.ServiceUnavailableException
+    if name == "TooManyTagsException":
+        return chatbotErrorKind.TooManyTagsException
+    if name == "UnauthorizedException":
+        return chatbotErrorKind.UnauthorizedException
+    if name == "UpdateAccountPreferencesException":
+        return chatbotErrorKind.UpdateAccountPreferencesException
+    if name == "UpdateChimeWebhookConfigurationException":
+        return chatbotErrorKind.UpdateChimeWebhookConfigurationException
+    if name == "UpdateSlackChannelConfigurationException":
+        return chatbotErrorKind.UpdateSlackChannelConfigurationException
+    if name == "UpdateTeamsChannelConfigurationException":
+        return chatbotErrorKind.UpdateTeamsChannelConfigurationException
+    return chatbotErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def chatbot_error_name(chatbotErrorKind k) -> str:
+    match k:
+        case chatbotErrorKind.ConflictException:
+            return "ConflictException"
+        case chatbotErrorKind.CreateChimeWebhookConfigurationException:
+            return "CreateChimeWebhookConfigurationException"
+        case chatbotErrorKind.CreateSlackChannelConfigurationException:
+            return "CreateSlackChannelConfigurationException"
+        case chatbotErrorKind.CreateTeamsChannelConfigurationException:
+            return "CreateTeamsChannelConfigurationException"
+        case chatbotErrorKind.DeleteChimeWebhookConfigurationException:
+            return "DeleteChimeWebhookConfigurationException"
+        case chatbotErrorKind.DeleteMicrosoftTeamsUserIdentityException:
+            return "DeleteMicrosoftTeamsUserIdentityException"
+        case chatbotErrorKind.DeleteSlackChannelConfigurationException:
+            return "DeleteSlackChannelConfigurationException"
+        case chatbotErrorKind.DeleteSlackUserIdentityException:
+            return "DeleteSlackUserIdentityException"
+        case chatbotErrorKind.DeleteSlackWorkspaceAuthorizationFault:
+            return "DeleteSlackWorkspaceAuthorizationFault"
+        case chatbotErrorKind.DeleteTeamsChannelConfigurationException:
+            return "DeleteTeamsChannelConfigurationException"
+        case chatbotErrorKind.DeleteTeamsConfiguredTeamException:
+            return "DeleteTeamsConfiguredTeamException"
+        case chatbotErrorKind.DescribeChimeWebhookConfigurationsException:
+            return "DescribeChimeWebhookConfigurationsException"
+        case chatbotErrorKind.DescribeSlackChannelConfigurationsException:
+            return "DescribeSlackChannelConfigurationsException"
+        case chatbotErrorKind.DescribeSlackUserIdentitiesException:
+            return "DescribeSlackUserIdentitiesException"
+        case chatbotErrorKind.DescribeSlackWorkspacesException:
+            return "DescribeSlackWorkspacesException"
+        case chatbotErrorKind.GetAccountPreferencesException:
+            return "GetAccountPreferencesException"
+        case chatbotErrorKind.GetTeamsChannelConfigurationException:
+            return "GetTeamsChannelConfigurationException"
+        case chatbotErrorKind.InternalServiceError:
+            return "InternalServiceError"
+        case chatbotErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case chatbotErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case chatbotErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case chatbotErrorKind.ListMicrosoftTeamsConfiguredTeamsException:
+            return "ListMicrosoftTeamsConfiguredTeamsException"
+        case chatbotErrorKind.ListMicrosoftTeamsUserIdentitiesException:
+            return "ListMicrosoftTeamsUserIdentitiesException"
+        case chatbotErrorKind.ListTeamsChannelConfigurationsException:
+            return "ListTeamsChannelConfigurationsException"
+        case chatbotErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case chatbotErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case chatbotErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case chatbotErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case chatbotErrorKind.UpdateAccountPreferencesException:
+            return "UpdateAccountPreferencesException"
+        case chatbotErrorKind.UpdateChimeWebhookConfigurationException:
+            return "UpdateChimeWebhookConfigurationException"
+        case chatbotErrorKind.UpdateSlackChannelConfigurationException:
+            return "UpdateSlackChannelConfigurationException"
+        case chatbotErrorKind.UpdateTeamsChannelConfigurationException:
+            return "UpdateTeamsChannelConfigurationException"
+        case chatbotErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix DirectoryService_20150416)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1918,9 +1920,16 @@ struct VerifyTrustResult:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by ds_error_from_code.
-enum Directory_ServiceError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Directory_ServiceErrorKind:
     ADAssessmentLimitExceededException
     AccessDeniedException
     AuthenticationFailedException
@@ -1963,89 +1972,183 @@ enum Directory_ServiceError:
     UserDoesNotExistException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def ds_error_from_code(str code) -> Directory_ServiceError:
-    if code == "ADAssessmentLimitExceededException":
-        return Directory_ServiceError.ADAssessmentLimitExceededException
-    if code == "AccessDeniedException":
-        return Directory_ServiceError.AccessDeniedException
-    if code == "AuthenticationFailedException":
-        return Directory_ServiceError.AuthenticationFailedException
-    if code == "CertificateAlreadyExistsException":
-        return Directory_ServiceError.CertificateAlreadyExistsException
-    if code == "CertificateDoesNotExistException":
-        return Directory_ServiceError.CertificateDoesNotExistException
-    if code == "CertificateInUseException":
-        return Directory_ServiceError.CertificateInUseException
-    if code == "CertificateLimitExceededException":
-        return Directory_ServiceError.CertificateLimitExceededException
-    if code == "ClientException":
-        return Directory_ServiceError.ClientException
-    if code == "DirectoryAlreadyInRegionException":
-        return Directory_ServiceError.DirectoryAlreadyInRegionException
-    if code == "DirectoryAlreadySharedException":
-        return Directory_ServiceError.DirectoryAlreadySharedException
-    if code == "DirectoryDoesNotExistException":
-        return Directory_ServiceError.DirectoryDoesNotExistException
-    if code == "DirectoryInDesiredStateException":
-        return Directory_ServiceError.DirectoryInDesiredStateException
-    if code == "DirectoryLimitExceededException":
-        return Directory_ServiceError.DirectoryLimitExceededException
-    if code == "DirectoryNotSharedException":
-        return Directory_ServiceError.DirectoryNotSharedException
-    if code == "DirectoryUnavailableException":
-        return Directory_ServiceError.DirectoryUnavailableException
-    if code == "DisableAlreadyInProgressException":
-        return Directory_ServiceError.DisableAlreadyInProgressException
-    if code == "DomainControllerLimitExceededException":
-        return Directory_ServiceError.DomainControllerLimitExceededException
-    if code == "EnableAlreadyInProgressException":
-        return Directory_ServiceError.EnableAlreadyInProgressException
-    if code == "EntityAlreadyExistsException":
-        return Directory_ServiceError.EntityAlreadyExistsException
-    if code == "EntityDoesNotExistException":
-        return Directory_ServiceError.EntityDoesNotExistException
-    if code == "IncompatibleSettingsException":
-        return Directory_ServiceError.IncompatibleSettingsException
-    if code == "InsufficientPermissionsException":
-        return Directory_ServiceError.InsufficientPermissionsException
-    if code == "InvalidCertificateException":
-        return Directory_ServiceError.InvalidCertificateException
-    if code == "InvalidClientAuthStatusException":
-        return Directory_ServiceError.InvalidClientAuthStatusException
-    if code == "InvalidLDAPSStatusException":
-        return Directory_ServiceError.InvalidLDAPSStatusException
-    if code == "InvalidNextTokenException":
-        return Directory_ServiceError.InvalidNextTokenException
-    if code == "InvalidParameterException":
-        return Directory_ServiceError.InvalidParameterException
-    if code == "InvalidPasswordException":
-        return Directory_ServiceError.InvalidPasswordException
-    if code == "InvalidTargetException":
-        return Directory_ServiceError.InvalidTargetException
-    if code == "IpRouteLimitExceededException":
-        return Directory_ServiceError.IpRouteLimitExceededException
-    if code == "NoAvailableCertificateException":
-        return Directory_ServiceError.NoAvailableCertificateException
-    if code == "OrganizationsException":
-        return Directory_ServiceError.OrganizationsException
-    if code == "RegionLimitExceededException":
-        return Directory_ServiceError.RegionLimitExceededException
-    if code == "ServiceException":
-        return Directory_ServiceError.ServiceException
-    if code == "ShareLimitExceededException":
-        return Directory_ServiceError.ShareLimitExceededException
-    if code == "SnapshotLimitExceededException":
-        return Directory_ServiceError.SnapshotLimitExceededException
-    if code == "TagLimitExceededException":
-        return Directory_ServiceError.TagLimitExceededException
-    if code == "UnsupportedOperationException":
-        return Directory_ServiceError.UnsupportedOperationException
-    if code == "UnsupportedSettingsException":
-        return Directory_ServiceError.UnsupportedSettingsException
-    if code == "UserDoesNotExistException":
-        return Directory_ServiceError.UserDoesNotExistException
-    return Directory_ServiceError.Unknown(code=code)
+# Classify an AWS error code into `Directory_ServiceErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def ds_error_kind(str code) -> Directory_ServiceErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ADAssessmentLimitExceededException":
+        return Directory_ServiceErrorKind.ADAssessmentLimitExceededException
+    if name == "AccessDeniedException":
+        return Directory_ServiceErrorKind.AccessDeniedException
+    if name == "AuthenticationFailedException":
+        return Directory_ServiceErrorKind.AuthenticationFailedException
+    if name == "CertificateAlreadyExistsException":
+        return Directory_ServiceErrorKind.CertificateAlreadyExistsException
+    if name == "CertificateDoesNotExistException":
+        return Directory_ServiceErrorKind.CertificateDoesNotExistException
+    if name == "CertificateInUseException":
+        return Directory_ServiceErrorKind.CertificateInUseException
+    if name == "CertificateLimitExceededException":
+        return Directory_ServiceErrorKind.CertificateLimitExceededException
+    if name == "ClientException":
+        return Directory_ServiceErrorKind.ClientException
+    if name == "DirectoryAlreadyInRegionException":
+        return Directory_ServiceErrorKind.DirectoryAlreadyInRegionException
+    if name == "DirectoryAlreadySharedException":
+        return Directory_ServiceErrorKind.DirectoryAlreadySharedException
+    if name == "DirectoryDoesNotExistException":
+        return Directory_ServiceErrorKind.DirectoryDoesNotExistException
+    if name == "DirectoryInDesiredStateException":
+        return Directory_ServiceErrorKind.DirectoryInDesiredStateException
+    if name == "DirectoryLimitExceededException":
+        return Directory_ServiceErrorKind.DirectoryLimitExceededException
+    if name == "DirectoryNotSharedException":
+        return Directory_ServiceErrorKind.DirectoryNotSharedException
+    if name == "DirectoryUnavailableException":
+        return Directory_ServiceErrorKind.DirectoryUnavailableException
+    if name == "DisableAlreadyInProgressException":
+        return Directory_ServiceErrorKind.DisableAlreadyInProgressException
+    if name == "DomainControllerLimitExceededException":
+        return Directory_ServiceErrorKind.DomainControllerLimitExceededException
+    if name == "EnableAlreadyInProgressException":
+        return Directory_ServiceErrorKind.EnableAlreadyInProgressException
+    if name == "EntityAlreadyExistsException":
+        return Directory_ServiceErrorKind.EntityAlreadyExistsException
+    if name == "EntityDoesNotExistException":
+        return Directory_ServiceErrorKind.EntityDoesNotExistException
+    if name == "IncompatibleSettingsException":
+        return Directory_ServiceErrorKind.IncompatibleSettingsException
+    if name == "InsufficientPermissionsException":
+        return Directory_ServiceErrorKind.InsufficientPermissionsException
+    if name == "InvalidCertificateException":
+        return Directory_ServiceErrorKind.InvalidCertificateException
+    if name == "InvalidClientAuthStatusException":
+        return Directory_ServiceErrorKind.InvalidClientAuthStatusException
+    if name == "InvalidLDAPSStatusException":
+        return Directory_ServiceErrorKind.InvalidLDAPSStatusException
+    if name == "InvalidNextTokenException":
+        return Directory_ServiceErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterException":
+        return Directory_ServiceErrorKind.InvalidParameterException
+    if name == "InvalidPasswordException":
+        return Directory_ServiceErrorKind.InvalidPasswordException
+    if name == "InvalidTargetException":
+        return Directory_ServiceErrorKind.InvalidTargetException
+    if name == "IpRouteLimitExceededException":
+        return Directory_ServiceErrorKind.IpRouteLimitExceededException
+    if name == "NoAvailableCertificateException":
+        return Directory_ServiceErrorKind.NoAvailableCertificateException
+    if name == "OrganizationsException":
+        return Directory_ServiceErrorKind.OrganizationsException
+    if name == "RegionLimitExceededException":
+        return Directory_ServiceErrorKind.RegionLimitExceededException
+    if name == "ServiceException":
+        return Directory_ServiceErrorKind.ServiceException
+    if name == "ShareLimitExceededException":
+        return Directory_ServiceErrorKind.ShareLimitExceededException
+    if name == "SnapshotLimitExceededException":
+        return Directory_ServiceErrorKind.SnapshotLimitExceededException
+    if name == "TagLimitExceededException":
+        return Directory_ServiceErrorKind.TagLimitExceededException
+    if name == "UnsupportedOperationException":
+        return Directory_ServiceErrorKind.UnsupportedOperationException
+    if name == "UnsupportedSettingsException":
+        return Directory_ServiceErrorKind.UnsupportedSettingsException
+    if name == "UserDoesNotExistException":
+        return Directory_ServiceErrorKind.UserDoesNotExistException
+    return Directory_ServiceErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def ds_error_name(Directory_ServiceErrorKind k) -> str:
+    match k:
+        case Directory_ServiceErrorKind.ADAssessmentLimitExceededException:
+            return "ADAssessmentLimitExceededException"
+        case Directory_ServiceErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Directory_ServiceErrorKind.AuthenticationFailedException:
+            return "AuthenticationFailedException"
+        case Directory_ServiceErrorKind.CertificateAlreadyExistsException:
+            return "CertificateAlreadyExistsException"
+        case Directory_ServiceErrorKind.CertificateDoesNotExistException:
+            return "CertificateDoesNotExistException"
+        case Directory_ServiceErrorKind.CertificateInUseException:
+            return "CertificateInUseException"
+        case Directory_ServiceErrorKind.CertificateLimitExceededException:
+            return "CertificateLimitExceededException"
+        case Directory_ServiceErrorKind.ClientException:
+            return "ClientException"
+        case Directory_ServiceErrorKind.DirectoryAlreadyInRegionException:
+            return "DirectoryAlreadyInRegionException"
+        case Directory_ServiceErrorKind.DirectoryAlreadySharedException:
+            return "DirectoryAlreadySharedException"
+        case Directory_ServiceErrorKind.DirectoryDoesNotExistException:
+            return "DirectoryDoesNotExistException"
+        case Directory_ServiceErrorKind.DirectoryInDesiredStateException:
+            return "DirectoryInDesiredStateException"
+        case Directory_ServiceErrorKind.DirectoryLimitExceededException:
+            return "DirectoryLimitExceededException"
+        case Directory_ServiceErrorKind.DirectoryNotSharedException:
+            return "DirectoryNotSharedException"
+        case Directory_ServiceErrorKind.DirectoryUnavailableException:
+            return "DirectoryUnavailableException"
+        case Directory_ServiceErrorKind.DisableAlreadyInProgressException:
+            return "DisableAlreadyInProgressException"
+        case Directory_ServiceErrorKind.DomainControllerLimitExceededException:
+            return "DomainControllerLimitExceededException"
+        case Directory_ServiceErrorKind.EnableAlreadyInProgressException:
+            return "EnableAlreadyInProgressException"
+        case Directory_ServiceErrorKind.EntityAlreadyExistsException:
+            return "EntityAlreadyExistsException"
+        case Directory_ServiceErrorKind.EntityDoesNotExistException:
+            return "EntityDoesNotExistException"
+        case Directory_ServiceErrorKind.IncompatibleSettingsException:
+            return "IncompatibleSettingsException"
+        case Directory_ServiceErrorKind.InsufficientPermissionsException:
+            return "InsufficientPermissionsException"
+        case Directory_ServiceErrorKind.InvalidCertificateException:
+            return "InvalidCertificateException"
+        case Directory_ServiceErrorKind.InvalidClientAuthStatusException:
+            return "InvalidClientAuthStatusException"
+        case Directory_ServiceErrorKind.InvalidLDAPSStatusException:
+            return "InvalidLDAPSStatusException"
+        case Directory_ServiceErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case Directory_ServiceErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Directory_ServiceErrorKind.InvalidPasswordException:
+            return "InvalidPasswordException"
+        case Directory_ServiceErrorKind.InvalidTargetException:
+            return "InvalidTargetException"
+        case Directory_ServiceErrorKind.IpRouteLimitExceededException:
+            return "IpRouteLimitExceededException"
+        case Directory_ServiceErrorKind.NoAvailableCertificateException:
+            return "NoAvailableCertificateException"
+        case Directory_ServiceErrorKind.OrganizationsException:
+            return "OrganizationsException"
+        case Directory_ServiceErrorKind.RegionLimitExceededException:
+            return "RegionLimitExceededException"
+        case Directory_ServiceErrorKind.ServiceException:
+            return "ServiceException"
+        case Directory_ServiceErrorKind.ShareLimitExceededException:
+            return "ShareLimitExceededException"
+        case Directory_ServiceErrorKind.SnapshotLimitExceededException:
+            return "SnapshotLimitExceededException"
+        case Directory_ServiceErrorKind.TagLimitExceededException:
+            return "TagLimitExceededException"
+        case Directory_ServiceErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case Directory_ServiceErrorKind.UnsupportedSettingsException:
+            return "UnsupportedSettingsException"
+        case Directory_ServiceErrorKind.UserDoesNotExistException:
+            return "UserDoesNotExistException"
+        case Directory_ServiceErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

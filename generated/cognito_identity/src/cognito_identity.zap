@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSCognitoIdentityService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -426,9 +428,16 @@ struct UntagResourceResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by cognito_identity_error_from_code.
-enum Cognito_IdentityError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Cognito_IdentityErrorKind:
     ConcurrentModificationException
     DeveloperUserAlreadyRegisteredException
     ExternalServiceException
@@ -442,31 +451,67 @@ enum Cognito_IdentityError:
     TooManyRequestsException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def cognito_identity_error_from_code(str code) -> Cognito_IdentityError:
-    if code == "ConcurrentModificationException":
-        return Cognito_IdentityError.ConcurrentModificationException
-    if code == "DeveloperUserAlreadyRegisteredException":
-        return Cognito_IdentityError.DeveloperUserAlreadyRegisteredException
-    if code == "ExternalServiceException":
-        return Cognito_IdentityError.ExternalServiceException
-    if code == "InternalErrorException":
-        return Cognito_IdentityError.InternalErrorException
-    if code == "InvalidIdentityPoolConfigurationException":
-        return Cognito_IdentityError.InvalidIdentityPoolConfigurationException
-    if code == "InvalidParameterException":
-        return Cognito_IdentityError.InvalidParameterException
-    if code == "LimitExceededException":
-        return Cognito_IdentityError.LimitExceededException
-    if code == "NotAuthorizedException":
-        return Cognito_IdentityError.NotAuthorizedException
-    if code == "ResourceConflictException":
-        return Cognito_IdentityError.ResourceConflictException
-    if code == "ResourceNotFoundException":
-        return Cognito_IdentityError.ResourceNotFoundException
-    if code == "TooManyRequestsException":
-        return Cognito_IdentityError.TooManyRequestsException
-    return Cognito_IdentityError.Unknown(code=code)
+# Classify an AWS error code into `Cognito_IdentityErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cognito_identity_error_kind(str code) -> Cognito_IdentityErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConcurrentModificationException":
+        return Cognito_IdentityErrorKind.ConcurrentModificationException
+    if name == "DeveloperUserAlreadyRegisteredException":
+        return Cognito_IdentityErrorKind.DeveloperUserAlreadyRegisteredException
+    if name == "ExternalServiceException":
+        return Cognito_IdentityErrorKind.ExternalServiceException
+    if name == "InternalErrorException":
+        return Cognito_IdentityErrorKind.InternalErrorException
+    if name == "InvalidIdentityPoolConfigurationException":
+        return Cognito_IdentityErrorKind.InvalidIdentityPoolConfigurationException
+    if name == "InvalidParameterException":
+        return Cognito_IdentityErrorKind.InvalidParameterException
+    if name == "LimitExceededException":
+        return Cognito_IdentityErrorKind.LimitExceededException
+    if name == "NotAuthorizedException":
+        return Cognito_IdentityErrorKind.NotAuthorizedException
+    if name == "ResourceConflictException":
+        return Cognito_IdentityErrorKind.ResourceConflictException
+    if name == "ResourceNotFoundException":
+        return Cognito_IdentityErrorKind.ResourceNotFoundException
+    if name == "TooManyRequestsException":
+        return Cognito_IdentityErrorKind.TooManyRequestsException
+    return Cognito_IdentityErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cognito_identity_error_name(Cognito_IdentityErrorKind k) -> str:
+    match k:
+        case Cognito_IdentityErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Cognito_IdentityErrorKind.DeveloperUserAlreadyRegisteredException:
+            return "DeveloperUserAlreadyRegisteredException"
+        case Cognito_IdentityErrorKind.ExternalServiceException:
+            return "ExternalServiceException"
+        case Cognito_IdentityErrorKind.InternalErrorException:
+            return "InternalErrorException"
+        case Cognito_IdentityErrorKind.InvalidIdentityPoolConfigurationException:
+            return "InvalidIdentityPoolConfigurationException"
+        case Cognito_IdentityErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Cognito_IdentityErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Cognito_IdentityErrorKind.NotAuthorizedException:
+            return "NotAuthorizedException"
+        case Cognito_IdentityErrorKind.ResourceConflictException:
+            return "ResourceConflictException"
+        case Cognito_IdentityErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Cognito_IdentityErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case Cognito_IdentityErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

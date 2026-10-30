@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AmazonDMSv20160101)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -3434,9 +3436,16 @@ struct VpcSecurityGroupMembership:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by dms_error_from_code.
-enum Database_Migration_ServiceError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Database_Migration_ServiceErrorKind:
     AccessDeniedFault
     CollectorNotFoundFault
     FailedDependencyFault
@@ -3465,61 +3474,127 @@ enum Database_Migration_ServiceError:
     UpgradeDependencyFailureFault
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def dms_error_from_code(str code) -> Database_Migration_ServiceError:
-    if code == "AccessDeniedFault":
-        return Database_Migration_ServiceError.AccessDeniedFault
-    if code == "CollectorNotFoundFault":
-        return Database_Migration_ServiceError.CollectorNotFoundFault
-    if code == "FailedDependencyFault":
-        return Database_Migration_ServiceError.FailedDependencyFault
-    if code == "InsufficientResourceCapacityFault":
-        return Database_Migration_ServiceError.InsufficientResourceCapacityFault
-    if code == "InvalidCertificateFault":
-        return Database_Migration_ServiceError.InvalidCertificateFault
-    if code == "InvalidOperationFault":
-        return Database_Migration_ServiceError.InvalidOperationFault
-    if code == "InvalidResourceStateFault":
-        return Database_Migration_ServiceError.InvalidResourceStateFault
-    if code == "InvalidSubnet":
-        return Database_Migration_ServiceError.InvalidSubnet
-    if code == "KMSAccessDeniedFault":
-        return Database_Migration_ServiceError.KMSAccessDeniedFault
-    if code == "KMSDisabledFault":
-        return Database_Migration_ServiceError.KMSDisabledFault
-    if code == "KMSFault":
-        return Database_Migration_ServiceError.KMSFault
-    if code == "KMSInvalidStateFault":
-        return Database_Migration_ServiceError.KMSInvalidStateFault
-    if code == "KMSKeyNotAccessibleFault":
-        return Database_Migration_ServiceError.KMSKeyNotAccessibleFault
-    if code == "KMSNotFoundFault":
-        return Database_Migration_ServiceError.KMSNotFoundFault
-    if code == "KMSThrottlingFault":
-        return Database_Migration_ServiceError.KMSThrottlingFault
-    if code == "ReplicationSubnetGroupDoesNotCoverEnoughAZs":
-        return Database_Migration_ServiceError.ReplicationSubnetGroupDoesNotCoverEnoughAZs
-    if code == "ResourceAlreadyExistsFault":
-        return Database_Migration_ServiceError.ResourceAlreadyExistsFault
-    if code == "ResourceNotFoundFault":
-        return Database_Migration_ServiceError.ResourceNotFoundFault
-    if code == "ResourceQuotaExceededFault":
-        return Database_Migration_ServiceError.ResourceQuotaExceededFault
-    if code == "S3AccessDeniedFault":
-        return Database_Migration_ServiceError.S3AccessDeniedFault
-    if code == "S3ResourceNotFoundFault":
-        return Database_Migration_ServiceError.S3ResourceNotFoundFault
-    if code == "SNSInvalidTopicFault":
-        return Database_Migration_ServiceError.SNSInvalidTopicFault
-    if code == "SNSNoAuthorizationFault":
-        return Database_Migration_ServiceError.SNSNoAuthorizationFault
-    if code == "StorageQuotaExceededFault":
-        return Database_Migration_ServiceError.StorageQuotaExceededFault
-    if code == "SubnetAlreadyInUse":
-        return Database_Migration_ServiceError.SubnetAlreadyInUse
-    if code == "UpgradeDependencyFailureFault":
-        return Database_Migration_ServiceError.UpgradeDependencyFailureFault
-    return Database_Migration_ServiceError.Unknown(code=code)
+# Classify an AWS error code into `Database_Migration_ServiceErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def dms_error_kind(str code) -> Database_Migration_ServiceErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedFault":
+        return Database_Migration_ServiceErrorKind.AccessDeniedFault
+    if name == "CollectorNotFoundFault":
+        return Database_Migration_ServiceErrorKind.CollectorNotFoundFault
+    if name == "FailedDependencyFault":
+        return Database_Migration_ServiceErrorKind.FailedDependencyFault
+    if name == "InsufficientResourceCapacityFault":
+        return Database_Migration_ServiceErrorKind.InsufficientResourceCapacityFault
+    if name == "InvalidCertificateFault":
+        return Database_Migration_ServiceErrorKind.InvalidCertificateFault
+    if name == "InvalidOperationFault":
+        return Database_Migration_ServiceErrorKind.InvalidOperationFault
+    if name == "InvalidResourceStateFault":
+        return Database_Migration_ServiceErrorKind.InvalidResourceStateFault
+    if name == "InvalidSubnet":
+        return Database_Migration_ServiceErrorKind.InvalidSubnet
+    if name == "KMSAccessDeniedFault":
+        return Database_Migration_ServiceErrorKind.KMSAccessDeniedFault
+    if name == "KMSDisabledFault":
+        return Database_Migration_ServiceErrorKind.KMSDisabledFault
+    if name == "KMSFault":
+        return Database_Migration_ServiceErrorKind.KMSFault
+    if name == "KMSInvalidStateFault":
+        return Database_Migration_ServiceErrorKind.KMSInvalidStateFault
+    if name == "KMSKeyNotAccessibleFault":
+        return Database_Migration_ServiceErrorKind.KMSKeyNotAccessibleFault
+    if name == "KMSNotFoundFault":
+        return Database_Migration_ServiceErrorKind.KMSNotFoundFault
+    if name == "KMSThrottlingFault":
+        return Database_Migration_ServiceErrorKind.KMSThrottlingFault
+    if name == "ReplicationSubnetGroupDoesNotCoverEnoughAZs":
+        return Database_Migration_ServiceErrorKind.ReplicationSubnetGroupDoesNotCoverEnoughAZs
+    if name == "ResourceAlreadyExistsFault":
+        return Database_Migration_ServiceErrorKind.ResourceAlreadyExistsFault
+    if name == "ResourceNotFoundFault":
+        return Database_Migration_ServiceErrorKind.ResourceNotFoundFault
+    if name == "ResourceQuotaExceededFault":
+        return Database_Migration_ServiceErrorKind.ResourceQuotaExceededFault
+    if name == "S3AccessDeniedFault":
+        return Database_Migration_ServiceErrorKind.S3AccessDeniedFault
+    if name == "S3ResourceNotFoundFault":
+        return Database_Migration_ServiceErrorKind.S3ResourceNotFoundFault
+    if name == "SNSInvalidTopicFault":
+        return Database_Migration_ServiceErrorKind.SNSInvalidTopicFault
+    if name == "SNSNoAuthorizationFault":
+        return Database_Migration_ServiceErrorKind.SNSNoAuthorizationFault
+    if name == "StorageQuotaExceededFault":
+        return Database_Migration_ServiceErrorKind.StorageQuotaExceededFault
+    if name == "SubnetAlreadyInUse":
+        return Database_Migration_ServiceErrorKind.SubnetAlreadyInUse
+    if name == "UpgradeDependencyFailureFault":
+        return Database_Migration_ServiceErrorKind.UpgradeDependencyFailureFault
+    return Database_Migration_ServiceErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def dms_error_name(Database_Migration_ServiceErrorKind k) -> str:
+    match k:
+        case Database_Migration_ServiceErrorKind.AccessDeniedFault:
+            return "AccessDeniedFault"
+        case Database_Migration_ServiceErrorKind.CollectorNotFoundFault:
+            return "CollectorNotFoundFault"
+        case Database_Migration_ServiceErrorKind.FailedDependencyFault:
+            return "FailedDependencyFault"
+        case Database_Migration_ServiceErrorKind.InsufficientResourceCapacityFault:
+            return "InsufficientResourceCapacityFault"
+        case Database_Migration_ServiceErrorKind.InvalidCertificateFault:
+            return "InvalidCertificateFault"
+        case Database_Migration_ServiceErrorKind.InvalidOperationFault:
+            return "InvalidOperationFault"
+        case Database_Migration_ServiceErrorKind.InvalidResourceStateFault:
+            return "InvalidResourceStateFault"
+        case Database_Migration_ServiceErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case Database_Migration_ServiceErrorKind.KMSAccessDeniedFault:
+            return "KMSAccessDeniedFault"
+        case Database_Migration_ServiceErrorKind.KMSDisabledFault:
+            return "KMSDisabledFault"
+        case Database_Migration_ServiceErrorKind.KMSFault:
+            return "KMSFault"
+        case Database_Migration_ServiceErrorKind.KMSInvalidStateFault:
+            return "KMSInvalidStateFault"
+        case Database_Migration_ServiceErrorKind.KMSKeyNotAccessibleFault:
+            return "KMSKeyNotAccessibleFault"
+        case Database_Migration_ServiceErrorKind.KMSNotFoundFault:
+            return "KMSNotFoundFault"
+        case Database_Migration_ServiceErrorKind.KMSThrottlingFault:
+            return "KMSThrottlingFault"
+        case Database_Migration_ServiceErrorKind.ReplicationSubnetGroupDoesNotCoverEnoughAZs:
+            return "ReplicationSubnetGroupDoesNotCoverEnoughAZs"
+        case Database_Migration_ServiceErrorKind.ResourceAlreadyExistsFault:
+            return "ResourceAlreadyExistsFault"
+        case Database_Migration_ServiceErrorKind.ResourceNotFoundFault:
+            return "ResourceNotFoundFault"
+        case Database_Migration_ServiceErrorKind.ResourceQuotaExceededFault:
+            return "ResourceQuotaExceededFault"
+        case Database_Migration_ServiceErrorKind.S3AccessDeniedFault:
+            return "S3AccessDeniedFault"
+        case Database_Migration_ServiceErrorKind.S3ResourceNotFoundFault:
+            return "S3ResourceNotFoundFault"
+        case Database_Migration_ServiceErrorKind.SNSInvalidTopicFault:
+            return "SNSInvalidTopicFault"
+        case Database_Migration_ServiceErrorKind.SNSNoAuthorizationFault:
+            return "SNSNoAuthorizationFault"
+        case Database_Migration_ServiceErrorKind.StorageQuotaExceededFault:
+            return "StorageQuotaExceededFault"
+        case Database_Migration_ServiceErrorKind.SubnetAlreadyInUse:
+            return "SubnetAlreadyInUse"
+        case Database_Migration_ServiceErrorKind.UpgradeDependencyFailureFault:
+            return "UpgradeDependencyFailureFault"
+        case Database_Migration_ServiceErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix SWBExternalService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1423,9 +1425,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by sso_error_from_code.
-enum SSO_AdminError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SSO_AdminErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -1435,23 +1444,51 @@ enum SSO_AdminError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def sso_error_from_code(str code) -> SSO_AdminError:
-    if code == "AccessDeniedException":
-        return SSO_AdminError.AccessDeniedException
-    if code == "ConflictException":
-        return SSO_AdminError.ConflictException
-    if code == "InternalServerException":
-        return SSO_AdminError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return SSO_AdminError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return SSO_AdminError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return SSO_AdminError.ThrottlingException
-    if code == "ValidationException":
-        return SSO_AdminError.ValidationException
-    return SSO_AdminError.Unknown(code=code)
+# Classify an AWS error code into `SSO_AdminErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def sso_error_kind(str code) -> SSO_AdminErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return SSO_AdminErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return SSO_AdminErrorKind.ConflictException
+    if name == "InternalServerException":
+        return SSO_AdminErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return SSO_AdminErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return SSO_AdminErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return SSO_AdminErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return SSO_AdminErrorKind.ValidationException
+    return SSO_AdminErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def sso_error_name(SSO_AdminErrorKind k) -> str:
+    match k:
+        case SSO_AdminErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case SSO_AdminErrorKind.ConflictException:
+            return "ConflictException"
+        case SSO_AdminErrorKind.InternalServerException:
+            return "InternalServerException"
+        case SSO_AdminErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case SSO_AdminErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case SSO_AdminErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case SSO_AdminErrorKind.ValidationException:
+            return "ValidationException"
+        case SSO_AdminErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

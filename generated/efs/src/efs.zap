@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service elasticfilesystem)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -735,9 +736,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by elasticfilesystem_error_from_code.
-enum EFSError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum EFSErrorKind:
     AccessPointAlreadyExists
     AccessPointLimitExceeded
     AccessPointNotFound
@@ -772,74 +780,151 @@ enum EFSError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def elasticfilesystem_error_from_code(str code) -> EFSError:
-    if code == "AccessPointAlreadyExists":
-        return EFSError.AccessPointAlreadyExists
-    if code == "AccessPointLimitExceeded":
-        return EFSError.AccessPointLimitExceeded
-    if code == "AccessPointNotFound":
-        return EFSError.AccessPointNotFound
-    if code == "AvailabilityZonesMismatch":
-        return EFSError.AvailabilityZonesMismatch
-    if code == "BadRequest":
-        return EFSError.BadRequest
-    if code == "ConflictException":
-        return EFSError.ConflictException
-    if code == "DependencyTimeout":
-        return EFSError.DependencyTimeout
-    if code == "FileSystemAlreadyExists":
-        return EFSError.FileSystemAlreadyExists
-    if code == "FileSystemInUse":
-        return EFSError.FileSystemInUse
-    if code == "FileSystemLimitExceeded":
-        return EFSError.FileSystemLimitExceeded
-    if code == "FileSystemNotFound":
-        return EFSError.FileSystemNotFound
-    if code == "IncorrectFileSystemLifeCycleState":
-        return EFSError.IncorrectFileSystemLifeCycleState
-    if code == "IncorrectMountTargetState":
-        return EFSError.IncorrectMountTargetState
-    if code == "InsufficientThroughputCapacity":
-        return EFSError.InsufficientThroughputCapacity
-    if code == "InternalServerError":
-        return EFSError.InternalServerError
-    if code == "InvalidPolicyException":
-        return EFSError.InvalidPolicyException
-    if code == "IpAddressInUse":
-        return EFSError.IpAddressInUse
-    if code == "MountTargetConflict":
-        return EFSError.MountTargetConflict
-    if code == "MountTargetNotFound":
-        return EFSError.MountTargetNotFound
-    if code == "NetworkInterfaceLimitExceeded":
-        return EFSError.NetworkInterfaceLimitExceeded
-    if code == "NoFreeAddressesInSubnet":
-        return EFSError.NoFreeAddressesInSubnet
-    if code == "PolicyNotFound":
-        return EFSError.PolicyNotFound
-    if code == "ReplicationAlreadyExists":
-        return EFSError.ReplicationAlreadyExists
-    if code == "ReplicationNotFound":
-        return EFSError.ReplicationNotFound
-    if code == "SecurityGroupLimitExceeded":
-        return EFSError.SecurityGroupLimitExceeded
-    if code == "SecurityGroupNotFound":
-        return EFSError.SecurityGroupNotFound
-    if code == "SubnetNotFound":
-        return EFSError.SubnetNotFound
-    if code == "ThrottlingException":
-        return EFSError.ThrottlingException
-    if code == "ThroughputLimitExceeded":
-        return EFSError.ThroughputLimitExceeded
-    if code == "TooManyRequests":
-        return EFSError.TooManyRequests
-    if code == "UnsupportedAvailabilityZone":
-        return EFSError.UnsupportedAvailabilityZone
-    if code == "ValidationException":
-        return EFSError.ValidationException
-    return EFSError.Unknown(code=code)
+# Classify an AWS error code into `EFSErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def elasticfilesystem_error_kind(str code) -> EFSErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessPointAlreadyExists":
+        return EFSErrorKind.AccessPointAlreadyExists
+    if name == "AccessPointLimitExceeded":
+        return EFSErrorKind.AccessPointLimitExceeded
+    if name == "AccessPointNotFound":
+        return EFSErrorKind.AccessPointNotFound
+    if name == "AvailabilityZonesMismatch":
+        return EFSErrorKind.AvailabilityZonesMismatch
+    if name == "BadRequest":
+        return EFSErrorKind.BadRequest
+    if name == "ConflictException":
+        return EFSErrorKind.ConflictException
+    if name == "DependencyTimeout":
+        return EFSErrorKind.DependencyTimeout
+    if name == "FileSystemAlreadyExists":
+        return EFSErrorKind.FileSystemAlreadyExists
+    if name == "FileSystemInUse":
+        return EFSErrorKind.FileSystemInUse
+    if name == "FileSystemLimitExceeded":
+        return EFSErrorKind.FileSystemLimitExceeded
+    if name == "FileSystemNotFound":
+        return EFSErrorKind.FileSystemNotFound
+    if name == "IncorrectFileSystemLifeCycleState":
+        return EFSErrorKind.IncorrectFileSystemLifeCycleState
+    if name == "IncorrectMountTargetState":
+        return EFSErrorKind.IncorrectMountTargetState
+    if name == "InsufficientThroughputCapacity":
+        return EFSErrorKind.InsufficientThroughputCapacity
+    if name == "InternalServerError":
+        return EFSErrorKind.InternalServerError
+    if name == "InvalidPolicyException":
+        return EFSErrorKind.InvalidPolicyException
+    if name == "IpAddressInUse":
+        return EFSErrorKind.IpAddressInUse
+    if name == "MountTargetConflict":
+        return EFSErrorKind.MountTargetConflict
+    if name == "MountTargetNotFound":
+        return EFSErrorKind.MountTargetNotFound
+    if name == "NetworkInterfaceLimitExceeded":
+        return EFSErrorKind.NetworkInterfaceLimitExceeded
+    if name == "NoFreeAddressesInSubnet":
+        return EFSErrorKind.NoFreeAddressesInSubnet
+    if name == "PolicyNotFound":
+        return EFSErrorKind.PolicyNotFound
+    if name == "ReplicationAlreadyExists":
+        return EFSErrorKind.ReplicationAlreadyExists
+    if name == "ReplicationNotFound":
+        return EFSErrorKind.ReplicationNotFound
+    if name == "SecurityGroupLimitExceeded":
+        return EFSErrorKind.SecurityGroupLimitExceeded
+    if name == "SecurityGroupNotFound":
+        return EFSErrorKind.SecurityGroupNotFound
+    if name == "SubnetNotFound":
+        return EFSErrorKind.SubnetNotFound
+    if name == "ThrottlingException":
+        return EFSErrorKind.ThrottlingException
+    if name == "ThroughputLimitExceeded":
+        return EFSErrorKind.ThroughputLimitExceeded
+    if name == "TooManyRequests":
+        return EFSErrorKind.TooManyRequests
+    if name == "UnsupportedAvailabilityZone":
+        return EFSErrorKind.UnsupportedAvailabilityZone
+    if name == "ValidationException":
+        return EFSErrorKind.ValidationException
+    return EFSErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def elasticfilesystem_error_name(EFSErrorKind k) -> str:
+    match k:
+        case EFSErrorKind.AccessPointAlreadyExists:
+            return "AccessPointAlreadyExists"
+        case EFSErrorKind.AccessPointLimitExceeded:
+            return "AccessPointLimitExceeded"
+        case EFSErrorKind.AccessPointNotFound:
+            return "AccessPointNotFound"
+        case EFSErrorKind.AvailabilityZonesMismatch:
+            return "AvailabilityZonesMismatch"
+        case EFSErrorKind.BadRequest:
+            return "BadRequest"
+        case EFSErrorKind.ConflictException:
+            return "ConflictException"
+        case EFSErrorKind.DependencyTimeout:
+            return "DependencyTimeout"
+        case EFSErrorKind.FileSystemAlreadyExists:
+            return "FileSystemAlreadyExists"
+        case EFSErrorKind.FileSystemInUse:
+            return "FileSystemInUse"
+        case EFSErrorKind.FileSystemLimitExceeded:
+            return "FileSystemLimitExceeded"
+        case EFSErrorKind.FileSystemNotFound:
+            return "FileSystemNotFound"
+        case EFSErrorKind.IncorrectFileSystemLifeCycleState:
+            return "IncorrectFileSystemLifeCycleState"
+        case EFSErrorKind.IncorrectMountTargetState:
+            return "IncorrectMountTargetState"
+        case EFSErrorKind.InsufficientThroughputCapacity:
+            return "InsufficientThroughputCapacity"
+        case EFSErrorKind.InternalServerError:
+            return "InternalServerError"
+        case EFSErrorKind.InvalidPolicyException:
+            return "InvalidPolicyException"
+        case EFSErrorKind.IpAddressInUse:
+            return "IpAddressInUse"
+        case EFSErrorKind.MountTargetConflict:
+            return "MountTargetConflict"
+        case EFSErrorKind.MountTargetNotFound:
+            return "MountTargetNotFound"
+        case EFSErrorKind.NetworkInterfaceLimitExceeded:
+            return "NetworkInterfaceLimitExceeded"
+        case EFSErrorKind.NoFreeAddressesInSubnet:
+            return "NoFreeAddressesInSubnet"
+        case EFSErrorKind.PolicyNotFound:
+            return "PolicyNotFound"
+        case EFSErrorKind.ReplicationAlreadyExists:
+            return "ReplicationAlreadyExists"
+        case EFSErrorKind.ReplicationNotFound:
+            return "ReplicationNotFound"
+        case EFSErrorKind.SecurityGroupLimitExceeded:
+            return "SecurityGroupLimitExceeded"
+        case EFSErrorKind.SecurityGroupNotFound:
+            return "SecurityGroupNotFound"
+        case EFSErrorKind.SubnetNotFound:
+            return "SubnetNotFound"
+        case EFSErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case EFSErrorKind.ThroughputLimitExceeded:
+            return "ThroughputLimitExceeded"
+        case EFSErrorKind.TooManyRequests:
+            return "TooManyRequests"
+        case EFSErrorKind.UnsupportedAvailabilityZone:
+            return "UnsupportedAvailabilityZone"
+        case EFSErrorKind.ValidationException:
+            return "ValidationException"
+        case EFSErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

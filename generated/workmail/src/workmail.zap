@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix WorkMailService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1713,9 +1715,16 @@ struct User:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by workmail_error_from_code.
-enum WorkMailError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum WorkMailErrorKind:
     DirectoryInUseException
     DirectoryServiceAuthenticationFailedException
     DirectoryUnavailableException
@@ -1740,53 +1749,111 @@ enum WorkMailError:
     UnsupportedOperationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def workmail_error_from_code(str code) -> WorkMailError:
-    if code == "DirectoryInUseException":
-        return WorkMailError.DirectoryInUseException
-    if code == "DirectoryServiceAuthenticationFailedException":
-        return WorkMailError.DirectoryServiceAuthenticationFailedException
-    if code == "DirectoryUnavailableException":
-        return WorkMailError.DirectoryUnavailableException
-    if code == "EmailAddressInUseException":
-        return WorkMailError.EmailAddressInUseException
-    if code == "EntityAlreadyRegisteredException":
-        return WorkMailError.EntityAlreadyRegisteredException
-    if code == "EntityNotFoundException":
-        return WorkMailError.EntityNotFoundException
-    if code == "EntityStateException":
-        return WorkMailError.EntityStateException
-    if code == "InvalidConfigurationException":
-        return WorkMailError.InvalidConfigurationException
-    if code == "InvalidCustomSesConfigurationException":
-        return WorkMailError.InvalidCustomSesConfigurationException
-    if code == "InvalidParameterException":
-        return WorkMailError.InvalidParameterException
-    if code == "InvalidPasswordException":
-        return WorkMailError.InvalidPasswordException
-    if code == "LimitExceededException":
-        return WorkMailError.LimitExceededException
-    if code == "MailDomainInUseException":
-        return WorkMailError.MailDomainInUseException
-    if code == "MailDomainNotFoundException":
-        return WorkMailError.MailDomainNotFoundException
-    if code == "MailDomainStateException":
-        return WorkMailError.MailDomainStateException
-    if code == "NameAvailabilityException":
-        return WorkMailError.NameAvailabilityException
-    if code == "OrganizationNotFoundException":
-        return WorkMailError.OrganizationNotFoundException
-    if code == "OrganizationStateException":
-        return WorkMailError.OrganizationStateException
-    if code == "ReservedNameException":
-        return WorkMailError.ReservedNameException
-    if code == "ResourceNotFoundException":
-        return WorkMailError.ResourceNotFoundException
-    if code == "TooManyTagsException":
-        return WorkMailError.TooManyTagsException
-    if code == "UnsupportedOperationException":
-        return WorkMailError.UnsupportedOperationException
-    return WorkMailError.Unknown(code=code)
+# Classify an AWS error code into `WorkMailErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def workmail_error_kind(str code) -> WorkMailErrorKind:
+    auto name = errors.error_code(code)
+    if name == "DirectoryInUseException":
+        return WorkMailErrorKind.DirectoryInUseException
+    if name == "DirectoryServiceAuthenticationFailedException":
+        return WorkMailErrorKind.DirectoryServiceAuthenticationFailedException
+    if name == "DirectoryUnavailableException":
+        return WorkMailErrorKind.DirectoryUnavailableException
+    if name == "EmailAddressInUseException":
+        return WorkMailErrorKind.EmailAddressInUseException
+    if name == "EntityAlreadyRegisteredException":
+        return WorkMailErrorKind.EntityAlreadyRegisteredException
+    if name == "EntityNotFoundException":
+        return WorkMailErrorKind.EntityNotFoundException
+    if name == "EntityStateException":
+        return WorkMailErrorKind.EntityStateException
+    if name == "InvalidConfigurationException":
+        return WorkMailErrorKind.InvalidConfigurationException
+    if name == "InvalidCustomSesConfigurationException":
+        return WorkMailErrorKind.InvalidCustomSesConfigurationException
+    if name == "InvalidParameterException":
+        return WorkMailErrorKind.InvalidParameterException
+    if name == "InvalidPasswordException":
+        return WorkMailErrorKind.InvalidPasswordException
+    if name == "LimitExceededException":
+        return WorkMailErrorKind.LimitExceededException
+    if name == "MailDomainInUseException":
+        return WorkMailErrorKind.MailDomainInUseException
+    if name == "MailDomainNotFoundException":
+        return WorkMailErrorKind.MailDomainNotFoundException
+    if name == "MailDomainStateException":
+        return WorkMailErrorKind.MailDomainStateException
+    if name == "NameAvailabilityException":
+        return WorkMailErrorKind.NameAvailabilityException
+    if name == "OrganizationNotFoundException":
+        return WorkMailErrorKind.OrganizationNotFoundException
+    if name == "OrganizationStateException":
+        return WorkMailErrorKind.OrganizationStateException
+    if name == "ReservedNameException":
+        return WorkMailErrorKind.ReservedNameException
+    if name == "ResourceNotFoundException":
+        return WorkMailErrorKind.ResourceNotFoundException
+    if name == "TooManyTagsException":
+        return WorkMailErrorKind.TooManyTagsException
+    if name == "UnsupportedOperationException":
+        return WorkMailErrorKind.UnsupportedOperationException
+    return WorkMailErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def workmail_error_name(WorkMailErrorKind k) -> str:
+    match k:
+        case WorkMailErrorKind.DirectoryInUseException:
+            return "DirectoryInUseException"
+        case WorkMailErrorKind.DirectoryServiceAuthenticationFailedException:
+            return "DirectoryServiceAuthenticationFailedException"
+        case WorkMailErrorKind.DirectoryUnavailableException:
+            return "DirectoryUnavailableException"
+        case WorkMailErrorKind.EmailAddressInUseException:
+            return "EmailAddressInUseException"
+        case WorkMailErrorKind.EntityAlreadyRegisteredException:
+            return "EntityAlreadyRegisteredException"
+        case WorkMailErrorKind.EntityNotFoundException:
+            return "EntityNotFoundException"
+        case WorkMailErrorKind.EntityStateException:
+            return "EntityStateException"
+        case WorkMailErrorKind.InvalidConfigurationException:
+            return "InvalidConfigurationException"
+        case WorkMailErrorKind.InvalidCustomSesConfigurationException:
+            return "InvalidCustomSesConfigurationException"
+        case WorkMailErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case WorkMailErrorKind.InvalidPasswordException:
+            return "InvalidPasswordException"
+        case WorkMailErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case WorkMailErrorKind.MailDomainInUseException:
+            return "MailDomainInUseException"
+        case WorkMailErrorKind.MailDomainNotFoundException:
+            return "MailDomainNotFoundException"
+        case WorkMailErrorKind.MailDomainStateException:
+            return "MailDomainStateException"
+        case WorkMailErrorKind.NameAvailabilityException:
+            return "NameAvailabilityException"
+        case WorkMailErrorKind.OrganizationNotFoundException:
+            return "OrganizationNotFoundException"
+        case WorkMailErrorKind.OrganizationStateException:
+            return "OrganizationStateException"
+        case WorkMailErrorKind.ReservedNameException:
+            return "ReservedNameException"
+        case WorkMailErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case WorkMailErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case WorkMailErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case WorkMailErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

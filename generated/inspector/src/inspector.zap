@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix InspectorService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1011,9 +1013,16 @@ struct UpdateAssessmentTargetRequest:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by inspector_error_from_code.
-enum InspectorError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum InspectorErrorKind:
     AccessDeniedException
     AgentsAlreadyRunningAssessmentException
     AssessmentRunInProgressException
@@ -1027,31 +1036,67 @@ enum InspectorError:
     UnsupportedFeatureException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def inspector_error_from_code(str code) -> InspectorError:
-    if code == "AccessDeniedException":
-        return InspectorError.AccessDeniedException
-    if code == "AgentsAlreadyRunningAssessmentException":
-        return InspectorError.AgentsAlreadyRunningAssessmentException
-    if code == "AssessmentRunInProgressException":
-        return InspectorError.AssessmentRunInProgressException
-    if code == "InternalException":
-        return InspectorError.InternalException
-    if code == "InvalidCrossAccountRoleException":
-        return InspectorError.InvalidCrossAccountRoleException
-    if code == "InvalidInputException":
-        return InspectorError.InvalidInputException
-    if code == "LimitExceededException":
-        return InspectorError.LimitExceededException
-    if code == "NoSuchEntityException":
-        return InspectorError.NoSuchEntityException
-    if code == "PreviewGenerationInProgressException":
-        return InspectorError.PreviewGenerationInProgressException
-    if code == "ServiceTemporarilyUnavailableException":
-        return InspectorError.ServiceTemporarilyUnavailableException
-    if code == "UnsupportedFeatureException":
-        return InspectorError.UnsupportedFeatureException
-    return InspectorError.Unknown(code=code)
+# Classify an AWS error code into `InspectorErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def inspector_error_kind(str code) -> InspectorErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return InspectorErrorKind.AccessDeniedException
+    if name == "AgentsAlreadyRunningAssessmentException":
+        return InspectorErrorKind.AgentsAlreadyRunningAssessmentException
+    if name == "AssessmentRunInProgressException":
+        return InspectorErrorKind.AssessmentRunInProgressException
+    if name == "InternalException":
+        return InspectorErrorKind.InternalException
+    if name == "InvalidCrossAccountRoleException":
+        return InspectorErrorKind.InvalidCrossAccountRoleException
+    if name == "InvalidInputException":
+        return InspectorErrorKind.InvalidInputException
+    if name == "LimitExceededException":
+        return InspectorErrorKind.LimitExceededException
+    if name == "NoSuchEntityException":
+        return InspectorErrorKind.NoSuchEntityException
+    if name == "PreviewGenerationInProgressException":
+        return InspectorErrorKind.PreviewGenerationInProgressException
+    if name == "ServiceTemporarilyUnavailableException":
+        return InspectorErrorKind.ServiceTemporarilyUnavailableException
+    if name == "UnsupportedFeatureException":
+        return InspectorErrorKind.UnsupportedFeatureException
+    return InspectorErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def inspector_error_name(InspectorErrorKind k) -> str:
+    match k:
+        case InspectorErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case InspectorErrorKind.AgentsAlreadyRunningAssessmentException:
+            return "AgentsAlreadyRunningAssessmentException"
+        case InspectorErrorKind.AssessmentRunInProgressException:
+            return "AssessmentRunInProgressException"
+        case InspectorErrorKind.InternalException:
+            return "InternalException"
+        case InspectorErrorKind.InvalidCrossAccountRoleException:
+            return "InvalidCrossAccountRoleException"
+        case InspectorErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case InspectorErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case InspectorErrorKind.NoSuchEntityException:
+            return "NoSuchEntityException"
+        case InspectorErrorKind.PreviewGenerationInProgressException:
+            return "PreviewGenerationInProgressException"
+        case InspectorErrorKind.ServiceTemporarilyUnavailableException:
+            return "ServiceTemporarilyUnavailableException"
+        case InspectorErrorKind.UnsupportedFeatureException:
+            return "UnsupportedFeatureException"
+        case InspectorErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

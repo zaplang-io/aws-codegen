@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Lightsail_20161128)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -4242,9 +4244,16 @@ struct WafRule:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by lightsail_error_from_code.
-enum LightsailError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum LightsailErrorKind:
     AccessDeniedException
     AccountSetupInProgressException
     InvalidInputException
@@ -4255,25 +4264,55 @@ enum LightsailError:
     UnauthenticatedException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def lightsail_error_from_code(str code) -> LightsailError:
-    if code == "AccessDeniedException":
-        return LightsailError.AccessDeniedException
-    if code == "AccountSetupInProgressException":
-        return LightsailError.AccountSetupInProgressException
-    if code == "InvalidInputException":
-        return LightsailError.InvalidInputException
-    if code == "NotFoundException":
-        return LightsailError.NotFoundException
-    if code == "OperationFailureException":
-        return LightsailError.OperationFailureException
-    if code == "RegionSetupInProgressException":
-        return LightsailError.RegionSetupInProgressException
-    if code == "ServiceException":
-        return LightsailError.ServiceException
-    if code == "UnauthenticatedException":
-        return LightsailError.UnauthenticatedException
-    return LightsailError.Unknown(code=code)
+# Classify an AWS error code into `LightsailErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def lightsail_error_kind(str code) -> LightsailErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return LightsailErrorKind.AccessDeniedException
+    if name == "AccountSetupInProgressException":
+        return LightsailErrorKind.AccountSetupInProgressException
+    if name == "InvalidInputException":
+        return LightsailErrorKind.InvalidInputException
+    if name == "NotFoundException":
+        return LightsailErrorKind.NotFoundException
+    if name == "OperationFailureException":
+        return LightsailErrorKind.OperationFailureException
+    if name == "RegionSetupInProgressException":
+        return LightsailErrorKind.RegionSetupInProgressException
+    if name == "ServiceException":
+        return LightsailErrorKind.ServiceException
+    if name == "UnauthenticatedException":
+        return LightsailErrorKind.UnauthenticatedException
+    return LightsailErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def lightsail_error_name(LightsailErrorKind k) -> str:
+    match k:
+        case LightsailErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case LightsailErrorKind.AccountSetupInProgressException:
+            return "AccountSetupInProgressException"
+        case LightsailErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case LightsailErrorKind.NotFoundException:
+            return "NotFoundException"
+        case LightsailErrorKind.OperationFailureException:
+            return "OperationFailureException"
+        case LightsailErrorKind.RegionSetupInProgressException:
+            return "RegionSetupInProgressException"
+        case LightsailErrorKind.ServiceException:
+            return "ServiceException"
+        case LightsailErrorKind.UnauthenticatedException:
+            return "UnauthenticatedException"
+        case LightsailErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

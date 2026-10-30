@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service lex)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1232,9 +1233,16 @@ struct UtteranceList:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by models_lex_error_from_code.
-enum Lex_Model_Building_ServiceError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Lex_Model_Building_ServiceErrorKind:
     AccessDeniedException
     BadRequestException
     ConflictException
@@ -1245,26 +1253,55 @@ enum Lex_Model_Building_ServiceError:
     ResourceInUseException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def models_lex_error_from_code(str code) -> Lex_Model_Building_ServiceError:
-    if code == "AccessDeniedException":
-        return Lex_Model_Building_ServiceError.AccessDeniedException
-    if code == "BadRequestException":
-        return Lex_Model_Building_ServiceError.BadRequestException
-    if code == "ConflictException":
-        return Lex_Model_Building_ServiceError.ConflictException
-    if code == "InternalFailureException":
-        return Lex_Model_Building_ServiceError.InternalFailureException
-    if code == "LimitExceededException":
-        return Lex_Model_Building_ServiceError.LimitExceededException
-    if code == "NotFoundException":
-        return Lex_Model_Building_ServiceError.NotFoundException
-    if code == "PreconditionFailedException":
-        return Lex_Model_Building_ServiceError.PreconditionFailedException
-    if code == "ResourceInUseException":
-        return Lex_Model_Building_ServiceError.ResourceInUseException
-    return Lex_Model_Building_ServiceError.Unknown(code=code)
+# Classify an AWS error code into `Lex_Model_Building_ServiceErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def models_lex_error_kind(str code) -> Lex_Model_Building_ServiceErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Lex_Model_Building_ServiceErrorKind.AccessDeniedException
+    if name == "BadRequestException":
+        return Lex_Model_Building_ServiceErrorKind.BadRequestException
+    if name == "ConflictException":
+        return Lex_Model_Building_ServiceErrorKind.ConflictException
+    if name == "InternalFailureException":
+        return Lex_Model_Building_ServiceErrorKind.InternalFailureException
+    if name == "LimitExceededException":
+        return Lex_Model_Building_ServiceErrorKind.LimitExceededException
+    if name == "NotFoundException":
+        return Lex_Model_Building_ServiceErrorKind.NotFoundException
+    if name == "PreconditionFailedException":
+        return Lex_Model_Building_ServiceErrorKind.PreconditionFailedException
+    if name == "ResourceInUseException":
+        return Lex_Model_Building_ServiceErrorKind.ResourceInUseException
+    return Lex_Model_Building_ServiceErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def models_lex_error_name(Lex_Model_Building_ServiceErrorKind k) -> str:
+    match k:
+        case Lex_Model_Building_ServiceErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Lex_Model_Building_ServiceErrorKind.BadRequestException:
+            return "BadRequestException"
+        case Lex_Model_Building_ServiceErrorKind.ConflictException:
+            return "ConflictException"
+        case Lex_Model_Building_ServiceErrorKind.InternalFailureException:
+            return "InternalFailureException"
+        case Lex_Model_Building_ServiceErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Lex_Model_Building_ServiceErrorKind.NotFoundException:
+            return "NotFoundException"
+        case Lex_Model_Building_ServiceErrorKind.PreconditionFailedException:
+            return "PreconditionFailedException"
+        case Lex_Model_Building_ServiceErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case Lex_Model_Building_ServiceErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

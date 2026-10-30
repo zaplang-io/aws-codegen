@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service elasticloadbalancing, Version 2015-12-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The Elastic_Load_Balancing_v2 query protocol: SigV4 service "elasticloadbalancing" (also the endpoint prefix
@@ -1279,9 +1281,16 @@ struct ZonalCapacityReservationState:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by elasticloadbalancing_error_from_code.
-enum Elastic_Load_Balancing_v2Error:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Elastic_Load_Balancing_v2ErrorKind:
     ALPNPolicyNotSupportedException
     AllocationIdNotFoundException
     AvailabilityZoneNotSupportedException
@@ -1340,122 +1349,247 @@ enum Elastic_Load_Balancing_v2Error:
     UnsupportedProtocolException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def elasticloadbalancing_error_from_code(str code) -> Elastic_Load_Balancing_v2Error:
-    if code == "ALPNPolicyNotSupportedException":
-        return Elastic_Load_Balancing_v2Error.ALPNPolicyNotSupportedException
-    if code == "AllocationIdNotFoundException":
-        return Elastic_Load_Balancing_v2Error.AllocationIdNotFoundException
-    if code == "AvailabilityZoneNotSupportedException":
-        return Elastic_Load_Balancing_v2Error.AvailabilityZoneNotSupportedException
-    if code == "CaCertificatesBundleNotFoundException":
-        return Elastic_Load_Balancing_v2Error.CaCertificatesBundleNotFoundException
-    if code == "CapacityDecreaseRequestsLimitExceededException":
-        return Elastic_Load_Balancing_v2Error.CapacityDecreaseRequestsLimitExceededException
-    if code == "CapacityReservationPendingException":
-        return Elastic_Load_Balancing_v2Error.CapacityReservationPendingException
-    if code == "CapacityUnitsLimitExceededException":
-        return Elastic_Load_Balancing_v2Error.CapacityUnitsLimitExceededException
-    if code == "CertificateNotFoundException":
-        return Elastic_Load_Balancing_v2Error.CertificateNotFoundException
-    if code == "DeleteAssociationSameAccountException":
-        return Elastic_Load_Balancing_v2Error.DeleteAssociationSameAccountException
-    if code == "DuplicateListenerException":
-        return Elastic_Load_Balancing_v2Error.DuplicateListenerException
-    if code == "DuplicateLoadBalancerNameException":
-        return Elastic_Load_Balancing_v2Error.DuplicateLoadBalancerNameException
-    if code == "DuplicateTagKeysException":
-        return Elastic_Load_Balancing_v2Error.DuplicateTagKeysException
-    if code == "DuplicateTargetGroupNameException":
-        return Elastic_Load_Balancing_v2Error.DuplicateTargetGroupNameException
-    if code == "DuplicateTrustStoreNameException":
-        return Elastic_Load_Balancing_v2Error.DuplicateTrustStoreNameException
-    if code == "HealthUnavailableException":
-        return Elastic_Load_Balancing_v2Error.HealthUnavailableException
-    if code == "IncompatibleProtocolsException":
-        return Elastic_Load_Balancing_v2Error.IncompatibleProtocolsException
-    if code == "InsufficientCapacityException":
-        return Elastic_Load_Balancing_v2Error.InsufficientCapacityException
-    if code == "InvalidCaCertificatesBundleException":
-        return Elastic_Load_Balancing_v2Error.InvalidCaCertificatesBundleException
-    if code == "InvalidConfigurationRequestException":
-        return Elastic_Load_Balancing_v2Error.InvalidConfigurationRequestException
-    if code == "InvalidLoadBalancerActionException":
-        return Elastic_Load_Balancing_v2Error.InvalidLoadBalancerActionException
-    if code == "InvalidRevocationContentException":
-        return Elastic_Load_Balancing_v2Error.InvalidRevocationContentException
-    if code == "InvalidSchemeException":
-        return Elastic_Load_Balancing_v2Error.InvalidSchemeException
-    if code == "InvalidSecurityGroupException":
-        return Elastic_Load_Balancing_v2Error.InvalidSecurityGroupException
-    if code == "InvalidSubnetException":
-        return Elastic_Load_Balancing_v2Error.InvalidSubnetException
-    if code == "InvalidTargetException":
-        return Elastic_Load_Balancing_v2Error.InvalidTargetException
-    if code == "ListenerNotFoundException":
-        return Elastic_Load_Balancing_v2Error.ListenerNotFoundException
-    if code == "LoadBalancerNotFoundException":
-        return Elastic_Load_Balancing_v2Error.LoadBalancerNotFoundException
-    if code == "OperationNotPermittedException":
-        return Elastic_Load_Balancing_v2Error.OperationNotPermittedException
-    if code == "PriorRequestNotCompleteException":
-        return Elastic_Load_Balancing_v2Error.PriorRequestNotCompleteException
-    if code == "PriorityInUseException":
-        return Elastic_Load_Balancing_v2Error.PriorityInUseException
-    if code == "ResourceInUseException":
-        return Elastic_Load_Balancing_v2Error.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return Elastic_Load_Balancing_v2Error.ResourceNotFoundException
-    if code == "RevocationContentNotFoundException":
-        return Elastic_Load_Balancing_v2Error.RevocationContentNotFoundException
-    if code == "RevocationIdNotFoundException":
-        return Elastic_Load_Balancing_v2Error.RevocationIdNotFoundException
-    if code == "RuleNotFoundException":
-        return Elastic_Load_Balancing_v2Error.RuleNotFoundException
-    if code == "SSLPolicyNotFoundException":
-        return Elastic_Load_Balancing_v2Error.SSLPolicyNotFoundException
-    if code == "SubnetNotFoundException":
-        return Elastic_Load_Balancing_v2Error.SubnetNotFoundException
-    if code == "TargetGroupAssociationLimitException":
-        return Elastic_Load_Balancing_v2Error.TargetGroupAssociationLimitException
-    if code == "TargetGroupNotFoundException":
-        return Elastic_Load_Balancing_v2Error.TargetGroupNotFoundException
-    if code == "TooManyActionsException":
-        return Elastic_Load_Balancing_v2Error.TooManyActionsException
-    if code == "TooManyCertificatesException":
-        return Elastic_Load_Balancing_v2Error.TooManyCertificatesException
-    if code == "TooManyListenersException":
-        return Elastic_Load_Balancing_v2Error.TooManyListenersException
-    if code == "TooManyLoadBalancersException":
-        return Elastic_Load_Balancing_v2Error.TooManyLoadBalancersException
-    if code == "TooManyRegistrationsForTargetIdException":
-        return Elastic_Load_Balancing_v2Error.TooManyRegistrationsForTargetIdException
-    if code == "TooManyRulesException":
-        return Elastic_Load_Balancing_v2Error.TooManyRulesException
-    if code == "TooManyTagsException":
-        return Elastic_Load_Balancing_v2Error.TooManyTagsException
-    if code == "TooManyTargetGroupsException":
-        return Elastic_Load_Balancing_v2Error.TooManyTargetGroupsException
-    if code == "TooManyTargetsException":
-        return Elastic_Load_Balancing_v2Error.TooManyTargetsException
-    if code == "TooManyTrustStoreRevocationEntriesException":
-        return Elastic_Load_Balancing_v2Error.TooManyTrustStoreRevocationEntriesException
-    if code == "TooManyTrustStoresException":
-        return Elastic_Load_Balancing_v2Error.TooManyTrustStoresException
-    if code == "TooManyUniqueTargetGroupsPerLoadBalancerException":
-        return Elastic_Load_Balancing_v2Error.TooManyUniqueTargetGroupsPerLoadBalancerException
-    if code == "TrustStoreAssociationNotFoundException":
-        return Elastic_Load_Balancing_v2Error.TrustStoreAssociationNotFoundException
-    if code == "TrustStoreInUseException":
-        return Elastic_Load_Balancing_v2Error.TrustStoreInUseException
-    if code == "TrustStoreNotFoundException":
-        return Elastic_Load_Balancing_v2Error.TrustStoreNotFoundException
-    if code == "TrustStoreNotReadyException":
-        return Elastic_Load_Balancing_v2Error.TrustStoreNotReadyException
-    if code == "UnsupportedProtocolException":
-        return Elastic_Load_Balancing_v2Error.UnsupportedProtocolException
-    return Elastic_Load_Balancing_v2Error.Unknown(code=code)
+# Classify an AWS error code into `Elastic_Load_Balancing_v2ErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def elasticloadbalancing_error_kind(str code) -> Elastic_Load_Balancing_v2ErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ALPNPolicyNotSupportedException":
+        return Elastic_Load_Balancing_v2ErrorKind.ALPNPolicyNotSupportedException
+    if name == "AllocationIdNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.AllocationIdNotFoundException
+    if name == "AvailabilityZoneNotSupportedException":
+        return Elastic_Load_Balancing_v2ErrorKind.AvailabilityZoneNotSupportedException
+    if name == "CaCertificatesBundleNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.CaCertificatesBundleNotFoundException
+    if name == "CapacityDecreaseRequestsLimitExceededException":
+        return Elastic_Load_Balancing_v2ErrorKind.CapacityDecreaseRequestsLimitExceededException
+    if name == "CapacityReservationPendingException":
+        return Elastic_Load_Balancing_v2ErrorKind.CapacityReservationPendingException
+    if name == "CapacityUnitsLimitExceededException":
+        return Elastic_Load_Balancing_v2ErrorKind.CapacityUnitsLimitExceededException
+    if name == "CertificateNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.CertificateNotFoundException
+    if name == "DeleteAssociationSameAccountException":
+        return Elastic_Load_Balancing_v2ErrorKind.DeleteAssociationSameAccountException
+    if name == "DuplicateListenerException":
+        return Elastic_Load_Balancing_v2ErrorKind.DuplicateListenerException
+    if name == "DuplicateLoadBalancerNameException":
+        return Elastic_Load_Balancing_v2ErrorKind.DuplicateLoadBalancerNameException
+    if name == "DuplicateTagKeysException":
+        return Elastic_Load_Balancing_v2ErrorKind.DuplicateTagKeysException
+    if name == "DuplicateTargetGroupNameException":
+        return Elastic_Load_Balancing_v2ErrorKind.DuplicateTargetGroupNameException
+    if name == "DuplicateTrustStoreNameException":
+        return Elastic_Load_Balancing_v2ErrorKind.DuplicateTrustStoreNameException
+    if name == "HealthUnavailableException":
+        return Elastic_Load_Balancing_v2ErrorKind.HealthUnavailableException
+    if name == "IncompatibleProtocolsException":
+        return Elastic_Load_Balancing_v2ErrorKind.IncompatibleProtocolsException
+    if name == "InsufficientCapacityException":
+        return Elastic_Load_Balancing_v2ErrorKind.InsufficientCapacityException
+    if name == "InvalidCaCertificatesBundleException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidCaCertificatesBundleException
+    if name == "InvalidConfigurationRequestException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidConfigurationRequestException
+    if name == "InvalidLoadBalancerActionException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidLoadBalancerActionException
+    if name == "InvalidRevocationContentException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidRevocationContentException
+    if name == "InvalidSchemeException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidSchemeException
+    if name == "InvalidSecurityGroupException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidSecurityGroupException
+    if name == "InvalidSubnetException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidSubnetException
+    if name == "InvalidTargetException":
+        return Elastic_Load_Balancing_v2ErrorKind.InvalidTargetException
+    if name == "ListenerNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.ListenerNotFoundException
+    if name == "LoadBalancerNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.LoadBalancerNotFoundException
+    if name == "OperationNotPermittedException":
+        return Elastic_Load_Balancing_v2ErrorKind.OperationNotPermittedException
+    if name == "PriorRequestNotCompleteException":
+        return Elastic_Load_Balancing_v2ErrorKind.PriorRequestNotCompleteException
+    if name == "PriorityInUseException":
+        return Elastic_Load_Balancing_v2ErrorKind.PriorityInUseException
+    if name == "ResourceInUseException":
+        return Elastic_Load_Balancing_v2ErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.ResourceNotFoundException
+    if name == "RevocationContentNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.RevocationContentNotFoundException
+    if name == "RevocationIdNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.RevocationIdNotFoundException
+    if name == "RuleNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.RuleNotFoundException
+    if name == "SSLPolicyNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.SSLPolicyNotFoundException
+    if name == "SubnetNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.SubnetNotFoundException
+    if name == "TargetGroupAssociationLimitException":
+        return Elastic_Load_Balancing_v2ErrorKind.TargetGroupAssociationLimitException
+    if name == "TargetGroupNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.TargetGroupNotFoundException
+    if name == "TooManyActionsException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyActionsException
+    if name == "TooManyCertificatesException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyCertificatesException
+    if name == "TooManyListenersException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyListenersException
+    if name == "TooManyLoadBalancersException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyLoadBalancersException
+    if name == "TooManyRegistrationsForTargetIdException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyRegistrationsForTargetIdException
+    if name == "TooManyRulesException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyRulesException
+    if name == "TooManyTagsException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyTagsException
+    if name == "TooManyTargetGroupsException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyTargetGroupsException
+    if name == "TooManyTargetsException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyTargetsException
+    if name == "TooManyTrustStoreRevocationEntriesException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyTrustStoreRevocationEntriesException
+    if name == "TooManyTrustStoresException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyTrustStoresException
+    if name == "TooManyUniqueTargetGroupsPerLoadBalancerException":
+        return Elastic_Load_Balancing_v2ErrorKind.TooManyUniqueTargetGroupsPerLoadBalancerException
+    if name == "TrustStoreAssociationNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.TrustStoreAssociationNotFoundException
+    if name == "TrustStoreInUseException":
+        return Elastic_Load_Balancing_v2ErrorKind.TrustStoreInUseException
+    if name == "TrustStoreNotFoundException":
+        return Elastic_Load_Balancing_v2ErrorKind.TrustStoreNotFoundException
+    if name == "TrustStoreNotReadyException":
+        return Elastic_Load_Balancing_v2ErrorKind.TrustStoreNotReadyException
+    if name == "UnsupportedProtocolException":
+        return Elastic_Load_Balancing_v2ErrorKind.UnsupportedProtocolException
+    return Elastic_Load_Balancing_v2ErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def elasticloadbalancing_error_name(Elastic_Load_Balancing_v2ErrorKind k) -> str:
+    match k:
+        case Elastic_Load_Balancing_v2ErrorKind.ALPNPolicyNotSupportedException:
+            return "ALPNPolicyNotSupportedException"
+        case Elastic_Load_Balancing_v2ErrorKind.AllocationIdNotFoundException:
+            return "AllocationIdNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.AvailabilityZoneNotSupportedException:
+            return "AvailabilityZoneNotSupportedException"
+        case Elastic_Load_Balancing_v2ErrorKind.CaCertificatesBundleNotFoundException:
+            return "CaCertificatesBundleNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.CapacityDecreaseRequestsLimitExceededException:
+            return "CapacityDecreaseRequestsLimitExceededException"
+        case Elastic_Load_Balancing_v2ErrorKind.CapacityReservationPendingException:
+            return "CapacityReservationPendingException"
+        case Elastic_Load_Balancing_v2ErrorKind.CapacityUnitsLimitExceededException:
+            return "CapacityUnitsLimitExceededException"
+        case Elastic_Load_Balancing_v2ErrorKind.CertificateNotFoundException:
+            return "CertificateNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.DeleteAssociationSameAccountException:
+            return "DeleteAssociationSameAccountException"
+        case Elastic_Load_Balancing_v2ErrorKind.DuplicateListenerException:
+            return "DuplicateListenerException"
+        case Elastic_Load_Balancing_v2ErrorKind.DuplicateLoadBalancerNameException:
+            return "DuplicateLoadBalancerNameException"
+        case Elastic_Load_Balancing_v2ErrorKind.DuplicateTagKeysException:
+            return "DuplicateTagKeysException"
+        case Elastic_Load_Balancing_v2ErrorKind.DuplicateTargetGroupNameException:
+            return "DuplicateTargetGroupNameException"
+        case Elastic_Load_Balancing_v2ErrorKind.DuplicateTrustStoreNameException:
+            return "DuplicateTrustStoreNameException"
+        case Elastic_Load_Balancing_v2ErrorKind.HealthUnavailableException:
+            return "HealthUnavailableException"
+        case Elastic_Load_Balancing_v2ErrorKind.IncompatibleProtocolsException:
+            return "IncompatibleProtocolsException"
+        case Elastic_Load_Balancing_v2ErrorKind.InsufficientCapacityException:
+            return "InsufficientCapacityException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidCaCertificatesBundleException:
+            return "InvalidCaCertificatesBundleException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidConfigurationRequestException:
+            return "InvalidConfigurationRequestException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidLoadBalancerActionException:
+            return "InvalidLoadBalancerActionException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidRevocationContentException:
+            return "InvalidRevocationContentException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidSchemeException:
+            return "InvalidSchemeException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidSecurityGroupException:
+            return "InvalidSecurityGroupException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidSubnetException:
+            return "InvalidSubnetException"
+        case Elastic_Load_Balancing_v2ErrorKind.InvalidTargetException:
+            return "InvalidTargetException"
+        case Elastic_Load_Balancing_v2ErrorKind.ListenerNotFoundException:
+            return "ListenerNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.LoadBalancerNotFoundException:
+            return "LoadBalancerNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.OperationNotPermittedException:
+            return "OperationNotPermittedException"
+        case Elastic_Load_Balancing_v2ErrorKind.PriorRequestNotCompleteException:
+            return "PriorRequestNotCompleteException"
+        case Elastic_Load_Balancing_v2ErrorKind.PriorityInUseException:
+            return "PriorityInUseException"
+        case Elastic_Load_Balancing_v2ErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case Elastic_Load_Balancing_v2ErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.RevocationContentNotFoundException:
+            return "RevocationContentNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.RevocationIdNotFoundException:
+            return "RevocationIdNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.RuleNotFoundException:
+            return "RuleNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.SSLPolicyNotFoundException:
+            return "SSLPolicyNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.SubnetNotFoundException:
+            return "SubnetNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.TargetGroupAssociationLimitException:
+            return "TargetGroupAssociationLimitException"
+        case Elastic_Load_Balancing_v2ErrorKind.TargetGroupNotFoundException:
+            return "TargetGroupNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyActionsException:
+            return "TooManyActionsException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyCertificatesException:
+            return "TooManyCertificatesException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyListenersException:
+            return "TooManyListenersException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyLoadBalancersException:
+            return "TooManyLoadBalancersException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyRegistrationsForTargetIdException:
+            return "TooManyRegistrationsForTargetIdException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyRulesException:
+            return "TooManyRulesException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyTargetGroupsException:
+            return "TooManyTargetGroupsException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyTargetsException:
+            return "TooManyTargetsException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyTrustStoreRevocationEntriesException:
+            return "TooManyTrustStoreRevocationEntriesException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyTrustStoresException:
+            return "TooManyTrustStoresException"
+        case Elastic_Load_Balancing_v2ErrorKind.TooManyUniqueTargetGroupsPerLoadBalancerException:
+            return "TooManyUniqueTargetGroupsPerLoadBalancerException"
+        case Elastic_Load_Balancing_v2ErrorKind.TrustStoreAssociationNotFoundException:
+            return "TrustStoreAssociationNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.TrustStoreInUseException:
+            return "TrustStoreInUseException"
+        case Elastic_Load_Balancing_v2ErrorKind.TrustStoreNotFoundException:
+            return "TrustStoreNotFoundException"
+        case Elastic_Load_Balancing_v2ErrorKind.TrustStoreNotReadyException:
+            return "TrustStoreNotReadyException"
+        case Elastic_Load_Balancing_v2ErrorKind.UnsupportedProtocolException:
+            return "UnsupportedProtocolException"
+        case Elastic_Load_Balancing_v2ErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

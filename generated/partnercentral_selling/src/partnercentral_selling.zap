@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix AWSPartnerCentralSelling)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -2510,9 +2512,16 @@ struct ValidationExceptionError:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by partnercentral_selling_error_from_code.
-enum PartnerCentral_SellingError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum PartnerCentral_SellingErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -2522,23 +2531,51 @@ enum PartnerCentral_SellingError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def partnercentral_selling_error_from_code(str code) -> PartnerCentral_SellingError:
-    if code == "AccessDeniedException":
-        return PartnerCentral_SellingError.AccessDeniedException
-    if code == "ConflictException":
-        return PartnerCentral_SellingError.ConflictException
-    if code == "InternalServerException":
-        return PartnerCentral_SellingError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return PartnerCentral_SellingError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return PartnerCentral_SellingError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return PartnerCentral_SellingError.ThrottlingException
-    if code == "ValidationException":
-        return PartnerCentral_SellingError.ValidationException
-    return PartnerCentral_SellingError.Unknown(code=code)
+# Classify an AWS error code into `PartnerCentral_SellingErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def partnercentral_selling_error_kind(str code) -> PartnerCentral_SellingErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return PartnerCentral_SellingErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return PartnerCentral_SellingErrorKind.ConflictException
+    if name == "InternalServerException":
+        return PartnerCentral_SellingErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return PartnerCentral_SellingErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return PartnerCentral_SellingErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return PartnerCentral_SellingErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return PartnerCentral_SellingErrorKind.ValidationException
+    return PartnerCentral_SellingErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def partnercentral_selling_error_name(PartnerCentral_SellingErrorKind k) -> str:
+    match k:
+        case PartnerCentral_SellingErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case PartnerCentral_SellingErrorKind.ConflictException:
+            return "ConflictException"
+        case PartnerCentral_SellingErrorKind.InternalServerException:
+            return "InternalServerException"
+        case PartnerCentral_SellingErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case PartnerCentral_SellingErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case PartnerCentral_SellingErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case PartnerCentral_SellingErrorKind.ValidationException:
+            return "ValidationException"
+        case PartnerCentral_SellingErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix SpencerFrontendService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -584,9 +586,16 @@ struct UploadNotFoundException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by api_ecr_public_error_from_code.
-enum ECR_PUBLICError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ECR_PUBLICErrorKind:
     EmptyUploadException
     ImageAlreadyExistsException
     ImageDigestDoesNotMatchException
@@ -613,57 +622,119 @@ enum ECR_PUBLICError:
     UploadNotFoundException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def api_ecr_public_error_from_code(str code) -> ECR_PUBLICError:
-    if code == "EmptyUploadException":
-        return ECR_PUBLICError.EmptyUploadException
-    if code == "ImageAlreadyExistsException":
-        return ECR_PUBLICError.ImageAlreadyExistsException
-    if code == "ImageDigestDoesNotMatchException":
-        return ECR_PUBLICError.ImageDigestDoesNotMatchException
-    if code == "ImageNotFoundException":
-        return ECR_PUBLICError.ImageNotFoundException
-    if code == "ImageTagAlreadyExistsException":
-        return ECR_PUBLICError.ImageTagAlreadyExistsException
-    if code == "InvalidLayerException":
-        return ECR_PUBLICError.InvalidLayerException
-    if code == "InvalidLayerPartException":
-        return ECR_PUBLICError.InvalidLayerPartException
-    if code == "InvalidParameterException":
-        return ECR_PUBLICError.InvalidParameterException
-    if code == "InvalidTagParameterException":
-        return ECR_PUBLICError.InvalidTagParameterException
-    if code == "LayerAlreadyExistsException":
-        return ECR_PUBLICError.LayerAlreadyExistsException
-    if code == "LayerPartTooSmallException":
-        return ECR_PUBLICError.LayerPartTooSmallException
-    if code == "LayersNotFoundException":
-        return ECR_PUBLICError.LayersNotFoundException
-    if code == "LimitExceededException":
-        return ECR_PUBLICError.LimitExceededException
-    if code == "ReferencedImagesNotFoundException":
-        return ECR_PUBLICError.ReferencedImagesNotFoundException
-    if code == "RegistryNotFoundException":
-        return ECR_PUBLICError.RegistryNotFoundException
-    if code == "RepositoryAlreadyExistsException":
-        return ECR_PUBLICError.RepositoryAlreadyExistsException
-    if code == "RepositoryCatalogDataNotFoundException":
-        return ECR_PUBLICError.RepositoryCatalogDataNotFoundException
-    if code == "RepositoryNotEmptyException":
-        return ECR_PUBLICError.RepositoryNotEmptyException
-    if code == "RepositoryNotFoundException":
-        return ECR_PUBLICError.RepositoryNotFoundException
-    if code == "RepositoryPolicyNotFoundException":
-        return ECR_PUBLICError.RepositoryPolicyNotFoundException
-    if code == "ServerException":
-        return ECR_PUBLICError.ServerException
-    if code == "TooManyTagsException":
-        return ECR_PUBLICError.TooManyTagsException
-    if code == "UnsupportedCommandException":
-        return ECR_PUBLICError.UnsupportedCommandException
-    if code == "UploadNotFoundException":
-        return ECR_PUBLICError.UploadNotFoundException
-    return ECR_PUBLICError.Unknown(code=code)
+# Classify an AWS error code into `ECR_PUBLICErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def api_ecr_public_error_kind(str code) -> ECR_PUBLICErrorKind:
+    auto name = errors.error_code(code)
+    if name == "EmptyUploadException":
+        return ECR_PUBLICErrorKind.EmptyUploadException
+    if name == "ImageAlreadyExistsException":
+        return ECR_PUBLICErrorKind.ImageAlreadyExistsException
+    if name == "ImageDigestDoesNotMatchException":
+        return ECR_PUBLICErrorKind.ImageDigestDoesNotMatchException
+    if name == "ImageNotFoundException":
+        return ECR_PUBLICErrorKind.ImageNotFoundException
+    if name == "ImageTagAlreadyExistsException":
+        return ECR_PUBLICErrorKind.ImageTagAlreadyExistsException
+    if name == "InvalidLayerException":
+        return ECR_PUBLICErrorKind.InvalidLayerException
+    if name == "InvalidLayerPartException":
+        return ECR_PUBLICErrorKind.InvalidLayerPartException
+    if name == "InvalidParameterException":
+        return ECR_PUBLICErrorKind.InvalidParameterException
+    if name == "InvalidTagParameterException":
+        return ECR_PUBLICErrorKind.InvalidTagParameterException
+    if name == "LayerAlreadyExistsException":
+        return ECR_PUBLICErrorKind.LayerAlreadyExistsException
+    if name == "LayerPartTooSmallException":
+        return ECR_PUBLICErrorKind.LayerPartTooSmallException
+    if name == "LayersNotFoundException":
+        return ECR_PUBLICErrorKind.LayersNotFoundException
+    if name == "LimitExceededException":
+        return ECR_PUBLICErrorKind.LimitExceededException
+    if name == "ReferencedImagesNotFoundException":
+        return ECR_PUBLICErrorKind.ReferencedImagesNotFoundException
+    if name == "RegistryNotFoundException":
+        return ECR_PUBLICErrorKind.RegistryNotFoundException
+    if name == "RepositoryAlreadyExistsException":
+        return ECR_PUBLICErrorKind.RepositoryAlreadyExistsException
+    if name == "RepositoryCatalogDataNotFoundException":
+        return ECR_PUBLICErrorKind.RepositoryCatalogDataNotFoundException
+    if name == "RepositoryNotEmptyException":
+        return ECR_PUBLICErrorKind.RepositoryNotEmptyException
+    if name == "RepositoryNotFoundException":
+        return ECR_PUBLICErrorKind.RepositoryNotFoundException
+    if name == "RepositoryPolicyNotFoundException":
+        return ECR_PUBLICErrorKind.RepositoryPolicyNotFoundException
+    if name == "ServerException":
+        return ECR_PUBLICErrorKind.ServerException
+    if name == "TooManyTagsException":
+        return ECR_PUBLICErrorKind.TooManyTagsException
+    if name == "UnsupportedCommandException":
+        return ECR_PUBLICErrorKind.UnsupportedCommandException
+    if name == "UploadNotFoundException":
+        return ECR_PUBLICErrorKind.UploadNotFoundException
+    return ECR_PUBLICErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def api_ecr_public_error_name(ECR_PUBLICErrorKind k) -> str:
+    match k:
+        case ECR_PUBLICErrorKind.EmptyUploadException:
+            return "EmptyUploadException"
+        case ECR_PUBLICErrorKind.ImageAlreadyExistsException:
+            return "ImageAlreadyExistsException"
+        case ECR_PUBLICErrorKind.ImageDigestDoesNotMatchException:
+            return "ImageDigestDoesNotMatchException"
+        case ECR_PUBLICErrorKind.ImageNotFoundException:
+            return "ImageNotFoundException"
+        case ECR_PUBLICErrorKind.ImageTagAlreadyExistsException:
+            return "ImageTagAlreadyExistsException"
+        case ECR_PUBLICErrorKind.InvalidLayerException:
+            return "InvalidLayerException"
+        case ECR_PUBLICErrorKind.InvalidLayerPartException:
+            return "InvalidLayerPartException"
+        case ECR_PUBLICErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case ECR_PUBLICErrorKind.InvalidTagParameterException:
+            return "InvalidTagParameterException"
+        case ECR_PUBLICErrorKind.LayerAlreadyExistsException:
+            return "LayerAlreadyExistsException"
+        case ECR_PUBLICErrorKind.LayerPartTooSmallException:
+            return "LayerPartTooSmallException"
+        case ECR_PUBLICErrorKind.LayersNotFoundException:
+            return "LayersNotFoundException"
+        case ECR_PUBLICErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case ECR_PUBLICErrorKind.ReferencedImagesNotFoundException:
+            return "ReferencedImagesNotFoundException"
+        case ECR_PUBLICErrorKind.RegistryNotFoundException:
+            return "RegistryNotFoundException"
+        case ECR_PUBLICErrorKind.RepositoryAlreadyExistsException:
+            return "RepositoryAlreadyExistsException"
+        case ECR_PUBLICErrorKind.RepositoryCatalogDataNotFoundException:
+            return "RepositoryCatalogDataNotFoundException"
+        case ECR_PUBLICErrorKind.RepositoryNotEmptyException:
+            return "RepositoryNotEmptyException"
+        case ECR_PUBLICErrorKind.RepositoryNotFoundException:
+            return "RepositoryNotFoundException"
+        case ECR_PUBLICErrorKind.RepositoryPolicyNotFoundException:
+            return "RepositoryPolicyNotFoundException"
+        case ECR_PUBLICErrorKind.ServerException:
+            return "ServerException"
+        case ECR_PUBLICErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case ECR_PUBLICErrorKind.UnsupportedCommandException:
+            return "UnsupportedCommandException"
+        case ECR_PUBLICErrorKind.UploadNotFoundException:
+            return "UploadNotFoundException"
+        case ECR_PUBLICErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

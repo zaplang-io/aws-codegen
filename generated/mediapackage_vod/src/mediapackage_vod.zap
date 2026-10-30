@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service mediapackage-vod)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -646,9 +647,16 @@ struct UpdatePackagingGroupResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by mediapackage_vod_error_from_code.
-enum MediaPackage_VodError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum MediaPackage_VodErrorKind:
     ForbiddenException
     InternalServerErrorException
     NotFoundException
@@ -657,22 +665,47 @@ enum MediaPackage_VodError:
     UnprocessableEntityException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def mediapackage_vod_error_from_code(str code) -> MediaPackage_VodError:
-    if code == "ForbiddenException":
-        return MediaPackage_VodError.ForbiddenException
-    if code == "InternalServerErrorException":
-        return MediaPackage_VodError.InternalServerErrorException
-    if code == "NotFoundException":
-        return MediaPackage_VodError.NotFoundException
-    if code == "ServiceUnavailableException":
-        return MediaPackage_VodError.ServiceUnavailableException
-    if code == "TooManyRequestsException":
-        return MediaPackage_VodError.TooManyRequestsException
-    if code == "UnprocessableEntityException":
-        return MediaPackage_VodError.UnprocessableEntityException
-    return MediaPackage_VodError.Unknown(code=code)
+# Classify an AWS error code into `MediaPackage_VodErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def mediapackage_vod_error_kind(str code) -> MediaPackage_VodErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ForbiddenException":
+        return MediaPackage_VodErrorKind.ForbiddenException
+    if name == "InternalServerErrorException":
+        return MediaPackage_VodErrorKind.InternalServerErrorException
+    if name == "NotFoundException":
+        return MediaPackage_VodErrorKind.NotFoundException
+    if name == "ServiceUnavailableException":
+        return MediaPackage_VodErrorKind.ServiceUnavailableException
+    if name == "TooManyRequestsException":
+        return MediaPackage_VodErrorKind.TooManyRequestsException
+    if name == "UnprocessableEntityException":
+        return MediaPackage_VodErrorKind.UnprocessableEntityException
+    return MediaPackage_VodErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def mediapackage_vod_error_name(MediaPackage_VodErrorKind k) -> str:
+    match k:
+        case MediaPackage_VodErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case MediaPackage_VodErrorKind.InternalServerErrorException:
+            return "InternalServerErrorException"
+        case MediaPackage_VodErrorKind.NotFoundException:
+            return "NotFoundException"
+        case MediaPackage_VodErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case MediaPackage_VodErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case MediaPackage_VodErrorKind.UnprocessableEntityException:
+            return "UnprocessableEntityException"
+        case MediaPackage_VodErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

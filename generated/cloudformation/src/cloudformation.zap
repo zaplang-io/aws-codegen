@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service cloudformation, Version 2010-05-15)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The CloudFormation query protocol: SigV4 service "cloudformation" (also the endpoint prefix
@@ -2574,9 +2576,16 @@ struct Warnings:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by cloudformation_error_from_code.
-enum CloudFormationError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudFormationErrorKind:
     AlreadyExistsException
     CFNRegistryException
     ChangeSetNotFoundException
@@ -2608,68 +2617,139 @@ enum CloudFormationError:
     TypeNotFoundException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def cloudformation_error_from_code(str code) -> CloudFormationError:
-    if code == "AlreadyExistsException":
-        return CloudFormationError.AlreadyExistsException
-    if code == "CFNRegistryException":
-        return CloudFormationError.CFNRegistryException
-    if code == "ChangeSetNotFoundException":
-        return CloudFormationError.ChangeSetNotFoundException
-    if code == "ConcurrentResourcesLimitExceededException":
-        return CloudFormationError.ConcurrentResourcesLimitExceededException
-    if code == "CreatedButModifiedException":
-        return CloudFormationError.CreatedButModifiedException
-    if code == "GeneratedTemplateNotFoundException":
-        return CloudFormationError.GeneratedTemplateNotFoundException
-    if code == "HookResultNotFoundException":
-        return CloudFormationError.HookResultNotFoundException
-    if code == "InsufficientCapabilitiesException":
-        return CloudFormationError.InsufficientCapabilitiesException
-    if code == "InvalidChangeSetStatusException":
-        return CloudFormationError.InvalidChangeSetStatusException
-    if code == "InvalidOperationException":
-        return CloudFormationError.InvalidOperationException
-    if code == "InvalidStateTransitionException":
-        return CloudFormationError.InvalidStateTransitionException
-    if code == "LimitExceededException":
-        return CloudFormationError.LimitExceededException
-    if code == "NameAlreadyExistsException":
-        return CloudFormationError.NameAlreadyExistsException
-    if code == "OperationIdAlreadyExistsException":
-        return CloudFormationError.OperationIdAlreadyExistsException
-    if code == "OperationInProgressException":
-        return CloudFormationError.OperationInProgressException
-    if code == "OperationNotFoundException":
-        return CloudFormationError.OperationNotFoundException
-    if code == "OperationStatusCheckFailedException":
-        return CloudFormationError.OperationStatusCheckFailedException
-    if code == "ResourceScanInProgressException":
-        return CloudFormationError.ResourceScanInProgressException
-    if code == "ResourceScanLimitExceededException":
-        return CloudFormationError.ResourceScanLimitExceededException
-    if code == "ResourceScanNotFoundException":
-        return CloudFormationError.ResourceScanNotFoundException
-    if code == "StackInstanceNotFoundException":
-        return CloudFormationError.StackInstanceNotFoundException
-    if code == "StackNotFoundException":
-        return CloudFormationError.StackNotFoundException
-    if code == "StackRefactorNotFoundException":
-        return CloudFormationError.StackRefactorNotFoundException
-    if code == "StackSetNotEmptyException":
-        return CloudFormationError.StackSetNotEmptyException
-    if code == "StackSetNotFoundException":
-        return CloudFormationError.StackSetNotFoundException
-    if code == "StaleRequestException":
-        return CloudFormationError.StaleRequestException
-    if code == "TokenAlreadyExistsException":
-        return CloudFormationError.TokenAlreadyExistsException
-    if code == "TypeConfigurationNotFoundException":
-        return CloudFormationError.TypeConfigurationNotFoundException
-    if code == "TypeNotFoundException":
-        return CloudFormationError.TypeNotFoundException
-    return CloudFormationError.Unknown(code=code)
+# Classify an AWS error code into `CloudFormationErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cloudformation_error_kind(str code) -> CloudFormationErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AlreadyExistsException":
+        return CloudFormationErrorKind.AlreadyExistsException
+    if name == "CFNRegistryException":
+        return CloudFormationErrorKind.CFNRegistryException
+    if name == "ChangeSetNotFoundException":
+        return CloudFormationErrorKind.ChangeSetNotFoundException
+    if name == "ConcurrentResourcesLimitExceededException":
+        return CloudFormationErrorKind.ConcurrentResourcesLimitExceededException
+    if name == "CreatedButModifiedException":
+        return CloudFormationErrorKind.CreatedButModifiedException
+    if name == "GeneratedTemplateNotFoundException":
+        return CloudFormationErrorKind.GeneratedTemplateNotFoundException
+    if name == "HookResultNotFoundException":
+        return CloudFormationErrorKind.HookResultNotFoundException
+    if name == "InsufficientCapabilitiesException":
+        return CloudFormationErrorKind.InsufficientCapabilitiesException
+    if name == "InvalidChangeSetStatusException":
+        return CloudFormationErrorKind.InvalidChangeSetStatusException
+    if name == "InvalidOperationException":
+        return CloudFormationErrorKind.InvalidOperationException
+    if name == "InvalidStateTransitionException":
+        return CloudFormationErrorKind.InvalidStateTransitionException
+    if name == "LimitExceededException":
+        return CloudFormationErrorKind.LimitExceededException
+    if name == "NameAlreadyExistsException":
+        return CloudFormationErrorKind.NameAlreadyExistsException
+    if name == "OperationIdAlreadyExistsException":
+        return CloudFormationErrorKind.OperationIdAlreadyExistsException
+    if name == "OperationInProgressException":
+        return CloudFormationErrorKind.OperationInProgressException
+    if name == "OperationNotFoundException":
+        return CloudFormationErrorKind.OperationNotFoundException
+    if name == "OperationStatusCheckFailedException":
+        return CloudFormationErrorKind.OperationStatusCheckFailedException
+    if name == "ResourceScanInProgressException":
+        return CloudFormationErrorKind.ResourceScanInProgressException
+    if name == "ResourceScanLimitExceededException":
+        return CloudFormationErrorKind.ResourceScanLimitExceededException
+    if name == "ResourceScanNotFoundException":
+        return CloudFormationErrorKind.ResourceScanNotFoundException
+    if name == "StackInstanceNotFoundException":
+        return CloudFormationErrorKind.StackInstanceNotFoundException
+    if name == "StackNotFoundException":
+        return CloudFormationErrorKind.StackNotFoundException
+    if name == "StackRefactorNotFoundException":
+        return CloudFormationErrorKind.StackRefactorNotFoundException
+    if name == "StackSetNotEmptyException":
+        return CloudFormationErrorKind.StackSetNotEmptyException
+    if name == "StackSetNotFoundException":
+        return CloudFormationErrorKind.StackSetNotFoundException
+    if name == "StaleRequestException":
+        return CloudFormationErrorKind.StaleRequestException
+    if name == "TokenAlreadyExistsException":
+        return CloudFormationErrorKind.TokenAlreadyExistsException
+    if name == "TypeConfigurationNotFoundException":
+        return CloudFormationErrorKind.TypeConfigurationNotFoundException
+    if name == "TypeNotFoundException":
+        return CloudFormationErrorKind.TypeNotFoundException
+    return CloudFormationErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cloudformation_error_name(CloudFormationErrorKind k) -> str:
+    match k:
+        case CloudFormationErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case CloudFormationErrorKind.CFNRegistryException:
+            return "CFNRegistryException"
+        case CloudFormationErrorKind.ChangeSetNotFoundException:
+            return "ChangeSetNotFoundException"
+        case CloudFormationErrorKind.ConcurrentResourcesLimitExceededException:
+            return "ConcurrentResourcesLimitExceededException"
+        case CloudFormationErrorKind.CreatedButModifiedException:
+            return "CreatedButModifiedException"
+        case CloudFormationErrorKind.GeneratedTemplateNotFoundException:
+            return "GeneratedTemplateNotFoundException"
+        case CloudFormationErrorKind.HookResultNotFoundException:
+            return "HookResultNotFoundException"
+        case CloudFormationErrorKind.InsufficientCapabilitiesException:
+            return "InsufficientCapabilitiesException"
+        case CloudFormationErrorKind.InvalidChangeSetStatusException:
+            return "InvalidChangeSetStatusException"
+        case CloudFormationErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case CloudFormationErrorKind.InvalidStateTransitionException:
+            return "InvalidStateTransitionException"
+        case CloudFormationErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case CloudFormationErrorKind.NameAlreadyExistsException:
+            return "NameAlreadyExistsException"
+        case CloudFormationErrorKind.OperationIdAlreadyExistsException:
+            return "OperationIdAlreadyExistsException"
+        case CloudFormationErrorKind.OperationInProgressException:
+            return "OperationInProgressException"
+        case CloudFormationErrorKind.OperationNotFoundException:
+            return "OperationNotFoundException"
+        case CloudFormationErrorKind.OperationStatusCheckFailedException:
+            return "OperationStatusCheckFailedException"
+        case CloudFormationErrorKind.ResourceScanInProgressException:
+            return "ResourceScanInProgressException"
+        case CloudFormationErrorKind.ResourceScanLimitExceededException:
+            return "ResourceScanLimitExceededException"
+        case CloudFormationErrorKind.ResourceScanNotFoundException:
+            return "ResourceScanNotFoundException"
+        case CloudFormationErrorKind.StackInstanceNotFoundException:
+            return "StackInstanceNotFoundException"
+        case CloudFormationErrorKind.StackNotFoundException:
+            return "StackNotFoundException"
+        case CloudFormationErrorKind.StackRefactorNotFoundException:
+            return "StackRefactorNotFoundException"
+        case CloudFormationErrorKind.StackSetNotEmptyException:
+            return "StackSetNotEmptyException"
+        case CloudFormationErrorKind.StackSetNotFoundException:
+            return "StackSetNotFoundException"
+        case CloudFormationErrorKind.StaleRequestException:
+            return "StaleRequestException"
+        case CloudFormationErrorKind.TokenAlreadyExistsException:
+            return "TokenAlreadyExistsException"
+        case CloudFormationErrorKind.TypeConfigurationNotFoundException:
+            return "TypeConfigurationNotFoundException"
+        case CloudFormationErrorKind.TypeNotFoundException:
+            return "TypeNotFoundException"
+        case CloudFormationErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

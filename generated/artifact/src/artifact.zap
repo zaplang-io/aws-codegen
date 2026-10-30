@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service artifact)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -561,9 +562,16 @@ struct ValidationExceptionField:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by artifact_error_from_code.
-enum ArtifactError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ArtifactErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -573,24 +581,51 @@ enum ArtifactError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def artifact_error_from_code(str code) -> ArtifactError:
-    if code == "AccessDeniedException":
-        return ArtifactError.AccessDeniedException
-    if code == "ConflictException":
-        return ArtifactError.ConflictException
-    if code == "InternalServerException":
-        return ArtifactError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return ArtifactError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return ArtifactError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return ArtifactError.ThrottlingException
-    if code == "ValidationException":
-        return ArtifactError.ValidationException
-    return ArtifactError.Unknown(code=code)
+# Classify an AWS error code into `ArtifactErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def artifact_error_kind(str code) -> ArtifactErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return ArtifactErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return ArtifactErrorKind.ConflictException
+    if name == "InternalServerException":
+        return ArtifactErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return ArtifactErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return ArtifactErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return ArtifactErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return ArtifactErrorKind.ValidationException
+    return ArtifactErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def artifact_error_name(ArtifactErrorKind k) -> str:
+    match k:
+        case ArtifactErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case ArtifactErrorKind.ConflictException:
+            return "ConflictException"
+        case ArtifactErrorKind.InternalServerException:
+            return "InternalServerException"
+        case ArtifactErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ArtifactErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case ArtifactErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case ArtifactErrorKind.ValidationException:
+            return "ValidationException"
+        case ArtifactErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

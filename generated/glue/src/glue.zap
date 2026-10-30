@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSGlue)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -10258,9 +10260,16 @@ struct XMLClassifier:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by glue_error_from_code.
-enum GlueError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum GlueErrorKind:
     AccessDeniedException
     AlreadyExistsException
     ColumnStatisticsTaskNotRunningException
@@ -10312,107 +10321,219 @@ enum GlueError:
     VersionMismatchException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def glue_error_from_code(str code) -> GlueError:
-    if code == "AccessDeniedException":
-        return GlueError.AccessDeniedException
-    if code == "AlreadyExistsException":
-        return GlueError.AlreadyExistsException
-    if code == "ColumnStatisticsTaskNotRunningException":
-        return GlueError.ColumnStatisticsTaskNotRunningException
-    if code == "ColumnStatisticsTaskRunningException":
-        return GlueError.ColumnStatisticsTaskRunningException
-    if code == "ColumnStatisticsTaskStoppingException":
-        return GlueError.ColumnStatisticsTaskStoppingException
-    if code == "ConcurrentModificationException":
-        return GlueError.ConcurrentModificationException
-    if code == "ConcurrentRunsExceededException":
-        return GlueError.ConcurrentRunsExceededException
-    if code == "ConditionCheckFailureException":
-        return GlueError.ConditionCheckFailureException
-    if code == "ConflictException":
-        return GlueError.ConflictException
-    if code == "CrawlerNotRunningException":
-        return GlueError.CrawlerNotRunningException
-    if code == "CrawlerRunningException":
-        return GlueError.CrawlerRunningException
-    if code == "CrawlerStoppingException":
-        return GlueError.CrawlerStoppingException
-    if code == "EntityNotFoundException":
-        return GlueError.EntityNotFoundException
-    if code == "FederatedResourceAlreadyExistsException":
-        return GlueError.FederatedResourceAlreadyExistsException
-    if code == "FederationSourceException":
-        return GlueError.FederationSourceException
-    if code == "FederationSourceRetryableException":
-        return GlueError.FederationSourceRetryableException
-    if code == "GlueEncryptionException":
-        return GlueError.GlueEncryptionException
-    if code == "IdempotentParameterMismatchException":
-        return GlueError.IdempotentParameterMismatchException
-    if code == "IllegalBlueprintStateException":
-        return GlueError.IllegalBlueprintStateException
-    if code == "IllegalSessionStateException":
-        return GlueError.IllegalSessionStateException
-    if code == "IllegalWorkflowStateException":
-        return GlueError.IllegalWorkflowStateException
-    if code == "IntegrationConflictOperationFault":
-        return GlueError.IntegrationConflictOperationFault
-    if code == "IntegrationNotFoundFault":
-        return GlueError.IntegrationNotFoundFault
-    if code == "IntegrationQuotaExceededFault":
-        return GlueError.IntegrationQuotaExceededFault
-    if code == "InternalServerException":
-        return GlueError.InternalServerException
-    if code == "InternalServiceException":
-        return GlueError.InternalServiceException
-    if code == "InvalidInputException":
-        return GlueError.InvalidInputException
-    if code == "InvalidIntegrationStateFault":
-        return GlueError.InvalidIntegrationStateFault
-    if code == "InvalidStateException":
-        return GlueError.InvalidStateException
-    if code == "KMSKeyNotAccessibleFault":
-        return GlueError.KMSKeyNotAccessibleFault
-    if code == "MLTransformNotReadyException":
-        return GlueError.MLTransformNotReadyException
-    if code == "MaterializedViewRefreshTaskNotRunningException":
-        return GlueError.MaterializedViewRefreshTaskNotRunningException
-    if code == "MaterializedViewRefreshTaskRunningException":
-        return GlueError.MaterializedViewRefreshTaskRunningException
-    if code == "MaterializedViewRefreshTaskStoppingException":
-        return GlueError.MaterializedViewRefreshTaskStoppingException
-    if code == "NoScheduleException":
-        return GlueError.NoScheduleException
-    if code == "OperationNotSupportedException":
-        return GlueError.OperationNotSupportedException
-    if code == "OperationTimeoutException":
-        return GlueError.OperationTimeoutException
-    if code == "PermissionTypeMismatchException":
-        return GlueError.PermissionTypeMismatchException
-    if code == "ResourceNotFoundException":
-        return GlueError.ResourceNotFoundException
-    if code == "ResourceNotReadyException":
-        return GlueError.ResourceNotReadyException
-    if code == "ResourceNumberLimitExceededException":
-        return GlueError.ResourceNumberLimitExceededException
-    if code == "SchedulerNotRunningException":
-        return GlueError.SchedulerNotRunningException
-    if code == "SchedulerRunningException":
-        return GlueError.SchedulerRunningException
-    if code == "SchedulerTransitioningException":
-        return GlueError.SchedulerTransitioningException
-    if code == "SessionBusyException":
-        return GlueError.SessionBusyException
-    if code == "TargetResourceNotFound":
-        return GlueError.TargetResourceNotFound
-    if code == "ThrottlingException":
-        return GlueError.ThrottlingException
-    if code == "ValidationException":
-        return GlueError.ValidationException
-    if code == "VersionMismatchException":
-        return GlueError.VersionMismatchException
-    return GlueError.Unknown(code=code)
+# Classify an AWS error code into `GlueErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def glue_error_kind(str code) -> GlueErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return GlueErrorKind.AccessDeniedException
+    if name == "AlreadyExistsException":
+        return GlueErrorKind.AlreadyExistsException
+    if name == "ColumnStatisticsTaskNotRunningException":
+        return GlueErrorKind.ColumnStatisticsTaskNotRunningException
+    if name == "ColumnStatisticsTaskRunningException":
+        return GlueErrorKind.ColumnStatisticsTaskRunningException
+    if name == "ColumnStatisticsTaskStoppingException":
+        return GlueErrorKind.ColumnStatisticsTaskStoppingException
+    if name == "ConcurrentModificationException":
+        return GlueErrorKind.ConcurrentModificationException
+    if name == "ConcurrentRunsExceededException":
+        return GlueErrorKind.ConcurrentRunsExceededException
+    if name == "ConditionCheckFailureException":
+        return GlueErrorKind.ConditionCheckFailureException
+    if name == "ConflictException":
+        return GlueErrorKind.ConflictException
+    if name == "CrawlerNotRunningException":
+        return GlueErrorKind.CrawlerNotRunningException
+    if name == "CrawlerRunningException":
+        return GlueErrorKind.CrawlerRunningException
+    if name == "CrawlerStoppingException":
+        return GlueErrorKind.CrawlerStoppingException
+    if name == "EntityNotFoundException":
+        return GlueErrorKind.EntityNotFoundException
+    if name == "FederatedResourceAlreadyExistsException":
+        return GlueErrorKind.FederatedResourceAlreadyExistsException
+    if name == "FederationSourceException":
+        return GlueErrorKind.FederationSourceException
+    if name == "FederationSourceRetryableException":
+        return GlueErrorKind.FederationSourceRetryableException
+    if name == "GlueEncryptionException":
+        return GlueErrorKind.GlueEncryptionException
+    if name == "IdempotentParameterMismatchException":
+        return GlueErrorKind.IdempotentParameterMismatchException
+    if name == "IllegalBlueprintStateException":
+        return GlueErrorKind.IllegalBlueprintStateException
+    if name == "IllegalSessionStateException":
+        return GlueErrorKind.IllegalSessionStateException
+    if name == "IllegalWorkflowStateException":
+        return GlueErrorKind.IllegalWorkflowStateException
+    if name == "IntegrationConflictOperationFault":
+        return GlueErrorKind.IntegrationConflictOperationFault
+    if name == "IntegrationNotFoundFault":
+        return GlueErrorKind.IntegrationNotFoundFault
+    if name == "IntegrationQuotaExceededFault":
+        return GlueErrorKind.IntegrationQuotaExceededFault
+    if name == "InternalServerException":
+        return GlueErrorKind.InternalServerException
+    if name == "InternalServiceException":
+        return GlueErrorKind.InternalServiceException
+    if name == "InvalidInputException":
+        return GlueErrorKind.InvalidInputException
+    if name == "InvalidIntegrationStateFault":
+        return GlueErrorKind.InvalidIntegrationStateFault
+    if name == "InvalidStateException":
+        return GlueErrorKind.InvalidStateException
+    if name == "KMSKeyNotAccessibleFault":
+        return GlueErrorKind.KMSKeyNotAccessibleFault
+    if name == "MLTransformNotReadyException":
+        return GlueErrorKind.MLTransformNotReadyException
+    if name == "MaterializedViewRefreshTaskNotRunningException":
+        return GlueErrorKind.MaterializedViewRefreshTaskNotRunningException
+    if name == "MaterializedViewRefreshTaskRunningException":
+        return GlueErrorKind.MaterializedViewRefreshTaskRunningException
+    if name == "MaterializedViewRefreshTaskStoppingException":
+        return GlueErrorKind.MaterializedViewRefreshTaskStoppingException
+    if name == "NoScheduleException":
+        return GlueErrorKind.NoScheduleException
+    if name == "OperationNotSupportedException":
+        return GlueErrorKind.OperationNotSupportedException
+    if name == "OperationTimeoutException":
+        return GlueErrorKind.OperationTimeoutException
+    if name == "PermissionTypeMismatchException":
+        return GlueErrorKind.PermissionTypeMismatchException
+    if name == "ResourceNotFoundException":
+        return GlueErrorKind.ResourceNotFoundException
+    if name == "ResourceNotReadyException":
+        return GlueErrorKind.ResourceNotReadyException
+    if name == "ResourceNumberLimitExceededException":
+        return GlueErrorKind.ResourceNumberLimitExceededException
+    if name == "SchedulerNotRunningException":
+        return GlueErrorKind.SchedulerNotRunningException
+    if name == "SchedulerRunningException":
+        return GlueErrorKind.SchedulerRunningException
+    if name == "SchedulerTransitioningException":
+        return GlueErrorKind.SchedulerTransitioningException
+    if name == "SessionBusyException":
+        return GlueErrorKind.SessionBusyException
+    if name == "TargetResourceNotFound":
+        return GlueErrorKind.TargetResourceNotFound
+    if name == "ThrottlingException":
+        return GlueErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return GlueErrorKind.ValidationException
+    if name == "VersionMismatchException":
+        return GlueErrorKind.VersionMismatchException
+    return GlueErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def glue_error_name(GlueErrorKind k) -> str:
+    match k:
+        case GlueErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case GlueErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case GlueErrorKind.ColumnStatisticsTaskNotRunningException:
+            return "ColumnStatisticsTaskNotRunningException"
+        case GlueErrorKind.ColumnStatisticsTaskRunningException:
+            return "ColumnStatisticsTaskRunningException"
+        case GlueErrorKind.ColumnStatisticsTaskStoppingException:
+            return "ColumnStatisticsTaskStoppingException"
+        case GlueErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case GlueErrorKind.ConcurrentRunsExceededException:
+            return "ConcurrentRunsExceededException"
+        case GlueErrorKind.ConditionCheckFailureException:
+            return "ConditionCheckFailureException"
+        case GlueErrorKind.ConflictException:
+            return "ConflictException"
+        case GlueErrorKind.CrawlerNotRunningException:
+            return "CrawlerNotRunningException"
+        case GlueErrorKind.CrawlerRunningException:
+            return "CrawlerRunningException"
+        case GlueErrorKind.CrawlerStoppingException:
+            return "CrawlerStoppingException"
+        case GlueErrorKind.EntityNotFoundException:
+            return "EntityNotFoundException"
+        case GlueErrorKind.FederatedResourceAlreadyExistsException:
+            return "FederatedResourceAlreadyExistsException"
+        case GlueErrorKind.FederationSourceException:
+            return "FederationSourceException"
+        case GlueErrorKind.FederationSourceRetryableException:
+            return "FederationSourceRetryableException"
+        case GlueErrorKind.GlueEncryptionException:
+            return "GlueEncryptionException"
+        case GlueErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case GlueErrorKind.IllegalBlueprintStateException:
+            return "IllegalBlueprintStateException"
+        case GlueErrorKind.IllegalSessionStateException:
+            return "IllegalSessionStateException"
+        case GlueErrorKind.IllegalWorkflowStateException:
+            return "IllegalWorkflowStateException"
+        case GlueErrorKind.IntegrationConflictOperationFault:
+            return "IntegrationConflictOperationFault"
+        case GlueErrorKind.IntegrationNotFoundFault:
+            return "IntegrationNotFoundFault"
+        case GlueErrorKind.IntegrationQuotaExceededFault:
+            return "IntegrationQuotaExceededFault"
+        case GlueErrorKind.InternalServerException:
+            return "InternalServerException"
+        case GlueErrorKind.InternalServiceException:
+            return "InternalServiceException"
+        case GlueErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case GlueErrorKind.InvalidIntegrationStateFault:
+            return "InvalidIntegrationStateFault"
+        case GlueErrorKind.InvalidStateException:
+            return "InvalidStateException"
+        case GlueErrorKind.KMSKeyNotAccessibleFault:
+            return "KMSKeyNotAccessibleFault"
+        case GlueErrorKind.MLTransformNotReadyException:
+            return "MLTransformNotReadyException"
+        case GlueErrorKind.MaterializedViewRefreshTaskNotRunningException:
+            return "MaterializedViewRefreshTaskNotRunningException"
+        case GlueErrorKind.MaterializedViewRefreshTaskRunningException:
+            return "MaterializedViewRefreshTaskRunningException"
+        case GlueErrorKind.MaterializedViewRefreshTaskStoppingException:
+            return "MaterializedViewRefreshTaskStoppingException"
+        case GlueErrorKind.NoScheduleException:
+            return "NoScheduleException"
+        case GlueErrorKind.OperationNotSupportedException:
+            return "OperationNotSupportedException"
+        case GlueErrorKind.OperationTimeoutException:
+            return "OperationTimeoutException"
+        case GlueErrorKind.PermissionTypeMismatchException:
+            return "PermissionTypeMismatchException"
+        case GlueErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case GlueErrorKind.ResourceNotReadyException:
+            return "ResourceNotReadyException"
+        case GlueErrorKind.ResourceNumberLimitExceededException:
+            return "ResourceNumberLimitExceededException"
+        case GlueErrorKind.SchedulerNotRunningException:
+            return "SchedulerNotRunningException"
+        case GlueErrorKind.SchedulerRunningException:
+            return "SchedulerRunningException"
+        case GlueErrorKind.SchedulerTransitioningException:
+            return "SchedulerTransitioningException"
+        case GlueErrorKind.SessionBusyException:
+            return "SessionBusyException"
+        case GlueErrorKind.TargetResourceNotFound:
+            return "TargetResourceNotFound"
+        case GlueErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case GlueErrorKind.ValidationException:
+            return "ValidationException"
+        case GlueErrorKind.VersionMismatchException:
+            return "VersionMismatchException"
+        case GlueErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

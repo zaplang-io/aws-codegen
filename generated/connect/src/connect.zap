@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service connect)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -12030,9 +12031,16 @@ struct WorkspaceThemeTypography:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by connect_error_from_code.
-enum ConnectError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ConnectErrorKind:
     AccessDeniedException
     ConditionalOperationFailedException
     ConflictException
@@ -12064,68 +12072,139 @@ enum ConnectError:
     UserNotFoundException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def connect_error_from_code(str code) -> ConnectError:
-    if code == "AccessDeniedException":
-        return ConnectError.AccessDeniedException
-    if code == "ConditionalOperationFailedException":
-        return ConnectError.ConditionalOperationFailedException
-    if code == "ConflictException":
-        return ConnectError.ConflictException
-    if code == "ContactFlowNotPublishedException":
-        return ConnectError.ContactFlowNotPublishedException
-    if code == "ContactNotFoundException":
-        return ConnectError.ContactNotFoundException
-    if code == "ContactNotTerminatedException":
-        return ConnectError.ContactNotTerminatedException
-    if code == "DestinationNotAllowedException":
-        return ConnectError.DestinationNotAllowedException
-    if code == "DuplicateResourceException":
-        return ConnectError.DuplicateResourceException
-    if code == "IdempotencyException":
-        return ConnectError.IdempotencyException
-    if code == "InternalServiceException":
-        return ConnectError.InternalServiceException
-    if code == "InvalidActiveRegionException":
-        return ConnectError.InvalidActiveRegionException
-    if code == "InvalidContactFlowException":
-        return ConnectError.InvalidContactFlowException
-    if code == "InvalidContactFlowModuleException":
-        return ConnectError.InvalidContactFlowModuleException
-    if code == "InvalidParameterException":
-        return ConnectError.InvalidParameterException
-    if code == "InvalidRequestException":
-        return ConnectError.InvalidRequestException
-    if code == "InvalidTestCaseException":
-        return ConnectError.InvalidTestCaseException
-    if code == "LimitExceededException":
-        return ConnectError.LimitExceededException
-    if code == "MaximumResultReturnedException":
-        return ConnectError.MaximumResultReturnedException
-    if code == "OutboundContactNotPermittedException":
-        return ConnectError.OutboundContactNotPermittedException
-    if code == "OutputTypeNotFoundException":
-        return ConnectError.OutputTypeNotFoundException
-    if code == "PropertyValidationException":
-        return ConnectError.PropertyValidationException
-    if code == "ResourceConflictException":
-        return ConnectError.ResourceConflictException
-    if code == "ResourceInUseException":
-        return ConnectError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return ConnectError.ResourceNotFoundException
-    if code == "ResourceNotReadyException":
-        return ConnectError.ResourceNotReadyException
-    if code == "ServiceQuotaExceededException":
-        return ConnectError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return ConnectError.ThrottlingException
-    if code == "TooManyRequestsException":
-        return ConnectError.TooManyRequestsException
-    if code == "UserNotFoundException":
-        return ConnectError.UserNotFoundException
-    return ConnectError.Unknown(code=code)
+# Classify an AWS error code into `ConnectErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def connect_error_kind(str code) -> ConnectErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return ConnectErrorKind.AccessDeniedException
+    if name == "ConditionalOperationFailedException":
+        return ConnectErrorKind.ConditionalOperationFailedException
+    if name == "ConflictException":
+        return ConnectErrorKind.ConflictException
+    if name == "ContactFlowNotPublishedException":
+        return ConnectErrorKind.ContactFlowNotPublishedException
+    if name == "ContactNotFoundException":
+        return ConnectErrorKind.ContactNotFoundException
+    if name == "ContactNotTerminatedException":
+        return ConnectErrorKind.ContactNotTerminatedException
+    if name == "DestinationNotAllowedException":
+        return ConnectErrorKind.DestinationNotAllowedException
+    if name == "DuplicateResourceException":
+        return ConnectErrorKind.DuplicateResourceException
+    if name == "IdempotencyException":
+        return ConnectErrorKind.IdempotencyException
+    if name == "InternalServiceException":
+        return ConnectErrorKind.InternalServiceException
+    if name == "InvalidActiveRegionException":
+        return ConnectErrorKind.InvalidActiveRegionException
+    if name == "InvalidContactFlowException":
+        return ConnectErrorKind.InvalidContactFlowException
+    if name == "InvalidContactFlowModuleException":
+        return ConnectErrorKind.InvalidContactFlowModuleException
+    if name == "InvalidParameterException":
+        return ConnectErrorKind.InvalidParameterException
+    if name == "InvalidRequestException":
+        return ConnectErrorKind.InvalidRequestException
+    if name == "InvalidTestCaseException":
+        return ConnectErrorKind.InvalidTestCaseException
+    if name == "LimitExceededException":
+        return ConnectErrorKind.LimitExceededException
+    if name == "MaximumResultReturnedException":
+        return ConnectErrorKind.MaximumResultReturnedException
+    if name == "OutboundContactNotPermittedException":
+        return ConnectErrorKind.OutboundContactNotPermittedException
+    if name == "OutputTypeNotFoundException":
+        return ConnectErrorKind.OutputTypeNotFoundException
+    if name == "PropertyValidationException":
+        return ConnectErrorKind.PropertyValidationException
+    if name == "ResourceConflictException":
+        return ConnectErrorKind.ResourceConflictException
+    if name == "ResourceInUseException":
+        return ConnectErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return ConnectErrorKind.ResourceNotFoundException
+    if name == "ResourceNotReadyException":
+        return ConnectErrorKind.ResourceNotReadyException
+    if name == "ServiceQuotaExceededException":
+        return ConnectErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return ConnectErrorKind.ThrottlingException
+    if name == "TooManyRequestsException":
+        return ConnectErrorKind.TooManyRequestsException
+    if name == "UserNotFoundException":
+        return ConnectErrorKind.UserNotFoundException
+    return ConnectErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def connect_error_name(ConnectErrorKind k) -> str:
+    match k:
+        case ConnectErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case ConnectErrorKind.ConditionalOperationFailedException:
+            return "ConditionalOperationFailedException"
+        case ConnectErrorKind.ConflictException:
+            return "ConflictException"
+        case ConnectErrorKind.ContactFlowNotPublishedException:
+            return "ContactFlowNotPublishedException"
+        case ConnectErrorKind.ContactNotFoundException:
+            return "ContactNotFoundException"
+        case ConnectErrorKind.ContactNotTerminatedException:
+            return "ContactNotTerminatedException"
+        case ConnectErrorKind.DestinationNotAllowedException:
+            return "DestinationNotAllowedException"
+        case ConnectErrorKind.DuplicateResourceException:
+            return "DuplicateResourceException"
+        case ConnectErrorKind.IdempotencyException:
+            return "IdempotencyException"
+        case ConnectErrorKind.InternalServiceException:
+            return "InternalServiceException"
+        case ConnectErrorKind.InvalidActiveRegionException:
+            return "InvalidActiveRegionException"
+        case ConnectErrorKind.InvalidContactFlowException:
+            return "InvalidContactFlowException"
+        case ConnectErrorKind.InvalidContactFlowModuleException:
+            return "InvalidContactFlowModuleException"
+        case ConnectErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case ConnectErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case ConnectErrorKind.InvalidTestCaseException:
+            return "InvalidTestCaseException"
+        case ConnectErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case ConnectErrorKind.MaximumResultReturnedException:
+            return "MaximumResultReturnedException"
+        case ConnectErrorKind.OutboundContactNotPermittedException:
+            return "OutboundContactNotPermittedException"
+        case ConnectErrorKind.OutputTypeNotFoundException:
+            return "OutputTypeNotFoundException"
+        case ConnectErrorKind.PropertyValidationException:
+            return "PropertyValidationException"
+        case ConnectErrorKind.ResourceConflictException:
+            return "ResourceConflictException"
+        case ConnectErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case ConnectErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ConnectErrorKind.ResourceNotReadyException:
+            return "ResourceNotReadyException"
+        case ConnectErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case ConnectErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case ConnectErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case ConnectErrorKind.UserNotFoundException:
+            return "UserNotFoundException"
+        case ConnectErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

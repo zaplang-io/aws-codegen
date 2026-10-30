@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSShield_20160616)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -806,9 +808,16 @@ struct ValidationExceptionField:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by shield_error_from_code.
-enum ShieldError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ShieldErrorKind:
     AccessDeniedException
     AccessDeniedForDependencyException
     InternalErrorException
@@ -824,35 +833,75 @@ enum ShieldError:
     ResourceNotFoundException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def shield_error_from_code(str code) -> ShieldError:
-    if code == "AccessDeniedException":
-        return ShieldError.AccessDeniedException
-    if code == "AccessDeniedForDependencyException":
-        return ShieldError.AccessDeniedForDependencyException
-    if code == "InternalErrorException":
-        return ShieldError.InternalErrorException
-    if code == "InvalidOperationException":
-        return ShieldError.InvalidOperationException
-    if code == "InvalidPaginationTokenException":
-        return ShieldError.InvalidPaginationTokenException
-    if code == "InvalidParameterException":
-        return ShieldError.InvalidParameterException
-    if code == "InvalidResourceException":
-        return ShieldError.InvalidResourceException
-    if code == "LimitsExceededException":
-        return ShieldError.LimitsExceededException
-    if code == "LockedSubscriptionException":
-        return ShieldError.LockedSubscriptionException
-    if code == "NoAssociatedRoleException":
-        return ShieldError.NoAssociatedRoleException
-    if code == "OptimisticLockException":
-        return ShieldError.OptimisticLockException
-    if code == "ResourceAlreadyExistsException":
-        return ShieldError.ResourceAlreadyExistsException
-    if code == "ResourceNotFoundException":
-        return ShieldError.ResourceNotFoundException
-    return ShieldError.Unknown(code=code)
+# Classify an AWS error code into `ShieldErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def shield_error_kind(str code) -> ShieldErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return ShieldErrorKind.AccessDeniedException
+    if name == "AccessDeniedForDependencyException":
+        return ShieldErrorKind.AccessDeniedForDependencyException
+    if name == "InternalErrorException":
+        return ShieldErrorKind.InternalErrorException
+    if name == "InvalidOperationException":
+        return ShieldErrorKind.InvalidOperationException
+    if name == "InvalidPaginationTokenException":
+        return ShieldErrorKind.InvalidPaginationTokenException
+    if name == "InvalidParameterException":
+        return ShieldErrorKind.InvalidParameterException
+    if name == "InvalidResourceException":
+        return ShieldErrorKind.InvalidResourceException
+    if name == "LimitsExceededException":
+        return ShieldErrorKind.LimitsExceededException
+    if name == "LockedSubscriptionException":
+        return ShieldErrorKind.LockedSubscriptionException
+    if name == "NoAssociatedRoleException":
+        return ShieldErrorKind.NoAssociatedRoleException
+    if name == "OptimisticLockException":
+        return ShieldErrorKind.OptimisticLockException
+    if name == "ResourceAlreadyExistsException":
+        return ShieldErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceNotFoundException":
+        return ShieldErrorKind.ResourceNotFoundException
+    return ShieldErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def shield_error_name(ShieldErrorKind k) -> str:
+    match k:
+        case ShieldErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case ShieldErrorKind.AccessDeniedForDependencyException:
+            return "AccessDeniedForDependencyException"
+        case ShieldErrorKind.InternalErrorException:
+            return "InternalErrorException"
+        case ShieldErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case ShieldErrorKind.InvalidPaginationTokenException:
+            return "InvalidPaginationTokenException"
+        case ShieldErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case ShieldErrorKind.InvalidResourceException:
+            return "InvalidResourceException"
+        case ShieldErrorKind.LimitsExceededException:
+            return "LimitsExceededException"
+        case ShieldErrorKind.LockedSubscriptionException:
+            return "LockedSubscriptionException"
+        case ShieldErrorKind.NoAssociatedRoleException:
+            return "NoAssociatedRoleException"
+        case ShieldErrorKind.OptimisticLockException:
+            return "OptimisticLockException"
+        case ShieldErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case ShieldErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ShieldErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

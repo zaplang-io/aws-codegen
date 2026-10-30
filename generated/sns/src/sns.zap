@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service sns, Version 2010-03-31)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The SNS query protocol: SigV4 service "sns" (also the endpoint prefix
@@ -522,9 +524,16 @@ struct VerifySMSSandboxPhoneNumberResult:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by sns_error_from_code.
-enum SNSError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SNSErrorKind:
     AuthorizationErrorException
     BatchEntryIdsNotDistinctException
     BatchRequestTooLongException
@@ -561,78 +570,159 @@ enum SNSError:
     VerificationException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def sns_error_from_code(str code) -> SNSError:
-    if code == "AuthorizationErrorException":
-        return SNSError.AuthorizationErrorException
-    if code == "BatchEntryIdsNotDistinctException":
-        return SNSError.BatchEntryIdsNotDistinctException
-    if code == "BatchRequestTooLongException":
-        return SNSError.BatchRequestTooLongException
-    if code == "ConcurrentAccessException":
-        return SNSError.ConcurrentAccessException
-    if code == "EmptyBatchRequestException":
-        return SNSError.EmptyBatchRequestException
-    if code == "EndpointDisabledException":
-        return SNSError.EndpointDisabledException
-    if code == "FilterPolicyLimitExceededException":
-        return SNSError.FilterPolicyLimitExceededException
-    if code == "InternalErrorException":
-        return SNSError.InternalErrorException
-    if code == "InvalidBatchEntryIdException":
-        return SNSError.InvalidBatchEntryIdException
-    if code == "InvalidParameterException":
-        return SNSError.InvalidParameterException
-    if code == "InvalidParameterValueException":
-        return SNSError.InvalidParameterValueException
-    if code == "InvalidSecurityException":
-        return SNSError.InvalidSecurityException
-    if code == "InvalidStateException":
-        return SNSError.InvalidStateException
-    if code == "KMSAccessDeniedException":
-        return SNSError.KMSAccessDeniedException
-    if code == "KMSDisabledException":
-        return SNSError.KMSDisabledException
-    if code == "KMSInvalidStateException":
-        return SNSError.KMSInvalidStateException
-    if code == "KMSNotFoundException":
-        return SNSError.KMSNotFoundException
-    if code == "KMSOptInRequired":
-        return SNSError.KMSOptInRequired
-    if code == "KMSThrottlingException":
-        return SNSError.KMSThrottlingException
-    if code == "NotFoundException":
-        return SNSError.NotFoundException
-    if code == "OptedOutException":
-        return SNSError.OptedOutException
-    if code == "PlatformApplicationDisabledException":
-        return SNSError.PlatformApplicationDisabledException
-    if code == "ReplayLimitExceededException":
-        return SNSError.ReplayLimitExceededException
-    if code == "ResourceNotFoundException":
-        return SNSError.ResourceNotFoundException
-    if code == "StaleTagException":
-        return SNSError.StaleTagException
-    if code == "SubscriptionLimitExceededException":
-        return SNSError.SubscriptionLimitExceededException
-    if code == "TagLimitExceededException":
-        return SNSError.TagLimitExceededException
-    if code == "TagPolicyException":
-        return SNSError.TagPolicyException
-    if code == "ThrottledException":
-        return SNSError.ThrottledException
-    if code == "TooManyEntriesInBatchRequestException":
-        return SNSError.TooManyEntriesInBatchRequestException
-    if code == "TopicLimitExceededException":
-        return SNSError.TopicLimitExceededException
-    if code == "UserErrorException":
-        return SNSError.UserErrorException
-    if code == "ValidationException":
-        return SNSError.ValidationException
-    if code == "VerificationException":
-        return SNSError.VerificationException
-    return SNSError.Unknown(code=code)
+# Classify an AWS error code into `SNSErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def sns_error_kind(str code) -> SNSErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AuthorizationErrorException":
+        return SNSErrorKind.AuthorizationErrorException
+    if name == "BatchEntryIdsNotDistinctException":
+        return SNSErrorKind.BatchEntryIdsNotDistinctException
+    if name == "BatchRequestTooLongException":
+        return SNSErrorKind.BatchRequestTooLongException
+    if name == "ConcurrentAccessException":
+        return SNSErrorKind.ConcurrentAccessException
+    if name == "EmptyBatchRequestException":
+        return SNSErrorKind.EmptyBatchRequestException
+    if name == "EndpointDisabledException":
+        return SNSErrorKind.EndpointDisabledException
+    if name == "FilterPolicyLimitExceededException":
+        return SNSErrorKind.FilterPolicyLimitExceededException
+    if name == "InternalErrorException":
+        return SNSErrorKind.InternalErrorException
+    if name == "InvalidBatchEntryIdException":
+        return SNSErrorKind.InvalidBatchEntryIdException
+    if name == "InvalidParameterException":
+        return SNSErrorKind.InvalidParameterException
+    if name == "InvalidParameterValueException":
+        return SNSErrorKind.InvalidParameterValueException
+    if name == "InvalidSecurityException":
+        return SNSErrorKind.InvalidSecurityException
+    if name == "InvalidStateException":
+        return SNSErrorKind.InvalidStateException
+    if name == "KMSAccessDeniedException":
+        return SNSErrorKind.KMSAccessDeniedException
+    if name == "KMSDisabledException":
+        return SNSErrorKind.KMSDisabledException
+    if name == "KMSInvalidStateException":
+        return SNSErrorKind.KMSInvalidStateException
+    if name == "KMSNotFoundException":
+        return SNSErrorKind.KMSNotFoundException
+    if name == "KMSOptInRequired":
+        return SNSErrorKind.KMSOptInRequired
+    if name == "KMSThrottlingException":
+        return SNSErrorKind.KMSThrottlingException
+    if name == "NotFoundException":
+        return SNSErrorKind.NotFoundException
+    if name == "OptedOutException":
+        return SNSErrorKind.OptedOutException
+    if name == "PlatformApplicationDisabledException":
+        return SNSErrorKind.PlatformApplicationDisabledException
+    if name == "ReplayLimitExceededException":
+        return SNSErrorKind.ReplayLimitExceededException
+    if name == "ResourceNotFoundException":
+        return SNSErrorKind.ResourceNotFoundException
+    if name == "StaleTagException":
+        return SNSErrorKind.StaleTagException
+    if name == "SubscriptionLimitExceededException":
+        return SNSErrorKind.SubscriptionLimitExceededException
+    if name == "TagLimitExceededException":
+        return SNSErrorKind.TagLimitExceededException
+    if name == "TagPolicyException":
+        return SNSErrorKind.TagPolicyException
+    if name == "ThrottledException":
+        return SNSErrorKind.ThrottledException
+    if name == "TooManyEntriesInBatchRequestException":
+        return SNSErrorKind.TooManyEntriesInBatchRequestException
+    if name == "TopicLimitExceededException":
+        return SNSErrorKind.TopicLimitExceededException
+    if name == "UserErrorException":
+        return SNSErrorKind.UserErrorException
+    if name == "ValidationException":
+        return SNSErrorKind.ValidationException
+    if name == "VerificationException":
+        return SNSErrorKind.VerificationException
+    return SNSErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def sns_error_name(SNSErrorKind k) -> str:
+    match k:
+        case SNSErrorKind.AuthorizationErrorException:
+            return "AuthorizationErrorException"
+        case SNSErrorKind.BatchEntryIdsNotDistinctException:
+            return "BatchEntryIdsNotDistinctException"
+        case SNSErrorKind.BatchRequestTooLongException:
+            return "BatchRequestTooLongException"
+        case SNSErrorKind.ConcurrentAccessException:
+            return "ConcurrentAccessException"
+        case SNSErrorKind.EmptyBatchRequestException:
+            return "EmptyBatchRequestException"
+        case SNSErrorKind.EndpointDisabledException:
+            return "EndpointDisabledException"
+        case SNSErrorKind.FilterPolicyLimitExceededException:
+            return "FilterPolicyLimitExceededException"
+        case SNSErrorKind.InternalErrorException:
+            return "InternalErrorException"
+        case SNSErrorKind.InvalidBatchEntryIdException:
+            return "InvalidBatchEntryIdException"
+        case SNSErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case SNSErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case SNSErrorKind.InvalidSecurityException:
+            return "InvalidSecurityException"
+        case SNSErrorKind.InvalidStateException:
+            return "InvalidStateException"
+        case SNSErrorKind.KMSAccessDeniedException:
+            return "KMSAccessDeniedException"
+        case SNSErrorKind.KMSDisabledException:
+            return "KMSDisabledException"
+        case SNSErrorKind.KMSInvalidStateException:
+            return "KMSInvalidStateException"
+        case SNSErrorKind.KMSNotFoundException:
+            return "KMSNotFoundException"
+        case SNSErrorKind.KMSOptInRequired:
+            return "KMSOptInRequired"
+        case SNSErrorKind.KMSThrottlingException:
+            return "KMSThrottlingException"
+        case SNSErrorKind.NotFoundException:
+            return "NotFoundException"
+        case SNSErrorKind.OptedOutException:
+            return "OptedOutException"
+        case SNSErrorKind.PlatformApplicationDisabledException:
+            return "PlatformApplicationDisabledException"
+        case SNSErrorKind.ReplayLimitExceededException:
+            return "ReplayLimitExceededException"
+        case SNSErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case SNSErrorKind.StaleTagException:
+            return "StaleTagException"
+        case SNSErrorKind.SubscriptionLimitExceededException:
+            return "SubscriptionLimitExceededException"
+        case SNSErrorKind.TagLimitExceededException:
+            return "TagLimitExceededException"
+        case SNSErrorKind.TagPolicyException:
+            return "TagPolicyException"
+        case SNSErrorKind.ThrottledException:
+            return "ThrottledException"
+        case SNSErrorKind.TooManyEntriesInBatchRequestException:
+            return "TooManyEntriesInBatchRequestException"
+        case SNSErrorKind.TopicLimitExceededException:
+            return "TopicLimitExceededException"
+        case SNSErrorKind.UserErrorException:
+            return "UserErrorException"
+        case SNSErrorKind.ValidationException:
+            return "ValidationException"
+        case SNSErrorKind.VerificationException:
+            return "VerificationException"
+        case SNSErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

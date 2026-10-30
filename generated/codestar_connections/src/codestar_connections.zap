@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix com.amazonaws.codestar.connections.CodeStar_connections_20191201)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.awsjson
 
 # The CodeStar_connections awsJson protocol: version 1.0, API id "com.amazonaws.codestar.connections.CodeStar_connections_20191201".
@@ -623,9 +625,16 @@ struct VpcConfiguration:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by codestar_connections_error_from_code.
-enum CodeStar_connectionsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CodeStar_connectionsErrorKind:
     AccessDeniedException
     ConcurrentModificationException
     ConditionalCheckFailedException
@@ -645,43 +654,91 @@ enum CodeStar_connectionsError:
     UpdateOutOfSyncException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def codestar_connections_error_from_code(str code) -> CodeStar_connectionsError:
-    if code == "AccessDeniedException":
-        return CodeStar_connectionsError.AccessDeniedException
-    if code == "ConcurrentModificationException":
-        return CodeStar_connectionsError.ConcurrentModificationException
-    if code == "ConditionalCheckFailedException":
-        return CodeStar_connectionsError.ConditionalCheckFailedException
-    if code == "ConflictException":
-        return CodeStar_connectionsError.ConflictException
-    if code == "InternalServerException":
-        return CodeStar_connectionsError.InternalServerException
-    if code == "InvalidInputException":
-        return CodeStar_connectionsError.InvalidInputException
-    if code == "LimitExceededException":
-        return CodeStar_connectionsError.LimitExceededException
-    if code == "ResourceAlreadyExistsException":
-        return CodeStar_connectionsError.ResourceAlreadyExistsException
-    if code == "ResourceNotFoundException":
-        return CodeStar_connectionsError.ResourceNotFoundException
-    if code == "ResourceUnavailableException":
-        return CodeStar_connectionsError.ResourceUnavailableException
-    if code == "RetryLatestCommitFailedException":
-        return CodeStar_connectionsError.RetryLatestCommitFailedException
-    if code == "SyncBlockerDoesNotExistException":
-        return CodeStar_connectionsError.SyncBlockerDoesNotExistException
-    if code == "SyncConfigurationStillExistsException":
-        return CodeStar_connectionsError.SyncConfigurationStillExistsException
-    if code == "ThrottlingException":
-        return CodeStar_connectionsError.ThrottlingException
-    if code == "UnsupportedOperationException":
-        return CodeStar_connectionsError.UnsupportedOperationException
-    if code == "UnsupportedProviderTypeException":
-        return CodeStar_connectionsError.UnsupportedProviderTypeException
-    if code == "UpdateOutOfSyncException":
-        return CodeStar_connectionsError.UpdateOutOfSyncException
-    return CodeStar_connectionsError.Unknown(code=code)
+# Classify an AWS error code into `CodeStar_connectionsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def codestar_connections_error_kind(str code) -> CodeStar_connectionsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return CodeStar_connectionsErrorKind.AccessDeniedException
+    if name == "ConcurrentModificationException":
+        return CodeStar_connectionsErrorKind.ConcurrentModificationException
+    if name == "ConditionalCheckFailedException":
+        return CodeStar_connectionsErrorKind.ConditionalCheckFailedException
+    if name == "ConflictException":
+        return CodeStar_connectionsErrorKind.ConflictException
+    if name == "InternalServerException":
+        return CodeStar_connectionsErrorKind.InternalServerException
+    if name == "InvalidInputException":
+        return CodeStar_connectionsErrorKind.InvalidInputException
+    if name == "LimitExceededException":
+        return CodeStar_connectionsErrorKind.LimitExceededException
+    if name == "ResourceAlreadyExistsException":
+        return CodeStar_connectionsErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceNotFoundException":
+        return CodeStar_connectionsErrorKind.ResourceNotFoundException
+    if name == "ResourceUnavailableException":
+        return CodeStar_connectionsErrorKind.ResourceUnavailableException
+    if name == "RetryLatestCommitFailedException":
+        return CodeStar_connectionsErrorKind.RetryLatestCommitFailedException
+    if name == "SyncBlockerDoesNotExistException":
+        return CodeStar_connectionsErrorKind.SyncBlockerDoesNotExistException
+    if name == "SyncConfigurationStillExistsException":
+        return CodeStar_connectionsErrorKind.SyncConfigurationStillExistsException
+    if name == "ThrottlingException":
+        return CodeStar_connectionsErrorKind.ThrottlingException
+    if name == "UnsupportedOperationException":
+        return CodeStar_connectionsErrorKind.UnsupportedOperationException
+    if name == "UnsupportedProviderTypeException":
+        return CodeStar_connectionsErrorKind.UnsupportedProviderTypeException
+    if name == "UpdateOutOfSyncException":
+        return CodeStar_connectionsErrorKind.UpdateOutOfSyncException
+    return CodeStar_connectionsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def codestar_connections_error_name(CodeStar_connectionsErrorKind k) -> str:
+    match k:
+        case CodeStar_connectionsErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case CodeStar_connectionsErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case CodeStar_connectionsErrorKind.ConditionalCheckFailedException:
+            return "ConditionalCheckFailedException"
+        case CodeStar_connectionsErrorKind.ConflictException:
+            return "ConflictException"
+        case CodeStar_connectionsErrorKind.InternalServerException:
+            return "InternalServerException"
+        case CodeStar_connectionsErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case CodeStar_connectionsErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case CodeStar_connectionsErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case CodeStar_connectionsErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CodeStar_connectionsErrorKind.ResourceUnavailableException:
+            return "ResourceUnavailableException"
+        case CodeStar_connectionsErrorKind.RetryLatestCommitFailedException:
+            return "RetryLatestCommitFailedException"
+        case CodeStar_connectionsErrorKind.SyncBlockerDoesNotExistException:
+            return "SyncBlockerDoesNotExistException"
+        case CodeStar_connectionsErrorKind.SyncConfigurationStillExistsException:
+            return "SyncConfigurationStillExistsException"
+        case CodeStar_connectionsErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case CodeStar_connectionsErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case CodeStar_connectionsErrorKind.UnsupportedProviderTypeException:
+            return "UnsupportedProviderTypeException"
+        case CodeStar_connectionsErrorKind.UpdateOutOfSyncException:
+            return "UpdateOutOfSyncException"
+        case CodeStar_connectionsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

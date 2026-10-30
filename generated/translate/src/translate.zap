@@ -6,8 +6,8 @@
 # Protocol: smithy-rpc-v2-cbor (SigV4 service translate, service shape AWSShineFrontendService_20170701)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + cbor) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
 # POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.cbor
 import datetime
@@ -460,9 +461,16 @@ struct UpdateParallelDataResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# smithy-rpc-v2-cbor body `__type` (cbor.cbor_error_type) code by translate_error_from_code.
-enum TranslateError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the smithy-rpc-v2-cbor body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum TranslateErrorKind:
     ConcurrentModificationException
     ConflictException
     DetectedLanguageLowConfidenceException
@@ -480,42 +488,83 @@ enum TranslateError:
     UnsupportedLanguagePairException
     Unknown(str code)
 
-# Map a smithy-rpc-v2-cbor error code to a variant. The code is the body's
-# `__type` (cbor.cbor_error_type / cbor.cbor_error.code); it is namespaced like
-# awsJson (e.g. "com.amazonaws.<svc>#<Name>"), so strip to the bare shape name
-# (the text after the last '#') before dispatching.
-def translate_error_from_code(str code) -> TranslateError:
-    if code == "ConcurrentModificationException":
-        return TranslateError.ConcurrentModificationException
-    if code == "ConflictException":
-        return TranslateError.ConflictException
-    if code == "DetectedLanguageLowConfidenceException":
-        return TranslateError.DetectedLanguageLowConfidenceException
-    if code == "InternalServerException":
-        return TranslateError.InternalServerException
-    if code == "InvalidFilterException":
-        return TranslateError.InvalidFilterException
-    if code == "InvalidParameterValueException":
-        return TranslateError.InvalidParameterValueException
-    if code == "InvalidRequestException":
-        return TranslateError.InvalidRequestException
-    if code == "LimitExceededException":
-        return TranslateError.LimitExceededException
-    if code == "ResourceNotFoundException":
-        return TranslateError.ResourceNotFoundException
-    if code == "ServiceUnavailableException":
-        return TranslateError.ServiceUnavailableException
-    if code == "TextSizeLimitExceededException":
-        return TranslateError.TextSizeLimitExceededException
-    if code == "TooManyRequestsException":
-        return TranslateError.TooManyRequestsException
-    if code == "TooManyTagsException":
-        return TranslateError.TooManyTagsException
-    if code == "UnsupportedDisplayLanguageCodeException":
-        return TranslateError.UnsupportedDisplayLanguageCodeException
-    if code == "UnsupportedLanguagePairException":
-        return TranslateError.UnsupportedLanguagePairException
-    return TranslateError.Unknown(code=code)
+# Classify an AWS error code into `TranslateErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def translate_error_kind(str code) -> TranslateErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConcurrentModificationException":
+        return TranslateErrorKind.ConcurrentModificationException
+    if name == "ConflictException":
+        return TranslateErrorKind.ConflictException
+    if name == "DetectedLanguageLowConfidenceException":
+        return TranslateErrorKind.DetectedLanguageLowConfidenceException
+    if name == "InternalServerException":
+        return TranslateErrorKind.InternalServerException
+    if name == "InvalidFilterException":
+        return TranslateErrorKind.InvalidFilterException
+    if name == "InvalidParameterValueException":
+        return TranslateErrorKind.InvalidParameterValueException
+    if name == "InvalidRequestException":
+        return TranslateErrorKind.InvalidRequestException
+    if name == "LimitExceededException":
+        return TranslateErrorKind.LimitExceededException
+    if name == "ResourceNotFoundException":
+        return TranslateErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return TranslateErrorKind.ServiceUnavailableException
+    if name == "TextSizeLimitExceededException":
+        return TranslateErrorKind.TextSizeLimitExceededException
+    if name == "TooManyRequestsException":
+        return TranslateErrorKind.TooManyRequestsException
+    if name == "TooManyTagsException":
+        return TranslateErrorKind.TooManyTagsException
+    if name == "UnsupportedDisplayLanguageCodeException":
+        return TranslateErrorKind.UnsupportedDisplayLanguageCodeException
+    if name == "UnsupportedLanguagePairException":
+        return TranslateErrorKind.UnsupportedLanguagePairException
+    return TranslateErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def translate_error_name(TranslateErrorKind k) -> str:
+    match k:
+        case TranslateErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case TranslateErrorKind.ConflictException:
+            return "ConflictException"
+        case TranslateErrorKind.DetectedLanguageLowConfidenceException:
+            return "DetectedLanguageLowConfidenceException"
+        case TranslateErrorKind.InternalServerException:
+            return "InternalServerException"
+        case TranslateErrorKind.InvalidFilterException:
+            return "InvalidFilterException"
+        case TranslateErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case TranslateErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case TranslateErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case TranslateErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case TranslateErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case TranslateErrorKind.TextSizeLimitExceededException:
+            return "TextSizeLimitExceededException"
+        case TranslateErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case TranslateErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case TranslateErrorKind.UnsupportedDisplayLanguageCodeException:
+            return "UnsupportedDisplayLanguageCodeException"
+        case TranslateErrorKind.UnsupportedLanguagePairException:
+            return "UnsupportedLanguagePairException"
+        case TranslateErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

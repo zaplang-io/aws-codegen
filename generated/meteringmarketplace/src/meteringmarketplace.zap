@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSMPMeteringService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.awsjson
 import datetime
 
@@ -212,9 +214,16 @@ struct UsageRecordResult:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by metering_marketplace_error_from_code.
-enum Marketplace_MeteringError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Marketplace_MeteringErrorKind:
     CustomerNotEntitledException
     DisabledApiException
     DuplicateRequestException
@@ -236,47 +245,99 @@ enum Marketplace_MeteringError:
     TimestampOutOfBoundsException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def metering_marketplace_error_from_code(str code) -> Marketplace_MeteringError:
-    if code == "CustomerNotEntitledException":
-        return Marketplace_MeteringError.CustomerNotEntitledException
-    if code == "DisabledApiException":
-        return Marketplace_MeteringError.DisabledApiException
-    if code == "DuplicateRequestException":
-        return Marketplace_MeteringError.DuplicateRequestException
-    if code == "ExpiredTokenException":
-        return Marketplace_MeteringError.ExpiredTokenException
-    if code == "IdempotencyConflictException":
-        return Marketplace_MeteringError.IdempotencyConflictException
-    if code == "InternalServiceErrorException":
-        return Marketplace_MeteringError.InternalServiceErrorException
-    if code == "InvalidCustomerIdentifierException":
-        return Marketplace_MeteringError.InvalidCustomerIdentifierException
-    if code == "InvalidEndpointRegionException":
-        return Marketplace_MeteringError.InvalidEndpointRegionException
-    if code == "InvalidLicenseException":
-        return Marketplace_MeteringError.InvalidLicenseException
-    if code == "InvalidProductCodeException":
-        return Marketplace_MeteringError.InvalidProductCodeException
-    if code == "InvalidPublicKeyVersionException":
-        return Marketplace_MeteringError.InvalidPublicKeyVersionException
-    if code == "InvalidRegionException":
-        return Marketplace_MeteringError.InvalidRegionException
-    if code == "InvalidTagException":
-        return Marketplace_MeteringError.InvalidTagException
-    if code == "InvalidTokenException":
-        return Marketplace_MeteringError.InvalidTokenException
-    if code == "InvalidUsageAllocationsException":
-        return Marketplace_MeteringError.InvalidUsageAllocationsException
-    if code == "InvalidUsageDimensionException":
-        return Marketplace_MeteringError.InvalidUsageDimensionException
-    if code == "PlatformNotSupportedException":
-        return Marketplace_MeteringError.PlatformNotSupportedException
-    if code == "ThrottlingException":
-        return Marketplace_MeteringError.ThrottlingException
-    if code == "TimestampOutOfBoundsException":
-        return Marketplace_MeteringError.TimestampOutOfBoundsException
-    return Marketplace_MeteringError.Unknown(code=code)
+# Classify an AWS error code into `Marketplace_MeteringErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def metering_marketplace_error_kind(str code) -> Marketplace_MeteringErrorKind:
+    auto name = errors.error_code(code)
+    if name == "CustomerNotEntitledException":
+        return Marketplace_MeteringErrorKind.CustomerNotEntitledException
+    if name == "DisabledApiException":
+        return Marketplace_MeteringErrorKind.DisabledApiException
+    if name == "DuplicateRequestException":
+        return Marketplace_MeteringErrorKind.DuplicateRequestException
+    if name == "ExpiredTokenException":
+        return Marketplace_MeteringErrorKind.ExpiredTokenException
+    if name == "IdempotencyConflictException":
+        return Marketplace_MeteringErrorKind.IdempotencyConflictException
+    if name == "InternalServiceErrorException":
+        return Marketplace_MeteringErrorKind.InternalServiceErrorException
+    if name == "InvalidCustomerIdentifierException":
+        return Marketplace_MeteringErrorKind.InvalidCustomerIdentifierException
+    if name == "InvalidEndpointRegionException":
+        return Marketplace_MeteringErrorKind.InvalidEndpointRegionException
+    if name == "InvalidLicenseException":
+        return Marketplace_MeteringErrorKind.InvalidLicenseException
+    if name == "InvalidProductCodeException":
+        return Marketplace_MeteringErrorKind.InvalidProductCodeException
+    if name == "InvalidPublicKeyVersionException":
+        return Marketplace_MeteringErrorKind.InvalidPublicKeyVersionException
+    if name == "InvalidRegionException":
+        return Marketplace_MeteringErrorKind.InvalidRegionException
+    if name == "InvalidTagException":
+        return Marketplace_MeteringErrorKind.InvalidTagException
+    if name == "InvalidTokenException":
+        return Marketplace_MeteringErrorKind.InvalidTokenException
+    if name == "InvalidUsageAllocationsException":
+        return Marketplace_MeteringErrorKind.InvalidUsageAllocationsException
+    if name == "InvalidUsageDimensionException":
+        return Marketplace_MeteringErrorKind.InvalidUsageDimensionException
+    if name == "PlatformNotSupportedException":
+        return Marketplace_MeteringErrorKind.PlatformNotSupportedException
+    if name == "ThrottlingException":
+        return Marketplace_MeteringErrorKind.ThrottlingException
+    if name == "TimestampOutOfBoundsException":
+        return Marketplace_MeteringErrorKind.TimestampOutOfBoundsException
+    return Marketplace_MeteringErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def metering_marketplace_error_name(Marketplace_MeteringErrorKind k) -> str:
+    match k:
+        case Marketplace_MeteringErrorKind.CustomerNotEntitledException:
+            return "CustomerNotEntitledException"
+        case Marketplace_MeteringErrorKind.DisabledApiException:
+            return "DisabledApiException"
+        case Marketplace_MeteringErrorKind.DuplicateRequestException:
+            return "DuplicateRequestException"
+        case Marketplace_MeteringErrorKind.ExpiredTokenException:
+            return "ExpiredTokenException"
+        case Marketplace_MeteringErrorKind.IdempotencyConflictException:
+            return "IdempotencyConflictException"
+        case Marketplace_MeteringErrorKind.InternalServiceErrorException:
+            return "InternalServiceErrorException"
+        case Marketplace_MeteringErrorKind.InvalidCustomerIdentifierException:
+            return "InvalidCustomerIdentifierException"
+        case Marketplace_MeteringErrorKind.InvalidEndpointRegionException:
+            return "InvalidEndpointRegionException"
+        case Marketplace_MeteringErrorKind.InvalidLicenseException:
+            return "InvalidLicenseException"
+        case Marketplace_MeteringErrorKind.InvalidProductCodeException:
+            return "InvalidProductCodeException"
+        case Marketplace_MeteringErrorKind.InvalidPublicKeyVersionException:
+            return "InvalidPublicKeyVersionException"
+        case Marketplace_MeteringErrorKind.InvalidRegionException:
+            return "InvalidRegionException"
+        case Marketplace_MeteringErrorKind.InvalidTagException:
+            return "InvalidTagException"
+        case Marketplace_MeteringErrorKind.InvalidTokenException:
+            return "InvalidTokenException"
+        case Marketplace_MeteringErrorKind.InvalidUsageAllocationsException:
+            return "InvalidUsageAllocationsException"
+        case Marketplace_MeteringErrorKind.InvalidUsageDimensionException:
+            return "InvalidUsageDimensionException"
+        case Marketplace_MeteringErrorKind.PlatformNotSupportedException:
+            return "PlatformNotSupportedException"
+        case Marketplace_MeteringErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Marketplace_MeteringErrorKind.TimestampOutOfBoundsException:
+            return "TimestampOutOfBoundsException"
+        case Marketplace_MeteringErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

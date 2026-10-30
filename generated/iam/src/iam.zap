@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service iam, Version 2010-05-08)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The IAM query protocol: SigV4 service "iam" (also the endpoint prefix
@@ -2105,9 +2107,16 @@ struct VirtualMFADevice:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by iam_error_from_code.
-enum IAMError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum IAMErrorKind:
     AccountNotManagementOrDelegatedAdministratorException
     CallerIsNotManagementAccountException
     ConcurrentModificationException
@@ -2148,86 +2157,175 @@ enum IAMError:
     UnrecognizedPublicKeyEncodingException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def iam_error_from_code(str code) -> IAMError:
-    if code == "AccountNotManagementOrDelegatedAdministratorException":
-        return IAMError.AccountNotManagementOrDelegatedAdministratorException
-    if code == "CallerIsNotManagementAccountException":
-        return IAMError.CallerIsNotManagementAccountException
-    if code == "ConcurrentModificationException":
-        return IAMError.ConcurrentModificationException
-    if code == "CredentialReportExpiredException":
-        return IAMError.CredentialReportExpiredException
-    if code == "CredentialReportNotPresentException":
-        return IAMError.CredentialReportNotPresentException
-    if code == "CredentialReportNotReadyException":
-        return IAMError.CredentialReportNotReadyException
-    if code == "DeleteConflictException":
-        return IAMError.DeleteConflictException
-    if code == "DuplicateCertificateException":
-        return IAMError.DuplicateCertificateException
-    if code == "DuplicateSSHPublicKeyException":
-        return IAMError.DuplicateSSHPublicKeyException
-    if code == "EntityAlreadyExistsException":
-        return IAMError.EntityAlreadyExistsException
-    if code == "EntityTemporarilyUnmodifiableException":
-        return IAMError.EntityTemporarilyUnmodifiableException
-    if code == "FeatureDisabledException":
-        return IAMError.FeatureDisabledException
-    if code == "FeatureEnabledException":
-        return IAMError.FeatureEnabledException
-    if code == "InvalidAuthenticationCodeException":
-        return IAMError.InvalidAuthenticationCodeException
-    if code == "InvalidCertificateException":
-        return IAMError.InvalidCertificateException
-    if code == "InvalidInputException":
-        return IAMError.InvalidInputException
-    if code == "InvalidPublicKeyException":
-        return IAMError.InvalidPublicKeyException
-    if code == "InvalidUserTypeException":
-        return IAMError.InvalidUserTypeException
-    if code == "KeyPairMismatchException":
-        return IAMError.KeyPairMismatchException
-    if code == "LimitExceededException":
-        return IAMError.LimitExceededException
-    if code == "MalformedCertificateException":
-        return IAMError.MalformedCertificateException
-    if code == "MalformedPolicyDocumentException":
-        return IAMError.MalformedPolicyDocumentException
-    if code == "NameConflictException":
-        return IAMError.NameConflictException
-    if code == "NoSuchEntityException":
-        return IAMError.NoSuchEntityException
-    if code == "OpenIdIdpCommunicationErrorException":
-        return IAMError.OpenIdIdpCommunicationErrorException
-    if code == "OrganizationNotFoundException":
-        return IAMError.OrganizationNotFoundException
-    if code == "OrganizationNotInAllFeaturesModeException":
-        return IAMError.OrganizationNotInAllFeaturesModeException
-    if code == "PasswordPolicyViolationException":
-        return IAMError.PasswordPolicyViolationException
-    if code == "PolicyEvaluationException":
-        return IAMError.PolicyEvaluationException
-    if code == "PolicyNotAttachableException":
-        return IAMError.PolicyNotAttachableException
-    if code == "ReportGenerationLimitExceededException":
-        return IAMError.ReportGenerationLimitExceededException
-    if code == "RoleModifiedException":
-        return IAMError.RoleModifiedException
-    if code == "RoleTemplateDisabledException":
-        return IAMError.RoleTemplateDisabledException
-    if code == "ServiceAccessNotEnabledException":
-        return IAMError.ServiceAccessNotEnabledException
-    if code == "ServiceFailureException":
-        return IAMError.ServiceFailureException
-    if code == "ServiceNotSupportedException":
-        return IAMError.ServiceNotSupportedException
-    if code == "UnmodifiableEntityException":
-        return IAMError.UnmodifiableEntityException
-    if code == "UnrecognizedPublicKeyEncodingException":
-        return IAMError.UnrecognizedPublicKeyEncodingException
-    return IAMError.Unknown(code=code)
+# Classify an AWS error code into `IAMErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def iam_error_kind(str code) -> IAMErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccountNotManagementOrDelegatedAdministratorException":
+        return IAMErrorKind.AccountNotManagementOrDelegatedAdministratorException
+    if name == "CallerIsNotManagementAccountException":
+        return IAMErrorKind.CallerIsNotManagementAccountException
+    if name == "ConcurrentModificationException":
+        return IAMErrorKind.ConcurrentModificationException
+    if name == "CredentialReportExpiredException":
+        return IAMErrorKind.CredentialReportExpiredException
+    if name == "CredentialReportNotPresentException":
+        return IAMErrorKind.CredentialReportNotPresentException
+    if name == "CredentialReportNotReadyException":
+        return IAMErrorKind.CredentialReportNotReadyException
+    if name == "DeleteConflictException":
+        return IAMErrorKind.DeleteConflictException
+    if name == "DuplicateCertificateException":
+        return IAMErrorKind.DuplicateCertificateException
+    if name == "DuplicateSSHPublicKeyException":
+        return IAMErrorKind.DuplicateSSHPublicKeyException
+    if name == "EntityAlreadyExistsException":
+        return IAMErrorKind.EntityAlreadyExistsException
+    if name == "EntityTemporarilyUnmodifiableException":
+        return IAMErrorKind.EntityTemporarilyUnmodifiableException
+    if name == "FeatureDisabledException":
+        return IAMErrorKind.FeatureDisabledException
+    if name == "FeatureEnabledException":
+        return IAMErrorKind.FeatureEnabledException
+    if name == "InvalidAuthenticationCodeException":
+        return IAMErrorKind.InvalidAuthenticationCodeException
+    if name == "InvalidCertificateException":
+        return IAMErrorKind.InvalidCertificateException
+    if name == "InvalidInputException":
+        return IAMErrorKind.InvalidInputException
+    if name == "InvalidPublicKeyException":
+        return IAMErrorKind.InvalidPublicKeyException
+    if name == "InvalidUserTypeException":
+        return IAMErrorKind.InvalidUserTypeException
+    if name == "KeyPairMismatchException":
+        return IAMErrorKind.KeyPairMismatchException
+    if name == "LimitExceededException":
+        return IAMErrorKind.LimitExceededException
+    if name == "MalformedCertificateException":
+        return IAMErrorKind.MalformedCertificateException
+    if name == "MalformedPolicyDocumentException":
+        return IAMErrorKind.MalformedPolicyDocumentException
+    if name == "NameConflictException":
+        return IAMErrorKind.NameConflictException
+    if name == "NoSuchEntityException":
+        return IAMErrorKind.NoSuchEntityException
+    if name == "OpenIdIdpCommunicationErrorException":
+        return IAMErrorKind.OpenIdIdpCommunicationErrorException
+    if name == "OrganizationNotFoundException":
+        return IAMErrorKind.OrganizationNotFoundException
+    if name == "OrganizationNotInAllFeaturesModeException":
+        return IAMErrorKind.OrganizationNotInAllFeaturesModeException
+    if name == "PasswordPolicyViolationException":
+        return IAMErrorKind.PasswordPolicyViolationException
+    if name == "PolicyEvaluationException":
+        return IAMErrorKind.PolicyEvaluationException
+    if name == "PolicyNotAttachableException":
+        return IAMErrorKind.PolicyNotAttachableException
+    if name == "ReportGenerationLimitExceededException":
+        return IAMErrorKind.ReportGenerationLimitExceededException
+    if name == "RoleModifiedException":
+        return IAMErrorKind.RoleModifiedException
+    if name == "RoleTemplateDisabledException":
+        return IAMErrorKind.RoleTemplateDisabledException
+    if name == "ServiceAccessNotEnabledException":
+        return IAMErrorKind.ServiceAccessNotEnabledException
+    if name == "ServiceFailureException":
+        return IAMErrorKind.ServiceFailureException
+    if name == "ServiceNotSupportedException":
+        return IAMErrorKind.ServiceNotSupportedException
+    if name == "UnmodifiableEntityException":
+        return IAMErrorKind.UnmodifiableEntityException
+    if name == "UnrecognizedPublicKeyEncodingException":
+        return IAMErrorKind.UnrecognizedPublicKeyEncodingException
+    return IAMErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def iam_error_name(IAMErrorKind k) -> str:
+    match k:
+        case IAMErrorKind.AccountNotManagementOrDelegatedAdministratorException:
+            return "AccountNotManagementOrDelegatedAdministratorException"
+        case IAMErrorKind.CallerIsNotManagementAccountException:
+            return "CallerIsNotManagementAccountException"
+        case IAMErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case IAMErrorKind.CredentialReportExpiredException:
+            return "CredentialReportExpiredException"
+        case IAMErrorKind.CredentialReportNotPresentException:
+            return "CredentialReportNotPresentException"
+        case IAMErrorKind.CredentialReportNotReadyException:
+            return "CredentialReportNotReadyException"
+        case IAMErrorKind.DeleteConflictException:
+            return "DeleteConflictException"
+        case IAMErrorKind.DuplicateCertificateException:
+            return "DuplicateCertificateException"
+        case IAMErrorKind.DuplicateSSHPublicKeyException:
+            return "DuplicateSSHPublicKeyException"
+        case IAMErrorKind.EntityAlreadyExistsException:
+            return "EntityAlreadyExistsException"
+        case IAMErrorKind.EntityTemporarilyUnmodifiableException:
+            return "EntityTemporarilyUnmodifiableException"
+        case IAMErrorKind.FeatureDisabledException:
+            return "FeatureDisabledException"
+        case IAMErrorKind.FeatureEnabledException:
+            return "FeatureEnabledException"
+        case IAMErrorKind.InvalidAuthenticationCodeException:
+            return "InvalidAuthenticationCodeException"
+        case IAMErrorKind.InvalidCertificateException:
+            return "InvalidCertificateException"
+        case IAMErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case IAMErrorKind.InvalidPublicKeyException:
+            return "InvalidPublicKeyException"
+        case IAMErrorKind.InvalidUserTypeException:
+            return "InvalidUserTypeException"
+        case IAMErrorKind.KeyPairMismatchException:
+            return "KeyPairMismatchException"
+        case IAMErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case IAMErrorKind.MalformedCertificateException:
+            return "MalformedCertificateException"
+        case IAMErrorKind.MalformedPolicyDocumentException:
+            return "MalformedPolicyDocumentException"
+        case IAMErrorKind.NameConflictException:
+            return "NameConflictException"
+        case IAMErrorKind.NoSuchEntityException:
+            return "NoSuchEntityException"
+        case IAMErrorKind.OpenIdIdpCommunicationErrorException:
+            return "OpenIdIdpCommunicationErrorException"
+        case IAMErrorKind.OrganizationNotFoundException:
+            return "OrganizationNotFoundException"
+        case IAMErrorKind.OrganizationNotInAllFeaturesModeException:
+            return "OrganizationNotInAllFeaturesModeException"
+        case IAMErrorKind.PasswordPolicyViolationException:
+            return "PasswordPolicyViolationException"
+        case IAMErrorKind.PolicyEvaluationException:
+            return "PolicyEvaluationException"
+        case IAMErrorKind.PolicyNotAttachableException:
+            return "PolicyNotAttachableException"
+        case IAMErrorKind.ReportGenerationLimitExceededException:
+            return "ReportGenerationLimitExceededException"
+        case IAMErrorKind.RoleModifiedException:
+            return "RoleModifiedException"
+        case IAMErrorKind.RoleTemplateDisabledException:
+            return "RoleTemplateDisabledException"
+        case IAMErrorKind.ServiceAccessNotEnabledException:
+            return "ServiceAccessNotEnabledException"
+        case IAMErrorKind.ServiceFailureException:
+            return "ServiceFailureException"
+        case IAMErrorKind.ServiceNotSupportedException:
+            return "ServiceNotSupportedException"
+        case IAMErrorKind.UnmodifiableEntityException:
+            return "UnmodifiableEntityException"
+        case IAMErrorKind.UnrecognizedPublicKeyEncodingException:
+            return "UnrecognizedPublicKeyEncodingException"
+        case IAMErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

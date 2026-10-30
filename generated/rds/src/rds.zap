@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service rds, Version 2014-10-31)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The RDS query protocol: SigV4 service "rds" (also the endpoint prefix
@@ -4321,9 +4323,16 @@ struct VpcSecurityGroupMembership:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by rds_error_from_code.
-enum RDSError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum RDSErrorKind:
     AuthorizationAlreadyExistsFault
     AuthorizationNotFoundFault
     AuthorizationQuotaExceededFault
@@ -4476,310 +4485,623 @@ enum RDSError:
     VpcEncryptionControlViolationException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def rds_error_from_code(str code) -> RDSError:
-    if code == "AuthorizationAlreadyExistsFault":
-        return RDSError.AuthorizationAlreadyExistsFault
-    if code == "AuthorizationNotFoundFault":
-        return RDSError.AuthorizationNotFoundFault
-    if code == "AuthorizationQuotaExceededFault":
-        return RDSError.AuthorizationQuotaExceededFault
-    if code == "BackupPolicyNotFoundFault":
-        return RDSError.BackupPolicyNotFoundFault
-    if code == "BlueGreenDeploymentAlreadyExistsFault":
-        return RDSError.BlueGreenDeploymentAlreadyExistsFault
-    if code == "BlueGreenDeploymentNotFoundFault":
-        return RDSError.BlueGreenDeploymentNotFoundFault
-    if code == "CertificateNotFoundFault":
-        return RDSError.CertificateNotFoundFault
-    if code == "CreateCustomDBEngineVersionFault":
-        return RDSError.CreateCustomDBEngineVersionFault
-    if code == "CustomAvailabilityZoneNotFoundFault":
-        return RDSError.CustomAvailabilityZoneNotFoundFault
-    if code == "CustomDBEngineVersionAlreadyExistsFault":
-        return RDSError.CustomDBEngineVersionAlreadyExistsFault
-    if code == "CustomDBEngineVersionNotFoundFault":
-        return RDSError.CustomDBEngineVersionNotFoundFault
-    if code == "CustomDBEngineVersionQuotaExceededFault":
-        return RDSError.CustomDBEngineVersionQuotaExceededFault
-    if code == "DBCapacityReservationAlreadyExistsFault":
-        return RDSError.DBCapacityReservationAlreadyExistsFault
-    if code == "DBCapacityReservationNotFoundFault":
-        return RDSError.DBCapacityReservationNotFoundFault
-    if code == "DBCapacityReservationUnsupportedFault":
-        return RDSError.DBCapacityReservationUnsupportedFault
-    if code == "DBClusterAlreadyExistsFault":
-        return RDSError.DBClusterAlreadyExistsFault
-    if code == "DBClusterAutomatedBackupNotFoundFault":
-        return RDSError.DBClusterAutomatedBackupNotFoundFault
-    if code == "DBClusterAutomatedBackupQuotaExceededFault":
-        return RDSError.DBClusterAutomatedBackupQuotaExceededFault
-    if code == "DBClusterBacktrackNotFoundFault":
-        return RDSError.DBClusterBacktrackNotFoundFault
-    if code == "DBClusterEndpointAlreadyExistsFault":
-        return RDSError.DBClusterEndpointAlreadyExistsFault
-    if code == "DBClusterEndpointNotFoundFault":
-        return RDSError.DBClusterEndpointNotFoundFault
-    if code == "DBClusterEndpointQuotaExceededFault":
-        return RDSError.DBClusterEndpointQuotaExceededFault
-    if code == "DBClusterNotFoundFault":
-        return RDSError.DBClusterNotFoundFault
-    if code == "DBClusterParameterGroupNotFoundFault":
-        return RDSError.DBClusterParameterGroupNotFoundFault
-    if code == "DBClusterQuotaExceededFault":
-        return RDSError.DBClusterQuotaExceededFault
-    if code == "DBClusterRoleAlreadyExistsFault":
-        return RDSError.DBClusterRoleAlreadyExistsFault
-    if code == "DBClusterRoleNotFoundFault":
-        return RDSError.DBClusterRoleNotFoundFault
-    if code == "DBClusterRoleQuotaExceededFault":
-        return RDSError.DBClusterRoleQuotaExceededFault
-    if code == "DBClusterSnapshotAlreadyExistsFault":
-        return RDSError.DBClusterSnapshotAlreadyExistsFault
-    if code == "DBClusterSnapshotNotFoundFault":
-        return RDSError.DBClusterSnapshotNotFoundFault
-    if code == "DBInstanceAlreadyExistsFault":
-        return RDSError.DBInstanceAlreadyExistsFault
-    if code == "DBInstanceAutomatedBackupNotFoundFault":
-        return RDSError.DBInstanceAutomatedBackupNotFoundFault
-    if code == "DBInstanceAutomatedBackupQuotaExceededFault":
-        return RDSError.DBInstanceAutomatedBackupQuotaExceededFault
-    if code == "DBInstanceNotFoundFault":
-        return RDSError.DBInstanceNotFoundFault
-    if code == "DBInstanceNotReadyFault":
-        return RDSError.DBInstanceNotReadyFault
-    if code == "DBInstanceRoleAlreadyExistsFault":
-        return RDSError.DBInstanceRoleAlreadyExistsFault
-    if code == "DBInstanceRoleNotFoundFault":
-        return RDSError.DBInstanceRoleNotFoundFault
-    if code == "DBInstanceRoleQuotaExceededFault":
-        return RDSError.DBInstanceRoleQuotaExceededFault
-    if code == "DBLogFileNotFoundFault":
-        return RDSError.DBLogFileNotFoundFault
-    if code == "DBParameterGroupAlreadyExistsFault":
-        return RDSError.DBParameterGroupAlreadyExistsFault
-    if code == "DBParameterGroupNotFoundFault":
-        return RDSError.DBParameterGroupNotFoundFault
-    if code == "DBParameterGroupQuotaExceededFault":
-        return RDSError.DBParameterGroupQuotaExceededFault
-    if code == "DBProxyAlreadyExistsFault":
-        return RDSError.DBProxyAlreadyExistsFault
-    if code == "DBProxyEndpointAlreadyExistsFault":
-        return RDSError.DBProxyEndpointAlreadyExistsFault
-    if code == "DBProxyEndpointNotFoundFault":
-        return RDSError.DBProxyEndpointNotFoundFault
-    if code == "DBProxyEndpointQuotaExceededFault":
-        return RDSError.DBProxyEndpointQuotaExceededFault
-    if code == "DBProxyNotFoundFault":
-        return RDSError.DBProxyNotFoundFault
-    if code == "DBProxyQuotaExceededFault":
-        return RDSError.DBProxyQuotaExceededFault
-    if code == "DBProxyTargetAlreadyRegisteredFault":
-        return RDSError.DBProxyTargetAlreadyRegisteredFault
-    if code == "DBProxyTargetGroupNotFoundFault":
-        return RDSError.DBProxyTargetGroupNotFoundFault
-    if code == "DBProxyTargetNotFoundFault":
-        return RDSError.DBProxyTargetNotFoundFault
-    if code == "DBSecurityGroupAlreadyExistsFault":
-        return RDSError.DBSecurityGroupAlreadyExistsFault
-    if code == "DBSecurityGroupNotFoundFault":
-        return RDSError.DBSecurityGroupNotFoundFault
-    if code == "DBSecurityGroupNotSupportedFault":
-        return RDSError.DBSecurityGroupNotSupportedFault
-    if code == "DBSecurityGroupQuotaExceededFault":
-        return RDSError.DBSecurityGroupQuotaExceededFault
-    if code == "DBShardGroupAlreadyExistsFault":
-        return RDSError.DBShardGroupAlreadyExistsFault
-    if code == "DBShardGroupNotFoundFault":
-        return RDSError.DBShardGroupNotFoundFault
-    if code == "DBSnapshotAlreadyExistsFault":
-        return RDSError.DBSnapshotAlreadyExistsFault
-    if code == "DBSnapshotNotFoundFault":
-        return RDSError.DBSnapshotNotFoundFault
-    if code == "DBSnapshotTenantDatabaseNotFoundFault":
-        return RDSError.DBSnapshotTenantDatabaseNotFoundFault
-    if code == "DBSubnetGroupAlreadyExistsFault":
-        return RDSError.DBSubnetGroupAlreadyExistsFault
-    if code == "DBSubnetGroupDoesNotCoverEnoughAZs":
-        return RDSError.DBSubnetGroupDoesNotCoverEnoughAZs
-    if code == "DBSubnetGroupNotAllowedFault":
-        return RDSError.DBSubnetGroupNotAllowedFault
-    if code == "DBSubnetGroupNotFoundFault":
-        return RDSError.DBSubnetGroupNotFoundFault
-    if code == "DBSubnetGroupQuotaExceededFault":
-        return RDSError.DBSubnetGroupQuotaExceededFault
-    if code == "DBSubnetQuotaExceededFault":
-        return RDSError.DBSubnetQuotaExceededFault
-    if code == "DBUpgradeDependencyFailureFault":
-        return RDSError.DBUpgradeDependencyFailureFault
-    if code == "DomainNotFoundFault":
-        return RDSError.DomainNotFoundFault
-    if code == "Ec2ImagePropertiesNotSupportedFault":
-        return RDSError.Ec2ImagePropertiesNotSupportedFault
-    if code == "EventSubscriptionQuotaExceededFault":
-        return RDSError.EventSubscriptionQuotaExceededFault
-    if code == "ExportTaskAlreadyExistsFault":
-        return RDSError.ExportTaskAlreadyExistsFault
-    if code == "ExportTaskNotFoundFault":
-        return RDSError.ExportTaskNotFoundFault
-    if code == "GlobalClusterAlreadyExistsFault":
-        return RDSError.GlobalClusterAlreadyExistsFault
-    if code == "GlobalClusterNotFoundFault":
-        return RDSError.GlobalClusterNotFoundFault
-    if code == "GlobalClusterQuotaExceededFault":
-        return RDSError.GlobalClusterQuotaExceededFault
-    if code == "IamRoleMissingPermissionsFault":
-        return RDSError.IamRoleMissingPermissionsFault
-    if code == "IamRoleNotFoundFault":
-        return RDSError.IamRoleNotFoundFault
-    if code == "InstanceQuotaExceededFault":
-        return RDSError.InstanceQuotaExceededFault
-    if code == "InsufficientAvailableIPsInSubnetFault":
-        return RDSError.InsufficientAvailableIPsInSubnetFault
-    if code == "InsufficientDBClusterCapacityFault":
-        return RDSError.InsufficientDBClusterCapacityFault
-    if code == "InsufficientDBInstanceCapacityFault":
-        return RDSError.InsufficientDBInstanceCapacityFault
-    if code == "InsufficientStorageClusterCapacityFault":
-        return RDSError.InsufficientStorageClusterCapacityFault
-    if code == "IntegrationAlreadyExistsFault":
-        return RDSError.IntegrationAlreadyExistsFault
-    if code == "IntegrationConflictOperationFault":
-        return RDSError.IntegrationConflictOperationFault
-    if code == "IntegrationNotFoundFault":
-        return RDSError.IntegrationNotFoundFault
-    if code == "IntegrationQuotaExceededFault":
-        return RDSError.IntegrationQuotaExceededFault
-    if code == "InvalidBlueGreenDeploymentStateFault":
-        return RDSError.InvalidBlueGreenDeploymentStateFault
-    if code == "InvalidCustomDBEngineVersionStateFault":
-        return RDSError.InvalidCustomDBEngineVersionStateFault
-    if code == "InvalidDBCapacityReservationStateFault":
-        return RDSError.InvalidDBCapacityReservationStateFault
-    if code == "InvalidDBClusterAutomatedBackupStateFault":
-        return RDSError.InvalidDBClusterAutomatedBackupStateFault
-    if code == "InvalidDBClusterCapacityFault":
-        return RDSError.InvalidDBClusterCapacityFault
-    if code == "InvalidDBClusterEndpointStateFault":
-        return RDSError.InvalidDBClusterEndpointStateFault
-    if code == "InvalidDBClusterSnapshotStateFault":
-        return RDSError.InvalidDBClusterSnapshotStateFault
-    if code == "InvalidDBClusterStateFault":
-        return RDSError.InvalidDBClusterStateFault
-    if code == "InvalidDBInstanceAutomatedBackupStateFault":
-        return RDSError.InvalidDBInstanceAutomatedBackupStateFault
-    if code == "InvalidDBInstanceStateFault":
-        return RDSError.InvalidDBInstanceStateFault
-    if code == "InvalidDBParameterGroupStateFault":
-        return RDSError.InvalidDBParameterGroupStateFault
-    if code == "InvalidDBProxyEndpointStateFault":
-        return RDSError.InvalidDBProxyEndpointStateFault
-    if code == "InvalidDBProxyStateFault":
-        return RDSError.InvalidDBProxyStateFault
-    if code == "InvalidDBSecurityGroupStateFault":
-        return RDSError.InvalidDBSecurityGroupStateFault
-    if code == "InvalidDBShardGroupStateFault":
-        return RDSError.InvalidDBShardGroupStateFault
-    if code == "InvalidDBSnapshotStateFault":
-        return RDSError.InvalidDBSnapshotStateFault
-    if code == "InvalidDBSubnetGroupFault":
-        return RDSError.InvalidDBSubnetGroupFault
-    if code == "InvalidDBSubnetGroupStateFault":
-        return RDSError.InvalidDBSubnetGroupStateFault
-    if code == "InvalidDBSubnetStateFault":
-        return RDSError.InvalidDBSubnetStateFault
-    if code == "InvalidEventSubscriptionStateFault":
-        return RDSError.InvalidEventSubscriptionStateFault
-    if code == "InvalidExportOnlyFault":
-        return RDSError.InvalidExportOnlyFault
-    if code == "InvalidExportSourceStateFault":
-        return RDSError.InvalidExportSourceStateFault
-    if code == "InvalidExportTaskStateFault":
-        return RDSError.InvalidExportTaskStateFault
-    if code == "InvalidGlobalClusterStateFault":
-        return RDSError.InvalidGlobalClusterStateFault
-    if code == "InvalidIntegrationStateFault":
-        return RDSError.InvalidIntegrationStateFault
-    if code == "InvalidOptionGroupStateFault":
-        return RDSError.InvalidOptionGroupStateFault
-    if code == "InvalidResourceStateFault":
-        return RDSError.InvalidResourceStateFault
-    if code == "InvalidRestoreFault":
-        return RDSError.InvalidRestoreFault
-    if code == "InvalidS3BucketFault":
-        return RDSError.InvalidS3BucketFault
-    if code == "InvalidSubnet":
-        return RDSError.InvalidSubnet
-    if code == "InvalidVPCNetworkStateFault":
-        return RDSError.InvalidVPCNetworkStateFault
-    if code == "KMSKeyNotAccessibleFault":
-        return RDSError.KMSKeyNotAccessibleFault
-    if code == "MaxDBShardGroupLimitReached":
-        return RDSError.MaxDBShardGroupLimitReached
-    if code == "NetworkTypeNotSupported":
-        return RDSError.NetworkTypeNotSupported
-    if code == "OptionGroupAlreadyExistsFault":
-        return RDSError.OptionGroupAlreadyExistsFault
-    if code == "OptionGroupNotFoundFault":
-        return RDSError.OptionGroupNotFoundFault
-    if code == "OptionGroupQuotaExceededFault":
-        return RDSError.OptionGroupQuotaExceededFault
-    if code == "PointInTimeRestoreNotEnabledFault":
-        return RDSError.PointInTimeRestoreNotEnabledFault
-    if code == "ProvisionedIopsNotAvailableInAZFault":
-        return RDSError.ProvisionedIopsNotAvailableInAZFault
-    if code == "ReservedDBInstanceAlreadyExistsFault":
-        return RDSError.ReservedDBInstanceAlreadyExistsFault
-    if code == "ReservedDBInstanceNotFoundFault":
-        return RDSError.ReservedDBInstanceNotFoundFault
-    if code == "ReservedDBInstanceQuotaExceededFault":
-        return RDSError.ReservedDBInstanceQuotaExceededFault
-    if code == "ReservedDBInstancesOfferingNotFoundFault":
-        return RDSError.ReservedDBInstancesOfferingNotFoundFault
-    if code == "ResourceNotFoundFault":
-        return RDSError.ResourceNotFoundFault
-    if code == "SNSInvalidTopicFault":
-        return RDSError.SNSInvalidTopicFault
-    if code == "SNSNoAuthorizationFault":
-        return RDSError.SNSNoAuthorizationFault
-    if code == "SNSTopicArnNotFoundFault":
-        return RDSError.SNSTopicArnNotFoundFault
-    if code == "SharedSnapshotQuotaExceededFault":
-        return RDSError.SharedSnapshotQuotaExceededFault
-    if code == "SnapshotQuotaExceededFault":
-        return RDSError.SnapshotQuotaExceededFault
-    if code == "SourceClusterNotSupportedFault":
-        return RDSError.SourceClusterNotSupportedFault
-    if code == "SourceDatabaseNotSupportedFault":
-        return RDSError.SourceDatabaseNotSupportedFault
-    if code == "SourceNotFoundFault":
-        return RDSError.SourceNotFoundFault
-    if code == "StorageQuotaExceededFault":
-        return RDSError.StorageQuotaExceededFault
-    if code == "StorageTypeNotAvailableFault":
-        return RDSError.StorageTypeNotAvailableFault
-    if code == "StorageTypeNotSupportedFault":
-        return RDSError.StorageTypeNotSupportedFault
-    if code == "SubnetAlreadyInUse":
-        return RDSError.SubnetAlreadyInUse
-    if code == "SubscriptionAlreadyExistFault":
-        return RDSError.SubscriptionAlreadyExistFault
-    if code == "SubscriptionCategoryNotFoundFault":
-        return RDSError.SubscriptionCategoryNotFoundFault
-    if code == "SubscriptionNotFoundFault":
-        return RDSError.SubscriptionNotFoundFault
-    if code == "TenantDatabaseAlreadyExistsFault":
-        return RDSError.TenantDatabaseAlreadyExistsFault
-    if code == "TenantDatabaseNotFoundFault":
-        return RDSError.TenantDatabaseNotFoundFault
-    if code == "TenantDatabaseQuotaExceededFault":
-        return RDSError.TenantDatabaseQuotaExceededFault
-    if code == "UnsupportedDBEngineVersionFault":
-        return RDSError.UnsupportedDBEngineVersionFault
-    if code == "VpcEncryptionControlViolationException":
-        return RDSError.VpcEncryptionControlViolationException
-    return RDSError.Unknown(code=code)
+# Classify an AWS error code into `RDSErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def rds_error_kind(str code) -> RDSErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AuthorizationAlreadyExistsFault":
+        return RDSErrorKind.AuthorizationAlreadyExistsFault
+    if name == "AuthorizationNotFoundFault":
+        return RDSErrorKind.AuthorizationNotFoundFault
+    if name == "AuthorizationQuotaExceededFault":
+        return RDSErrorKind.AuthorizationQuotaExceededFault
+    if name == "BackupPolicyNotFoundFault":
+        return RDSErrorKind.BackupPolicyNotFoundFault
+    if name == "BlueGreenDeploymentAlreadyExistsFault":
+        return RDSErrorKind.BlueGreenDeploymentAlreadyExistsFault
+    if name == "BlueGreenDeploymentNotFoundFault":
+        return RDSErrorKind.BlueGreenDeploymentNotFoundFault
+    if name == "CertificateNotFoundFault":
+        return RDSErrorKind.CertificateNotFoundFault
+    if name == "CreateCustomDBEngineVersionFault":
+        return RDSErrorKind.CreateCustomDBEngineVersionFault
+    if name == "CustomAvailabilityZoneNotFoundFault":
+        return RDSErrorKind.CustomAvailabilityZoneNotFoundFault
+    if name == "CustomDBEngineVersionAlreadyExistsFault":
+        return RDSErrorKind.CustomDBEngineVersionAlreadyExistsFault
+    if name == "CustomDBEngineVersionNotFoundFault":
+        return RDSErrorKind.CustomDBEngineVersionNotFoundFault
+    if name == "CustomDBEngineVersionQuotaExceededFault":
+        return RDSErrorKind.CustomDBEngineVersionQuotaExceededFault
+    if name == "DBCapacityReservationAlreadyExistsFault":
+        return RDSErrorKind.DBCapacityReservationAlreadyExistsFault
+    if name == "DBCapacityReservationNotFoundFault":
+        return RDSErrorKind.DBCapacityReservationNotFoundFault
+    if name == "DBCapacityReservationUnsupportedFault":
+        return RDSErrorKind.DBCapacityReservationUnsupportedFault
+    if name == "DBClusterAlreadyExistsFault":
+        return RDSErrorKind.DBClusterAlreadyExistsFault
+    if name == "DBClusterAutomatedBackupNotFoundFault":
+        return RDSErrorKind.DBClusterAutomatedBackupNotFoundFault
+    if name == "DBClusterAutomatedBackupQuotaExceededFault":
+        return RDSErrorKind.DBClusterAutomatedBackupQuotaExceededFault
+    if name == "DBClusterBacktrackNotFoundFault":
+        return RDSErrorKind.DBClusterBacktrackNotFoundFault
+    if name == "DBClusterEndpointAlreadyExistsFault":
+        return RDSErrorKind.DBClusterEndpointAlreadyExistsFault
+    if name == "DBClusterEndpointNotFoundFault":
+        return RDSErrorKind.DBClusterEndpointNotFoundFault
+    if name == "DBClusterEndpointQuotaExceededFault":
+        return RDSErrorKind.DBClusterEndpointQuotaExceededFault
+    if name == "DBClusterNotFoundFault":
+        return RDSErrorKind.DBClusterNotFoundFault
+    if name == "DBClusterParameterGroupNotFoundFault":
+        return RDSErrorKind.DBClusterParameterGroupNotFoundFault
+    if name == "DBClusterQuotaExceededFault":
+        return RDSErrorKind.DBClusterQuotaExceededFault
+    if name == "DBClusterRoleAlreadyExistsFault":
+        return RDSErrorKind.DBClusterRoleAlreadyExistsFault
+    if name == "DBClusterRoleNotFoundFault":
+        return RDSErrorKind.DBClusterRoleNotFoundFault
+    if name == "DBClusterRoleQuotaExceededFault":
+        return RDSErrorKind.DBClusterRoleQuotaExceededFault
+    if name == "DBClusterSnapshotAlreadyExistsFault":
+        return RDSErrorKind.DBClusterSnapshotAlreadyExistsFault
+    if name == "DBClusterSnapshotNotFoundFault":
+        return RDSErrorKind.DBClusterSnapshotNotFoundFault
+    if name == "DBInstanceAlreadyExistsFault":
+        return RDSErrorKind.DBInstanceAlreadyExistsFault
+    if name == "DBInstanceAutomatedBackupNotFoundFault":
+        return RDSErrorKind.DBInstanceAutomatedBackupNotFoundFault
+    if name == "DBInstanceAutomatedBackupQuotaExceededFault":
+        return RDSErrorKind.DBInstanceAutomatedBackupQuotaExceededFault
+    if name == "DBInstanceNotFoundFault":
+        return RDSErrorKind.DBInstanceNotFoundFault
+    if name == "DBInstanceNotReadyFault":
+        return RDSErrorKind.DBInstanceNotReadyFault
+    if name == "DBInstanceRoleAlreadyExistsFault":
+        return RDSErrorKind.DBInstanceRoleAlreadyExistsFault
+    if name == "DBInstanceRoleNotFoundFault":
+        return RDSErrorKind.DBInstanceRoleNotFoundFault
+    if name == "DBInstanceRoleQuotaExceededFault":
+        return RDSErrorKind.DBInstanceRoleQuotaExceededFault
+    if name == "DBLogFileNotFoundFault":
+        return RDSErrorKind.DBLogFileNotFoundFault
+    if name == "DBParameterGroupAlreadyExistsFault":
+        return RDSErrorKind.DBParameterGroupAlreadyExistsFault
+    if name == "DBParameterGroupNotFoundFault":
+        return RDSErrorKind.DBParameterGroupNotFoundFault
+    if name == "DBParameterGroupQuotaExceededFault":
+        return RDSErrorKind.DBParameterGroupQuotaExceededFault
+    if name == "DBProxyAlreadyExistsFault":
+        return RDSErrorKind.DBProxyAlreadyExistsFault
+    if name == "DBProxyEndpointAlreadyExistsFault":
+        return RDSErrorKind.DBProxyEndpointAlreadyExistsFault
+    if name == "DBProxyEndpointNotFoundFault":
+        return RDSErrorKind.DBProxyEndpointNotFoundFault
+    if name == "DBProxyEndpointQuotaExceededFault":
+        return RDSErrorKind.DBProxyEndpointQuotaExceededFault
+    if name == "DBProxyNotFoundFault":
+        return RDSErrorKind.DBProxyNotFoundFault
+    if name == "DBProxyQuotaExceededFault":
+        return RDSErrorKind.DBProxyQuotaExceededFault
+    if name == "DBProxyTargetAlreadyRegisteredFault":
+        return RDSErrorKind.DBProxyTargetAlreadyRegisteredFault
+    if name == "DBProxyTargetGroupNotFoundFault":
+        return RDSErrorKind.DBProxyTargetGroupNotFoundFault
+    if name == "DBProxyTargetNotFoundFault":
+        return RDSErrorKind.DBProxyTargetNotFoundFault
+    if name == "DBSecurityGroupAlreadyExistsFault":
+        return RDSErrorKind.DBSecurityGroupAlreadyExistsFault
+    if name == "DBSecurityGroupNotFoundFault":
+        return RDSErrorKind.DBSecurityGroupNotFoundFault
+    if name == "DBSecurityGroupNotSupportedFault":
+        return RDSErrorKind.DBSecurityGroupNotSupportedFault
+    if name == "DBSecurityGroupQuotaExceededFault":
+        return RDSErrorKind.DBSecurityGroupQuotaExceededFault
+    if name == "DBShardGroupAlreadyExistsFault":
+        return RDSErrorKind.DBShardGroupAlreadyExistsFault
+    if name == "DBShardGroupNotFoundFault":
+        return RDSErrorKind.DBShardGroupNotFoundFault
+    if name == "DBSnapshotAlreadyExistsFault":
+        return RDSErrorKind.DBSnapshotAlreadyExistsFault
+    if name == "DBSnapshotNotFoundFault":
+        return RDSErrorKind.DBSnapshotNotFoundFault
+    if name == "DBSnapshotTenantDatabaseNotFoundFault":
+        return RDSErrorKind.DBSnapshotTenantDatabaseNotFoundFault
+    if name == "DBSubnetGroupAlreadyExistsFault":
+        return RDSErrorKind.DBSubnetGroupAlreadyExistsFault
+    if name == "DBSubnetGroupDoesNotCoverEnoughAZs":
+        return RDSErrorKind.DBSubnetGroupDoesNotCoverEnoughAZs
+    if name == "DBSubnetGroupNotAllowedFault":
+        return RDSErrorKind.DBSubnetGroupNotAllowedFault
+    if name == "DBSubnetGroupNotFoundFault":
+        return RDSErrorKind.DBSubnetGroupNotFoundFault
+    if name == "DBSubnetGroupQuotaExceededFault":
+        return RDSErrorKind.DBSubnetGroupQuotaExceededFault
+    if name == "DBSubnetQuotaExceededFault":
+        return RDSErrorKind.DBSubnetQuotaExceededFault
+    if name == "DBUpgradeDependencyFailureFault":
+        return RDSErrorKind.DBUpgradeDependencyFailureFault
+    if name == "DomainNotFoundFault":
+        return RDSErrorKind.DomainNotFoundFault
+    if name == "Ec2ImagePropertiesNotSupportedFault":
+        return RDSErrorKind.Ec2ImagePropertiesNotSupportedFault
+    if name == "EventSubscriptionQuotaExceededFault":
+        return RDSErrorKind.EventSubscriptionQuotaExceededFault
+    if name == "ExportTaskAlreadyExistsFault":
+        return RDSErrorKind.ExportTaskAlreadyExistsFault
+    if name == "ExportTaskNotFoundFault":
+        return RDSErrorKind.ExportTaskNotFoundFault
+    if name == "GlobalClusterAlreadyExistsFault":
+        return RDSErrorKind.GlobalClusterAlreadyExistsFault
+    if name == "GlobalClusterNotFoundFault":
+        return RDSErrorKind.GlobalClusterNotFoundFault
+    if name == "GlobalClusterQuotaExceededFault":
+        return RDSErrorKind.GlobalClusterQuotaExceededFault
+    if name == "IamRoleMissingPermissionsFault":
+        return RDSErrorKind.IamRoleMissingPermissionsFault
+    if name == "IamRoleNotFoundFault":
+        return RDSErrorKind.IamRoleNotFoundFault
+    if name == "InstanceQuotaExceededFault":
+        return RDSErrorKind.InstanceQuotaExceededFault
+    if name == "InsufficientAvailableIPsInSubnetFault":
+        return RDSErrorKind.InsufficientAvailableIPsInSubnetFault
+    if name == "InsufficientDBClusterCapacityFault":
+        return RDSErrorKind.InsufficientDBClusterCapacityFault
+    if name == "InsufficientDBInstanceCapacityFault":
+        return RDSErrorKind.InsufficientDBInstanceCapacityFault
+    if name == "InsufficientStorageClusterCapacityFault":
+        return RDSErrorKind.InsufficientStorageClusterCapacityFault
+    if name == "IntegrationAlreadyExistsFault":
+        return RDSErrorKind.IntegrationAlreadyExistsFault
+    if name == "IntegrationConflictOperationFault":
+        return RDSErrorKind.IntegrationConflictOperationFault
+    if name == "IntegrationNotFoundFault":
+        return RDSErrorKind.IntegrationNotFoundFault
+    if name == "IntegrationQuotaExceededFault":
+        return RDSErrorKind.IntegrationQuotaExceededFault
+    if name == "InvalidBlueGreenDeploymentStateFault":
+        return RDSErrorKind.InvalidBlueGreenDeploymentStateFault
+    if name == "InvalidCustomDBEngineVersionStateFault":
+        return RDSErrorKind.InvalidCustomDBEngineVersionStateFault
+    if name == "InvalidDBCapacityReservationStateFault":
+        return RDSErrorKind.InvalidDBCapacityReservationStateFault
+    if name == "InvalidDBClusterAutomatedBackupStateFault":
+        return RDSErrorKind.InvalidDBClusterAutomatedBackupStateFault
+    if name == "InvalidDBClusterCapacityFault":
+        return RDSErrorKind.InvalidDBClusterCapacityFault
+    if name == "InvalidDBClusterEndpointStateFault":
+        return RDSErrorKind.InvalidDBClusterEndpointStateFault
+    if name == "InvalidDBClusterSnapshotStateFault":
+        return RDSErrorKind.InvalidDBClusterSnapshotStateFault
+    if name == "InvalidDBClusterStateFault":
+        return RDSErrorKind.InvalidDBClusterStateFault
+    if name == "InvalidDBInstanceAutomatedBackupStateFault":
+        return RDSErrorKind.InvalidDBInstanceAutomatedBackupStateFault
+    if name == "InvalidDBInstanceStateFault":
+        return RDSErrorKind.InvalidDBInstanceStateFault
+    if name == "InvalidDBParameterGroupStateFault":
+        return RDSErrorKind.InvalidDBParameterGroupStateFault
+    if name == "InvalidDBProxyEndpointStateFault":
+        return RDSErrorKind.InvalidDBProxyEndpointStateFault
+    if name == "InvalidDBProxyStateFault":
+        return RDSErrorKind.InvalidDBProxyStateFault
+    if name == "InvalidDBSecurityGroupStateFault":
+        return RDSErrorKind.InvalidDBSecurityGroupStateFault
+    if name == "InvalidDBShardGroupStateFault":
+        return RDSErrorKind.InvalidDBShardGroupStateFault
+    if name == "InvalidDBSnapshotStateFault":
+        return RDSErrorKind.InvalidDBSnapshotStateFault
+    if name == "InvalidDBSubnetGroupFault":
+        return RDSErrorKind.InvalidDBSubnetGroupFault
+    if name == "InvalidDBSubnetGroupStateFault":
+        return RDSErrorKind.InvalidDBSubnetGroupStateFault
+    if name == "InvalidDBSubnetStateFault":
+        return RDSErrorKind.InvalidDBSubnetStateFault
+    if name == "InvalidEventSubscriptionStateFault":
+        return RDSErrorKind.InvalidEventSubscriptionStateFault
+    if name == "InvalidExportOnlyFault":
+        return RDSErrorKind.InvalidExportOnlyFault
+    if name == "InvalidExportSourceStateFault":
+        return RDSErrorKind.InvalidExportSourceStateFault
+    if name == "InvalidExportTaskStateFault":
+        return RDSErrorKind.InvalidExportTaskStateFault
+    if name == "InvalidGlobalClusterStateFault":
+        return RDSErrorKind.InvalidGlobalClusterStateFault
+    if name == "InvalidIntegrationStateFault":
+        return RDSErrorKind.InvalidIntegrationStateFault
+    if name == "InvalidOptionGroupStateFault":
+        return RDSErrorKind.InvalidOptionGroupStateFault
+    if name == "InvalidResourceStateFault":
+        return RDSErrorKind.InvalidResourceStateFault
+    if name == "InvalidRestoreFault":
+        return RDSErrorKind.InvalidRestoreFault
+    if name == "InvalidS3BucketFault":
+        return RDSErrorKind.InvalidS3BucketFault
+    if name == "InvalidSubnet":
+        return RDSErrorKind.InvalidSubnet
+    if name == "InvalidVPCNetworkStateFault":
+        return RDSErrorKind.InvalidVPCNetworkStateFault
+    if name == "KMSKeyNotAccessibleFault":
+        return RDSErrorKind.KMSKeyNotAccessibleFault
+    if name == "MaxDBShardGroupLimitReached":
+        return RDSErrorKind.MaxDBShardGroupLimitReached
+    if name == "NetworkTypeNotSupported":
+        return RDSErrorKind.NetworkTypeNotSupported
+    if name == "OptionGroupAlreadyExistsFault":
+        return RDSErrorKind.OptionGroupAlreadyExistsFault
+    if name == "OptionGroupNotFoundFault":
+        return RDSErrorKind.OptionGroupNotFoundFault
+    if name == "OptionGroupQuotaExceededFault":
+        return RDSErrorKind.OptionGroupQuotaExceededFault
+    if name == "PointInTimeRestoreNotEnabledFault":
+        return RDSErrorKind.PointInTimeRestoreNotEnabledFault
+    if name == "ProvisionedIopsNotAvailableInAZFault":
+        return RDSErrorKind.ProvisionedIopsNotAvailableInAZFault
+    if name == "ReservedDBInstanceAlreadyExistsFault":
+        return RDSErrorKind.ReservedDBInstanceAlreadyExistsFault
+    if name == "ReservedDBInstanceNotFoundFault":
+        return RDSErrorKind.ReservedDBInstanceNotFoundFault
+    if name == "ReservedDBInstanceQuotaExceededFault":
+        return RDSErrorKind.ReservedDBInstanceQuotaExceededFault
+    if name == "ReservedDBInstancesOfferingNotFoundFault":
+        return RDSErrorKind.ReservedDBInstancesOfferingNotFoundFault
+    if name == "ResourceNotFoundFault":
+        return RDSErrorKind.ResourceNotFoundFault
+    if name == "SNSInvalidTopicFault":
+        return RDSErrorKind.SNSInvalidTopicFault
+    if name == "SNSNoAuthorizationFault":
+        return RDSErrorKind.SNSNoAuthorizationFault
+    if name == "SNSTopicArnNotFoundFault":
+        return RDSErrorKind.SNSTopicArnNotFoundFault
+    if name == "SharedSnapshotQuotaExceededFault":
+        return RDSErrorKind.SharedSnapshotQuotaExceededFault
+    if name == "SnapshotQuotaExceededFault":
+        return RDSErrorKind.SnapshotQuotaExceededFault
+    if name == "SourceClusterNotSupportedFault":
+        return RDSErrorKind.SourceClusterNotSupportedFault
+    if name == "SourceDatabaseNotSupportedFault":
+        return RDSErrorKind.SourceDatabaseNotSupportedFault
+    if name == "SourceNotFoundFault":
+        return RDSErrorKind.SourceNotFoundFault
+    if name == "StorageQuotaExceededFault":
+        return RDSErrorKind.StorageQuotaExceededFault
+    if name == "StorageTypeNotAvailableFault":
+        return RDSErrorKind.StorageTypeNotAvailableFault
+    if name == "StorageTypeNotSupportedFault":
+        return RDSErrorKind.StorageTypeNotSupportedFault
+    if name == "SubnetAlreadyInUse":
+        return RDSErrorKind.SubnetAlreadyInUse
+    if name == "SubscriptionAlreadyExistFault":
+        return RDSErrorKind.SubscriptionAlreadyExistFault
+    if name == "SubscriptionCategoryNotFoundFault":
+        return RDSErrorKind.SubscriptionCategoryNotFoundFault
+    if name == "SubscriptionNotFoundFault":
+        return RDSErrorKind.SubscriptionNotFoundFault
+    if name == "TenantDatabaseAlreadyExistsFault":
+        return RDSErrorKind.TenantDatabaseAlreadyExistsFault
+    if name == "TenantDatabaseNotFoundFault":
+        return RDSErrorKind.TenantDatabaseNotFoundFault
+    if name == "TenantDatabaseQuotaExceededFault":
+        return RDSErrorKind.TenantDatabaseQuotaExceededFault
+    if name == "UnsupportedDBEngineVersionFault":
+        return RDSErrorKind.UnsupportedDBEngineVersionFault
+    if name == "VpcEncryptionControlViolationException":
+        return RDSErrorKind.VpcEncryptionControlViolationException
+    return RDSErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def rds_error_name(RDSErrorKind k) -> str:
+    match k:
+        case RDSErrorKind.AuthorizationAlreadyExistsFault:
+            return "AuthorizationAlreadyExistsFault"
+        case RDSErrorKind.AuthorizationNotFoundFault:
+            return "AuthorizationNotFoundFault"
+        case RDSErrorKind.AuthorizationQuotaExceededFault:
+            return "AuthorizationQuotaExceededFault"
+        case RDSErrorKind.BackupPolicyNotFoundFault:
+            return "BackupPolicyNotFoundFault"
+        case RDSErrorKind.BlueGreenDeploymentAlreadyExistsFault:
+            return "BlueGreenDeploymentAlreadyExistsFault"
+        case RDSErrorKind.BlueGreenDeploymentNotFoundFault:
+            return "BlueGreenDeploymentNotFoundFault"
+        case RDSErrorKind.CertificateNotFoundFault:
+            return "CertificateNotFoundFault"
+        case RDSErrorKind.CreateCustomDBEngineVersionFault:
+            return "CreateCustomDBEngineVersionFault"
+        case RDSErrorKind.CustomAvailabilityZoneNotFoundFault:
+            return "CustomAvailabilityZoneNotFoundFault"
+        case RDSErrorKind.CustomDBEngineVersionAlreadyExistsFault:
+            return "CustomDBEngineVersionAlreadyExistsFault"
+        case RDSErrorKind.CustomDBEngineVersionNotFoundFault:
+            return "CustomDBEngineVersionNotFoundFault"
+        case RDSErrorKind.CustomDBEngineVersionQuotaExceededFault:
+            return "CustomDBEngineVersionQuotaExceededFault"
+        case RDSErrorKind.DBCapacityReservationAlreadyExistsFault:
+            return "DBCapacityReservationAlreadyExistsFault"
+        case RDSErrorKind.DBCapacityReservationNotFoundFault:
+            return "DBCapacityReservationNotFoundFault"
+        case RDSErrorKind.DBCapacityReservationUnsupportedFault:
+            return "DBCapacityReservationUnsupportedFault"
+        case RDSErrorKind.DBClusterAlreadyExistsFault:
+            return "DBClusterAlreadyExistsFault"
+        case RDSErrorKind.DBClusterAutomatedBackupNotFoundFault:
+            return "DBClusterAutomatedBackupNotFoundFault"
+        case RDSErrorKind.DBClusterAutomatedBackupQuotaExceededFault:
+            return "DBClusterAutomatedBackupQuotaExceededFault"
+        case RDSErrorKind.DBClusterBacktrackNotFoundFault:
+            return "DBClusterBacktrackNotFoundFault"
+        case RDSErrorKind.DBClusterEndpointAlreadyExistsFault:
+            return "DBClusterEndpointAlreadyExistsFault"
+        case RDSErrorKind.DBClusterEndpointNotFoundFault:
+            return "DBClusterEndpointNotFoundFault"
+        case RDSErrorKind.DBClusterEndpointQuotaExceededFault:
+            return "DBClusterEndpointQuotaExceededFault"
+        case RDSErrorKind.DBClusterNotFoundFault:
+            return "DBClusterNotFoundFault"
+        case RDSErrorKind.DBClusterParameterGroupNotFoundFault:
+            return "DBClusterParameterGroupNotFoundFault"
+        case RDSErrorKind.DBClusterQuotaExceededFault:
+            return "DBClusterQuotaExceededFault"
+        case RDSErrorKind.DBClusterRoleAlreadyExistsFault:
+            return "DBClusterRoleAlreadyExistsFault"
+        case RDSErrorKind.DBClusterRoleNotFoundFault:
+            return "DBClusterRoleNotFoundFault"
+        case RDSErrorKind.DBClusterRoleQuotaExceededFault:
+            return "DBClusterRoleQuotaExceededFault"
+        case RDSErrorKind.DBClusterSnapshotAlreadyExistsFault:
+            return "DBClusterSnapshotAlreadyExistsFault"
+        case RDSErrorKind.DBClusterSnapshotNotFoundFault:
+            return "DBClusterSnapshotNotFoundFault"
+        case RDSErrorKind.DBInstanceAlreadyExistsFault:
+            return "DBInstanceAlreadyExistsFault"
+        case RDSErrorKind.DBInstanceAutomatedBackupNotFoundFault:
+            return "DBInstanceAutomatedBackupNotFoundFault"
+        case RDSErrorKind.DBInstanceAutomatedBackupQuotaExceededFault:
+            return "DBInstanceAutomatedBackupQuotaExceededFault"
+        case RDSErrorKind.DBInstanceNotFoundFault:
+            return "DBInstanceNotFoundFault"
+        case RDSErrorKind.DBInstanceNotReadyFault:
+            return "DBInstanceNotReadyFault"
+        case RDSErrorKind.DBInstanceRoleAlreadyExistsFault:
+            return "DBInstanceRoleAlreadyExistsFault"
+        case RDSErrorKind.DBInstanceRoleNotFoundFault:
+            return "DBInstanceRoleNotFoundFault"
+        case RDSErrorKind.DBInstanceRoleQuotaExceededFault:
+            return "DBInstanceRoleQuotaExceededFault"
+        case RDSErrorKind.DBLogFileNotFoundFault:
+            return "DBLogFileNotFoundFault"
+        case RDSErrorKind.DBParameterGroupAlreadyExistsFault:
+            return "DBParameterGroupAlreadyExistsFault"
+        case RDSErrorKind.DBParameterGroupNotFoundFault:
+            return "DBParameterGroupNotFoundFault"
+        case RDSErrorKind.DBParameterGroupQuotaExceededFault:
+            return "DBParameterGroupQuotaExceededFault"
+        case RDSErrorKind.DBProxyAlreadyExistsFault:
+            return "DBProxyAlreadyExistsFault"
+        case RDSErrorKind.DBProxyEndpointAlreadyExistsFault:
+            return "DBProxyEndpointAlreadyExistsFault"
+        case RDSErrorKind.DBProxyEndpointNotFoundFault:
+            return "DBProxyEndpointNotFoundFault"
+        case RDSErrorKind.DBProxyEndpointQuotaExceededFault:
+            return "DBProxyEndpointQuotaExceededFault"
+        case RDSErrorKind.DBProxyNotFoundFault:
+            return "DBProxyNotFoundFault"
+        case RDSErrorKind.DBProxyQuotaExceededFault:
+            return "DBProxyQuotaExceededFault"
+        case RDSErrorKind.DBProxyTargetAlreadyRegisteredFault:
+            return "DBProxyTargetAlreadyRegisteredFault"
+        case RDSErrorKind.DBProxyTargetGroupNotFoundFault:
+            return "DBProxyTargetGroupNotFoundFault"
+        case RDSErrorKind.DBProxyTargetNotFoundFault:
+            return "DBProxyTargetNotFoundFault"
+        case RDSErrorKind.DBSecurityGroupAlreadyExistsFault:
+            return "DBSecurityGroupAlreadyExistsFault"
+        case RDSErrorKind.DBSecurityGroupNotFoundFault:
+            return "DBSecurityGroupNotFoundFault"
+        case RDSErrorKind.DBSecurityGroupNotSupportedFault:
+            return "DBSecurityGroupNotSupportedFault"
+        case RDSErrorKind.DBSecurityGroupQuotaExceededFault:
+            return "DBSecurityGroupQuotaExceededFault"
+        case RDSErrorKind.DBShardGroupAlreadyExistsFault:
+            return "DBShardGroupAlreadyExistsFault"
+        case RDSErrorKind.DBShardGroupNotFoundFault:
+            return "DBShardGroupNotFoundFault"
+        case RDSErrorKind.DBSnapshotAlreadyExistsFault:
+            return "DBSnapshotAlreadyExistsFault"
+        case RDSErrorKind.DBSnapshotNotFoundFault:
+            return "DBSnapshotNotFoundFault"
+        case RDSErrorKind.DBSnapshotTenantDatabaseNotFoundFault:
+            return "DBSnapshotTenantDatabaseNotFoundFault"
+        case RDSErrorKind.DBSubnetGroupAlreadyExistsFault:
+            return "DBSubnetGroupAlreadyExistsFault"
+        case RDSErrorKind.DBSubnetGroupDoesNotCoverEnoughAZs:
+            return "DBSubnetGroupDoesNotCoverEnoughAZs"
+        case RDSErrorKind.DBSubnetGroupNotAllowedFault:
+            return "DBSubnetGroupNotAllowedFault"
+        case RDSErrorKind.DBSubnetGroupNotFoundFault:
+            return "DBSubnetGroupNotFoundFault"
+        case RDSErrorKind.DBSubnetGroupQuotaExceededFault:
+            return "DBSubnetGroupQuotaExceededFault"
+        case RDSErrorKind.DBSubnetQuotaExceededFault:
+            return "DBSubnetQuotaExceededFault"
+        case RDSErrorKind.DBUpgradeDependencyFailureFault:
+            return "DBUpgradeDependencyFailureFault"
+        case RDSErrorKind.DomainNotFoundFault:
+            return "DomainNotFoundFault"
+        case RDSErrorKind.Ec2ImagePropertiesNotSupportedFault:
+            return "Ec2ImagePropertiesNotSupportedFault"
+        case RDSErrorKind.EventSubscriptionQuotaExceededFault:
+            return "EventSubscriptionQuotaExceededFault"
+        case RDSErrorKind.ExportTaskAlreadyExistsFault:
+            return "ExportTaskAlreadyExistsFault"
+        case RDSErrorKind.ExportTaskNotFoundFault:
+            return "ExportTaskNotFoundFault"
+        case RDSErrorKind.GlobalClusterAlreadyExistsFault:
+            return "GlobalClusterAlreadyExistsFault"
+        case RDSErrorKind.GlobalClusterNotFoundFault:
+            return "GlobalClusterNotFoundFault"
+        case RDSErrorKind.GlobalClusterQuotaExceededFault:
+            return "GlobalClusterQuotaExceededFault"
+        case RDSErrorKind.IamRoleMissingPermissionsFault:
+            return "IamRoleMissingPermissionsFault"
+        case RDSErrorKind.IamRoleNotFoundFault:
+            return "IamRoleNotFoundFault"
+        case RDSErrorKind.InstanceQuotaExceededFault:
+            return "InstanceQuotaExceededFault"
+        case RDSErrorKind.InsufficientAvailableIPsInSubnetFault:
+            return "InsufficientAvailableIPsInSubnetFault"
+        case RDSErrorKind.InsufficientDBClusterCapacityFault:
+            return "InsufficientDBClusterCapacityFault"
+        case RDSErrorKind.InsufficientDBInstanceCapacityFault:
+            return "InsufficientDBInstanceCapacityFault"
+        case RDSErrorKind.InsufficientStorageClusterCapacityFault:
+            return "InsufficientStorageClusterCapacityFault"
+        case RDSErrorKind.IntegrationAlreadyExistsFault:
+            return "IntegrationAlreadyExistsFault"
+        case RDSErrorKind.IntegrationConflictOperationFault:
+            return "IntegrationConflictOperationFault"
+        case RDSErrorKind.IntegrationNotFoundFault:
+            return "IntegrationNotFoundFault"
+        case RDSErrorKind.IntegrationQuotaExceededFault:
+            return "IntegrationQuotaExceededFault"
+        case RDSErrorKind.InvalidBlueGreenDeploymentStateFault:
+            return "InvalidBlueGreenDeploymentStateFault"
+        case RDSErrorKind.InvalidCustomDBEngineVersionStateFault:
+            return "InvalidCustomDBEngineVersionStateFault"
+        case RDSErrorKind.InvalidDBCapacityReservationStateFault:
+            return "InvalidDBCapacityReservationStateFault"
+        case RDSErrorKind.InvalidDBClusterAutomatedBackupStateFault:
+            return "InvalidDBClusterAutomatedBackupStateFault"
+        case RDSErrorKind.InvalidDBClusterCapacityFault:
+            return "InvalidDBClusterCapacityFault"
+        case RDSErrorKind.InvalidDBClusterEndpointStateFault:
+            return "InvalidDBClusterEndpointStateFault"
+        case RDSErrorKind.InvalidDBClusterSnapshotStateFault:
+            return "InvalidDBClusterSnapshotStateFault"
+        case RDSErrorKind.InvalidDBClusterStateFault:
+            return "InvalidDBClusterStateFault"
+        case RDSErrorKind.InvalidDBInstanceAutomatedBackupStateFault:
+            return "InvalidDBInstanceAutomatedBackupStateFault"
+        case RDSErrorKind.InvalidDBInstanceStateFault:
+            return "InvalidDBInstanceStateFault"
+        case RDSErrorKind.InvalidDBParameterGroupStateFault:
+            return "InvalidDBParameterGroupStateFault"
+        case RDSErrorKind.InvalidDBProxyEndpointStateFault:
+            return "InvalidDBProxyEndpointStateFault"
+        case RDSErrorKind.InvalidDBProxyStateFault:
+            return "InvalidDBProxyStateFault"
+        case RDSErrorKind.InvalidDBSecurityGroupStateFault:
+            return "InvalidDBSecurityGroupStateFault"
+        case RDSErrorKind.InvalidDBShardGroupStateFault:
+            return "InvalidDBShardGroupStateFault"
+        case RDSErrorKind.InvalidDBSnapshotStateFault:
+            return "InvalidDBSnapshotStateFault"
+        case RDSErrorKind.InvalidDBSubnetGroupFault:
+            return "InvalidDBSubnetGroupFault"
+        case RDSErrorKind.InvalidDBSubnetGroupStateFault:
+            return "InvalidDBSubnetGroupStateFault"
+        case RDSErrorKind.InvalidDBSubnetStateFault:
+            return "InvalidDBSubnetStateFault"
+        case RDSErrorKind.InvalidEventSubscriptionStateFault:
+            return "InvalidEventSubscriptionStateFault"
+        case RDSErrorKind.InvalidExportOnlyFault:
+            return "InvalidExportOnlyFault"
+        case RDSErrorKind.InvalidExportSourceStateFault:
+            return "InvalidExportSourceStateFault"
+        case RDSErrorKind.InvalidExportTaskStateFault:
+            return "InvalidExportTaskStateFault"
+        case RDSErrorKind.InvalidGlobalClusterStateFault:
+            return "InvalidGlobalClusterStateFault"
+        case RDSErrorKind.InvalidIntegrationStateFault:
+            return "InvalidIntegrationStateFault"
+        case RDSErrorKind.InvalidOptionGroupStateFault:
+            return "InvalidOptionGroupStateFault"
+        case RDSErrorKind.InvalidResourceStateFault:
+            return "InvalidResourceStateFault"
+        case RDSErrorKind.InvalidRestoreFault:
+            return "InvalidRestoreFault"
+        case RDSErrorKind.InvalidS3BucketFault:
+            return "InvalidS3BucketFault"
+        case RDSErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case RDSErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case RDSErrorKind.KMSKeyNotAccessibleFault:
+            return "KMSKeyNotAccessibleFault"
+        case RDSErrorKind.MaxDBShardGroupLimitReached:
+            return "MaxDBShardGroupLimitReached"
+        case RDSErrorKind.NetworkTypeNotSupported:
+            return "NetworkTypeNotSupported"
+        case RDSErrorKind.OptionGroupAlreadyExistsFault:
+            return "OptionGroupAlreadyExistsFault"
+        case RDSErrorKind.OptionGroupNotFoundFault:
+            return "OptionGroupNotFoundFault"
+        case RDSErrorKind.OptionGroupQuotaExceededFault:
+            return "OptionGroupQuotaExceededFault"
+        case RDSErrorKind.PointInTimeRestoreNotEnabledFault:
+            return "PointInTimeRestoreNotEnabledFault"
+        case RDSErrorKind.ProvisionedIopsNotAvailableInAZFault:
+            return "ProvisionedIopsNotAvailableInAZFault"
+        case RDSErrorKind.ReservedDBInstanceAlreadyExistsFault:
+            return "ReservedDBInstanceAlreadyExistsFault"
+        case RDSErrorKind.ReservedDBInstanceNotFoundFault:
+            return "ReservedDBInstanceNotFoundFault"
+        case RDSErrorKind.ReservedDBInstanceQuotaExceededFault:
+            return "ReservedDBInstanceQuotaExceededFault"
+        case RDSErrorKind.ReservedDBInstancesOfferingNotFoundFault:
+            return "ReservedDBInstancesOfferingNotFoundFault"
+        case RDSErrorKind.ResourceNotFoundFault:
+            return "ResourceNotFoundFault"
+        case RDSErrorKind.SNSInvalidTopicFault:
+            return "SNSInvalidTopicFault"
+        case RDSErrorKind.SNSNoAuthorizationFault:
+            return "SNSNoAuthorizationFault"
+        case RDSErrorKind.SNSTopicArnNotFoundFault:
+            return "SNSTopicArnNotFoundFault"
+        case RDSErrorKind.SharedSnapshotQuotaExceededFault:
+            return "SharedSnapshotQuotaExceededFault"
+        case RDSErrorKind.SnapshotQuotaExceededFault:
+            return "SnapshotQuotaExceededFault"
+        case RDSErrorKind.SourceClusterNotSupportedFault:
+            return "SourceClusterNotSupportedFault"
+        case RDSErrorKind.SourceDatabaseNotSupportedFault:
+            return "SourceDatabaseNotSupportedFault"
+        case RDSErrorKind.SourceNotFoundFault:
+            return "SourceNotFoundFault"
+        case RDSErrorKind.StorageQuotaExceededFault:
+            return "StorageQuotaExceededFault"
+        case RDSErrorKind.StorageTypeNotAvailableFault:
+            return "StorageTypeNotAvailableFault"
+        case RDSErrorKind.StorageTypeNotSupportedFault:
+            return "StorageTypeNotSupportedFault"
+        case RDSErrorKind.SubnetAlreadyInUse:
+            return "SubnetAlreadyInUse"
+        case RDSErrorKind.SubscriptionAlreadyExistFault:
+            return "SubscriptionAlreadyExistFault"
+        case RDSErrorKind.SubscriptionCategoryNotFoundFault:
+            return "SubscriptionCategoryNotFoundFault"
+        case RDSErrorKind.SubscriptionNotFoundFault:
+            return "SubscriptionNotFoundFault"
+        case RDSErrorKind.TenantDatabaseAlreadyExistsFault:
+            return "TenantDatabaseAlreadyExistsFault"
+        case RDSErrorKind.TenantDatabaseNotFoundFault:
+            return "TenantDatabaseNotFoundFault"
+        case RDSErrorKind.TenantDatabaseQuotaExceededFault:
+            return "TenantDatabaseQuotaExceededFault"
+        case RDSErrorKind.UnsupportedDBEngineVersionFault:
+            return "UnsupportedDBEngineVersionFault"
+        case RDSErrorKind.VpcEncryptionControlViolationException:
+            return "VpcEncryptionControlViolationException"
+        case RDSErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

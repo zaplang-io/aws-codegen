@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AmazonSSM)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -5709,9 +5711,16 @@ struct ValidationFindingScope:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by ssm_error_from_code.
-enum SSMError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SSMErrorKind:
     AccessDeniedException
     AlreadyExistsException
     AssociatedInstances
@@ -5854,289 +5863,583 @@ enum SSMError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def ssm_error_from_code(str code) -> SSMError:
-    if code == "AccessDeniedException":
-        return SSMError.AccessDeniedException
-    if code == "AlreadyExistsException":
-        return SSMError.AlreadyExistsException
-    if code == "AssociatedInstances":
-        return SSMError.AssociatedInstances
-    if code == "AssociationAlreadyExists":
-        return SSMError.AssociationAlreadyExists
-    if code == "AssociationDoesNotExist":
-        return SSMError.AssociationDoesNotExist
-    if code == "AssociationExecutionDoesNotExist":
-        return SSMError.AssociationExecutionDoesNotExist
-    if code == "AssociationLimitExceeded":
-        return SSMError.AssociationLimitExceeded
-    if code == "AssociationVersionLimitExceeded":
-        return SSMError.AssociationVersionLimitExceeded
-    if code == "AutomationDefinitionNotApprovedException":
-        return SSMError.AutomationDefinitionNotApprovedException
-    if code == "AutomationDefinitionNotFoundException":
-        return SSMError.AutomationDefinitionNotFoundException
-    if code == "AutomationDefinitionVersionNotFoundException":
-        return SSMError.AutomationDefinitionVersionNotFoundException
-    if code == "AutomationExecutionLimitExceededException":
-        return SSMError.AutomationExecutionLimitExceededException
-    if code == "AutomationExecutionNotFoundException":
-        return SSMError.AutomationExecutionNotFoundException
-    if code == "AutomationStepNotFoundException":
-        return SSMError.AutomationStepNotFoundException
-    if code == "ComplianceTypeCountLimitExceededException":
-        return SSMError.ComplianceTypeCountLimitExceededException
-    if code == "ConflictException":
-        return SSMError.ConflictException
-    if code == "CustomSchemaCountLimitExceededException":
-        return SSMError.CustomSchemaCountLimitExceededException
-    if code == "DocumentAlreadyExists":
-        return SSMError.DocumentAlreadyExists
-    if code == "DocumentLimitExceeded":
-        return SSMError.DocumentLimitExceeded
-    if code == "DocumentPermissionLimit":
-        return SSMError.DocumentPermissionLimit
-    if code == "DocumentVersionLimitExceeded":
-        return SSMError.DocumentVersionLimitExceeded
-    if code == "DoesNotExistException":
-        return SSMError.DoesNotExistException
-    if code == "DuplicateDocumentContent":
-        return SSMError.DuplicateDocumentContent
-    if code == "DuplicateDocumentVersionName":
-        return SSMError.DuplicateDocumentVersionName
-    if code == "DuplicateInstanceId":
-        return SSMError.DuplicateInstanceId
-    if code == "FeatureNotAvailableException":
-        return SSMError.FeatureNotAvailableException
-    if code == "HierarchyLevelLimitExceededException":
-        return SSMError.HierarchyLevelLimitExceededException
-    if code == "HierarchyTypeMismatchException":
-        return SSMError.HierarchyTypeMismatchException
-    if code == "IdempotentParameterMismatch":
-        return SSMError.IdempotentParameterMismatch
-    if code == "IncompatiblePolicyException":
-        return SSMError.IncompatiblePolicyException
-    if code == "InternalServerError":
-        return SSMError.InternalServerError
-    if code == "InvalidActivation":
-        return SSMError.InvalidActivation
-    if code == "InvalidActivationId":
-        return SSMError.InvalidActivationId
-    if code == "InvalidAggregatorException":
-        return SSMError.InvalidAggregatorException
-    if code == "InvalidAllowedPatternException":
-        return SSMError.InvalidAllowedPatternException
-    if code == "InvalidAssociation":
-        return SSMError.InvalidAssociation
-    if code == "InvalidAssociationVersion":
-        return SSMError.InvalidAssociationVersion
-    if code == "InvalidAutomationExecutionParametersException":
-        return SSMError.InvalidAutomationExecutionParametersException
-    if code == "InvalidAutomationSignalException":
-        return SSMError.InvalidAutomationSignalException
-    if code == "InvalidAutomationStatusUpdateException":
-        return SSMError.InvalidAutomationStatusUpdateException
-    if code == "InvalidCommandId":
-        return SSMError.InvalidCommandId
-    if code == "InvalidDeleteInventoryParametersException":
-        return SSMError.InvalidDeleteInventoryParametersException
-    if code == "InvalidDeletionIdException":
-        return SSMError.InvalidDeletionIdException
-    if code == "InvalidDocument":
-        return SSMError.InvalidDocument
-    if code == "InvalidDocumentContent":
-        return SSMError.InvalidDocumentContent
-    if code == "InvalidDocumentOperation":
-        return SSMError.InvalidDocumentOperation
-    if code == "InvalidDocumentSchemaVersion":
-        return SSMError.InvalidDocumentSchemaVersion
-    if code == "InvalidDocumentType":
-        return SSMError.InvalidDocumentType
-    if code == "InvalidDocumentVersion":
-        return SSMError.InvalidDocumentVersion
-    if code == "InvalidFilter":
-        return SSMError.InvalidFilter
-    if code == "InvalidFilterKey":
-        return SSMError.InvalidFilterKey
-    if code == "InvalidFilterOption":
-        return SSMError.InvalidFilterOption
-    if code == "InvalidFilterValue":
-        return SSMError.InvalidFilterValue
-    if code == "InvalidInstanceId":
-        return SSMError.InvalidInstanceId
-    if code == "InvalidInstanceInformationFilterValue":
-        return SSMError.InvalidInstanceInformationFilterValue
-    if code == "InvalidInstancePropertyFilterValue":
-        return SSMError.InvalidInstancePropertyFilterValue
-    if code == "InvalidInventoryGroupException":
-        return SSMError.InvalidInventoryGroupException
-    if code == "InvalidInventoryItemContextException":
-        return SSMError.InvalidInventoryItemContextException
-    if code == "InvalidInventoryRequestException":
-        return SSMError.InvalidInventoryRequestException
-    if code == "InvalidItemContentException":
-        return SSMError.InvalidItemContentException
-    if code == "InvalidKeyId":
-        return SSMError.InvalidKeyId
-    if code == "InvalidNextToken":
-        return SSMError.InvalidNextToken
-    if code == "InvalidNotificationConfig":
-        return SSMError.InvalidNotificationConfig
-    if code == "InvalidOptionException":
-        return SSMError.InvalidOptionException
-    if code == "InvalidOutputFolder":
-        return SSMError.InvalidOutputFolder
-    if code == "InvalidOutputLocation":
-        return SSMError.InvalidOutputLocation
-    if code == "InvalidParameters":
-        return SSMError.InvalidParameters
-    if code == "InvalidPermissionType":
-        return SSMError.InvalidPermissionType
-    if code == "InvalidPluginName":
-        return SSMError.InvalidPluginName
-    if code == "InvalidPolicyAttributeException":
-        return SSMError.InvalidPolicyAttributeException
-    if code == "InvalidPolicyTypeException":
-        return SSMError.InvalidPolicyTypeException
-    if code == "InvalidResourceId":
-        return SSMError.InvalidResourceId
-    if code == "InvalidResourceType":
-        return SSMError.InvalidResourceType
-    if code == "InvalidResultAttributeException":
-        return SSMError.InvalidResultAttributeException
-    if code == "InvalidRole":
-        return SSMError.InvalidRole
-    if code == "InvalidSchedule":
-        return SSMError.InvalidSchedule
-    if code == "InvalidTag":
-        return SSMError.InvalidTag
-    if code == "InvalidTarget":
-        return SSMError.InvalidTarget
-    if code == "InvalidTargetMaps":
-        return SSMError.InvalidTargetMaps
-    if code == "InvalidTypeNameException":
-        return SSMError.InvalidTypeNameException
-    if code == "InvalidUpdate":
-        return SSMError.InvalidUpdate
-    if code == "InvocationDoesNotExist":
-        return SSMError.InvocationDoesNotExist
-    if code == "ItemContentMismatchException":
-        return SSMError.ItemContentMismatchException
-    if code == "ItemSizeLimitExceededException":
-        return SSMError.ItemSizeLimitExceededException
-    if code == "MalformedResourcePolicyDocumentException":
-        return SSMError.MalformedResourcePolicyDocumentException
-    if code == "MaxDocumentSizeExceeded":
-        return SSMError.MaxDocumentSizeExceeded
-    if code == "NoLongerSupportedException":
-        return SSMError.NoLongerSupportedException
-    if code == "OpsItemAccessDeniedException":
-        return SSMError.OpsItemAccessDeniedException
-    if code == "OpsItemAlreadyExistsException":
-        return SSMError.OpsItemAlreadyExistsException
-    if code == "OpsItemConflictException":
-        return SSMError.OpsItemConflictException
-    if code == "OpsItemInvalidParameterException":
-        return SSMError.OpsItemInvalidParameterException
-    if code == "OpsItemLimitExceededException":
-        return SSMError.OpsItemLimitExceededException
-    if code == "OpsItemNotFoundException":
-        return SSMError.OpsItemNotFoundException
-    if code == "OpsItemRelatedItemAlreadyExistsException":
-        return SSMError.OpsItemRelatedItemAlreadyExistsException
-    if code == "OpsItemRelatedItemAssociationNotFoundException":
-        return SSMError.OpsItemRelatedItemAssociationNotFoundException
-    if code == "OpsMetadataAlreadyExistsException":
-        return SSMError.OpsMetadataAlreadyExistsException
-    if code == "OpsMetadataInvalidArgumentException":
-        return SSMError.OpsMetadataInvalidArgumentException
-    if code == "OpsMetadataKeyLimitExceededException":
-        return SSMError.OpsMetadataKeyLimitExceededException
-    if code == "OpsMetadataLimitExceededException":
-        return SSMError.OpsMetadataLimitExceededException
-    if code == "OpsMetadataNotFoundException":
-        return SSMError.OpsMetadataNotFoundException
-    if code == "OpsMetadataTooManyUpdatesException":
-        return SSMError.OpsMetadataTooManyUpdatesException
-    if code == "ParameterAlreadyExists":
-        return SSMError.ParameterAlreadyExists
-    if code == "ParameterLimitExceeded":
-        return SSMError.ParameterLimitExceeded
-    if code == "ParameterMaxVersionLimitExceeded":
-        return SSMError.ParameterMaxVersionLimitExceeded
-    if code == "ParameterNotFound":
-        return SSMError.ParameterNotFound
-    if code == "ParameterPatternMismatchException":
-        return SSMError.ParameterPatternMismatchException
-    if code == "ParameterVersionLabelLimitExceeded":
-        return SSMError.ParameterVersionLabelLimitExceeded
-    if code == "ParameterVersionNotFound":
-        return SSMError.ParameterVersionNotFound
-    if code == "PoliciesLimitExceededException":
-        return SSMError.PoliciesLimitExceededException
-    if code == "ResourceDataSyncAlreadyExistsException":
-        return SSMError.ResourceDataSyncAlreadyExistsException
-    if code == "ResourceDataSyncConflictException":
-        return SSMError.ResourceDataSyncConflictException
-    if code == "ResourceDataSyncCountExceededException":
-        return SSMError.ResourceDataSyncCountExceededException
-    if code == "ResourceDataSyncInvalidConfigurationException":
-        return SSMError.ResourceDataSyncInvalidConfigurationException
-    if code == "ResourceDataSyncNotFoundException":
-        return SSMError.ResourceDataSyncNotFoundException
-    if code == "ResourceInUseException":
-        return SSMError.ResourceInUseException
-    if code == "ResourceLimitExceededException":
-        return SSMError.ResourceLimitExceededException
-    if code == "ResourceNotFoundException":
-        return SSMError.ResourceNotFoundException
-    if code == "ResourcePolicyConflictException":
-        return SSMError.ResourcePolicyConflictException
-    if code == "ResourcePolicyInvalidParameterException":
-        return SSMError.ResourcePolicyInvalidParameterException
-    if code == "ResourcePolicyLimitExceededException":
-        return SSMError.ResourcePolicyLimitExceededException
-    if code == "ResourcePolicyNotFoundException":
-        return SSMError.ResourcePolicyNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return SSMError.ServiceQuotaExceededException
-    if code == "ServiceSettingNotFound":
-        return SSMError.ServiceSettingNotFound
-    if code == "StatusUnchanged":
-        return SSMError.StatusUnchanged
-    if code == "SubTypeCountLimitExceededException":
-        return SSMError.SubTypeCountLimitExceededException
-    if code == "TargetInUseException":
-        return SSMError.TargetInUseException
-    if code == "TargetNotConnected":
-        return SSMError.TargetNotConnected
-    if code == "ThrottlingException":
-        return SSMError.ThrottlingException
-    if code == "TooManyTagsError":
-        return SSMError.TooManyTagsError
-    if code == "TooManyUpdates":
-        return SSMError.TooManyUpdates
-    if code == "TotalSizeLimitExceededException":
-        return SSMError.TotalSizeLimitExceededException
-    if code == "UnsupportedCalendarException":
-        return SSMError.UnsupportedCalendarException
-    if code == "UnsupportedFeatureRequiredException":
-        return SSMError.UnsupportedFeatureRequiredException
-    if code == "UnsupportedInventoryItemContextException":
-        return SSMError.UnsupportedInventoryItemContextException
-    if code == "UnsupportedInventorySchemaVersionException":
-        return SSMError.UnsupportedInventorySchemaVersionException
-    if code == "UnsupportedOperatingSystem":
-        return SSMError.UnsupportedOperatingSystem
-    if code == "UnsupportedOperationException":
-        return SSMError.UnsupportedOperationException
-    if code == "UnsupportedParameterType":
-        return SSMError.UnsupportedParameterType
-    if code == "UnsupportedPlatformType":
-        return SSMError.UnsupportedPlatformType
-    if code == "ValidationException":
-        return SSMError.ValidationException
-    return SSMError.Unknown(code=code)
+# Classify an AWS error code into `SSMErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def ssm_error_kind(str code) -> SSMErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return SSMErrorKind.AccessDeniedException
+    if name == "AlreadyExistsException":
+        return SSMErrorKind.AlreadyExistsException
+    if name == "AssociatedInstances":
+        return SSMErrorKind.AssociatedInstances
+    if name == "AssociationAlreadyExists":
+        return SSMErrorKind.AssociationAlreadyExists
+    if name == "AssociationDoesNotExist":
+        return SSMErrorKind.AssociationDoesNotExist
+    if name == "AssociationExecutionDoesNotExist":
+        return SSMErrorKind.AssociationExecutionDoesNotExist
+    if name == "AssociationLimitExceeded":
+        return SSMErrorKind.AssociationLimitExceeded
+    if name == "AssociationVersionLimitExceeded":
+        return SSMErrorKind.AssociationVersionLimitExceeded
+    if name == "AutomationDefinitionNotApprovedException":
+        return SSMErrorKind.AutomationDefinitionNotApprovedException
+    if name == "AutomationDefinitionNotFoundException":
+        return SSMErrorKind.AutomationDefinitionNotFoundException
+    if name == "AutomationDefinitionVersionNotFoundException":
+        return SSMErrorKind.AutomationDefinitionVersionNotFoundException
+    if name == "AutomationExecutionLimitExceededException":
+        return SSMErrorKind.AutomationExecutionLimitExceededException
+    if name == "AutomationExecutionNotFoundException":
+        return SSMErrorKind.AutomationExecutionNotFoundException
+    if name == "AutomationStepNotFoundException":
+        return SSMErrorKind.AutomationStepNotFoundException
+    if name == "ComplianceTypeCountLimitExceededException":
+        return SSMErrorKind.ComplianceTypeCountLimitExceededException
+    if name == "ConflictException":
+        return SSMErrorKind.ConflictException
+    if name == "CustomSchemaCountLimitExceededException":
+        return SSMErrorKind.CustomSchemaCountLimitExceededException
+    if name == "DocumentAlreadyExists":
+        return SSMErrorKind.DocumentAlreadyExists
+    if name == "DocumentLimitExceeded":
+        return SSMErrorKind.DocumentLimitExceeded
+    if name == "DocumentPermissionLimit":
+        return SSMErrorKind.DocumentPermissionLimit
+    if name == "DocumentVersionLimitExceeded":
+        return SSMErrorKind.DocumentVersionLimitExceeded
+    if name == "DoesNotExistException":
+        return SSMErrorKind.DoesNotExistException
+    if name == "DuplicateDocumentContent":
+        return SSMErrorKind.DuplicateDocumentContent
+    if name == "DuplicateDocumentVersionName":
+        return SSMErrorKind.DuplicateDocumentVersionName
+    if name == "DuplicateInstanceId":
+        return SSMErrorKind.DuplicateInstanceId
+    if name == "FeatureNotAvailableException":
+        return SSMErrorKind.FeatureNotAvailableException
+    if name == "HierarchyLevelLimitExceededException":
+        return SSMErrorKind.HierarchyLevelLimitExceededException
+    if name == "HierarchyTypeMismatchException":
+        return SSMErrorKind.HierarchyTypeMismatchException
+    if name == "IdempotentParameterMismatch":
+        return SSMErrorKind.IdempotentParameterMismatch
+    if name == "IncompatiblePolicyException":
+        return SSMErrorKind.IncompatiblePolicyException
+    if name == "InternalServerError":
+        return SSMErrorKind.InternalServerError
+    if name == "InvalidActivation":
+        return SSMErrorKind.InvalidActivation
+    if name == "InvalidActivationId":
+        return SSMErrorKind.InvalidActivationId
+    if name == "InvalidAggregatorException":
+        return SSMErrorKind.InvalidAggregatorException
+    if name == "InvalidAllowedPatternException":
+        return SSMErrorKind.InvalidAllowedPatternException
+    if name == "InvalidAssociation":
+        return SSMErrorKind.InvalidAssociation
+    if name == "InvalidAssociationVersion":
+        return SSMErrorKind.InvalidAssociationVersion
+    if name == "InvalidAutomationExecutionParametersException":
+        return SSMErrorKind.InvalidAutomationExecutionParametersException
+    if name == "InvalidAutomationSignalException":
+        return SSMErrorKind.InvalidAutomationSignalException
+    if name == "InvalidAutomationStatusUpdateException":
+        return SSMErrorKind.InvalidAutomationStatusUpdateException
+    if name == "InvalidCommandId":
+        return SSMErrorKind.InvalidCommandId
+    if name == "InvalidDeleteInventoryParametersException":
+        return SSMErrorKind.InvalidDeleteInventoryParametersException
+    if name == "InvalidDeletionIdException":
+        return SSMErrorKind.InvalidDeletionIdException
+    if name == "InvalidDocument":
+        return SSMErrorKind.InvalidDocument
+    if name == "InvalidDocumentContent":
+        return SSMErrorKind.InvalidDocumentContent
+    if name == "InvalidDocumentOperation":
+        return SSMErrorKind.InvalidDocumentOperation
+    if name == "InvalidDocumentSchemaVersion":
+        return SSMErrorKind.InvalidDocumentSchemaVersion
+    if name == "InvalidDocumentType":
+        return SSMErrorKind.InvalidDocumentType
+    if name == "InvalidDocumentVersion":
+        return SSMErrorKind.InvalidDocumentVersion
+    if name == "InvalidFilter":
+        return SSMErrorKind.InvalidFilter
+    if name == "InvalidFilterKey":
+        return SSMErrorKind.InvalidFilterKey
+    if name == "InvalidFilterOption":
+        return SSMErrorKind.InvalidFilterOption
+    if name == "InvalidFilterValue":
+        return SSMErrorKind.InvalidFilterValue
+    if name == "InvalidInstanceId":
+        return SSMErrorKind.InvalidInstanceId
+    if name == "InvalidInstanceInformationFilterValue":
+        return SSMErrorKind.InvalidInstanceInformationFilterValue
+    if name == "InvalidInstancePropertyFilterValue":
+        return SSMErrorKind.InvalidInstancePropertyFilterValue
+    if name == "InvalidInventoryGroupException":
+        return SSMErrorKind.InvalidInventoryGroupException
+    if name == "InvalidInventoryItemContextException":
+        return SSMErrorKind.InvalidInventoryItemContextException
+    if name == "InvalidInventoryRequestException":
+        return SSMErrorKind.InvalidInventoryRequestException
+    if name == "InvalidItemContentException":
+        return SSMErrorKind.InvalidItemContentException
+    if name == "InvalidKeyId":
+        return SSMErrorKind.InvalidKeyId
+    if name == "InvalidNextToken":
+        return SSMErrorKind.InvalidNextToken
+    if name == "InvalidNotificationConfig":
+        return SSMErrorKind.InvalidNotificationConfig
+    if name == "InvalidOptionException":
+        return SSMErrorKind.InvalidOptionException
+    if name == "InvalidOutputFolder":
+        return SSMErrorKind.InvalidOutputFolder
+    if name == "InvalidOutputLocation":
+        return SSMErrorKind.InvalidOutputLocation
+    if name == "InvalidParameters":
+        return SSMErrorKind.InvalidParameters
+    if name == "InvalidPermissionType":
+        return SSMErrorKind.InvalidPermissionType
+    if name == "InvalidPluginName":
+        return SSMErrorKind.InvalidPluginName
+    if name == "InvalidPolicyAttributeException":
+        return SSMErrorKind.InvalidPolicyAttributeException
+    if name == "InvalidPolicyTypeException":
+        return SSMErrorKind.InvalidPolicyTypeException
+    if name == "InvalidResourceId":
+        return SSMErrorKind.InvalidResourceId
+    if name == "InvalidResourceType":
+        return SSMErrorKind.InvalidResourceType
+    if name == "InvalidResultAttributeException":
+        return SSMErrorKind.InvalidResultAttributeException
+    if name == "InvalidRole":
+        return SSMErrorKind.InvalidRole
+    if name == "InvalidSchedule":
+        return SSMErrorKind.InvalidSchedule
+    if name == "InvalidTag":
+        return SSMErrorKind.InvalidTag
+    if name == "InvalidTarget":
+        return SSMErrorKind.InvalidTarget
+    if name == "InvalidTargetMaps":
+        return SSMErrorKind.InvalidTargetMaps
+    if name == "InvalidTypeNameException":
+        return SSMErrorKind.InvalidTypeNameException
+    if name == "InvalidUpdate":
+        return SSMErrorKind.InvalidUpdate
+    if name == "InvocationDoesNotExist":
+        return SSMErrorKind.InvocationDoesNotExist
+    if name == "ItemContentMismatchException":
+        return SSMErrorKind.ItemContentMismatchException
+    if name == "ItemSizeLimitExceededException":
+        return SSMErrorKind.ItemSizeLimitExceededException
+    if name == "MalformedResourcePolicyDocumentException":
+        return SSMErrorKind.MalformedResourcePolicyDocumentException
+    if name == "MaxDocumentSizeExceeded":
+        return SSMErrorKind.MaxDocumentSizeExceeded
+    if name == "NoLongerSupportedException":
+        return SSMErrorKind.NoLongerSupportedException
+    if name == "OpsItemAccessDeniedException":
+        return SSMErrorKind.OpsItemAccessDeniedException
+    if name == "OpsItemAlreadyExistsException":
+        return SSMErrorKind.OpsItemAlreadyExistsException
+    if name == "OpsItemConflictException":
+        return SSMErrorKind.OpsItemConflictException
+    if name == "OpsItemInvalidParameterException":
+        return SSMErrorKind.OpsItemInvalidParameterException
+    if name == "OpsItemLimitExceededException":
+        return SSMErrorKind.OpsItemLimitExceededException
+    if name == "OpsItemNotFoundException":
+        return SSMErrorKind.OpsItemNotFoundException
+    if name == "OpsItemRelatedItemAlreadyExistsException":
+        return SSMErrorKind.OpsItemRelatedItemAlreadyExistsException
+    if name == "OpsItemRelatedItemAssociationNotFoundException":
+        return SSMErrorKind.OpsItemRelatedItemAssociationNotFoundException
+    if name == "OpsMetadataAlreadyExistsException":
+        return SSMErrorKind.OpsMetadataAlreadyExistsException
+    if name == "OpsMetadataInvalidArgumentException":
+        return SSMErrorKind.OpsMetadataInvalidArgumentException
+    if name == "OpsMetadataKeyLimitExceededException":
+        return SSMErrorKind.OpsMetadataKeyLimitExceededException
+    if name == "OpsMetadataLimitExceededException":
+        return SSMErrorKind.OpsMetadataLimitExceededException
+    if name == "OpsMetadataNotFoundException":
+        return SSMErrorKind.OpsMetadataNotFoundException
+    if name == "OpsMetadataTooManyUpdatesException":
+        return SSMErrorKind.OpsMetadataTooManyUpdatesException
+    if name == "ParameterAlreadyExists":
+        return SSMErrorKind.ParameterAlreadyExists
+    if name == "ParameterLimitExceeded":
+        return SSMErrorKind.ParameterLimitExceeded
+    if name == "ParameterMaxVersionLimitExceeded":
+        return SSMErrorKind.ParameterMaxVersionLimitExceeded
+    if name == "ParameterNotFound":
+        return SSMErrorKind.ParameterNotFound
+    if name == "ParameterPatternMismatchException":
+        return SSMErrorKind.ParameterPatternMismatchException
+    if name == "ParameterVersionLabelLimitExceeded":
+        return SSMErrorKind.ParameterVersionLabelLimitExceeded
+    if name == "ParameterVersionNotFound":
+        return SSMErrorKind.ParameterVersionNotFound
+    if name == "PoliciesLimitExceededException":
+        return SSMErrorKind.PoliciesLimitExceededException
+    if name == "ResourceDataSyncAlreadyExistsException":
+        return SSMErrorKind.ResourceDataSyncAlreadyExistsException
+    if name == "ResourceDataSyncConflictException":
+        return SSMErrorKind.ResourceDataSyncConflictException
+    if name == "ResourceDataSyncCountExceededException":
+        return SSMErrorKind.ResourceDataSyncCountExceededException
+    if name == "ResourceDataSyncInvalidConfigurationException":
+        return SSMErrorKind.ResourceDataSyncInvalidConfigurationException
+    if name == "ResourceDataSyncNotFoundException":
+        return SSMErrorKind.ResourceDataSyncNotFoundException
+    if name == "ResourceInUseException":
+        return SSMErrorKind.ResourceInUseException
+    if name == "ResourceLimitExceededException":
+        return SSMErrorKind.ResourceLimitExceededException
+    if name == "ResourceNotFoundException":
+        return SSMErrorKind.ResourceNotFoundException
+    if name == "ResourcePolicyConflictException":
+        return SSMErrorKind.ResourcePolicyConflictException
+    if name == "ResourcePolicyInvalidParameterException":
+        return SSMErrorKind.ResourcePolicyInvalidParameterException
+    if name == "ResourcePolicyLimitExceededException":
+        return SSMErrorKind.ResourcePolicyLimitExceededException
+    if name == "ResourcePolicyNotFoundException":
+        return SSMErrorKind.ResourcePolicyNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return SSMErrorKind.ServiceQuotaExceededException
+    if name == "ServiceSettingNotFound":
+        return SSMErrorKind.ServiceSettingNotFound
+    if name == "StatusUnchanged":
+        return SSMErrorKind.StatusUnchanged
+    if name == "SubTypeCountLimitExceededException":
+        return SSMErrorKind.SubTypeCountLimitExceededException
+    if name == "TargetInUseException":
+        return SSMErrorKind.TargetInUseException
+    if name == "TargetNotConnected":
+        return SSMErrorKind.TargetNotConnected
+    if name == "ThrottlingException":
+        return SSMErrorKind.ThrottlingException
+    if name == "TooManyTagsError":
+        return SSMErrorKind.TooManyTagsError
+    if name == "TooManyUpdates":
+        return SSMErrorKind.TooManyUpdates
+    if name == "TotalSizeLimitExceededException":
+        return SSMErrorKind.TotalSizeLimitExceededException
+    if name == "UnsupportedCalendarException":
+        return SSMErrorKind.UnsupportedCalendarException
+    if name == "UnsupportedFeatureRequiredException":
+        return SSMErrorKind.UnsupportedFeatureRequiredException
+    if name == "UnsupportedInventoryItemContextException":
+        return SSMErrorKind.UnsupportedInventoryItemContextException
+    if name == "UnsupportedInventorySchemaVersionException":
+        return SSMErrorKind.UnsupportedInventorySchemaVersionException
+    if name == "UnsupportedOperatingSystem":
+        return SSMErrorKind.UnsupportedOperatingSystem
+    if name == "UnsupportedOperationException":
+        return SSMErrorKind.UnsupportedOperationException
+    if name == "UnsupportedParameterType":
+        return SSMErrorKind.UnsupportedParameterType
+    if name == "UnsupportedPlatformType":
+        return SSMErrorKind.UnsupportedPlatformType
+    if name == "ValidationException":
+        return SSMErrorKind.ValidationException
+    return SSMErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def ssm_error_name(SSMErrorKind k) -> str:
+    match k:
+        case SSMErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case SSMErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case SSMErrorKind.AssociatedInstances:
+            return "AssociatedInstances"
+        case SSMErrorKind.AssociationAlreadyExists:
+            return "AssociationAlreadyExists"
+        case SSMErrorKind.AssociationDoesNotExist:
+            return "AssociationDoesNotExist"
+        case SSMErrorKind.AssociationExecutionDoesNotExist:
+            return "AssociationExecutionDoesNotExist"
+        case SSMErrorKind.AssociationLimitExceeded:
+            return "AssociationLimitExceeded"
+        case SSMErrorKind.AssociationVersionLimitExceeded:
+            return "AssociationVersionLimitExceeded"
+        case SSMErrorKind.AutomationDefinitionNotApprovedException:
+            return "AutomationDefinitionNotApprovedException"
+        case SSMErrorKind.AutomationDefinitionNotFoundException:
+            return "AutomationDefinitionNotFoundException"
+        case SSMErrorKind.AutomationDefinitionVersionNotFoundException:
+            return "AutomationDefinitionVersionNotFoundException"
+        case SSMErrorKind.AutomationExecutionLimitExceededException:
+            return "AutomationExecutionLimitExceededException"
+        case SSMErrorKind.AutomationExecutionNotFoundException:
+            return "AutomationExecutionNotFoundException"
+        case SSMErrorKind.AutomationStepNotFoundException:
+            return "AutomationStepNotFoundException"
+        case SSMErrorKind.ComplianceTypeCountLimitExceededException:
+            return "ComplianceTypeCountLimitExceededException"
+        case SSMErrorKind.ConflictException:
+            return "ConflictException"
+        case SSMErrorKind.CustomSchemaCountLimitExceededException:
+            return "CustomSchemaCountLimitExceededException"
+        case SSMErrorKind.DocumentAlreadyExists:
+            return "DocumentAlreadyExists"
+        case SSMErrorKind.DocumentLimitExceeded:
+            return "DocumentLimitExceeded"
+        case SSMErrorKind.DocumentPermissionLimit:
+            return "DocumentPermissionLimit"
+        case SSMErrorKind.DocumentVersionLimitExceeded:
+            return "DocumentVersionLimitExceeded"
+        case SSMErrorKind.DoesNotExistException:
+            return "DoesNotExistException"
+        case SSMErrorKind.DuplicateDocumentContent:
+            return "DuplicateDocumentContent"
+        case SSMErrorKind.DuplicateDocumentVersionName:
+            return "DuplicateDocumentVersionName"
+        case SSMErrorKind.DuplicateInstanceId:
+            return "DuplicateInstanceId"
+        case SSMErrorKind.FeatureNotAvailableException:
+            return "FeatureNotAvailableException"
+        case SSMErrorKind.HierarchyLevelLimitExceededException:
+            return "HierarchyLevelLimitExceededException"
+        case SSMErrorKind.HierarchyTypeMismatchException:
+            return "HierarchyTypeMismatchException"
+        case SSMErrorKind.IdempotentParameterMismatch:
+            return "IdempotentParameterMismatch"
+        case SSMErrorKind.IncompatiblePolicyException:
+            return "IncompatiblePolicyException"
+        case SSMErrorKind.InternalServerError:
+            return "InternalServerError"
+        case SSMErrorKind.InvalidActivation:
+            return "InvalidActivation"
+        case SSMErrorKind.InvalidActivationId:
+            return "InvalidActivationId"
+        case SSMErrorKind.InvalidAggregatorException:
+            return "InvalidAggregatorException"
+        case SSMErrorKind.InvalidAllowedPatternException:
+            return "InvalidAllowedPatternException"
+        case SSMErrorKind.InvalidAssociation:
+            return "InvalidAssociation"
+        case SSMErrorKind.InvalidAssociationVersion:
+            return "InvalidAssociationVersion"
+        case SSMErrorKind.InvalidAutomationExecutionParametersException:
+            return "InvalidAutomationExecutionParametersException"
+        case SSMErrorKind.InvalidAutomationSignalException:
+            return "InvalidAutomationSignalException"
+        case SSMErrorKind.InvalidAutomationStatusUpdateException:
+            return "InvalidAutomationStatusUpdateException"
+        case SSMErrorKind.InvalidCommandId:
+            return "InvalidCommandId"
+        case SSMErrorKind.InvalidDeleteInventoryParametersException:
+            return "InvalidDeleteInventoryParametersException"
+        case SSMErrorKind.InvalidDeletionIdException:
+            return "InvalidDeletionIdException"
+        case SSMErrorKind.InvalidDocument:
+            return "InvalidDocument"
+        case SSMErrorKind.InvalidDocumentContent:
+            return "InvalidDocumentContent"
+        case SSMErrorKind.InvalidDocumentOperation:
+            return "InvalidDocumentOperation"
+        case SSMErrorKind.InvalidDocumentSchemaVersion:
+            return "InvalidDocumentSchemaVersion"
+        case SSMErrorKind.InvalidDocumentType:
+            return "InvalidDocumentType"
+        case SSMErrorKind.InvalidDocumentVersion:
+            return "InvalidDocumentVersion"
+        case SSMErrorKind.InvalidFilter:
+            return "InvalidFilter"
+        case SSMErrorKind.InvalidFilterKey:
+            return "InvalidFilterKey"
+        case SSMErrorKind.InvalidFilterOption:
+            return "InvalidFilterOption"
+        case SSMErrorKind.InvalidFilterValue:
+            return "InvalidFilterValue"
+        case SSMErrorKind.InvalidInstanceId:
+            return "InvalidInstanceId"
+        case SSMErrorKind.InvalidInstanceInformationFilterValue:
+            return "InvalidInstanceInformationFilterValue"
+        case SSMErrorKind.InvalidInstancePropertyFilterValue:
+            return "InvalidInstancePropertyFilterValue"
+        case SSMErrorKind.InvalidInventoryGroupException:
+            return "InvalidInventoryGroupException"
+        case SSMErrorKind.InvalidInventoryItemContextException:
+            return "InvalidInventoryItemContextException"
+        case SSMErrorKind.InvalidInventoryRequestException:
+            return "InvalidInventoryRequestException"
+        case SSMErrorKind.InvalidItemContentException:
+            return "InvalidItemContentException"
+        case SSMErrorKind.InvalidKeyId:
+            return "InvalidKeyId"
+        case SSMErrorKind.InvalidNextToken:
+            return "InvalidNextToken"
+        case SSMErrorKind.InvalidNotificationConfig:
+            return "InvalidNotificationConfig"
+        case SSMErrorKind.InvalidOptionException:
+            return "InvalidOptionException"
+        case SSMErrorKind.InvalidOutputFolder:
+            return "InvalidOutputFolder"
+        case SSMErrorKind.InvalidOutputLocation:
+            return "InvalidOutputLocation"
+        case SSMErrorKind.InvalidParameters:
+            return "InvalidParameters"
+        case SSMErrorKind.InvalidPermissionType:
+            return "InvalidPermissionType"
+        case SSMErrorKind.InvalidPluginName:
+            return "InvalidPluginName"
+        case SSMErrorKind.InvalidPolicyAttributeException:
+            return "InvalidPolicyAttributeException"
+        case SSMErrorKind.InvalidPolicyTypeException:
+            return "InvalidPolicyTypeException"
+        case SSMErrorKind.InvalidResourceId:
+            return "InvalidResourceId"
+        case SSMErrorKind.InvalidResourceType:
+            return "InvalidResourceType"
+        case SSMErrorKind.InvalidResultAttributeException:
+            return "InvalidResultAttributeException"
+        case SSMErrorKind.InvalidRole:
+            return "InvalidRole"
+        case SSMErrorKind.InvalidSchedule:
+            return "InvalidSchedule"
+        case SSMErrorKind.InvalidTag:
+            return "InvalidTag"
+        case SSMErrorKind.InvalidTarget:
+            return "InvalidTarget"
+        case SSMErrorKind.InvalidTargetMaps:
+            return "InvalidTargetMaps"
+        case SSMErrorKind.InvalidTypeNameException:
+            return "InvalidTypeNameException"
+        case SSMErrorKind.InvalidUpdate:
+            return "InvalidUpdate"
+        case SSMErrorKind.InvocationDoesNotExist:
+            return "InvocationDoesNotExist"
+        case SSMErrorKind.ItemContentMismatchException:
+            return "ItemContentMismatchException"
+        case SSMErrorKind.ItemSizeLimitExceededException:
+            return "ItemSizeLimitExceededException"
+        case SSMErrorKind.MalformedResourcePolicyDocumentException:
+            return "MalformedResourcePolicyDocumentException"
+        case SSMErrorKind.MaxDocumentSizeExceeded:
+            return "MaxDocumentSizeExceeded"
+        case SSMErrorKind.NoLongerSupportedException:
+            return "NoLongerSupportedException"
+        case SSMErrorKind.OpsItemAccessDeniedException:
+            return "OpsItemAccessDeniedException"
+        case SSMErrorKind.OpsItemAlreadyExistsException:
+            return "OpsItemAlreadyExistsException"
+        case SSMErrorKind.OpsItemConflictException:
+            return "OpsItemConflictException"
+        case SSMErrorKind.OpsItemInvalidParameterException:
+            return "OpsItemInvalidParameterException"
+        case SSMErrorKind.OpsItemLimitExceededException:
+            return "OpsItemLimitExceededException"
+        case SSMErrorKind.OpsItemNotFoundException:
+            return "OpsItemNotFoundException"
+        case SSMErrorKind.OpsItemRelatedItemAlreadyExistsException:
+            return "OpsItemRelatedItemAlreadyExistsException"
+        case SSMErrorKind.OpsItemRelatedItemAssociationNotFoundException:
+            return "OpsItemRelatedItemAssociationNotFoundException"
+        case SSMErrorKind.OpsMetadataAlreadyExistsException:
+            return "OpsMetadataAlreadyExistsException"
+        case SSMErrorKind.OpsMetadataInvalidArgumentException:
+            return "OpsMetadataInvalidArgumentException"
+        case SSMErrorKind.OpsMetadataKeyLimitExceededException:
+            return "OpsMetadataKeyLimitExceededException"
+        case SSMErrorKind.OpsMetadataLimitExceededException:
+            return "OpsMetadataLimitExceededException"
+        case SSMErrorKind.OpsMetadataNotFoundException:
+            return "OpsMetadataNotFoundException"
+        case SSMErrorKind.OpsMetadataTooManyUpdatesException:
+            return "OpsMetadataTooManyUpdatesException"
+        case SSMErrorKind.ParameterAlreadyExists:
+            return "ParameterAlreadyExists"
+        case SSMErrorKind.ParameterLimitExceeded:
+            return "ParameterLimitExceeded"
+        case SSMErrorKind.ParameterMaxVersionLimitExceeded:
+            return "ParameterMaxVersionLimitExceeded"
+        case SSMErrorKind.ParameterNotFound:
+            return "ParameterNotFound"
+        case SSMErrorKind.ParameterPatternMismatchException:
+            return "ParameterPatternMismatchException"
+        case SSMErrorKind.ParameterVersionLabelLimitExceeded:
+            return "ParameterVersionLabelLimitExceeded"
+        case SSMErrorKind.ParameterVersionNotFound:
+            return "ParameterVersionNotFound"
+        case SSMErrorKind.PoliciesLimitExceededException:
+            return "PoliciesLimitExceededException"
+        case SSMErrorKind.ResourceDataSyncAlreadyExistsException:
+            return "ResourceDataSyncAlreadyExistsException"
+        case SSMErrorKind.ResourceDataSyncConflictException:
+            return "ResourceDataSyncConflictException"
+        case SSMErrorKind.ResourceDataSyncCountExceededException:
+            return "ResourceDataSyncCountExceededException"
+        case SSMErrorKind.ResourceDataSyncInvalidConfigurationException:
+            return "ResourceDataSyncInvalidConfigurationException"
+        case SSMErrorKind.ResourceDataSyncNotFoundException:
+            return "ResourceDataSyncNotFoundException"
+        case SSMErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case SSMErrorKind.ResourceLimitExceededException:
+            return "ResourceLimitExceededException"
+        case SSMErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case SSMErrorKind.ResourcePolicyConflictException:
+            return "ResourcePolicyConflictException"
+        case SSMErrorKind.ResourcePolicyInvalidParameterException:
+            return "ResourcePolicyInvalidParameterException"
+        case SSMErrorKind.ResourcePolicyLimitExceededException:
+            return "ResourcePolicyLimitExceededException"
+        case SSMErrorKind.ResourcePolicyNotFoundException:
+            return "ResourcePolicyNotFoundException"
+        case SSMErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case SSMErrorKind.ServiceSettingNotFound:
+            return "ServiceSettingNotFound"
+        case SSMErrorKind.StatusUnchanged:
+            return "StatusUnchanged"
+        case SSMErrorKind.SubTypeCountLimitExceededException:
+            return "SubTypeCountLimitExceededException"
+        case SSMErrorKind.TargetInUseException:
+            return "TargetInUseException"
+        case SSMErrorKind.TargetNotConnected:
+            return "TargetNotConnected"
+        case SSMErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case SSMErrorKind.TooManyTagsError:
+            return "TooManyTagsError"
+        case SSMErrorKind.TooManyUpdates:
+            return "TooManyUpdates"
+        case SSMErrorKind.TotalSizeLimitExceededException:
+            return "TotalSizeLimitExceededException"
+        case SSMErrorKind.UnsupportedCalendarException:
+            return "UnsupportedCalendarException"
+        case SSMErrorKind.UnsupportedFeatureRequiredException:
+            return "UnsupportedFeatureRequiredException"
+        case SSMErrorKind.UnsupportedInventoryItemContextException:
+            return "UnsupportedInventoryItemContextException"
+        case SSMErrorKind.UnsupportedInventorySchemaVersionException:
+            return "UnsupportedInventorySchemaVersionException"
+        case SSMErrorKind.UnsupportedOperatingSystem:
+            return "UnsupportedOperatingSystem"
+        case SSMErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case SSMErrorKind.UnsupportedParameterType:
+            return "UnsupportedParameterType"
+        case SSMErrorKind.UnsupportedPlatformType:
+            return "UnsupportedPlatformType"
+        case SSMErrorKind.ValidationException:
+            return "ValidationException"
+        case SSMErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

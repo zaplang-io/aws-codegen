@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service appmesh)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1704,9 +1705,16 @@ struct WeightedTarget:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by appmesh_error_from_code.
-enum App_MeshError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum App_MeshErrorKind:
     BadRequestException
     ConflictException
     ForbiddenException
@@ -1719,30 +1727,63 @@ enum App_MeshError:
     TooManyTagsException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def appmesh_error_from_code(str code) -> App_MeshError:
-    if code == "BadRequestException":
-        return App_MeshError.BadRequestException
-    if code == "ConflictException":
-        return App_MeshError.ConflictException
-    if code == "ForbiddenException":
-        return App_MeshError.ForbiddenException
-    if code == "InternalServerErrorException":
-        return App_MeshError.InternalServerErrorException
-    if code == "LimitExceededException":
-        return App_MeshError.LimitExceededException
-    if code == "NotFoundException":
-        return App_MeshError.NotFoundException
-    if code == "ResourceInUseException":
-        return App_MeshError.ResourceInUseException
-    if code == "ServiceUnavailableException":
-        return App_MeshError.ServiceUnavailableException
-    if code == "TooManyRequestsException":
-        return App_MeshError.TooManyRequestsException
-    if code == "TooManyTagsException":
-        return App_MeshError.TooManyTagsException
-    return App_MeshError.Unknown(code=code)
+# Classify an AWS error code into `App_MeshErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def appmesh_error_kind(str code) -> App_MeshErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BadRequestException":
+        return App_MeshErrorKind.BadRequestException
+    if name == "ConflictException":
+        return App_MeshErrorKind.ConflictException
+    if name == "ForbiddenException":
+        return App_MeshErrorKind.ForbiddenException
+    if name == "InternalServerErrorException":
+        return App_MeshErrorKind.InternalServerErrorException
+    if name == "LimitExceededException":
+        return App_MeshErrorKind.LimitExceededException
+    if name == "NotFoundException":
+        return App_MeshErrorKind.NotFoundException
+    if name == "ResourceInUseException":
+        return App_MeshErrorKind.ResourceInUseException
+    if name == "ServiceUnavailableException":
+        return App_MeshErrorKind.ServiceUnavailableException
+    if name == "TooManyRequestsException":
+        return App_MeshErrorKind.TooManyRequestsException
+    if name == "TooManyTagsException":
+        return App_MeshErrorKind.TooManyTagsException
+    return App_MeshErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def appmesh_error_name(App_MeshErrorKind k) -> str:
+    match k:
+        case App_MeshErrorKind.BadRequestException:
+            return "BadRequestException"
+        case App_MeshErrorKind.ConflictException:
+            return "ConflictException"
+        case App_MeshErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case App_MeshErrorKind.InternalServerErrorException:
+            return "InternalServerErrorException"
+        case App_MeshErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case App_MeshErrorKind.NotFoundException:
+            return "NotFoundException"
+        case App_MeshErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case App_MeshErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case App_MeshErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case App_MeshErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case App_MeshErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

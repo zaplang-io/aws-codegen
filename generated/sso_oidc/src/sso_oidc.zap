@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service sso-oauth)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -219,9 +220,16 @@ struct UnsupportedGrantTypeException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by oidc_error_from_code.
-enum SSO_OIDCError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SSO_OIDCErrorKind:
     AccessDeniedException
     AuthorizationPendingException
     ExpiredTokenException
@@ -238,38 +246,79 @@ enum SSO_OIDCError:
     UnsupportedGrantTypeException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def oidc_error_from_code(str code) -> SSO_OIDCError:
-    if code == "AccessDeniedException":
-        return SSO_OIDCError.AccessDeniedException
-    if code == "AuthorizationPendingException":
-        return SSO_OIDCError.AuthorizationPendingException
-    if code == "ExpiredTokenException":
-        return SSO_OIDCError.ExpiredTokenException
-    if code == "InternalServerException":
-        return SSO_OIDCError.InternalServerException
-    if code == "InvalidClientException":
-        return SSO_OIDCError.InvalidClientException
-    if code == "InvalidClientMetadataException":
-        return SSO_OIDCError.InvalidClientMetadataException
-    if code == "InvalidGrantException":
-        return SSO_OIDCError.InvalidGrantException
-    if code == "InvalidRedirectUriException":
-        return SSO_OIDCError.InvalidRedirectUriException
-    if code == "InvalidRequestException":
-        return SSO_OIDCError.InvalidRequestException
-    if code == "InvalidRequestRegionException":
-        return SSO_OIDCError.InvalidRequestRegionException
-    if code == "InvalidScopeException":
-        return SSO_OIDCError.InvalidScopeException
-    if code == "SlowDownException":
-        return SSO_OIDCError.SlowDownException
-    if code == "UnauthorizedClientException":
-        return SSO_OIDCError.UnauthorizedClientException
-    if code == "UnsupportedGrantTypeException":
-        return SSO_OIDCError.UnsupportedGrantTypeException
-    return SSO_OIDCError.Unknown(code=code)
+# Classify an AWS error code into `SSO_OIDCErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def oidc_error_kind(str code) -> SSO_OIDCErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return SSO_OIDCErrorKind.AccessDeniedException
+    if name == "AuthorizationPendingException":
+        return SSO_OIDCErrorKind.AuthorizationPendingException
+    if name == "ExpiredTokenException":
+        return SSO_OIDCErrorKind.ExpiredTokenException
+    if name == "InternalServerException":
+        return SSO_OIDCErrorKind.InternalServerException
+    if name == "InvalidClientException":
+        return SSO_OIDCErrorKind.InvalidClientException
+    if name == "InvalidClientMetadataException":
+        return SSO_OIDCErrorKind.InvalidClientMetadataException
+    if name == "InvalidGrantException":
+        return SSO_OIDCErrorKind.InvalidGrantException
+    if name == "InvalidRedirectUriException":
+        return SSO_OIDCErrorKind.InvalidRedirectUriException
+    if name == "InvalidRequestException":
+        return SSO_OIDCErrorKind.InvalidRequestException
+    if name == "InvalidRequestRegionException":
+        return SSO_OIDCErrorKind.InvalidRequestRegionException
+    if name == "InvalidScopeException":
+        return SSO_OIDCErrorKind.InvalidScopeException
+    if name == "SlowDownException":
+        return SSO_OIDCErrorKind.SlowDownException
+    if name == "UnauthorizedClientException":
+        return SSO_OIDCErrorKind.UnauthorizedClientException
+    if name == "UnsupportedGrantTypeException":
+        return SSO_OIDCErrorKind.UnsupportedGrantTypeException
+    return SSO_OIDCErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def oidc_error_name(SSO_OIDCErrorKind k) -> str:
+    match k:
+        case SSO_OIDCErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case SSO_OIDCErrorKind.AuthorizationPendingException:
+            return "AuthorizationPendingException"
+        case SSO_OIDCErrorKind.ExpiredTokenException:
+            return "ExpiredTokenException"
+        case SSO_OIDCErrorKind.InternalServerException:
+            return "InternalServerException"
+        case SSO_OIDCErrorKind.InvalidClientException:
+            return "InvalidClientException"
+        case SSO_OIDCErrorKind.InvalidClientMetadataException:
+            return "InvalidClientMetadataException"
+        case SSO_OIDCErrorKind.InvalidGrantException:
+            return "InvalidGrantException"
+        case SSO_OIDCErrorKind.InvalidRedirectUriException:
+            return "InvalidRedirectUriException"
+        case SSO_OIDCErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case SSO_OIDCErrorKind.InvalidRequestRegionException:
+            return "InvalidRequestRegionException"
+        case SSO_OIDCErrorKind.InvalidScopeException:
+            return "InvalidScopeException"
+        case SSO_OIDCErrorKind.SlowDownException:
+            return "SlowDownException"
+        case SSO_OIDCErrorKind.UnauthorizedClientException:
+            return "UnauthorizedClientException"
+        case SSO_OIDCErrorKind.UnsupportedGrantTypeException:
+            return "UnsupportedGrantTypeException"
+        case SSO_OIDCErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

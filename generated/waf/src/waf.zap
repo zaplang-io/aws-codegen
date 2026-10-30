@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSWAF_20150824)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1728,9 +1730,16 @@ struct XssMatchTuple:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by waf_error_from_code.
-enum WAFError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum WAFErrorKind:
     WAFBadRequestException
     WAFDisallowedNameException
     WAFEntityMigrationException
@@ -1752,47 +1761,99 @@ enum WAFError:
     WAFTagOperationInternalErrorException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def waf_error_from_code(str code) -> WAFError:
-    if code == "WAFBadRequestException":
-        return WAFError.WAFBadRequestException
-    if code == "WAFDisallowedNameException":
-        return WAFError.WAFDisallowedNameException
-    if code == "WAFEntityMigrationException":
-        return WAFError.WAFEntityMigrationException
-    if code == "WAFInternalErrorException":
-        return WAFError.WAFInternalErrorException
-    if code == "WAFInvalidAccountException":
-        return WAFError.WAFInvalidAccountException
-    if code == "WAFInvalidOperationException":
-        return WAFError.WAFInvalidOperationException
-    if code == "WAFInvalidParameterException":
-        return WAFError.WAFInvalidParameterException
-    if code == "WAFInvalidPermissionPolicyException":
-        return WAFError.WAFInvalidPermissionPolicyException
-    if code == "WAFInvalidRegexPatternException":
-        return WAFError.WAFInvalidRegexPatternException
-    if code == "WAFLimitsExceededException":
-        return WAFError.WAFLimitsExceededException
-    if code == "WAFNonEmptyEntityException":
-        return WAFError.WAFNonEmptyEntityException
-    if code == "WAFNonexistentContainerException":
-        return WAFError.WAFNonexistentContainerException
-    if code == "WAFNonexistentItemException":
-        return WAFError.WAFNonexistentItemException
-    if code == "WAFReferencedItemException":
-        return WAFError.WAFReferencedItemException
-    if code == "WAFServiceLinkedRoleErrorException":
-        return WAFError.WAFServiceLinkedRoleErrorException
-    if code == "WAFStaleDataException":
-        return WAFError.WAFStaleDataException
-    if code == "WAFSubscriptionNotFoundException":
-        return WAFError.WAFSubscriptionNotFoundException
-    if code == "WAFTagOperationException":
-        return WAFError.WAFTagOperationException
-    if code == "WAFTagOperationInternalErrorException":
-        return WAFError.WAFTagOperationInternalErrorException
-    return WAFError.Unknown(code=code)
+# Classify an AWS error code into `WAFErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def waf_error_kind(str code) -> WAFErrorKind:
+    auto name = errors.error_code(code)
+    if name == "WAFBadRequestException":
+        return WAFErrorKind.WAFBadRequestException
+    if name == "WAFDisallowedNameException":
+        return WAFErrorKind.WAFDisallowedNameException
+    if name == "WAFEntityMigrationException":
+        return WAFErrorKind.WAFEntityMigrationException
+    if name == "WAFInternalErrorException":
+        return WAFErrorKind.WAFInternalErrorException
+    if name == "WAFInvalidAccountException":
+        return WAFErrorKind.WAFInvalidAccountException
+    if name == "WAFInvalidOperationException":
+        return WAFErrorKind.WAFInvalidOperationException
+    if name == "WAFInvalidParameterException":
+        return WAFErrorKind.WAFInvalidParameterException
+    if name == "WAFInvalidPermissionPolicyException":
+        return WAFErrorKind.WAFInvalidPermissionPolicyException
+    if name == "WAFInvalidRegexPatternException":
+        return WAFErrorKind.WAFInvalidRegexPatternException
+    if name == "WAFLimitsExceededException":
+        return WAFErrorKind.WAFLimitsExceededException
+    if name == "WAFNonEmptyEntityException":
+        return WAFErrorKind.WAFNonEmptyEntityException
+    if name == "WAFNonexistentContainerException":
+        return WAFErrorKind.WAFNonexistentContainerException
+    if name == "WAFNonexistentItemException":
+        return WAFErrorKind.WAFNonexistentItemException
+    if name == "WAFReferencedItemException":
+        return WAFErrorKind.WAFReferencedItemException
+    if name == "WAFServiceLinkedRoleErrorException":
+        return WAFErrorKind.WAFServiceLinkedRoleErrorException
+    if name == "WAFStaleDataException":
+        return WAFErrorKind.WAFStaleDataException
+    if name == "WAFSubscriptionNotFoundException":
+        return WAFErrorKind.WAFSubscriptionNotFoundException
+    if name == "WAFTagOperationException":
+        return WAFErrorKind.WAFTagOperationException
+    if name == "WAFTagOperationInternalErrorException":
+        return WAFErrorKind.WAFTagOperationInternalErrorException
+    return WAFErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def waf_error_name(WAFErrorKind k) -> str:
+    match k:
+        case WAFErrorKind.WAFBadRequestException:
+            return "WAFBadRequestException"
+        case WAFErrorKind.WAFDisallowedNameException:
+            return "WAFDisallowedNameException"
+        case WAFErrorKind.WAFEntityMigrationException:
+            return "WAFEntityMigrationException"
+        case WAFErrorKind.WAFInternalErrorException:
+            return "WAFInternalErrorException"
+        case WAFErrorKind.WAFInvalidAccountException:
+            return "WAFInvalidAccountException"
+        case WAFErrorKind.WAFInvalidOperationException:
+            return "WAFInvalidOperationException"
+        case WAFErrorKind.WAFInvalidParameterException:
+            return "WAFInvalidParameterException"
+        case WAFErrorKind.WAFInvalidPermissionPolicyException:
+            return "WAFInvalidPermissionPolicyException"
+        case WAFErrorKind.WAFInvalidRegexPatternException:
+            return "WAFInvalidRegexPatternException"
+        case WAFErrorKind.WAFLimitsExceededException:
+            return "WAFLimitsExceededException"
+        case WAFErrorKind.WAFNonEmptyEntityException:
+            return "WAFNonEmptyEntityException"
+        case WAFErrorKind.WAFNonexistentContainerException:
+            return "WAFNonexistentContainerException"
+        case WAFErrorKind.WAFNonexistentItemException:
+            return "WAFNonexistentItemException"
+        case WAFErrorKind.WAFReferencedItemException:
+            return "WAFReferencedItemException"
+        case WAFErrorKind.WAFServiceLinkedRoleErrorException:
+            return "WAFServiceLinkedRoleErrorException"
+        case WAFErrorKind.WAFStaleDataException:
+            return "WAFStaleDataException"
+        case WAFErrorKind.WAFSubscriptionNotFoundException:
+            return "WAFSubscriptionNotFoundException"
+        case WAFErrorKind.WAFTagOperationException:
+            return "WAFTagOperationException"
+        case WAFErrorKind.WAFTagOperationInternalErrorException:
+            return "WAFTagOperationInternalErrorException"
+        case WAFErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

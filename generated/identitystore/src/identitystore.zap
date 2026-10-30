@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSIdentityStore)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -629,9 +631,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by identitystore_error_from_code.
-enum identitystoreError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum identitystoreErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -641,23 +650,51 @@ enum identitystoreError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def identitystore_error_from_code(str code) -> identitystoreError:
-    if code == "AccessDeniedException":
-        return identitystoreError.AccessDeniedException
-    if code == "ConflictException":
-        return identitystoreError.ConflictException
-    if code == "InternalServerException":
-        return identitystoreError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return identitystoreError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return identitystoreError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return identitystoreError.ThrottlingException
-    if code == "ValidationException":
-        return identitystoreError.ValidationException
-    return identitystoreError.Unknown(code=code)
+# Classify an AWS error code into `identitystoreErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def identitystore_error_kind(str code) -> identitystoreErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return identitystoreErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return identitystoreErrorKind.ConflictException
+    if name == "InternalServerException":
+        return identitystoreErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return identitystoreErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return identitystoreErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return identitystoreErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return identitystoreErrorKind.ValidationException
+    return identitystoreErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def identitystore_error_name(identitystoreErrorKind k) -> str:
+    match k:
+        case identitystoreErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case identitystoreErrorKind.ConflictException:
+            return "ConflictException"
+        case identitystoreErrorKind.InternalServerException:
+            return "InternalServerException"
+        case identitystoreErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case identitystoreErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case identitystoreErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case identitystoreErrorKind.ValidationException:
+            return "ValidationException"
+        case identitystoreErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

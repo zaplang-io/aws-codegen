@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service ram)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -935,9 +936,16 @@ struct UpdateResourceShareResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by ram_error_from_code.
-enum RAMError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum RAMErrorKind:
     IdempotentParameterMismatchException
     InvalidClientTokenException
     InvalidMaxResultsException
@@ -968,66 +976,135 @@ enum RAMError:
     UnmatchedPolicyPermissionException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def ram_error_from_code(str code) -> RAMError:
-    if code == "IdempotentParameterMismatchException":
-        return RAMError.IdempotentParameterMismatchException
-    if code == "InvalidClientTokenException":
-        return RAMError.InvalidClientTokenException
-    if code == "InvalidMaxResultsException":
-        return RAMError.InvalidMaxResultsException
-    if code == "InvalidNextTokenException":
-        return RAMError.InvalidNextTokenException
-    if code == "InvalidParameterException":
-        return RAMError.InvalidParameterException
-    if code == "InvalidPolicyException":
-        return RAMError.InvalidPolicyException
-    if code == "InvalidResourceTypeException":
-        return RAMError.InvalidResourceTypeException
-    if code == "InvalidStateTransitionException":
-        return RAMError.InvalidStateTransitionException
-    if code == "MalformedArnException":
-        return RAMError.MalformedArnException
-    if code == "MalformedPolicyTemplateException":
-        return RAMError.MalformedPolicyTemplateException
-    if code == "MissingRequiredParameterException":
-        return RAMError.MissingRequiredParameterException
-    if code == "OperationNotPermittedException":
-        return RAMError.OperationNotPermittedException
-    if code == "PermissionAlreadyExistsException":
-        return RAMError.PermissionAlreadyExistsException
-    if code == "PermissionLimitExceededException":
-        return RAMError.PermissionLimitExceededException
-    if code == "PermissionVersionsLimitExceededException":
-        return RAMError.PermissionVersionsLimitExceededException
-    if code == "ResourceArnNotFoundException":
-        return RAMError.ResourceArnNotFoundException
-    if code == "ResourceShareInvitationAlreadyAcceptedException":
-        return RAMError.ResourceShareInvitationAlreadyAcceptedException
-    if code == "ResourceShareInvitationAlreadyRejectedException":
-        return RAMError.ResourceShareInvitationAlreadyRejectedException
-    if code == "ResourceShareInvitationArnNotFoundException":
-        return RAMError.ResourceShareInvitationArnNotFoundException
-    if code == "ResourceShareInvitationExpiredException":
-        return RAMError.ResourceShareInvitationExpiredException
-    if code == "ResourceShareLimitExceededException":
-        return RAMError.ResourceShareLimitExceededException
-    if code == "ServerInternalException":
-        return RAMError.ServerInternalException
-    if code == "ServiceUnavailableException":
-        return RAMError.ServiceUnavailableException
-    if code == "TagLimitExceededException":
-        return RAMError.TagLimitExceededException
-    if code == "TagPolicyViolationException":
-        return RAMError.TagPolicyViolationException
-    if code == "ThrottlingException":
-        return RAMError.ThrottlingException
-    if code == "UnknownResourceException":
-        return RAMError.UnknownResourceException
-    if code == "UnmatchedPolicyPermissionException":
-        return RAMError.UnmatchedPolicyPermissionException
-    return RAMError.Unknown(code=code)
+# Classify an AWS error code into `RAMErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def ram_error_kind(str code) -> RAMErrorKind:
+    auto name = errors.error_code(code)
+    if name == "IdempotentParameterMismatchException":
+        return RAMErrorKind.IdempotentParameterMismatchException
+    if name == "InvalidClientTokenException":
+        return RAMErrorKind.InvalidClientTokenException
+    if name == "InvalidMaxResultsException":
+        return RAMErrorKind.InvalidMaxResultsException
+    if name == "InvalidNextTokenException":
+        return RAMErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterException":
+        return RAMErrorKind.InvalidParameterException
+    if name == "InvalidPolicyException":
+        return RAMErrorKind.InvalidPolicyException
+    if name == "InvalidResourceTypeException":
+        return RAMErrorKind.InvalidResourceTypeException
+    if name == "InvalidStateTransitionException":
+        return RAMErrorKind.InvalidStateTransitionException
+    if name == "MalformedArnException":
+        return RAMErrorKind.MalformedArnException
+    if name == "MalformedPolicyTemplateException":
+        return RAMErrorKind.MalformedPolicyTemplateException
+    if name == "MissingRequiredParameterException":
+        return RAMErrorKind.MissingRequiredParameterException
+    if name == "OperationNotPermittedException":
+        return RAMErrorKind.OperationNotPermittedException
+    if name == "PermissionAlreadyExistsException":
+        return RAMErrorKind.PermissionAlreadyExistsException
+    if name == "PermissionLimitExceededException":
+        return RAMErrorKind.PermissionLimitExceededException
+    if name == "PermissionVersionsLimitExceededException":
+        return RAMErrorKind.PermissionVersionsLimitExceededException
+    if name == "ResourceArnNotFoundException":
+        return RAMErrorKind.ResourceArnNotFoundException
+    if name == "ResourceShareInvitationAlreadyAcceptedException":
+        return RAMErrorKind.ResourceShareInvitationAlreadyAcceptedException
+    if name == "ResourceShareInvitationAlreadyRejectedException":
+        return RAMErrorKind.ResourceShareInvitationAlreadyRejectedException
+    if name == "ResourceShareInvitationArnNotFoundException":
+        return RAMErrorKind.ResourceShareInvitationArnNotFoundException
+    if name == "ResourceShareInvitationExpiredException":
+        return RAMErrorKind.ResourceShareInvitationExpiredException
+    if name == "ResourceShareLimitExceededException":
+        return RAMErrorKind.ResourceShareLimitExceededException
+    if name == "ServerInternalException":
+        return RAMErrorKind.ServerInternalException
+    if name == "ServiceUnavailableException":
+        return RAMErrorKind.ServiceUnavailableException
+    if name == "TagLimitExceededException":
+        return RAMErrorKind.TagLimitExceededException
+    if name == "TagPolicyViolationException":
+        return RAMErrorKind.TagPolicyViolationException
+    if name == "ThrottlingException":
+        return RAMErrorKind.ThrottlingException
+    if name == "UnknownResourceException":
+        return RAMErrorKind.UnknownResourceException
+    if name == "UnmatchedPolicyPermissionException":
+        return RAMErrorKind.UnmatchedPolicyPermissionException
+    return RAMErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def ram_error_name(RAMErrorKind k) -> str:
+    match k:
+        case RAMErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case RAMErrorKind.InvalidClientTokenException:
+            return "InvalidClientTokenException"
+        case RAMErrorKind.InvalidMaxResultsException:
+            return "InvalidMaxResultsException"
+        case RAMErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case RAMErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case RAMErrorKind.InvalidPolicyException:
+            return "InvalidPolicyException"
+        case RAMErrorKind.InvalidResourceTypeException:
+            return "InvalidResourceTypeException"
+        case RAMErrorKind.InvalidStateTransitionException:
+            return "InvalidStateTransitionException"
+        case RAMErrorKind.MalformedArnException:
+            return "MalformedArnException"
+        case RAMErrorKind.MalformedPolicyTemplateException:
+            return "MalformedPolicyTemplateException"
+        case RAMErrorKind.MissingRequiredParameterException:
+            return "MissingRequiredParameterException"
+        case RAMErrorKind.OperationNotPermittedException:
+            return "OperationNotPermittedException"
+        case RAMErrorKind.PermissionAlreadyExistsException:
+            return "PermissionAlreadyExistsException"
+        case RAMErrorKind.PermissionLimitExceededException:
+            return "PermissionLimitExceededException"
+        case RAMErrorKind.PermissionVersionsLimitExceededException:
+            return "PermissionVersionsLimitExceededException"
+        case RAMErrorKind.ResourceArnNotFoundException:
+            return "ResourceArnNotFoundException"
+        case RAMErrorKind.ResourceShareInvitationAlreadyAcceptedException:
+            return "ResourceShareInvitationAlreadyAcceptedException"
+        case RAMErrorKind.ResourceShareInvitationAlreadyRejectedException:
+            return "ResourceShareInvitationAlreadyRejectedException"
+        case RAMErrorKind.ResourceShareInvitationArnNotFoundException:
+            return "ResourceShareInvitationArnNotFoundException"
+        case RAMErrorKind.ResourceShareInvitationExpiredException:
+            return "ResourceShareInvitationExpiredException"
+        case RAMErrorKind.ResourceShareLimitExceededException:
+            return "ResourceShareLimitExceededException"
+        case RAMErrorKind.ServerInternalException:
+            return "ServerInternalException"
+        case RAMErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case RAMErrorKind.TagLimitExceededException:
+            return "TagLimitExceededException"
+        case RAMErrorKind.TagPolicyViolationException:
+            return "TagPolicyViolationException"
+        case RAMErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case RAMErrorKind.UnknownResourceException:
+            return "UnknownResourceException"
+        case RAMErrorKind.UnmatchedPolicyPermissionException:
+            return "UnmatchedPolicyPermissionException"
+        case RAMErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

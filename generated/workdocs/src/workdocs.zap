@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service workdocs)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1279,9 +1280,16 @@ struct UserStorageMetadata:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by workdocs_error_from_code.
-enum WorkDocsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum WorkDocsErrorKind:
     ConcurrentModificationException
     ConflictingOperationException
     CustomMetadataLimitExceededException
@@ -1309,60 +1317,123 @@ enum WorkDocsError:
     UnauthorizedResourceAccessException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def workdocs_error_from_code(str code) -> WorkDocsError:
-    if code == "ConcurrentModificationException":
-        return WorkDocsError.ConcurrentModificationException
-    if code == "ConflictingOperationException":
-        return WorkDocsError.ConflictingOperationException
-    if code == "CustomMetadataLimitExceededException":
-        return WorkDocsError.CustomMetadataLimitExceededException
-    if code == "DeactivatingLastSystemUserException":
-        return WorkDocsError.DeactivatingLastSystemUserException
-    if code == "DocumentLockedForCommentsException":
-        return WorkDocsError.DocumentLockedForCommentsException
-    if code == "DraftUploadOutOfSyncException":
-        return WorkDocsError.DraftUploadOutOfSyncException
-    if code == "EntityAlreadyExistsException":
-        return WorkDocsError.EntityAlreadyExistsException
-    if code == "EntityNotExistsException":
-        return WorkDocsError.EntityNotExistsException
-    if code == "FailedDependencyException":
-        return WorkDocsError.FailedDependencyException
-    if code == "IllegalUserStateException":
-        return WorkDocsError.IllegalUserStateException
-    if code == "InvalidArgumentException":
-        return WorkDocsError.InvalidArgumentException
-    if code == "InvalidCommentOperationException":
-        return WorkDocsError.InvalidCommentOperationException
-    if code == "InvalidOperationException":
-        return WorkDocsError.InvalidOperationException
-    if code == "InvalidPasswordException":
-        return WorkDocsError.InvalidPasswordException
-    if code == "LimitExceededException":
-        return WorkDocsError.LimitExceededException
-    if code == "ProhibitedStateException":
-        return WorkDocsError.ProhibitedStateException
-    if code == "RequestedEntityTooLargeException":
-        return WorkDocsError.RequestedEntityTooLargeException
-    if code == "ResourceAlreadyCheckedOutException":
-        return WorkDocsError.ResourceAlreadyCheckedOutException
-    if code == "ServiceUnavailableException":
-        return WorkDocsError.ServiceUnavailableException
-    if code == "StorageLimitExceededException":
-        return WorkDocsError.StorageLimitExceededException
-    if code == "StorageLimitWillExceedException":
-        return WorkDocsError.StorageLimitWillExceedException
-    if code == "TooManyLabelsException":
-        return WorkDocsError.TooManyLabelsException
-    if code == "TooManySubscriptionsException":
-        return WorkDocsError.TooManySubscriptionsException
-    if code == "UnauthorizedOperationException":
-        return WorkDocsError.UnauthorizedOperationException
-    if code == "UnauthorizedResourceAccessException":
-        return WorkDocsError.UnauthorizedResourceAccessException
-    return WorkDocsError.Unknown(code=code)
+# Classify an AWS error code into `WorkDocsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def workdocs_error_kind(str code) -> WorkDocsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConcurrentModificationException":
+        return WorkDocsErrorKind.ConcurrentModificationException
+    if name == "ConflictingOperationException":
+        return WorkDocsErrorKind.ConflictingOperationException
+    if name == "CustomMetadataLimitExceededException":
+        return WorkDocsErrorKind.CustomMetadataLimitExceededException
+    if name == "DeactivatingLastSystemUserException":
+        return WorkDocsErrorKind.DeactivatingLastSystemUserException
+    if name == "DocumentLockedForCommentsException":
+        return WorkDocsErrorKind.DocumentLockedForCommentsException
+    if name == "DraftUploadOutOfSyncException":
+        return WorkDocsErrorKind.DraftUploadOutOfSyncException
+    if name == "EntityAlreadyExistsException":
+        return WorkDocsErrorKind.EntityAlreadyExistsException
+    if name == "EntityNotExistsException":
+        return WorkDocsErrorKind.EntityNotExistsException
+    if name == "FailedDependencyException":
+        return WorkDocsErrorKind.FailedDependencyException
+    if name == "IllegalUserStateException":
+        return WorkDocsErrorKind.IllegalUserStateException
+    if name == "InvalidArgumentException":
+        return WorkDocsErrorKind.InvalidArgumentException
+    if name == "InvalidCommentOperationException":
+        return WorkDocsErrorKind.InvalidCommentOperationException
+    if name == "InvalidOperationException":
+        return WorkDocsErrorKind.InvalidOperationException
+    if name == "InvalidPasswordException":
+        return WorkDocsErrorKind.InvalidPasswordException
+    if name == "LimitExceededException":
+        return WorkDocsErrorKind.LimitExceededException
+    if name == "ProhibitedStateException":
+        return WorkDocsErrorKind.ProhibitedStateException
+    if name == "RequestedEntityTooLargeException":
+        return WorkDocsErrorKind.RequestedEntityTooLargeException
+    if name == "ResourceAlreadyCheckedOutException":
+        return WorkDocsErrorKind.ResourceAlreadyCheckedOutException
+    if name == "ServiceUnavailableException":
+        return WorkDocsErrorKind.ServiceUnavailableException
+    if name == "StorageLimitExceededException":
+        return WorkDocsErrorKind.StorageLimitExceededException
+    if name == "StorageLimitWillExceedException":
+        return WorkDocsErrorKind.StorageLimitWillExceedException
+    if name == "TooManyLabelsException":
+        return WorkDocsErrorKind.TooManyLabelsException
+    if name == "TooManySubscriptionsException":
+        return WorkDocsErrorKind.TooManySubscriptionsException
+    if name == "UnauthorizedOperationException":
+        return WorkDocsErrorKind.UnauthorizedOperationException
+    if name == "UnauthorizedResourceAccessException":
+        return WorkDocsErrorKind.UnauthorizedResourceAccessException
+    return WorkDocsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def workdocs_error_name(WorkDocsErrorKind k) -> str:
+    match k:
+        case WorkDocsErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case WorkDocsErrorKind.ConflictingOperationException:
+            return "ConflictingOperationException"
+        case WorkDocsErrorKind.CustomMetadataLimitExceededException:
+            return "CustomMetadataLimitExceededException"
+        case WorkDocsErrorKind.DeactivatingLastSystemUserException:
+            return "DeactivatingLastSystemUserException"
+        case WorkDocsErrorKind.DocumentLockedForCommentsException:
+            return "DocumentLockedForCommentsException"
+        case WorkDocsErrorKind.DraftUploadOutOfSyncException:
+            return "DraftUploadOutOfSyncException"
+        case WorkDocsErrorKind.EntityAlreadyExistsException:
+            return "EntityAlreadyExistsException"
+        case WorkDocsErrorKind.EntityNotExistsException:
+            return "EntityNotExistsException"
+        case WorkDocsErrorKind.FailedDependencyException:
+            return "FailedDependencyException"
+        case WorkDocsErrorKind.IllegalUserStateException:
+            return "IllegalUserStateException"
+        case WorkDocsErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case WorkDocsErrorKind.InvalidCommentOperationException:
+            return "InvalidCommentOperationException"
+        case WorkDocsErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case WorkDocsErrorKind.InvalidPasswordException:
+            return "InvalidPasswordException"
+        case WorkDocsErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case WorkDocsErrorKind.ProhibitedStateException:
+            return "ProhibitedStateException"
+        case WorkDocsErrorKind.RequestedEntityTooLargeException:
+            return "RequestedEntityTooLargeException"
+        case WorkDocsErrorKind.ResourceAlreadyCheckedOutException:
+            return "ResourceAlreadyCheckedOutException"
+        case WorkDocsErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case WorkDocsErrorKind.StorageLimitExceededException:
+            return "StorageLimitExceededException"
+        case WorkDocsErrorKind.StorageLimitWillExceedException:
+            return "StorageLimitWillExceedException"
+        case WorkDocsErrorKind.TooManyLabelsException:
+            return "TooManyLabelsException"
+        case WorkDocsErrorKind.TooManySubscriptionsException:
+            return "TooManySubscriptionsException"
+        case WorkDocsErrorKind.UnauthorizedOperationException:
+            return "UnauthorizedOperationException"
+        case WorkDocsErrorKind.UnauthorizedResourceAccessException:
+            return "UnauthorizedResourceAccessException"
+        case WorkDocsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

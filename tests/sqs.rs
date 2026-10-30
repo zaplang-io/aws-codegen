@@ -100,8 +100,9 @@ fn sqs_awsjson_contract_shape() {
         "return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, \"GetQueueUrl\", body)"
     ));
     // Error dispatch.
-    assert!(src.contains("enum SQSError:"));
-    assert!(src.contains("def sqs_error_from_code(str code) -> SQSError:"));
+    assert!(src.contains("enum SQSErrorKind:"));
+    assert!(src.contains("def sqs_error_kind(str code) -> SQSErrorKind:"));
+    assert!(src.contains("def sqs_error_name(SQSErrorKind k) -> str:"));
     assert!(src.contains("QueueDoesNotExist"));
     // Collection/nested-input ops now serialize explicitly (zaplang-io/zap#424).
     assert!(src.contains("def receive_message(self, ReceiveMessageRequest input) -> str:"));

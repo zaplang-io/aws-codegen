@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix HealthLake)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -858,9 +860,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by healthlake_error_from_code.
-enum HealthLakeError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum HealthLakeErrorKind:
     AccessDeniedException
     ConflictException
     FailedDependencyException
@@ -871,25 +880,55 @@ enum HealthLakeError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def healthlake_error_from_code(str code) -> HealthLakeError:
-    if code == "AccessDeniedException":
-        return HealthLakeError.AccessDeniedException
-    if code == "ConflictException":
-        return HealthLakeError.ConflictException
-    if code == "FailedDependencyException":
-        return HealthLakeError.FailedDependencyException
-    if code == "InternalServerException":
-        return HealthLakeError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return HealthLakeError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return HealthLakeError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return HealthLakeError.ThrottlingException
-    if code == "ValidationException":
-        return HealthLakeError.ValidationException
-    return HealthLakeError.Unknown(code=code)
+# Classify an AWS error code into `HealthLakeErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def healthlake_error_kind(str code) -> HealthLakeErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return HealthLakeErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return HealthLakeErrorKind.ConflictException
+    if name == "FailedDependencyException":
+        return HealthLakeErrorKind.FailedDependencyException
+    if name == "InternalServerException":
+        return HealthLakeErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return HealthLakeErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return HealthLakeErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return HealthLakeErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return HealthLakeErrorKind.ValidationException
+    return HealthLakeErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def healthlake_error_name(HealthLakeErrorKind k) -> str:
+    match k:
+        case HealthLakeErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case HealthLakeErrorKind.ConflictException:
+            return "ConflictException"
+        case HealthLakeErrorKind.FailedDependencyException:
+            return "FailedDependencyException"
+        case HealthLakeErrorKind.InternalServerException:
+            return "InternalServerException"
+        case HealthLakeErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case HealthLakeErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case HealthLakeErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case HealthLakeErrorKind.ValidationException:
+            return "ValidationException"
+        case HealthLakeErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

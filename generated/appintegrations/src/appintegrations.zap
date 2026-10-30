@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service app-integrations)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -601,9 +602,16 @@ struct UpdateEventIntegrationResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by app_integrations_error_from_code.
-enum AppIntegrationsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum AppIntegrationsErrorKind:
     AccessDeniedException
     ConflictException
     DuplicateResourceException
@@ -615,28 +623,59 @@ enum AppIntegrationsError:
     UnsupportedOperationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def app_integrations_error_from_code(str code) -> AppIntegrationsError:
-    if code == "AccessDeniedException":
-        return AppIntegrationsError.AccessDeniedException
-    if code == "ConflictException":
-        return AppIntegrationsError.ConflictException
-    if code == "DuplicateResourceException":
-        return AppIntegrationsError.DuplicateResourceException
-    if code == "InternalServiceError":
-        return AppIntegrationsError.InternalServiceError
-    if code == "InvalidRequestException":
-        return AppIntegrationsError.InvalidRequestException
-    if code == "ResourceNotFoundException":
-        return AppIntegrationsError.ResourceNotFoundException
-    if code == "ResourceQuotaExceededException":
-        return AppIntegrationsError.ResourceQuotaExceededException
-    if code == "ThrottlingException":
-        return AppIntegrationsError.ThrottlingException
-    if code == "UnsupportedOperationException":
-        return AppIntegrationsError.UnsupportedOperationException
-    return AppIntegrationsError.Unknown(code=code)
+# Classify an AWS error code into `AppIntegrationsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def app_integrations_error_kind(str code) -> AppIntegrationsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return AppIntegrationsErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return AppIntegrationsErrorKind.ConflictException
+    if name == "DuplicateResourceException":
+        return AppIntegrationsErrorKind.DuplicateResourceException
+    if name == "InternalServiceError":
+        return AppIntegrationsErrorKind.InternalServiceError
+    if name == "InvalidRequestException":
+        return AppIntegrationsErrorKind.InvalidRequestException
+    if name == "ResourceNotFoundException":
+        return AppIntegrationsErrorKind.ResourceNotFoundException
+    if name == "ResourceQuotaExceededException":
+        return AppIntegrationsErrorKind.ResourceQuotaExceededException
+    if name == "ThrottlingException":
+        return AppIntegrationsErrorKind.ThrottlingException
+    if name == "UnsupportedOperationException":
+        return AppIntegrationsErrorKind.UnsupportedOperationException
+    return AppIntegrationsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def app_integrations_error_name(AppIntegrationsErrorKind k) -> str:
+    match k:
+        case AppIntegrationsErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case AppIntegrationsErrorKind.ConflictException:
+            return "ConflictException"
+        case AppIntegrationsErrorKind.DuplicateResourceException:
+            return "DuplicateResourceException"
+        case AppIntegrationsErrorKind.InternalServiceError:
+            return "InternalServiceError"
+        case AppIntegrationsErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case AppIntegrationsErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case AppIntegrationsErrorKind.ResourceQuotaExceededException:
+            return "ResourceQuotaExceededException"
+        case AppIntegrationsErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case AppIntegrationsErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case AppIntegrationsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

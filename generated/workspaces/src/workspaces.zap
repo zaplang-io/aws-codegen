@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix WorkspacesService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -2566,9 +2568,16 @@ struct WorkspacesPoolSession:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by workspaces_error_from_code.
-enum WorkSpacesError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum WorkSpacesErrorKind:
     AccessDeniedException
     ApplicationNotSupportedException
     ComputeNotCompatibleException
@@ -2594,55 +2603,115 @@ enum WorkSpacesError:
     WorkspacesDefaultRoleNotFoundException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def workspaces_error_from_code(str code) -> WorkSpacesError:
-    if code == "AccessDeniedException":
-        return WorkSpacesError.AccessDeniedException
-    if code == "ApplicationNotSupportedException":
-        return WorkSpacesError.ApplicationNotSupportedException
-    if code == "ComputeNotCompatibleException":
-        return WorkSpacesError.ComputeNotCompatibleException
-    if code == "ConflictException":
-        return WorkSpacesError.ConflictException
-    if code == "IncompatibleApplicationsException":
-        return WorkSpacesError.IncompatibleApplicationsException
-    if code == "InternalServerException":
-        return WorkSpacesError.InternalServerException
-    if code == "InvalidParameterCombinationException":
-        return WorkSpacesError.InvalidParameterCombinationException
-    if code == "InvalidParameterValuesException":
-        return WorkSpacesError.InvalidParameterValuesException
-    if code == "InvalidResourceStateException":
-        return WorkSpacesError.InvalidResourceStateException
-    if code == "OperatingSystemNotCompatibleException":
-        return WorkSpacesError.OperatingSystemNotCompatibleException
-    if code == "OperationInProgressException":
-        return WorkSpacesError.OperationInProgressException
-    if code == "OperationNotSupportedException":
-        return WorkSpacesError.OperationNotSupportedException
-    if code == "ResourceAlreadyExistsException":
-        return WorkSpacesError.ResourceAlreadyExistsException
-    if code == "ResourceAssociatedException":
-        return WorkSpacesError.ResourceAssociatedException
-    if code == "ResourceCreationFailedException":
-        return WorkSpacesError.ResourceCreationFailedException
-    if code == "ResourceInUseException":
-        return WorkSpacesError.ResourceInUseException
-    if code == "ResourceLimitExceededException":
-        return WorkSpacesError.ResourceLimitExceededException
-    if code == "ResourceNotFoundException":
-        return WorkSpacesError.ResourceNotFoundException
-    if code == "ResourceUnavailableException":
-        return WorkSpacesError.ResourceUnavailableException
-    if code == "UnsupportedNetworkConfigurationException":
-        return WorkSpacesError.UnsupportedNetworkConfigurationException
-    if code == "UnsupportedWorkspaceConfigurationException":
-        return WorkSpacesError.UnsupportedWorkspaceConfigurationException
-    if code == "ValidationException":
-        return WorkSpacesError.ValidationException
-    if code == "WorkspacesDefaultRoleNotFoundException":
-        return WorkSpacesError.WorkspacesDefaultRoleNotFoundException
-    return WorkSpacesError.Unknown(code=code)
+# Classify an AWS error code into `WorkSpacesErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def workspaces_error_kind(str code) -> WorkSpacesErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return WorkSpacesErrorKind.AccessDeniedException
+    if name == "ApplicationNotSupportedException":
+        return WorkSpacesErrorKind.ApplicationNotSupportedException
+    if name == "ComputeNotCompatibleException":
+        return WorkSpacesErrorKind.ComputeNotCompatibleException
+    if name == "ConflictException":
+        return WorkSpacesErrorKind.ConflictException
+    if name == "IncompatibleApplicationsException":
+        return WorkSpacesErrorKind.IncompatibleApplicationsException
+    if name == "InternalServerException":
+        return WorkSpacesErrorKind.InternalServerException
+    if name == "InvalidParameterCombinationException":
+        return WorkSpacesErrorKind.InvalidParameterCombinationException
+    if name == "InvalidParameterValuesException":
+        return WorkSpacesErrorKind.InvalidParameterValuesException
+    if name == "InvalidResourceStateException":
+        return WorkSpacesErrorKind.InvalidResourceStateException
+    if name == "OperatingSystemNotCompatibleException":
+        return WorkSpacesErrorKind.OperatingSystemNotCompatibleException
+    if name == "OperationInProgressException":
+        return WorkSpacesErrorKind.OperationInProgressException
+    if name == "OperationNotSupportedException":
+        return WorkSpacesErrorKind.OperationNotSupportedException
+    if name == "ResourceAlreadyExistsException":
+        return WorkSpacesErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceAssociatedException":
+        return WorkSpacesErrorKind.ResourceAssociatedException
+    if name == "ResourceCreationFailedException":
+        return WorkSpacesErrorKind.ResourceCreationFailedException
+    if name == "ResourceInUseException":
+        return WorkSpacesErrorKind.ResourceInUseException
+    if name == "ResourceLimitExceededException":
+        return WorkSpacesErrorKind.ResourceLimitExceededException
+    if name == "ResourceNotFoundException":
+        return WorkSpacesErrorKind.ResourceNotFoundException
+    if name == "ResourceUnavailableException":
+        return WorkSpacesErrorKind.ResourceUnavailableException
+    if name == "UnsupportedNetworkConfigurationException":
+        return WorkSpacesErrorKind.UnsupportedNetworkConfigurationException
+    if name == "UnsupportedWorkspaceConfigurationException":
+        return WorkSpacesErrorKind.UnsupportedWorkspaceConfigurationException
+    if name == "ValidationException":
+        return WorkSpacesErrorKind.ValidationException
+    if name == "WorkspacesDefaultRoleNotFoundException":
+        return WorkSpacesErrorKind.WorkspacesDefaultRoleNotFoundException
+    return WorkSpacesErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def workspaces_error_name(WorkSpacesErrorKind k) -> str:
+    match k:
+        case WorkSpacesErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case WorkSpacesErrorKind.ApplicationNotSupportedException:
+            return "ApplicationNotSupportedException"
+        case WorkSpacesErrorKind.ComputeNotCompatibleException:
+            return "ComputeNotCompatibleException"
+        case WorkSpacesErrorKind.ConflictException:
+            return "ConflictException"
+        case WorkSpacesErrorKind.IncompatibleApplicationsException:
+            return "IncompatibleApplicationsException"
+        case WorkSpacesErrorKind.InternalServerException:
+            return "InternalServerException"
+        case WorkSpacesErrorKind.InvalidParameterCombinationException:
+            return "InvalidParameterCombinationException"
+        case WorkSpacesErrorKind.InvalidParameterValuesException:
+            return "InvalidParameterValuesException"
+        case WorkSpacesErrorKind.InvalidResourceStateException:
+            return "InvalidResourceStateException"
+        case WorkSpacesErrorKind.OperatingSystemNotCompatibleException:
+            return "OperatingSystemNotCompatibleException"
+        case WorkSpacesErrorKind.OperationInProgressException:
+            return "OperationInProgressException"
+        case WorkSpacesErrorKind.OperationNotSupportedException:
+            return "OperationNotSupportedException"
+        case WorkSpacesErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case WorkSpacesErrorKind.ResourceAssociatedException:
+            return "ResourceAssociatedException"
+        case WorkSpacesErrorKind.ResourceCreationFailedException:
+            return "ResourceCreationFailedException"
+        case WorkSpacesErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case WorkSpacesErrorKind.ResourceLimitExceededException:
+            return "ResourceLimitExceededException"
+        case WorkSpacesErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case WorkSpacesErrorKind.ResourceUnavailableException:
+            return "ResourceUnavailableException"
+        case WorkSpacesErrorKind.UnsupportedNetworkConfigurationException:
+            return "UnsupportedNetworkConfigurationException"
+        case WorkSpacesErrorKind.UnsupportedWorkspaceConfigurationException:
+            return "UnsupportedWorkspaceConfigurationException"
+        case WorkSpacesErrorKind.ValidationException:
+            return "ValidationException"
+        case WorkSpacesErrorKind.WorkspacesDefaultRoleNotFoundException:
+            return "WorkspacesDefaultRoleNotFoundException"
+        case WorkSpacesErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

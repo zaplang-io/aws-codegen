@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix CodePipeline_20150709)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1798,9 +1800,16 @@ struct WebhookNotFoundException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by codepipeline_error_from_code.
-enum CodePipelineError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CodePipelineErrorKind:
     ActionExecutionNotFoundException
     ActionNotFoundException
     ActionTypeNotFoundException
@@ -1844,91 +1853,187 @@ enum CodePipelineError:
     WebhookNotFoundException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def codepipeline_error_from_code(str code) -> CodePipelineError:
-    if code == "ActionExecutionNotFoundException":
-        return CodePipelineError.ActionExecutionNotFoundException
-    if code == "ActionNotFoundException":
-        return CodePipelineError.ActionNotFoundException
-    if code == "ActionTypeNotFoundException":
-        return CodePipelineError.ActionTypeNotFoundException
-    if code == "ApprovalAlreadyCompletedException":
-        return CodePipelineError.ApprovalAlreadyCompletedException
-    if code == "ConcurrentModificationException":
-        return CodePipelineError.ConcurrentModificationException
-    if code == "ConcurrentPipelineExecutionsLimitExceededException":
-        return CodePipelineError.ConcurrentPipelineExecutionsLimitExceededException
-    if code == "ConditionNotOverridableException":
-        return CodePipelineError.ConditionNotOverridableException
-    if code == "ConflictException":
-        return CodePipelineError.ConflictException
-    if code == "DuplicatedStopRequestException":
-        return CodePipelineError.DuplicatedStopRequestException
-    if code == "InvalidActionDeclarationException":
-        return CodePipelineError.InvalidActionDeclarationException
-    if code == "InvalidApprovalTokenException":
-        return CodePipelineError.InvalidApprovalTokenException
-    if code == "InvalidArnException":
-        return CodePipelineError.InvalidArnException
-    if code == "InvalidBlockerDeclarationException":
-        return CodePipelineError.InvalidBlockerDeclarationException
-    if code == "InvalidClientTokenException":
-        return CodePipelineError.InvalidClientTokenException
-    if code == "InvalidJobException":
-        return CodePipelineError.InvalidJobException
-    if code == "InvalidJobStateException":
-        return CodePipelineError.InvalidJobStateException
-    if code == "InvalidNextTokenException":
-        return CodePipelineError.InvalidNextTokenException
-    if code == "InvalidNonceException":
-        return CodePipelineError.InvalidNonceException
-    if code == "InvalidStageDeclarationException":
-        return CodePipelineError.InvalidStageDeclarationException
-    if code == "InvalidStructureException":
-        return CodePipelineError.InvalidStructureException
-    if code == "InvalidTagsException":
-        return CodePipelineError.InvalidTagsException
-    if code == "InvalidWebhookAuthenticationParametersException":
-        return CodePipelineError.InvalidWebhookAuthenticationParametersException
-    if code == "InvalidWebhookFilterPatternException":
-        return CodePipelineError.InvalidWebhookFilterPatternException
-    if code == "JobNotFoundException":
-        return CodePipelineError.JobNotFoundException
-    if code == "LimitExceededException":
-        return CodePipelineError.LimitExceededException
-    if code == "NotLatestPipelineExecutionException":
-        return CodePipelineError.NotLatestPipelineExecutionException
-    if code == "OutputVariablesSizeExceededException":
-        return CodePipelineError.OutputVariablesSizeExceededException
-    if code == "PipelineExecutionNotFoundException":
-        return CodePipelineError.PipelineExecutionNotFoundException
-    if code == "PipelineExecutionNotStoppableException":
-        return CodePipelineError.PipelineExecutionNotStoppableException
-    if code == "PipelineExecutionOutdatedException":
-        return CodePipelineError.PipelineExecutionOutdatedException
-    if code == "PipelineNameInUseException":
-        return CodePipelineError.PipelineNameInUseException
-    if code == "PipelineNotFoundException":
-        return CodePipelineError.PipelineNotFoundException
-    if code == "PipelineVersionNotFoundException":
-        return CodePipelineError.PipelineVersionNotFoundException
-    if code == "RequestFailedException":
-        return CodePipelineError.RequestFailedException
-    if code == "ResourceNotFoundException":
-        return CodePipelineError.ResourceNotFoundException
-    if code == "StageNotFoundException":
-        return CodePipelineError.StageNotFoundException
-    if code == "StageNotRetryableException":
-        return CodePipelineError.StageNotRetryableException
-    if code == "TooManyTagsException":
-        return CodePipelineError.TooManyTagsException
-    if code == "UnableToRollbackStageException":
-        return CodePipelineError.UnableToRollbackStageException
-    if code == "ValidationException":
-        return CodePipelineError.ValidationException
-    if code == "WebhookNotFoundException":
-        return CodePipelineError.WebhookNotFoundException
-    return CodePipelineError.Unknown(code=code)
+# Classify an AWS error code into `CodePipelineErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def codepipeline_error_kind(str code) -> CodePipelineErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ActionExecutionNotFoundException":
+        return CodePipelineErrorKind.ActionExecutionNotFoundException
+    if name == "ActionNotFoundException":
+        return CodePipelineErrorKind.ActionNotFoundException
+    if name == "ActionTypeNotFoundException":
+        return CodePipelineErrorKind.ActionTypeNotFoundException
+    if name == "ApprovalAlreadyCompletedException":
+        return CodePipelineErrorKind.ApprovalAlreadyCompletedException
+    if name == "ConcurrentModificationException":
+        return CodePipelineErrorKind.ConcurrentModificationException
+    if name == "ConcurrentPipelineExecutionsLimitExceededException":
+        return CodePipelineErrorKind.ConcurrentPipelineExecutionsLimitExceededException
+    if name == "ConditionNotOverridableException":
+        return CodePipelineErrorKind.ConditionNotOverridableException
+    if name == "ConflictException":
+        return CodePipelineErrorKind.ConflictException
+    if name == "DuplicatedStopRequestException":
+        return CodePipelineErrorKind.DuplicatedStopRequestException
+    if name == "InvalidActionDeclarationException":
+        return CodePipelineErrorKind.InvalidActionDeclarationException
+    if name == "InvalidApprovalTokenException":
+        return CodePipelineErrorKind.InvalidApprovalTokenException
+    if name == "InvalidArnException":
+        return CodePipelineErrorKind.InvalidArnException
+    if name == "InvalidBlockerDeclarationException":
+        return CodePipelineErrorKind.InvalidBlockerDeclarationException
+    if name == "InvalidClientTokenException":
+        return CodePipelineErrorKind.InvalidClientTokenException
+    if name == "InvalidJobException":
+        return CodePipelineErrorKind.InvalidJobException
+    if name == "InvalidJobStateException":
+        return CodePipelineErrorKind.InvalidJobStateException
+    if name == "InvalidNextTokenException":
+        return CodePipelineErrorKind.InvalidNextTokenException
+    if name == "InvalidNonceException":
+        return CodePipelineErrorKind.InvalidNonceException
+    if name == "InvalidStageDeclarationException":
+        return CodePipelineErrorKind.InvalidStageDeclarationException
+    if name == "InvalidStructureException":
+        return CodePipelineErrorKind.InvalidStructureException
+    if name == "InvalidTagsException":
+        return CodePipelineErrorKind.InvalidTagsException
+    if name == "InvalidWebhookAuthenticationParametersException":
+        return CodePipelineErrorKind.InvalidWebhookAuthenticationParametersException
+    if name == "InvalidWebhookFilterPatternException":
+        return CodePipelineErrorKind.InvalidWebhookFilterPatternException
+    if name == "JobNotFoundException":
+        return CodePipelineErrorKind.JobNotFoundException
+    if name == "LimitExceededException":
+        return CodePipelineErrorKind.LimitExceededException
+    if name == "NotLatestPipelineExecutionException":
+        return CodePipelineErrorKind.NotLatestPipelineExecutionException
+    if name == "OutputVariablesSizeExceededException":
+        return CodePipelineErrorKind.OutputVariablesSizeExceededException
+    if name == "PipelineExecutionNotFoundException":
+        return CodePipelineErrorKind.PipelineExecutionNotFoundException
+    if name == "PipelineExecutionNotStoppableException":
+        return CodePipelineErrorKind.PipelineExecutionNotStoppableException
+    if name == "PipelineExecutionOutdatedException":
+        return CodePipelineErrorKind.PipelineExecutionOutdatedException
+    if name == "PipelineNameInUseException":
+        return CodePipelineErrorKind.PipelineNameInUseException
+    if name == "PipelineNotFoundException":
+        return CodePipelineErrorKind.PipelineNotFoundException
+    if name == "PipelineVersionNotFoundException":
+        return CodePipelineErrorKind.PipelineVersionNotFoundException
+    if name == "RequestFailedException":
+        return CodePipelineErrorKind.RequestFailedException
+    if name == "ResourceNotFoundException":
+        return CodePipelineErrorKind.ResourceNotFoundException
+    if name == "StageNotFoundException":
+        return CodePipelineErrorKind.StageNotFoundException
+    if name == "StageNotRetryableException":
+        return CodePipelineErrorKind.StageNotRetryableException
+    if name == "TooManyTagsException":
+        return CodePipelineErrorKind.TooManyTagsException
+    if name == "UnableToRollbackStageException":
+        return CodePipelineErrorKind.UnableToRollbackStageException
+    if name == "ValidationException":
+        return CodePipelineErrorKind.ValidationException
+    if name == "WebhookNotFoundException":
+        return CodePipelineErrorKind.WebhookNotFoundException
+    return CodePipelineErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def codepipeline_error_name(CodePipelineErrorKind k) -> str:
+    match k:
+        case CodePipelineErrorKind.ActionExecutionNotFoundException:
+            return "ActionExecutionNotFoundException"
+        case CodePipelineErrorKind.ActionNotFoundException:
+            return "ActionNotFoundException"
+        case CodePipelineErrorKind.ActionTypeNotFoundException:
+            return "ActionTypeNotFoundException"
+        case CodePipelineErrorKind.ApprovalAlreadyCompletedException:
+            return "ApprovalAlreadyCompletedException"
+        case CodePipelineErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case CodePipelineErrorKind.ConcurrentPipelineExecutionsLimitExceededException:
+            return "ConcurrentPipelineExecutionsLimitExceededException"
+        case CodePipelineErrorKind.ConditionNotOverridableException:
+            return "ConditionNotOverridableException"
+        case CodePipelineErrorKind.ConflictException:
+            return "ConflictException"
+        case CodePipelineErrorKind.DuplicatedStopRequestException:
+            return "DuplicatedStopRequestException"
+        case CodePipelineErrorKind.InvalidActionDeclarationException:
+            return "InvalidActionDeclarationException"
+        case CodePipelineErrorKind.InvalidApprovalTokenException:
+            return "InvalidApprovalTokenException"
+        case CodePipelineErrorKind.InvalidArnException:
+            return "InvalidArnException"
+        case CodePipelineErrorKind.InvalidBlockerDeclarationException:
+            return "InvalidBlockerDeclarationException"
+        case CodePipelineErrorKind.InvalidClientTokenException:
+            return "InvalidClientTokenException"
+        case CodePipelineErrorKind.InvalidJobException:
+            return "InvalidJobException"
+        case CodePipelineErrorKind.InvalidJobStateException:
+            return "InvalidJobStateException"
+        case CodePipelineErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case CodePipelineErrorKind.InvalidNonceException:
+            return "InvalidNonceException"
+        case CodePipelineErrorKind.InvalidStageDeclarationException:
+            return "InvalidStageDeclarationException"
+        case CodePipelineErrorKind.InvalidStructureException:
+            return "InvalidStructureException"
+        case CodePipelineErrorKind.InvalidTagsException:
+            return "InvalidTagsException"
+        case CodePipelineErrorKind.InvalidWebhookAuthenticationParametersException:
+            return "InvalidWebhookAuthenticationParametersException"
+        case CodePipelineErrorKind.InvalidWebhookFilterPatternException:
+            return "InvalidWebhookFilterPatternException"
+        case CodePipelineErrorKind.JobNotFoundException:
+            return "JobNotFoundException"
+        case CodePipelineErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case CodePipelineErrorKind.NotLatestPipelineExecutionException:
+            return "NotLatestPipelineExecutionException"
+        case CodePipelineErrorKind.OutputVariablesSizeExceededException:
+            return "OutputVariablesSizeExceededException"
+        case CodePipelineErrorKind.PipelineExecutionNotFoundException:
+            return "PipelineExecutionNotFoundException"
+        case CodePipelineErrorKind.PipelineExecutionNotStoppableException:
+            return "PipelineExecutionNotStoppableException"
+        case CodePipelineErrorKind.PipelineExecutionOutdatedException:
+            return "PipelineExecutionOutdatedException"
+        case CodePipelineErrorKind.PipelineNameInUseException:
+            return "PipelineNameInUseException"
+        case CodePipelineErrorKind.PipelineNotFoundException:
+            return "PipelineNotFoundException"
+        case CodePipelineErrorKind.PipelineVersionNotFoundException:
+            return "PipelineVersionNotFoundException"
+        case CodePipelineErrorKind.RequestFailedException:
+            return "RequestFailedException"
+        case CodePipelineErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CodePipelineErrorKind.StageNotFoundException:
+            return "StageNotFoundException"
+        case CodePipelineErrorKind.StageNotRetryableException:
+            return "StageNotRetryableException"
+        case CodePipelineErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case CodePipelineErrorKind.UnableToRollbackStageException:
+            return "UnableToRollbackStageException"
+        case CodePipelineErrorKind.ValidationException:
+            return "ValidationException"
+        case CodePipelineErrorKind.WebhookNotFoundException:
+            return "WebhookNotFoundException"
+        case CodePipelineErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

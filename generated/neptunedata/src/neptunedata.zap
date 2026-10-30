@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service neptune-db)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1255,9 +1256,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by neptune_db_error_from_code.
-enum neptunedataError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum neptunedataErrorKind:
     AccessDeniedException
     BadRequestException
     BulkLoadIdNotFoundException
@@ -1297,84 +1305,171 @@ enum neptunedataError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def neptune_db_error_from_code(str code) -> neptunedataError:
-    if code == "AccessDeniedException":
-        return neptunedataError.AccessDeniedException
-    if code == "BadRequestException":
-        return neptunedataError.BadRequestException
-    if code == "BulkLoadIdNotFoundException":
-        return neptunedataError.BulkLoadIdNotFoundException
-    if code == "CancelledByMaintenanceException":
-        return neptunedataError.CancelledByMaintenanceException
-    if code == "CancelledByUserException":
-        return neptunedataError.CancelledByUserException
-    if code == "ClientTimeoutException":
-        return neptunedataError.ClientTimeoutException
-    if code == "ConcurrentModificationException":
-        return neptunedataError.ConcurrentModificationException
-    if code == "ConstraintViolationException":
-        return neptunedataError.ConstraintViolationException
-    if code == "ExpiredStreamException":
-        return neptunedataError.ExpiredStreamException
-    if code == "FailureByQueryException":
-        return neptunedataError.FailureByQueryException
-    if code == "IllegalArgumentException":
-        return neptunedataError.IllegalArgumentException
-    if code == "InternalFailureException":
-        return neptunedataError.InternalFailureException
-    if code == "InvalidArgumentException":
-        return neptunedataError.InvalidArgumentException
-    if code == "InvalidNumericDataException":
-        return neptunedataError.InvalidNumericDataException
-    if code == "InvalidParameterException":
-        return neptunedataError.InvalidParameterException
-    if code == "LoadUrlAccessDeniedException":
-        return neptunedataError.LoadUrlAccessDeniedException
-    if code == "MLResourceNotFoundException":
-        return neptunedataError.MLResourceNotFoundException
-    if code == "MalformedQueryException":
-        return neptunedataError.MalformedQueryException
-    if code == "MemoryLimitExceededException":
-        return neptunedataError.MemoryLimitExceededException
-    if code == "MethodNotAllowedException":
-        return neptunedataError.MethodNotAllowedException
-    if code == "MissingParameterException":
-        return neptunedataError.MissingParameterException
-    if code == "ParsingException":
-        return neptunedataError.ParsingException
-    if code == "PreconditionsFailedException":
-        return neptunedataError.PreconditionsFailedException
-    if code == "QueryLimitExceededException":
-        return neptunedataError.QueryLimitExceededException
-    if code == "QueryLimitException":
-        return neptunedataError.QueryLimitException
-    if code == "QueryTooLargeException":
-        return neptunedataError.QueryTooLargeException
-    if code == "ReadOnlyViolationException":
-        return neptunedataError.ReadOnlyViolationException
-    if code == "ResourceNotFoundException":
-        return neptunedataError.ResourceNotFoundException
-    if code == "S3Exception":
-        return neptunedataError.S3Exception
-    if code == "ServerShutdownException":
-        return neptunedataError.ServerShutdownException
-    if code == "StatisticsNotAvailableException":
-        return neptunedataError.StatisticsNotAvailableException
-    if code == "StreamRecordsNotFoundException":
-        return neptunedataError.StreamRecordsNotFoundException
-    if code == "ThrottlingException":
-        return neptunedataError.ThrottlingException
-    if code == "TimeLimitExceededException":
-        return neptunedataError.TimeLimitExceededException
-    if code == "TooManyRequestsException":
-        return neptunedataError.TooManyRequestsException
-    if code == "UnsupportedOperationException":
-        return neptunedataError.UnsupportedOperationException
-    if code == "ValidationException":
-        return neptunedataError.ValidationException
-    return neptunedataError.Unknown(code=code)
+# Classify an AWS error code into `neptunedataErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def neptune_db_error_kind(str code) -> neptunedataErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return neptunedataErrorKind.AccessDeniedException
+    if name == "BadRequestException":
+        return neptunedataErrorKind.BadRequestException
+    if name == "BulkLoadIdNotFoundException":
+        return neptunedataErrorKind.BulkLoadIdNotFoundException
+    if name == "CancelledByMaintenanceException":
+        return neptunedataErrorKind.CancelledByMaintenanceException
+    if name == "CancelledByUserException":
+        return neptunedataErrorKind.CancelledByUserException
+    if name == "ClientTimeoutException":
+        return neptunedataErrorKind.ClientTimeoutException
+    if name == "ConcurrentModificationException":
+        return neptunedataErrorKind.ConcurrentModificationException
+    if name == "ConstraintViolationException":
+        return neptunedataErrorKind.ConstraintViolationException
+    if name == "ExpiredStreamException":
+        return neptunedataErrorKind.ExpiredStreamException
+    if name == "FailureByQueryException":
+        return neptunedataErrorKind.FailureByQueryException
+    if name == "IllegalArgumentException":
+        return neptunedataErrorKind.IllegalArgumentException
+    if name == "InternalFailureException":
+        return neptunedataErrorKind.InternalFailureException
+    if name == "InvalidArgumentException":
+        return neptunedataErrorKind.InvalidArgumentException
+    if name == "InvalidNumericDataException":
+        return neptunedataErrorKind.InvalidNumericDataException
+    if name == "InvalidParameterException":
+        return neptunedataErrorKind.InvalidParameterException
+    if name == "LoadUrlAccessDeniedException":
+        return neptunedataErrorKind.LoadUrlAccessDeniedException
+    if name == "MLResourceNotFoundException":
+        return neptunedataErrorKind.MLResourceNotFoundException
+    if name == "MalformedQueryException":
+        return neptunedataErrorKind.MalformedQueryException
+    if name == "MemoryLimitExceededException":
+        return neptunedataErrorKind.MemoryLimitExceededException
+    if name == "MethodNotAllowedException":
+        return neptunedataErrorKind.MethodNotAllowedException
+    if name == "MissingParameterException":
+        return neptunedataErrorKind.MissingParameterException
+    if name == "ParsingException":
+        return neptunedataErrorKind.ParsingException
+    if name == "PreconditionsFailedException":
+        return neptunedataErrorKind.PreconditionsFailedException
+    if name == "QueryLimitExceededException":
+        return neptunedataErrorKind.QueryLimitExceededException
+    if name == "QueryLimitException":
+        return neptunedataErrorKind.QueryLimitException
+    if name == "QueryTooLargeException":
+        return neptunedataErrorKind.QueryTooLargeException
+    if name == "ReadOnlyViolationException":
+        return neptunedataErrorKind.ReadOnlyViolationException
+    if name == "ResourceNotFoundException":
+        return neptunedataErrorKind.ResourceNotFoundException
+    if name == "S3Exception":
+        return neptunedataErrorKind.S3Exception
+    if name == "ServerShutdownException":
+        return neptunedataErrorKind.ServerShutdownException
+    if name == "StatisticsNotAvailableException":
+        return neptunedataErrorKind.StatisticsNotAvailableException
+    if name == "StreamRecordsNotFoundException":
+        return neptunedataErrorKind.StreamRecordsNotFoundException
+    if name == "ThrottlingException":
+        return neptunedataErrorKind.ThrottlingException
+    if name == "TimeLimitExceededException":
+        return neptunedataErrorKind.TimeLimitExceededException
+    if name == "TooManyRequestsException":
+        return neptunedataErrorKind.TooManyRequestsException
+    if name == "UnsupportedOperationException":
+        return neptunedataErrorKind.UnsupportedOperationException
+    if name == "ValidationException":
+        return neptunedataErrorKind.ValidationException
+    return neptunedataErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def neptune_db_error_name(neptunedataErrorKind k) -> str:
+    match k:
+        case neptunedataErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case neptunedataErrorKind.BadRequestException:
+            return "BadRequestException"
+        case neptunedataErrorKind.BulkLoadIdNotFoundException:
+            return "BulkLoadIdNotFoundException"
+        case neptunedataErrorKind.CancelledByMaintenanceException:
+            return "CancelledByMaintenanceException"
+        case neptunedataErrorKind.CancelledByUserException:
+            return "CancelledByUserException"
+        case neptunedataErrorKind.ClientTimeoutException:
+            return "ClientTimeoutException"
+        case neptunedataErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case neptunedataErrorKind.ConstraintViolationException:
+            return "ConstraintViolationException"
+        case neptunedataErrorKind.ExpiredStreamException:
+            return "ExpiredStreamException"
+        case neptunedataErrorKind.FailureByQueryException:
+            return "FailureByQueryException"
+        case neptunedataErrorKind.IllegalArgumentException:
+            return "IllegalArgumentException"
+        case neptunedataErrorKind.InternalFailureException:
+            return "InternalFailureException"
+        case neptunedataErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case neptunedataErrorKind.InvalidNumericDataException:
+            return "InvalidNumericDataException"
+        case neptunedataErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case neptunedataErrorKind.LoadUrlAccessDeniedException:
+            return "LoadUrlAccessDeniedException"
+        case neptunedataErrorKind.MLResourceNotFoundException:
+            return "MLResourceNotFoundException"
+        case neptunedataErrorKind.MalformedQueryException:
+            return "MalformedQueryException"
+        case neptunedataErrorKind.MemoryLimitExceededException:
+            return "MemoryLimitExceededException"
+        case neptunedataErrorKind.MethodNotAllowedException:
+            return "MethodNotAllowedException"
+        case neptunedataErrorKind.MissingParameterException:
+            return "MissingParameterException"
+        case neptunedataErrorKind.ParsingException:
+            return "ParsingException"
+        case neptunedataErrorKind.PreconditionsFailedException:
+            return "PreconditionsFailedException"
+        case neptunedataErrorKind.QueryLimitExceededException:
+            return "QueryLimitExceededException"
+        case neptunedataErrorKind.QueryLimitException:
+            return "QueryLimitException"
+        case neptunedataErrorKind.QueryTooLargeException:
+            return "QueryTooLargeException"
+        case neptunedataErrorKind.ReadOnlyViolationException:
+            return "ReadOnlyViolationException"
+        case neptunedataErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case neptunedataErrorKind.S3Exception:
+            return "S3Exception"
+        case neptunedataErrorKind.ServerShutdownException:
+            return "ServerShutdownException"
+        case neptunedataErrorKind.StatisticsNotAvailableException:
+            return "StatisticsNotAvailableException"
+        case neptunedataErrorKind.StreamRecordsNotFoundException:
+            return "StreamRecordsNotFoundException"
+        case neptunedataErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case neptunedataErrorKind.TimeLimitExceededException:
+            return "TimeLimitExceededException"
+        case neptunedataErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case neptunedataErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case neptunedataErrorKind.ValidationException:
+            return "ValidationException"
+        case neptunedataErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

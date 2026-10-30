@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Kinesis_20131202)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1067,9 +1069,16 @@ struct WarmThroughputObject:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by kinesis_error_from_code.
-enum KinesisError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum KinesisErrorKind:
     AccessDeniedException
     DryRunOperationException
     ExpiredIteratorException
@@ -1089,43 +1098,91 @@ enum KinesisError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def kinesis_error_from_code(str code) -> KinesisError:
-    if code == "AccessDeniedException":
-        return KinesisError.AccessDeniedException
-    if code == "DryRunOperationException":
-        return KinesisError.DryRunOperationException
-    if code == "ExpiredIteratorException":
-        return KinesisError.ExpiredIteratorException
-    if code == "ExpiredNextTokenException":
-        return KinesisError.ExpiredNextTokenException
-    if code == "InternalFailureException":
-        return KinesisError.InternalFailureException
-    if code == "InvalidArgumentException":
-        return KinesisError.InvalidArgumentException
-    if code == "KMSAccessDeniedException":
-        return KinesisError.KMSAccessDeniedException
-    if code == "KMSDisabledException":
-        return KinesisError.KMSDisabledException
-    if code == "KMSInvalidStateException":
-        return KinesisError.KMSInvalidStateException
-    if code == "KMSNotFoundException":
-        return KinesisError.KMSNotFoundException
-    if code == "KMSOptInRequired":
-        return KinesisError.KMSOptInRequired
-    if code == "KMSThrottlingException":
-        return KinesisError.KMSThrottlingException
-    if code == "LimitExceededException":
-        return KinesisError.LimitExceededException
-    if code == "ProvisionedThroughputExceededException":
-        return KinesisError.ProvisionedThroughputExceededException
-    if code == "ResourceInUseException":
-        return KinesisError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return KinesisError.ResourceNotFoundException
-    if code == "ValidationException":
-        return KinesisError.ValidationException
-    return KinesisError.Unknown(code=code)
+# Classify an AWS error code into `KinesisErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def kinesis_error_kind(str code) -> KinesisErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return KinesisErrorKind.AccessDeniedException
+    if name == "DryRunOperationException":
+        return KinesisErrorKind.DryRunOperationException
+    if name == "ExpiredIteratorException":
+        return KinesisErrorKind.ExpiredIteratorException
+    if name == "ExpiredNextTokenException":
+        return KinesisErrorKind.ExpiredNextTokenException
+    if name == "InternalFailureException":
+        return KinesisErrorKind.InternalFailureException
+    if name == "InvalidArgumentException":
+        return KinesisErrorKind.InvalidArgumentException
+    if name == "KMSAccessDeniedException":
+        return KinesisErrorKind.KMSAccessDeniedException
+    if name == "KMSDisabledException":
+        return KinesisErrorKind.KMSDisabledException
+    if name == "KMSInvalidStateException":
+        return KinesisErrorKind.KMSInvalidStateException
+    if name == "KMSNotFoundException":
+        return KinesisErrorKind.KMSNotFoundException
+    if name == "KMSOptInRequired":
+        return KinesisErrorKind.KMSOptInRequired
+    if name == "KMSThrottlingException":
+        return KinesisErrorKind.KMSThrottlingException
+    if name == "LimitExceededException":
+        return KinesisErrorKind.LimitExceededException
+    if name == "ProvisionedThroughputExceededException":
+        return KinesisErrorKind.ProvisionedThroughputExceededException
+    if name == "ResourceInUseException":
+        return KinesisErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return KinesisErrorKind.ResourceNotFoundException
+    if name == "ValidationException":
+        return KinesisErrorKind.ValidationException
+    return KinesisErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def kinesis_error_name(KinesisErrorKind k) -> str:
+    match k:
+        case KinesisErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case KinesisErrorKind.DryRunOperationException:
+            return "DryRunOperationException"
+        case KinesisErrorKind.ExpiredIteratorException:
+            return "ExpiredIteratorException"
+        case KinesisErrorKind.ExpiredNextTokenException:
+            return "ExpiredNextTokenException"
+        case KinesisErrorKind.InternalFailureException:
+            return "InternalFailureException"
+        case KinesisErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case KinesisErrorKind.KMSAccessDeniedException:
+            return "KMSAccessDeniedException"
+        case KinesisErrorKind.KMSDisabledException:
+            return "KMSDisabledException"
+        case KinesisErrorKind.KMSInvalidStateException:
+            return "KMSInvalidStateException"
+        case KinesisErrorKind.KMSNotFoundException:
+            return "KMSNotFoundException"
+        case KinesisErrorKind.KMSOptInRequired:
+            return "KMSOptInRequired"
+        case KinesisErrorKind.KMSThrottlingException:
+            return "KMSThrottlingException"
+        case KinesisErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case KinesisErrorKind.ProvisionedThroughputExceededException:
+            return "ProvisionedThroughputExceededException"
+        case KinesisErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case KinesisErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case KinesisErrorKind.ValidationException:
+            return "ValidationException"
+        case KinesisErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

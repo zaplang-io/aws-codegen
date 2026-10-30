@@ -5,6 +5,8 @@
 #
 #   import aws_core.core        # SigV4 signer, Request/Response, transport,
 #                               # error dispatch, pagination hooks
+#   import aws_core.errors      # typed service errors (base carrier + the
+#                               # per-service error-enum/classifier contract)
 #   import aws_core.endpoints   # partition / region / endpoint resolution,
 #                               # Endpoint + S3 addressing
 #   import aws_core.credentials # boto3-style credential provider chain

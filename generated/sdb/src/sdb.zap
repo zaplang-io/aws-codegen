@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service sdb, Version 2009-04-15)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The SimpleDB query protocol: SigV4 service "sdb" (also the endpoint prefix
@@ -182,9 +184,16 @@ struct UpdateCondition:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by sdb_error_from_code.
-enum SimpleDBError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SimpleDBErrorKind:
     AttributeDoesNotExist
     DuplicateItemName
     InvalidNextToken
@@ -204,44 +213,91 @@ enum SimpleDBError:
     TooManyRequestedAttributes
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def sdb_error_from_code(str code) -> SimpleDBError:
-    if code == "AttributeDoesNotExist":
-        return SimpleDBError.AttributeDoesNotExist
-    if code == "DuplicateItemName":
-        return SimpleDBError.DuplicateItemName
-    if code == "InvalidNextToken":
-        return SimpleDBError.InvalidNextToken
-    if code == "InvalidNumberPredicates":
-        return SimpleDBError.InvalidNumberPredicates
-    if code == "InvalidNumberValueTests":
-        return SimpleDBError.InvalidNumberValueTests
-    if code == "InvalidParameterValue":
-        return SimpleDBError.InvalidParameterValue
-    if code == "InvalidQueryExpression":
-        return SimpleDBError.InvalidQueryExpression
-    if code == "MissingParameter":
-        return SimpleDBError.MissingParameter
-    if code == "NoSuchDomain":
-        return SimpleDBError.NoSuchDomain
-    if code == "NumberDomainAttributesExceeded":
-        return SimpleDBError.NumberDomainAttributesExceeded
-    if code == "NumberDomainBytesExceeded":
-        return SimpleDBError.NumberDomainBytesExceeded
-    if code == "NumberDomainsExceeded":
-        return SimpleDBError.NumberDomainsExceeded
-    if code == "NumberItemAttributesExceeded":
-        return SimpleDBError.NumberItemAttributesExceeded
-    if code == "NumberSubmittedAttributesExceeded":
-        return SimpleDBError.NumberSubmittedAttributesExceeded
-    if code == "NumberSubmittedItemsExceeded":
-        return SimpleDBError.NumberSubmittedItemsExceeded
-    if code == "RequestTimeout":
-        return SimpleDBError.RequestTimeout
-    if code == "TooManyRequestedAttributes":
-        return SimpleDBError.TooManyRequestedAttributes
-    return SimpleDBError.Unknown(code=code)
+# Classify an AWS error code into `SimpleDBErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def sdb_error_kind(str code) -> SimpleDBErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AttributeDoesNotExist":
+        return SimpleDBErrorKind.AttributeDoesNotExist
+    if name == "DuplicateItemName":
+        return SimpleDBErrorKind.DuplicateItemName
+    if name == "InvalidNextToken":
+        return SimpleDBErrorKind.InvalidNextToken
+    if name == "InvalidNumberPredicates":
+        return SimpleDBErrorKind.InvalidNumberPredicates
+    if name == "InvalidNumberValueTests":
+        return SimpleDBErrorKind.InvalidNumberValueTests
+    if name == "InvalidParameterValue":
+        return SimpleDBErrorKind.InvalidParameterValue
+    if name == "InvalidQueryExpression":
+        return SimpleDBErrorKind.InvalidQueryExpression
+    if name == "MissingParameter":
+        return SimpleDBErrorKind.MissingParameter
+    if name == "NoSuchDomain":
+        return SimpleDBErrorKind.NoSuchDomain
+    if name == "NumberDomainAttributesExceeded":
+        return SimpleDBErrorKind.NumberDomainAttributesExceeded
+    if name == "NumberDomainBytesExceeded":
+        return SimpleDBErrorKind.NumberDomainBytesExceeded
+    if name == "NumberDomainsExceeded":
+        return SimpleDBErrorKind.NumberDomainsExceeded
+    if name == "NumberItemAttributesExceeded":
+        return SimpleDBErrorKind.NumberItemAttributesExceeded
+    if name == "NumberSubmittedAttributesExceeded":
+        return SimpleDBErrorKind.NumberSubmittedAttributesExceeded
+    if name == "NumberSubmittedItemsExceeded":
+        return SimpleDBErrorKind.NumberSubmittedItemsExceeded
+    if name == "RequestTimeout":
+        return SimpleDBErrorKind.RequestTimeout
+    if name == "TooManyRequestedAttributes":
+        return SimpleDBErrorKind.TooManyRequestedAttributes
+    return SimpleDBErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def sdb_error_name(SimpleDBErrorKind k) -> str:
+    match k:
+        case SimpleDBErrorKind.AttributeDoesNotExist:
+            return "AttributeDoesNotExist"
+        case SimpleDBErrorKind.DuplicateItemName:
+            return "DuplicateItemName"
+        case SimpleDBErrorKind.InvalidNextToken:
+            return "InvalidNextToken"
+        case SimpleDBErrorKind.InvalidNumberPredicates:
+            return "InvalidNumberPredicates"
+        case SimpleDBErrorKind.InvalidNumberValueTests:
+            return "InvalidNumberValueTests"
+        case SimpleDBErrorKind.InvalidParameterValue:
+            return "InvalidParameterValue"
+        case SimpleDBErrorKind.InvalidQueryExpression:
+            return "InvalidQueryExpression"
+        case SimpleDBErrorKind.MissingParameter:
+            return "MissingParameter"
+        case SimpleDBErrorKind.NoSuchDomain:
+            return "NoSuchDomain"
+        case SimpleDBErrorKind.NumberDomainAttributesExceeded:
+            return "NumberDomainAttributesExceeded"
+        case SimpleDBErrorKind.NumberDomainBytesExceeded:
+            return "NumberDomainBytesExceeded"
+        case SimpleDBErrorKind.NumberDomainsExceeded:
+            return "NumberDomainsExceeded"
+        case SimpleDBErrorKind.NumberItemAttributesExceeded:
+            return "NumberItemAttributesExceeded"
+        case SimpleDBErrorKind.NumberSubmittedAttributesExceeded:
+            return "NumberSubmittedAttributesExceeded"
+        case SimpleDBErrorKind.NumberSubmittedItemsExceeded:
+            return "NumberSubmittedItemsExceeded"
+        case SimpleDBErrorKind.RequestTimeout:
+            return "RequestTimeout"
+        case SimpleDBErrorKind.TooManyRequestedAttributes:
+            return "TooManyRequestedAttributes"
+        case SimpleDBErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

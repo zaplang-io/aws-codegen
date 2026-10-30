@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service managedblockchain)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -830,9 +831,16 @@ struct VotingPolicy:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by managedblockchain_error_from_code.
-enum ManagedBlockchainError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ManagedBlockchainErrorKind:
     AccessDeniedException
     IllegalActionException
     InternalServiceErrorException
@@ -845,30 +853,63 @@ enum ManagedBlockchainError:
     TooManyTagsException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def managedblockchain_error_from_code(str code) -> ManagedBlockchainError:
-    if code == "AccessDeniedException":
-        return ManagedBlockchainError.AccessDeniedException
-    if code == "IllegalActionException":
-        return ManagedBlockchainError.IllegalActionException
-    if code == "InternalServiceErrorException":
-        return ManagedBlockchainError.InternalServiceErrorException
-    if code == "InvalidRequestException":
-        return ManagedBlockchainError.InvalidRequestException
-    if code == "ResourceAlreadyExistsException":
-        return ManagedBlockchainError.ResourceAlreadyExistsException
-    if code == "ResourceLimitExceededException":
-        return ManagedBlockchainError.ResourceLimitExceededException
-    if code == "ResourceNotFoundException":
-        return ManagedBlockchainError.ResourceNotFoundException
-    if code == "ResourceNotReadyException":
-        return ManagedBlockchainError.ResourceNotReadyException
-    if code == "ThrottlingException":
-        return ManagedBlockchainError.ThrottlingException
-    if code == "TooManyTagsException":
-        return ManagedBlockchainError.TooManyTagsException
-    return ManagedBlockchainError.Unknown(code=code)
+# Classify an AWS error code into `ManagedBlockchainErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def managedblockchain_error_kind(str code) -> ManagedBlockchainErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return ManagedBlockchainErrorKind.AccessDeniedException
+    if name == "IllegalActionException":
+        return ManagedBlockchainErrorKind.IllegalActionException
+    if name == "InternalServiceErrorException":
+        return ManagedBlockchainErrorKind.InternalServiceErrorException
+    if name == "InvalidRequestException":
+        return ManagedBlockchainErrorKind.InvalidRequestException
+    if name == "ResourceAlreadyExistsException":
+        return ManagedBlockchainErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceLimitExceededException":
+        return ManagedBlockchainErrorKind.ResourceLimitExceededException
+    if name == "ResourceNotFoundException":
+        return ManagedBlockchainErrorKind.ResourceNotFoundException
+    if name == "ResourceNotReadyException":
+        return ManagedBlockchainErrorKind.ResourceNotReadyException
+    if name == "ThrottlingException":
+        return ManagedBlockchainErrorKind.ThrottlingException
+    if name == "TooManyTagsException":
+        return ManagedBlockchainErrorKind.TooManyTagsException
+    return ManagedBlockchainErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def managedblockchain_error_name(ManagedBlockchainErrorKind k) -> str:
+    match k:
+        case ManagedBlockchainErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case ManagedBlockchainErrorKind.IllegalActionException:
+            return "IllegalActionException"
+        case ManagedBlockchainErrorKind.InternalServiceErrorException:
+            return "InternalServiceErrorException"
+        case ManagedBlockchainErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case ManagedBlockchainErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case ManagedBlockchainErrorKind.ResourceLimitExceededException:
+            return "ResourceLimitExceededException"
+        case ManagedBlockchainErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ManagedBlockchainErrorKind.ResourceNotReadyException:
+            return "ResourceNotReadyException"
+        case ManagedBlockchainErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case ManagedBlockchainErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case ManagedBlockchainErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

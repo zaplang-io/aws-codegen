@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSOrganizationsV20161128)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -1357,9 +1359,16 @@ struct UpdateResponsibilityTransferResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by organizations_error_from_code.
-enum OrganizationsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum OrganizationsErrorKind:
     AWSOrganizationsNotInUseException
     AccessDeniedException
     AccessDeniedForDependencyException
@@ -1412,109 +1421,223 @@ enum OrganizationsError:
     UnsupportedAPIEndpointException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def organizations_error_from_code(str code) -> OrganizationsError:
-    if code == "AWSOrganizationsNotInUseException":
-        return OrganizationsError.AWSOrganizationsNotInUseException
-    if code == "AccessDeniedException":
-        return OrganizationsError.AccessDeniedException
-    if code == "AccessDeniedForDependencyException":
-        return OrganizationsError.AccessDeniedForDependencyException
-    if code == "AccountAlreadyClosedException":
-        return OrganizationsError.AccountAlreadyClosedException
-    if code == "AccountAlreadyRegisteredException":
-        return OrganizationsError.AccountAlreadyRegisteredException
-    if code == "AccountNotFoundException":
-        return OrganizationsError.AccountNotFoundException
-    if code == "AccountNotRegisteredException":
-        return OrganizationsError.AccountNotRegisteredException
-    if code == "AccountOwnerNotVerifiedException":
-        return OrganizationsError.AccountOwnerNotVerifiedException
-    if code == "AlreadyInOrganizationException":
-        return OrganizationsError.AlreadyInOrganizationException
-    if code == "ChildNotFoundException":
-        return OrganizationsError.ChildNotFoundException
-    if code == "ConcurrentModificationException":
-        return OrganizationsError.ConcurrentModificationException
-    if code == "ConflictException":
-        return OrganizationsError.ConflictException
-    if code == "ConstraintViolationException":
-        return OrganizationsError.ConstraintViolationException
-    if code == "CreateAccountStatusNotFoundException":
-        return OrganizationsError.CreateAccountStatusNotFoundException
-    if code == "DestinationParentNotFoundException":
-        return OrganizationsError.DestinationParentNotFoundException
-    if code == "DuplicateAccountException":
-        return OrganizationsError.DuplicateAccountException
-    if code == "DuplicateHandshakeException":
-        return OrganizationsError.DuplicateHandshakeException
-    if code == "DuplicateOrganizationalUnitException":
-        return OrganizationsError.DuplicateOrganizationalUnitException
-    if code == "DuplicatePolicyAttachmentException":
-        return OrganizationsError.DuplicatePolicyAttachmentException
-    if code == "DuplicatePolicyException":
-        return OrganizationsError.DuplicatePolicyException
-    if code == "EffectivePolicyNotFoundException":
-        return OrganizationsError.EffectivePolicyNotFoundException
-    if code == "FinalizingOrganizationException":
-        return OrganizationsError.FinalizingOrganizationException
-    if code == "HandshakeAlreadyInStateException":
-        return OrganizationsError.HandshakeAlreadyInStateException
-    if code == "HandshakeConstraintViolationException":
-        return OrganizationsError.HandshakeConstraintViolationException
-    if code == "HandshakeNotFoundException":
-        return OrganizationsError.HandshakeNotFoundException
-    if code == "InvalidHandshakeTransitionException":
-        return OrganizationsError.InvalidHandshakeTransitionException
-    if code == "InvalidInputException":
-        return OrganizationsError.InvalidInputException
-    if code == "InvalidResponsibilityTransferTransitionException":
-        return OrganizationsError.InvalidResponsibilityTransferTransitionException
-    if code == "MalformedPolicyDocumentException":
-        return OrganizationsError.MalformedPolicyDocumentException
-    if code == "MasterCannotLeaveOrganizationException":
-        return OrganizationsError.MasterCannotLeaveOrganizationException
-    if code == "OrganizationNotEmptyException":
-        return OrganizationsError.OrganizationNotEmptyException
-    if code == "OrganizationalUnitNotEmptyException":
-        return OrganizationsError.OrganizationalUnitNotEmptyException
-    if code == "OrganizationalUnitNotFoundException":
-        return OrganizationsError.OrganizationalUnitNotFoundException
-    if code == "ParentNotFoundException":
-        return OrganizationsError.ParentNotFoundException
-    if code == "PolicyChangesInProgressException":
-        return OrganizationsError.PolicyChangesInProgressException
-    if code == "PolicyInUseException":
-        return OrganizationsError.PolicyInUseException
-    if code == "PolicyNotAttachedException":
-        return OrganizationsError.PolicyNotAttachedException
-    if code == "PolicyNotFoundException":
-        return OrganizationsError.PolicyNotFoundException
-    if code == "PolicyTypeAlreadyEnabledException":
-        return OrganizationsError.PolicyTypeAlreadyEnabledException
-    if code == "PolicyTypeNotAvailableForOrganizationException":
-        return OrganizationsError.PolicyTypeNotAvailableForOrganizationException
-    if code == "PolicyTypeNotEnabledException":
-        return OrganizationsError.PolicyTypeNotEnabledException
-    if code == "ResourcePolicyNotFoundException":
-        return OrganizationsError.ResourcePolicyNotFoundException
-    if code == "ResponsibilityTransferAlreadyInStatusException":
-        return OrganizationsError.ResponsibilityTransferAlreadyInStatusException
-    if code == "ResponsibilityTransferNotFoundException":
-        return OrganizationsError.ResponsibilityTransferNotFoundException
-    if code == "RootNotFoundException":
-        return OrganizationsError.RootNotFoundException
-    if code == "ServiceException":
-        return OrganizationsError.ServiceException
-    if code == "SourceParentNotFoundException":
-        return OrganizationsError.SourceParentNotFoundException
-    if code == "TargetNotFoundException":
-        return OrganizationsError.TargetNotFoundException
-    if code == "TooManyRequestsException":
-        return OrganizationsError.TooManyRequestsException
-    if code == "UnsupportedAPIEndpointException":
-        return OrganizationsError.UnsupportedAPIEndpointException
-    return OrganizationsError.Unknown(code=code)
+# Classify an AWS error code into `OrganizationsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def organizations_error_kind(str code) -> OrganizationsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AWSOrganizationsNotInUseException":
+        return OrganizationsErrorKind.AWSOrganizationsNotInUseException
+    if name == "AccessDeniedException":
+        return OrganizationsErrorKind.AccessDeniedException
+    if name == "AccessDeniedForDependencyException":
+        return OrganizationsErrorKind.AccessDeniedForDependencyException
+    if name == "AccountAlreadyClosedException":
+        return OrganizationsErrorKind.AccountAlreadyClosedException
+    if name == "AccountAlreadyRegisteredException":
+        return OrganizationsErrorKind.AccountAlreadyRegisteredException
+    if name == "AccountNotFoundException":
+        return OrganizationsErrorKind.AccountNotFoundException
+    if name == "AccountNotRegisteredException":
+        return OrganizationsErrorKind.AccountNotRegisteredException
+    if name == "AccountOwnerNotVerifiedException":
+        return OrganizationsErrorKind.AccountOwnerNotVerifiedException
+    if name == "AlreadyInOrganizationException":
+        return OrganizationsErrorKind.AlreadyInOrganizationException
+    if name == "ChildNotFoundException":
+        return OrganizationsErrorKind.ChildNotFoundException
+    if name == "ConcurrentModificationException":
+        return OrganizationsErrorKind.ConcurrentModificationException
+    if name == "ConflictException":
+        return OrganizationsErrorKind.ConflictException
+    if name == "ConstraintViolationException":
+        return OrganizationsErrorKind.ConstraintViolationException
+    if name == "CreateAccountStatusNotFoundException":
+        return OrganizationsErrorKind.CreateAccountStatusNotFoundException
+    if name == "DestinationParentNotFoundException":
+        return OrganizationsErrorKind.DestinationParentNotFoundException
+    if name == "DuplicateAccountException":
+        return OrganizationsErrorKind.DuplicateAccountException
+    if name == "DuplicateHandshakeException":
+        return OrganizationsErrorKind.DuplicateHandshakeException
+    if name == "DuplicateOrganizationalUnitException":
+        return OrganizationsErrorKind.DuplicateOrganizationalUnitException
+    if name == "DuplicatePolicyAttachmentException":
+        return OrganizationsErrorKind.DuplicatePolicyAttachmentException
+    if name == "DuplicatePolicyException":
+        return OrganizationsErrorKind.DuplicatePolicyException
+    if name == "EffectivePolicyNotFoundException":
+        return OrganizationsErrorKind.EffectivePolicyNotFoundException
+    if name == "FinalizingOrganizationException":
+        return OrganizationsErrorKind.FinalizingOrganizationException
+    if name == "HandshakeAlreadyInStateException":
+        return OrganizationsErrorKind.HandshakeAlreadyInStateException
+    if name == "HandshakeConstraintViolationException":
+        return OrganizationsErrorKind.HandshakeConstraintViolationException
+    if name == "HandshakeNotFoundException":
+        return OrganizationsErrorKind.HandshakeNotFoundException
+    if name == "InvalidHandshakeTransitionException":
+        return OrganizationsErrorKind.InvalidHandshakeTransitionException
+    if name == "InvalidInputException":
+        return OrganizationsErrorKind.InvalidInputException
+    if name == "InvalidResponsibilityTransferTransitionException":
+        return OrganizationsErrorKind.InvalidResponsibilityTransferTransitionException
+    if name == "MalformedPolicyDocumentException":
+        return OrganizationsErrorKind.MalformedPolicyDocumentException
+    if name == "MasterCannotLeaveOrganizationException":
+        return OrganizationsErrorKind.MasterCannotLeaveOrganizationException
+    if name == "OrganizationNotEmptyException":
+        return OrganizationsErrorKind.OrganizationNotEmptyException
+    if name == "OrganizationalUnitNotEmptyException":
+        return OrganizationsErrorKind.OrganizationalUnitNotEmptyException
+    if name == "OrganizationalUnitNotFoundException":
+        return OrganizationsErrorKind.OrganizationalUnitNotFoundException
+    if name == "ParentNotFoundException":
+        return OrganizationsErrorKind.ParentNotFoundException
+    if name == "PolicyChangesInProgressException":
+        return OrganizationsErrorKind.PolicyChangesInProgressException
+    if name == "PolicyInUseException":
+        return OrganizationsErrorKind.PolicyInUseException
+    if name == "PolicyNotAttachedException":
+        return OrganizationsErrorKind.PolicyNotAttachedException
+    if name == "PolicyNotFoundException":
+        return OrganizationsErrorKind.PolicyNotFoundException
+    if name == "PolicyTypeAlreadyEnabledException":
+        return OrganizationsErrorKind.PolicyTypeAlreadyEnabledException
+    if name == "PolicyTypeNotAvailableForOrganizationException":
+        return OrganizationsErrorKind.PolicyTypeNotAvailableForOrganizationException
+    if name == "PolicyTypeNotEnabledException":
+        return OrganizationsErrorKind.PolicyTypeNotEnabledException
+    if name == "ResourcePolicyNotFoundException":
+        return OrganizationsErrorKind.ResourcePolicyNotFoundException
+    if name == "ResponsibilityTransferAlreadyInStatusException":
+        return OrganizationsErrorKind.ResponsibilityTransferAlreadyInStatusException
+    if name == "ResponsibilityTransferNotFoundException":
+        return OrganizationsErrorKind.ResponsibilityTransferNotFoundException
+    if name == "RootNotFoundException":
+        return OrganizationsErrorKind.RootNotFoundException
+    if name == "ServiceException":
+        return OrganizationsErrorKind.ServiceException
+    if name == "SourceParentNotFoundException":
+        return OrganizationsErrorKind.SourceParentNotFoundException
+    if name == "TargetNotFoundException":
+        return OrganizationsErrorKind.TargetNotFoundException
+    if name == "TooManyRequestsException":
+        return OrganizationsErrorKind.TooManyRequestsException
+    if name == "UnsupportedAPIEndpointException":
+        return OrganizationsErrorKind.UnsupportedAPIEndpointException
+    return OrganizationsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def organizations_error_name(OrganizationsErrorKind k) -> str:
+    match k:
+        case OrganizationsErrorKind.AWSOrganizationsNotInUseException:
+            return "AWSOrganizationsNotInUseException"
+        case OrganizationsErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case OrganizationsErrorKind.AccessDeniedForDependencyException:
+            return "AccessDeniedForDependencyException"
+        case OrganizationsErrorKind.AccountAlreadyClosedException:
+            return "AccountAlreadyClosedException"
+        case OrganizationsErrorKind.AccountAlreadyRegisteredException:
+            return "AccountAlreadyRegisteredException"
+        case OrganizationsErrorKind.AccountNotFoundException:
+            return "AccountNotFoundException"
+        case OrganizationsErrorKind.AccountNotRegisteredException:
+            return "AccountNotRegisteredException"
+        case OrganizationsErrorKind.AccountOwnerNotVerifiedException:
+            return "AccountOwnerNotVerifiedException"
+        case OrganizationsErrorKind.AlreadyInOrganizationException:
+            return "AlreadyInOrganizationException"
+        case OrganizationsErrorKind.ChildNotFoundException:
+            return "ChildNotFoundException"
+        case OrganizationsErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case OrganizationsErrorKind.ConflictException:
+            return "ConflictException"
+        case OrganizationsErrorKind.ConstraintViolationException:
+            return "ConstraintViolationException"
+        case OrganizationsErrorKind.CreateAccountStatusNotFoundException:
+            return "CreateAccountStatusNotFoundException"
+        case OrganizationsErrorKind.DestinationParentNotFoundException:
+            return "DestinationParentNotFoundException"
+        case OrganizationsErrorKind.DuplicateAccountException:
+            return "DuplicateAccountException"
+        case OrganizationsErrorKind.DuplicateHandshakeException:
+            return "DuplicateHandshakeException"
+        case OrganizationsErrorKind.DuplicateOrganizationalUnitException:
+            return "DuplicateOrganizationalUnitException"
+        case OrganizationsErrorKind.DuplicatePolicyAttachmentException:
+            return "DuplicatePolicyAttachmentException"
+        case OrganizationsErrorKind.DuplicatePolicyException:
+            return "DuplicatePolicyException"
+        case OrganizationsErrorKind.EffectivePolicyNotFoundException:
+            return "EffectivePolicyNotFoundException"
+        case OrganizationsErrorKind.FinalizingOrganizationException:
+            return "FinalizingOrganizationException"
+        case OrganizationsErrorKind.HandshakeAlreadyInStateException:
+            return "HandshakeAlreadyInStateException"
+        case OrganizationsErrorKind.HandshakeConstraintViolationException:
+            return "HandshakeConstraintViolationException"
+        case OrganizationsErrorKind.HandshakeNotFoundException:
+            return "HandshakeNotFoundException"
+        case OrganizationsErrorKind.InvalidHandshakeTransitionException:
+            return "InvalidHandshakeTransitionException"
+        case OrganizationsErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case OrganizationsErrorKind.InvalidResponsibilityTransferTransitionException:
+            return "InvalidResponsibilityTransferTransitionException"
+        case OrganizationsErrorKind.MalformedPolicyDocumentException:
+            return "MalformedPolicyDocumentException"
+        case OrganizationsErrorKind.MasterCannotLeaveOrganizationException:
+            return "MasterCannotLeaveOrganizationException"
+        case OrganizationsErrorKind.OrganizationNotEmptyException:
+            return "OrganizationNotEmptyException"
+        case OrganizationsErrorKind.OrganizationalUnitNotEmptyException:
+            return "OrganizationalUnitNotEmptyException"
+        case OrganizationsErrorKind.OrganizationalUnitNotFoundException:
+            return "OrganizationalUnitNotFoundException"
+        case OrganizationsErrorKind.ParentNotFoundException:
+            return "ParentNotFoundException"
+        case OrganizationsErrorKind.PolicyChangesInProgressException:
+            return "PolicyChangesInProgressException"
+        case OrganizationsErrorKind.PolicyInUseException:
+            return "PolicyInUseException"
+        case OrganizationsErrorKind.PolicyNotAttachedException:
+            return "PolicyNotAttachedException"
+        case OrganizationsErrorKind.PolicyNotFoundException:
+            return "PolicyNotFoundException"
+        case OrganizationsErrorKind.PolicyTypeAlreadyEnabledException:
+            return "PolicyTypeAlreadyEnabledException"
+        case OrganizationsErrorKind.PolicyTypeNotAvailableForOrganizationException:
+            return "PolicyTypeNotAvailableForOrganizationException"
+        case OrganizationsErrorKind.PolicyTypeNotEnabledException:
+            return "PolicyTypeNotEnabledException"
+        case OrganizationsErrorKind.ResourcePolicyNotFoundException:
+            return "ResourcePolicyNotFoundException"
+        case OrganizationsErrorKind.ResponsibilityTransferAlreadyInStatusException:
+            return "ResponsibilityTransferAlreadyInStatusException"
+        case OrganizationsErrorKind.ResponsibilityTransferNotFoundException:
+            return "ResponsibilityTransferNotFoundException"
+        case OrganizationsErrorKind.RootNotFoundException:
+            return "RootNotFoundException"
+        case OrganizationsErrorKind.ServiceException:
+            return "ServiceException"
+        case OrganizationsErrorKind.SourceParentNotFoundException:
+            return "SourceParentNotFoundException"
+        case OrganizationsErrorKind.TargetNotFoundException:
+            return "TargetNotFoundException"
+        case OrganizationsErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case OrganizationsErrorKind.UnsupportedAPIEndpointException:
+            return "UnsupportedAPIEndpointException"
+        case OrganizationsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

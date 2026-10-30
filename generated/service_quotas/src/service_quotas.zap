@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix ServiceQuotasV20190624)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -611,9 +613,16 @@ struct UpdateAutoManagementResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by servicequotas_error_from_code.
-enum Service_QuotasError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Service_QuotasErrorKind:
     AWSServiceAccessNotEnabledException
     AccessDeniedException
     DependencyAccessDeniedException
@@ -633,43 +642,91 @@ enum Service_QuotasError:
     TooManyTagsException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def servicequotas_error_from_code(str code) -> Service_QuotasError:
-    if code == "AWSServiceAccessNotEnabledException":
-        return Service_QuotasError.AWSServiceAccessNotEnabledException
-    if code == "AccessDeniedException":
-        return Service_QuotasError.AccessDeniedException
-    if code == "DependencyAccessDeniedException":
-        return Service_QuotasError.DependencyAccessDeniedException
-    if code == "IllegalArgumentException":
-        return Service_QuotasError.IllegalArgumentException
-    if code == "InvalidPaginationTokenException":
-        return Service_QuotasError.InvalidPaginationTokenException
-    if code == "InvalidResourceStateException":
-        return Service_QuotasError.InvalidResourceStateException
-    if code == "NoAvailableOrganizationException":
-        return Service_QuotasError.NoAvailableOrganizationException
-    if code == "NoSuchResourceException":
-        return Service_QuotasError.NoSuchResourceException
-    if code == "OrganizationNotInAllFeaturesModeException":
-        return Service_QuotasError.OrganizationNotInAllFeaturesModeException
-    if code == "QuotaExceededException":
-        return Service_QuotasError.QuotaExceededException
-    if code == "ResourceAlreadyExistsException":
-        return Service_QuotasError.ResourceAlreadyExistsException
-    if code == "ServiceException":
-        return Service_QuotasError.ServiceException
-    if code == "ServiceQuotaTemplateNotInUseException":
-        return Service_QuotasError.ServiceQuotaTemplateNotInUseException
-    if code == "TagPolicyViolationException":
-        return Service_QuotasError.TagPolicyViolationException
-    if code == "TemplatesNotAvailableInRegionException":
-        return Service_QuotasError.TemplatesNotAvailableInRegionException
-    if code == "TooManyRequestsException":
-        return Service_QuotasError.TooManyRequestsException
-    if code == "TooManyTagsException":
-        return Service_QuotasError.TooManyTagsException
-    return Service_QuotasError.Unknown(code=code)
+# Classify an AWS error code into `Service_QuotasErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def servicequotas_error_kind(str code) -> Service_QuotasErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AWSServiceAccessNotEnabledException":
+        return Service_QuotasErrorKind.AWSServiceAccessNotEnabledException
+    if name == "AccessDeniedException":
+        return Service_QuotasErrorKind.AccessDeniedException
+    if name == "DependencyAccessDeniedException":
+        return Service_QuotasErrorKind.DependencyAccessDeniedException
+    if name == "IllegalArgumentException":
+        return Service_QuotasErrorKind.IllegalArgumentException
+    if name == "InvalidPaginationTokenException":
+        return Service_QuotasErrorKind.InvalidPaginationTokenException
+    if name == "InvalidResourceStateException":
+        return Service_QuotasErrorKind.InvalidResourceStateException
+    if name == "NoAvailableOrganizationException":
+        return Service_QuotasErrorKind.NoAvailableOrganizationException
+    if name == "NoSuchResourceException":
+        return Service_QuotasErrorKind.NoSuchResourceException
+    if name == "OrganizationNotInAllFeaturesModeException":
+        return Service_QuotasErrorKind.OrganizationNotInAllFeaturesModeException
+    if name == "QuotaExceededException":
+        return Service_QuotasErrorKind.QuotaExceededException
+    if name == "ResourceAlreadyExistsException":
+        return Service_QuotasErrorKind.ResourceAlreadyExistsException
+    if name == "ServiceException":
+        return Service_QuotasErrorKind.ServiceException
+    if name == "ServiceQuotaTemplateNotInUseException":
+        return Service_QuotasErrorKind.ServiceQuotaTemplateNotInUseException
+    if name == "TagPolicyViolationException":
+        return Service_QuotasErrorKind.TagPolicyViolationException
+    if name == "TemplatesNotAvailableInRegionException":
+        return Service_QuotasErrorKind.TemplatesNotAvailableInRegionException
+    if name == "TooManyRequestsException":
+        return Service_QuotasErrorKind.TooManyRequestsException
+    if name == "TooManyTagsException":
+        return Service_QuotasErrorKind.TooManyTagsException
+    return Service_QuotasErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def servicequotas_error_name(Service_QuotasErrorKind k) -> str:
+    match k:
+        case Service_QuotasErrorKind.AWSServiceAccessNotEnabledException:
+            return "AWSServiceAccessNotEnabledException"
+        case Service_QuotasErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Service_QuotasErrorKind.DependencyAccessDeniedException:
+            return "DependencyAccessDeniedException"
+        case Service_QuotasErrorKind.IllegalArgumentException:
+            return "IllegalArgumentException"
+        case Service_QuotasErrorKind.InvalidPaginationTokenException:
+            return "InvalidPaginationTokenException"
+        case Service_QuotasErrorKind.InvalidResourceStateException:
+            return "InvalidResourceStateException"
+        case Service_QuotasErrorKind.NoAvailableOrganizationException:
+            return "NoAvailableOrganizationException"
+        case Service_QuotasErrorKind.NoSuchResourceException:
+            return "NoSuchResourceException"
+        case Service_QuotasErrorKind.OrganizationNotInAllFeaturesModeException:
+            return "OrganizationNotInAllFeaturesModeException"
+        case Service_QuotasErrorKind.QuotaExceededException:
+            return "QuotaExceededException"
+        case Service_QuotasErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case Service_QuotasErrorKind.ServiceException:
+            return "ServiceException"
+        case Service_QuotasErrorKind.ServiceQuotaTemplateNotInUseException:
+            return "ServiceQuotaTemplateNotInUseException"
+        case Service_QuotasErrorKind.TagPolicyViolationException:
+            return "TagPolicyViolationException"
+        case Service_QuotasErrorKind.TemplatesNotAvailableInRegionException:
+            return "TemplatesNotAvailableInRegionException"
+        case Service_QuotasErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case Service_QuotasErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Service_QuotasErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service elasticloadbalancing, Version 2012-06-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The Elastic_Load_Balancing query protocol: SigV4 service "elasticloadbalancing" (also the endpoint prefix
@@ -486,9 +488,16 @@ struct UnsupportedProtocolException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by elasticloadbalancing_error_from_code.
-enum Elastic_Load_BalancingError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Elastic_Load_BalancingErrorKind:
     AccessPointNotFoundException
     CertificateNotFoundException
     DependencyThrottleException
@@ -513,54 +522,111 @@ enum Elastic_Load_BalancingError:
     UnsupportedProtocolException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def elasticloadbalancing_error_from_code(str code) -> Elastic_Load_BalancingError:
-    if code == "AccessPointNotFoundException":
-        return Elastic_Load_BalancingError.AccessPointNotFoundException
-    if code == "CertificateNotFoundException":
-        return Elastic_Load_BalancingError.CertificateNotFoundException
-    if code == "DependencyThrottleException":
-        return Elastic_Load_BalancingError.DependencyThrottleException
-    if code == "DuplicateAccessPointNameException":
-        return Elastic_Load_BalancingError.DuplicateAccessPointNameException
-    if code == "DuplicateListenerException":
-        return Elastic_Load_BalancingError.DuplicateListenerException
-    if code == "DuplicatePolicyNameException":
-        return Elastic_Load_BalancingError.DuplicatePolicyNameException
-    if code == "DuplicateTagKeysException":
-        return Elastic_Load_BalancingError.DuplicateTagKeysException
-    if code == "InvalidConfigurationRequestException":
-        return Elastic_Load_BalancingError.InvalidConfigurationRequestException
-    if code == "InvalidEndPointException":
-        return Elastic_Load_BalancingError.InvalidEndPointException
-    if code == "InvalidSchemeException":
-        return Elastic_Load_BalancingError.InvalidSchemeException
-    if code == "InvalidSecurityGroupException":
-        return Elastic_Load_BalancingError.InvalidSecurityGroupException
-    if code == "InvalidSubnetException":
-        return Elastic_Load_BalancingError.InvalidSubnetException
-    if code == "ListenerNotFoundException":
-        return Elastic_Load_BalancingError.ListenerNotFoundException
-    if code == "LoadBalancerAttributeNotFoundException":
-        return Elastic_Load_BalancingError.LoadBalancerAttributeNotFoundException
-    if code == "OperationNotPermittedException":
-        return Elastic_Load_BalancingError.OperationNotPermittedException
-    if code == "PolicyNotFoundException":
-        return Elastic_Load_BalancingError.PolicyNotFoundException
-    if code == "PolicyTypeNotFoundException":
-        return Elastic_Load_BalancingError.PolicyTypeNotFoundException
-    if code == "SubnetNotFoundException":
-        return Elastic_Load_BalancingError.SubnetNotFoundException
-    if code == "TooManyAccessPointsException":
-        return Elastic_Load_BalancingError.TooManyAccessPointsException
-    if code == "TooManyPoliciesException":
-        return Elastic_Load_BalancingError.TooManyPoliciesException
-    if code == "TooManyTagsException":
-        return Elastic_Load_BalancingError.TooManyTagsException
-    if code == "UnsupportedProtocolException":
-        return Elastic_Load_BalancingError.UnsupportedProtocolException
-    return Elastic_Load_BalancingError.Unknown(code=code)
+# Classify an AWS error code into `Elastic_Load_BalancingErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def elasticloadbalancing_error_kind(str code) -> Elastic_Load_BalancingErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessPointNotFoundException":
+        return Elastic_Load_BalancingErrorKind.AccessPointNotFoundException
+    if name == "CertificateNotFoundException":
+        return Elastic_Load_BalancingErrorKind.CertificateNotFoundException
+    if name == "DependencyThrottleException":
+        return Elastic_Load_BalancingErrorKind.DependencyThrottleException
+    if name == "DuplicateAccessPointNameException":
+        return Elastic_Load_BalancingErrorKind.DuplicateAccessPointNameException
+    if name == "DuplicateListenerException":
+        return Elastic_Load_BalancingErrorKind.DuplicateListenerException
+    if name == "DuplicatePolicyNameException":
+        return Elastic_Load_BalancingErrorKind.DuplicatePolicyNameException
+    if name == "DuplicateTagKeysException":
+        return Elastic_Load_BalancingErrorKind.DuplicateTagKeysException
+    if name == "InvalidConfigurationRequestException":
+        return Elastic_Load_BalancingErrorKind.InvalidConfigurationRequestException
+    if name == "InvalidEndPointException":
+        return Elastic_Load_BalancingErrorKind.InvalidEndPointException
+    if name == "InvalidSchemeException":
+        return Elastic_Load_BalancingErrorKind.InvalidSchemeException
+    if name == "InvalidSecurityGroupException":
+        return Elastic_Load_BalancingErrorKind.InvalidSecurityGroupException
+    if name == "InvalidSubnetException":
+        return Elastic_Load_BalancingErrorKind.InvalidSubnetException
+    if name == "ListenerNotFoundException":
+        return Elastic_Load_BalancingErrorKind.ListenerNotFoundException
+    if name == "LoadBalancerAttributeNotFoundException":
+        return Elastic_Load_BalancingErrorKind.LoadBalancerAttributeNotFoundException
+    if name == "OperationNotPermittedException":
+        return Elastic_Load_BalancingErrorKind.OperationNotPermittedException
+    if name == "PolicyNotFoundException":
+        return Elastic_Load_BalancingErrorKind.PolicyNotFoundException
+    if name == "PolicyTypeNotFoundException":
+        return Elastic_Load_BalancingErrorKind.PolicyTypeNotFoundException
+    if name == "SubnetNotFoundException":
+        return Elastic_Load_BalancingErrorKind.SubnetNotFoundException
+    if name == "TooManyAccessPointsException":
+        return Elastic_Load_BalancingErrorKind.TooManyAccessPointsException
+    if name == "TooManyPoliciesException":
+        return Elastic_Load_BalancingErrorKind.TooManyPoliciesException
+    if name == "TooManyTagsException":
+        return Elastic_Load_BalancingErrorKind.TooManyTagsException
+    if name == "UnsupportedProtocolException":
+        return Elastic_Load_BalancingErrorKind.UnsupportedProtocolException
+    return Elastic_Load_BalancingErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def elasticloadbalancing_error_name(Elastic_Load_BalancingErrorKind k) -> str:
+    match k:
+        case Elastic_Load_BalancingErrorKind.AccessPointNotFoundException:
+            return "AccessPointNotFoundException"
+        case Elastic_Load_BalancingErrorKind.CertificateNotFoundException:
+            return "CertificateNotFoundException"
+        case Elastic_Load_BalancingErrorKind.DependencyThrottleException:
+            return "DependencyThrottleException"
+        case Elastic_Load_BalancingErrorKind.DuplicateAccessPointNameException:
+            return "DuplicateAccessPointNameException"
+        case Elastic_Load_BalancingErrorKind.DuplicateListenerException:
+            return "DuplicateListenerException"
+        case Elastic_Load_BalancingErrorKind.DuplicatePolicyNameException:
+            return "DuplicatePolicyNameException"
+        case Elastic_Load_BalancingErrorKind.DuplicateTagKeysException:
+            return "DuplicateTagKeysException"
+        case Elastic_Load_BalancingErrorKind.InvalidConfigurationRequestException:
+            return "InvalidConfigurationRequestException"
+        case Elastic_Load_BalancingErrorKind.InvalidEndPointException:
+            return "InvalidEndPointException"
+        case Elastic_Load_BalancingErrorKind.InvalidSchemeException:
+            return "InvalidSchemeException"
+        case Elastic_Load_BalancingErrorKind.InvalidSecurityGroupException:
+            return "InvalidSecurityGroupException"
+        case Elastic_Load_BalancingErrorKind.InvalidSubnetException:
+            return "InvalidSubnetException"
+        case Elastic_Load_BalancingErrorKind.ListenerNotFoundException:
+            return "ListenerNotFoundException"
+        case Elastic_Load_BalancingErrorKind.LoadBalancerAttributeNotFoundException:
+            return "LoadBalancerAttributeNotFoundException"
+        case Elastic_Load_BalancingErrorKind.OperationNotPermittedException:
+            return "OperationNotPermittedException"
+        case Elastic_Load_BalancingErrorKind.PolicyNotFoundException:
+            return "PolicyNotFoundException"
+        case Elastic_Load_BalancingErrorKind.PolicyTypeNotFoundException:
+            return "PolicyTypeNotFoundException"
+        case Elastic_Load_BalancingErrorKind.SubnetNotFoundException:
+            return "SubnetNotFoundException"
+        case Elastic_Load_BalancingErrorKind.TooManyAccessPointsException:
+            return "TooManyAccessPointsException"
+        case Elastic_Load_BalancingErrorKind.TooManyPoliciesException:
+            return "TooManyPoliciesException"
+        case Elastic_Load_BalancingErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Elastic_Load_BalancingErrorKind.UnsupportedProtocolException:
+            return "UnsupportedProtocolException"
+        case Elastic_Load_BalancingErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

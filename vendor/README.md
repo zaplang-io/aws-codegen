@@ -26,6 +26,7 @@ with path dependencies on a generated `generated/<svc>/` package and this
 | `aws_core/src/restxml.zap`| the rest-xml codec, an XML body atop `binding.zap`                 |
 | `aws_core/src/query.zap`  | the query + ec2 codec: a form body + XML response                 |
 | `aws_core/src/cbor.zap`   | the smithy-rpc-v2-cbor codec: canonical CBOR body + rpc-v2 framing |
+| `aws_core/src/errors.zap` | typed-error base: `AwsServiceError` carrier, `error_code` normalization, raise/check bridge (#361; imported by every client) |
 | `aws_core/src/{credentials,retry,s3,dynamodb,aws_core}.zap` | the rest of the pinned package (not all imported by every client) |
 | `smoke_main.zap` / `smoke_sqs_main.zap` / `smoke_kinesis_main.zap` | consumer smoke entries (import the service package + aws_core) |
 

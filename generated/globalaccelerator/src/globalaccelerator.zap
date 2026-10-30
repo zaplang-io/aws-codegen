@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix GlobalAccelerator_V20180706)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1078,9 +1080,16 @@ struct WithdrawByoipCidrResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by globalaccelerator_error_from_code.
-enum Global_AcceleratorError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Global_AcceleratorErrorKind:
     AcceleratorNotDisabledException
     AcceleratorNotFoundException
     AccessDeniedException
@@ -1103,49 +1112,103 @@ enum Global_AcceleratorError:
     TransactionInProgressException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def globalaccelerator_error_from_code(str code) -> Global_AcceleratorError:
-    if code == "AcceleratorNotDisabledException":
-        return Global_AcceleratorError.AcceleratorNotDisabledException
-    if code == "AcceleratorNotFoundException":
-        return Global_AcceleratorError.AcceleratorNotFoundException
-    if code == "AccessDeniedException":
-        return Global_AcceleratorError.AccessDeniedException
-    if code == "AssociatedEndpointGroupFoundException":
-        return Global_AcceleratorError.AssociatedEndpointGroupFoundException
-    if code == "AssociatedListenerFoundException":
-        return Global_AcceleratorError.AssociatedListenerFoundException
-    if code == "AttachmentNotFoundException":
-        return Global_AcceleratorError.AttachmentNotFoundException
-    if code == "ByoipCidrNotFoundException":
-        return Global_AcceleratorError.ByoipCidrNotFoundException
-    if code == "ConflictException":
-        return Global_AcceleratorError.ConflictException
-    if code == "EndpointAlreadyExistsException":
-        return Global_AcceleratorError.EndpointAlreadyExistsException
-    if code == "EndpointGroupAlreadyExistsException":
-        return Global_AcceleratorError.EndpointGroupAlreadyExistsException
-    if code == "EndpointGroupNotFoundException":
-        return Global_AcceleratorError.EndpointGroupNotFoundException
-    if code == "EndpointNotFoundException":
-        return Global_AcceleratorError.EndpointNotFoundException
-    if code == "IncorrectCidrStateException":
-        return Global_AcceleratorError.IncorrectCidrStateException
-    if code == "InternalServiceErrorException":
-        return Global_AcceleratorError.InternalServiceErrorException
-    if code == "InvalidArgumentException":
-        return Global_AcceleratorError.InvalidArgumentException
-    if code == "InvalidNextTokenException":
-        return Global_AcceleratorError.InvalidNextTokenException
-    if code == "InvalidPortRangeException":
-        return Global_AcceleratorError.InvalidPortRangeException
-    if code == "LimitExceededException":
-        return Global_AcceleratorError.LimitExceededException
-    if code == "ListenerNotFoundException":
-        return Global_AcceleratorError.ListenerNotFoundException
-    if code == "TransactionInProgressException":
-        return Global_AcceleratorError.TransactionInProgressException
-    return Global_AcceleratorError.Unknown(code=code)
+# Classify an AWS error code into `Global_AcceleratorErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def globalaccelerator_error_kind(str code) -> Global_AcceleratorErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AcceleratorNotDisabledException":
+        return Global_AcceleratorErrorKind.AcceleratorNotDisabledException
+    if name == "AcceleratorNotFoundException":
+        return Global_AcceleratorErrorKind.AcceleratorNotFoundException
+    if name == "AccessDeniedException":
+        return Global_AcceleratorErrorKind.AccessDeniedException
+    if name == "AssociatedEndpointGroupFoundException":
+        return Global_AcceleratorErrorKind.AssociatedEndpointGroupFoundException
+    if name == "AssociatedListenerFoundException":
+        return Global_AcceleratorErrorKind.AssociatedListenerFoundException
+    if name == "AttachmentNotFoundException":
+        return Global_AcceleratorErrorKind.AttachmentNotFoundException
+    if name == "ByoipCidrNotFoundException":
+        return Global_AcceleratorErrorKind.ByoipCidrNotFoundException
+    if name == "ConflictException":
+        return Global_AcceleratorErrorKind.ConflictException
+    if name == "EndpointAlreadyExistsException":
+        return Global_AcceleratorErrorKind.EndpointAlreadyExistsException
+    if name == "EndpointGroupAlreadyExistsException":
+        return Global_AcceleratorErrorKind.EndpointGroupAlreadyExistsException
+    if name == "EndpointGroupNotFoundException":
+        return Global_AcceleratorErrorKind.EndpointGroupNotFoundException
+    if name == "EndpointNotFoundException":
+        return Global_AcceleratorErrorKind.EndpointNotFoundException
+    if name == "IncorrectCidrStateException":
+        return Global_AcceleratorErrorKind.IncorrectCidrStateException
+    if name == "InternalServiceErrorException":
+        return Global_AcceleratorErrorKind.InternalServiceErrorException
+    if name == "InvalidArgumentException":
+        return Global_AcceleratorErrorKind.InvalidArgumentException
+    if name == "InvalidNextTokenException":
+        return Global_AcceleratorErrorKind.InvalidNextTokenException
+    if name == "InvalidPortRangeException":
+        return Global_AcceleratorErrorKind.InvalidPortRangeException
+    if name == "LimitExceededException":
+        return Global_AcceleratorErrorKind.LimitExceededException
+    if name == "ListenerNotFoundException":
+        return Global_AcceleratorErrorKind.ListenerNotFoundException
+    if name == "TransactionInProgressException":
+        return Global_AcceleratorErrorKind.TransactionInProgressException
+    return Global_AcceleratorErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def globalaccelerator_error_name(Global_AcceleratorErrorKind k) -> str:
+    match k:
+        case Global_AcceleratorErrorKind.AcceleratorNotDisabledException:
+            return "AcceleratorNotDisabledException"
+        case Global_AcceleratorErrorKind.AcceleratorNotFoundException:
+            return "AcceleratorNotFoundException"
+        case Global_AcceleratorErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Global_AcceleratorErrorKind.AssociatedEndpointGroupFoundException:
+            return "AssociatedEndpointGroupFoundException"
+        case Global_AcceleratorErrorKind.AssociatedListenerFoundException:
+            return "AssociatedListenerFoundException"
+        case Global_AcceleratorErrorKind.AttachmentNotFoundException:
+            return "AttachmentNotFoundException"
+        case Global_AcceleratorErrorKind.ByoipCidrNotFoundException:
+            return "ByoipCidrNotFoundException"
+        case Global_AcceleratorErrorKind.ConflictException:
+            return "ConflictException"
+        case Global_AcceleratorErrorKind.EndpointAlreadyExistsException:
+            return "EndpointAlreadyExistsException"
+        case Global_AcceleratorErrorKind.EndpointGroupAlreadyExistsException:
+            return "EndpointGroupAlreadyExistsException"
+        case Global_AcceleratorErrorKind.EndpointGroupNotFoundException:
+            return "EndpointGroupNotFoundException"
+        case Global_AcceleratorErrorKind.EndpointNotFoundException:
+            return "EndpointNotFoundException"
+        case Global_AcceleratorErrorKind.IncorrectCidrStateException:
+            return "IncorrectCidrStateException"
+        case Global_AcceleratorErrorKind.InternalServiceErrorException:
+            return "InternalServiceErrorException"
+        case Global_AcceleratorErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case Global_AcceleratorErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case Global_AcceleratorErrorKind.InvalidPortRangeException:
+            return "InvalidPortRangeException"
+        case Global_AcceleratorErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Global_AcceleratorErrorKind.ListenerNotFoundException:
+            return "ListenerNotFoundException"
+        case Global_AcceleratorErrorKind.TransactionInProgressException:
+            return "TransactionInProgressException"
+        case Global_AcceleratorErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

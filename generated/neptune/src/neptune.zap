@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service rds, Version 2014-10-31)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The Neptune query protocol: SigV4 service "rds" (also the endpoint prefix
@@ -1516,9 +1518,16 @@ struct VpcSecurityGroupMembership:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by rds_error_from_code.
-enum NeptuneError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum NeptuneErrorKind:
     AuthorizationNotFoundFault
     CertificateNotFoundFault
     DBClusterAlreadyExistsFault
@@ -1589,146 +1598,295 @@ enum NeptuneError:
     SubscriptionNotFoundFault
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def rds_error_from_code(str code) -> NeptuneError:
-    if code == "AuthorizationNotFoundFault":
-        return NeptuneError.AuthorizationNotFoundFault
-    if code == "CertificateNotFoundFault":
-        return NeptuneError.CertificateNotFoundFault
-    if code == "DBClusterAlreadyExistsFault":
-        return NeptuneError.DBClusterAlreadyExistsFault
-    if code == "DBClusterEndpointAlreadyExistsFault":
-        return NeptuneError.DBClusterEndpointAlreadyExistsFault
-    if code == "DBClusterEndpointNotFoundFault":
-        return NeptuneError.DBClusterEndpointNotFoundFault
-    if code == "DBClusterEndpointQuotaExceededFault":
-        return NeptuneError.DBClusterEndpointQuotaExceededFault
-    if code == "DBClusterNotFoundFault":
-        return NeptuneError.DBClusterNotFoundFault
-    if code == "DBClusterParameterGroupNotFoundFault":
-        return NeptuneError.DBClusterParameterGroupNotFoundFault
-    if code == "DBClusterQuotaExceededFault":
-        return NeptuneError.DBClusterQuotaExceededFault
-    if code == "DBClusterRoleAlreadyExistsFault":
-        return NeptuneError.DBClusterRoleAlreadyExistsFault
-    if code == "DBClusterRoleNotFoundFault":
-        return NeptuneError.DBClusterRoleNotFoundFault
-    if code == "DBClusterRoleQuotaExceededFault":
-        return NeptuneError.DBClusterRoleQuotaExceededFault
-    if code == "DBClusterSnapshotAlreadyExistsFault":
-        return NeptuneError.DBClusterSnapshotAlreadyExistsFault
-    if code == "DBClusterSnapshotNotFoundFault":
-        return NeptuneError.DBClusterSnapshotNotFoundFault
-    if code == "DBInstanceAlreadyExistsFault":
-        return NeptuneError.DBInstanceAlreadyExistsFault
-    if code == "DBInstanceNotFoundFault":
-        return NeptuneError.DBInstanceNotFoundFault
-    if code == "DBParameterGroupAlreadyExistsFault":
-        return NeptuneError.DBParameterGroupAlreadyExistsFault
-    if code == "DBParameterGroupNotFoundFault":
-        return NeptuneError.DBParameterGroupNotFoundFault
-    if code == "DBParameterGroupQuotaExceededFault":
-        return NeptuneError.DBParameterGroupQuotaExceededFault
-    if code == "DBSecurityGroupNotFoundFault":
-        return NeptuneError.DBSecurityGroupNotFoundFault
-    if code == "DBSnapshotAlreadyExistsFault":
-        return NeptuneError.DBSnapshotAlreadyExistsFault
-    if code == "DBSnapshotNotFoundFault":
-        return NeptuneError.DBSnapshotNotFoundFault
-    if code == "DBSubnetGroupAlreadyExistsFault":
-        return NeptuneError.DBSubnetGroupAlreadyExistsFault
-    if code == "DBSubnetGroupDoesNotCoverEnoughAZs":
-        return NeptuneError.DBSubnetGroupDoesNotCoverEnoughAZs
-    if code == "DBSubnetGroupNotFoundFault":
-        return NeptuneError.DBSubnetGroupNotFoundFault
-    if code == "DBSubnetGroupQuotaExceededFault":
-        return NeptuneError.DBSubnetGroupQuotaExceededFault
-    if code == "DBSubnetQuotaExceededFault":
-        return NeptuneError.DBSubnetQuotaExceededFault
-    if code == "DBUpgradeDependencyFailureFault":
-        return NeptuneError.DBUpgradeDependencyFailureFault
-    if code == "DomainNotFoundFault":
-        return NeptuneError.DomainNotFoundFault
-    if code == "EventSubscriptionQuotaExceededFault":
-        return NeptuneError.EventSubscriptionQuotaExceededFault
-    if code == "GlobalClusterAlreadyExistsFault":
-        return NeptuneError.GlobalClusterAlreadyExistsFault
-    if code == "GlobalClusterNotFoundFault":
-        return NeptuneError.GlobalClusterNotFoundFault
-    if code == "GlobalClusterQuotaExceededFault":
-        return NeptuneError.GlobalClusterQuotaExceededFault
-    if code == "InstanceQuotaExceededFault":
-        return NeptuneError.InstanceQuotaExceededFault
-    if code == "InsufficientDBClusterCapacityFault":
-        return NeptuneError.InsufficientDBClusterCapacityFault
-    if code == "InsufficientDBInstanceCapacityFault":
-        return NeptuneError.InsufficientDBInstanceCapacityFault
-    if code == "InsufficientStorageClusterCapacityFault":
-        return NeptuneError.InsufficientStorageClusterCapacityFault
-    if code == "InvalidDBClusterEndpointStateFault":
-        return NeptuneError.InvalidDBClusterEndpointStateFault
-    if code == "InvalidDBClusterSnapshotStateFault":
-        return NeptuneError.InvalidDBClusterSnapshotStateFault
-    if code == "InvalidDBClusterStateFault":
-        return NeptuneError.InvalidDBClusterStateFault
-    if code == "InvalidDBInstanceStateFault":
-        return NeptuneError.InvalidDBInstanceStateFault
-    if code == "InvalidDBParameterGroupStateFault":
-        return NeptuneError.InvalidDBParameterGroupStateFault
-    if code == "InvalidDBSecurityGroupStateFault":
-        return NeptuneError.InvalidDBSecurityGroupStateFault
-    if code == "InvalidDBSnapshotStateFault":
-        return NeptuneError.InvalidDBSnapshotStateFault
-    if code == "InvalidDBSubnetGroupStateFault":
-        return NeptuneError.InvalidDBSubnetGroupStateFault
-    if code == "InvalidDBSubnetStateFault":
-        return NeptuneError.InvalidDBSubnetStateFault
-    if code == "InvalidEventSubscriptionStateFault":
-        return NeptuneError.InvalidEventSubscriptionStateFault
-    if code == "InvalidGlobalClusterStateFault":
-        return NeptuneError.InvalidGlobalClusterStateFault
-    if code == "InvalidRestoreFault":
-        return NeptuneError.InvalidRestoreFault
-    if code == "InvalidSubnet":
-        return NeptuneError.InvalidSubnet
-    if code == "InvalidVPCNetworkStateFault":
-        return NeptuneError.InvalidVPCNetworkStateFault
-    if code == "KMSKeyNotAccessibleFault":
-        return NeptuneError.KMSKeyNotAccessibleFault
-    if code == "NetworkTypeNotSupportedFault":
-        return NeptuneError.NetworkTypeNotSupportedFault
-    if code == "OptionGroupNotFoundFault":
-        return NeptuneError.OptionGroupNotFoundFault
-    if code == "ProvisionedIopsNotAvailableInAZFault":
-        return NeptuneError.ProvisionedIopsNotAvailableInAZFault
-    if code == "ResourceNotFoundFault":
-        return NeptuneError.ResourceNotFoundFault
-    if code == "SNSInvalidTopicFault":
-        return NeptuneError.SNSInvalidTopicFault
-    if code == "SNSNoAuthorizationFault":
-        return NeptuneError.SNSNoAuthorizationFault
-    if code == "SNSTopicArnNotFoundFault":
-        return NeptuneError.SNSTopicArnNotFoundFault
-    if code == "SharedSnapshotQuotaExceededFault":
-        return NeptuneError.SharedSnapshotQuotaExceededFault
-    if code == "SnapshotQuotaExceededFault":
-        return NeptuneError.SnapshotQuotaExceededFault
-    if code == "SourceNotFoundFault":
-        return NeptuneError.SourceNotFoundFault
-    if code == "StorageQuotaExceededFault":
-        return NeptuneError.StorageQuotaExceededFault
-    if code == "StorageTypeNotSupportedFault":
-        return NeptuneError.StorageTypeNotSupportedFault
-    if code == "SubnetAlreadyInUse":
-        return NeptuneError.SubnetAlreadyInUse
-    if code == "SubscriptionAlreadyExistFault":
-        return NeptuneError.SubscriptionAlreadyExistFault
-    if code == "SubscriptionCategoryNotFoundFault":
-        return NeptuneError.SubscriptionCategoryNotFoundFault
-    if code == "SubscriptionNotFoundFault":
-        return NeptuneError.SubscriptionNotFoundFault
-    return NeptuneError.Unknown(code=code)
+# Classify an AWS error code into `NeptuneErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def rds_error_kind(str code) -> NeptuneErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AuthorizationNotFoundFault":
+        return NeptuneErrorKind.AuthorizationNotFoundFault
+    if name == "CertificateNotFoundFault":
+        return NeptuneErrorKind.CertificateNotFoundFault
+    if name == "DBClusterAlreadyExistsFault":
+        return NeptuneErrorKind.DBClusterAlreadyExistsFault
+    if name == "DBClusterEndpointAlreadyExistsFault":
+        return NeptuneErrorKind.DBClusterEndpointAlreadyExistsFault
+    if name == "DBClusterEndpointNotFoundFault":
+        return NeptuneErrorKind.DBClusterEndpointNotFoundFault
+    if name == "DBClusterEndpointQuotaExceededFault":
+        return NeptuneErrorKind.DBClusterEndpointQuotaExceededFault
+    if name == "DBClusterNotFoundFault":
+        return NeptuneErrorKind.DBClusterNotFoundFault
+    if name == "DBClusterParameterGroupNotFoundFault":
+        return NeptuneErrorKind.DBClusterParameterGroupNotFoundFault
+    if name == "DBClusterQuotaExceededFault":
+        return NeptuneErrorKind.DBClusterQuotaExceededFault
+    if name == "DBClusterRoleAlreadyExistsFault":
+        return NeptuneErrorKind.DBClusterRoleAlreadyExistsFault
+    if name == "DBClusterRoleNotFoundFault":
+        return NeptuneErrorKind.DBClusterRoleNotFoundFault
+    if name == "DBClusterRoleQuotaExceededFault":
+        return NeptuneErrorKind.DBClusterRoleQuotaExceededFault
+    if name == "DBClusterSnapshotAlreadyExistsFault":
+        return NeptuneErrorKind.DBClusterSnapshotAlreadyExistsFault
+    if name == "DBClusterSnapshotNotFoundFault":
+        return NeptuneErrorKind.DBClusterSnapshotNotFoundFault
+    if name == "DBInstanceAlreadyExistsFault":
+        return NeptuneErrorKind.DBInstanceAlreadyExistsFault
+    if name == "DBInstanceNotFoundFault":
+        return NeptuneErrorKind.DBInstanceNotFoundFault
+    if name == "DBParameterGroupAlreadyExistsFault":
+        return NeptuneErrorKind.DBParameterGroupAlreadyExistsFault
+    if name == "DBParameterGroupNotFoundFault":
+        return NeptuneErrorKind.DBParameterGroupNotFoundFault
+    if name == "DBParameterGroupQuotaExceededFault":
+        return NeptuneErrorKind.DBParameterGroupQuotaExceededFault
+    if name == "DBSecurityGroupNotFoundFault":
+        return NeptuneErrorKind.DBSecurityGroupNotFoundFault
+    if name == "DBSnapshotAlreadyExistsFault":
+        return NeptuneErrorKind.DBSnapshotAlreadyExistsFault
+    if name == "DBSnapshotNotFoundFault":
+        return NeptuneErrorKind.DBSnapshotNotFoundFault
+    if name == "DBSubnetGroupAlreadyExistsFault":
+        return NeptuneErrorKind.DBSubnetGroupAlreadyExistsFault
+    if name == "DBSubnetGroupDoesNotCoverEnoughAZs":
+        return NeptuneErrorKind.DBSubnetGroupDoesNotCoverEnoughAZs
+    if name == "DBSubnetGroupNotFoundFault":
+        return NeptuneErrorKind.DBSubnetGroupNotFoundFault
+    if name == "DBSubnetGroupQuotaExceededFault":
+        return NeptuneErrorKind.DBSubnetGroupQuotaExceededFault
+    if name == "DBSubnetQuotaExceededFault":
+        return NeptuneErrorKind.DBSubnetQuotaExceededFault
+    if name == "DBUpgradeDependencyFailureFault":
+        return NeptuneErrorKind.DBUpgradeDependencyFailureFault
+    if name == "DomainNotFoundFault":
+        return NeptuneErrorKind.DomainNotFoundFault
+    if name == "EventSubscriptionQuotaExceededFault":
+        return NeptuneErrorKind.EventSubscriptionQuotaExceededFault
+    if name == "GlobalClusterAlreadyExistsFault":
+        return NeptuneErrorKind.GlobalClusterAlreadyExistsFault
+    if name == "GlobalClusterNotFoundFault":
+        return NeptuneErrorKind.GlobalClusterNotFoundFault
+    if name == "GlobalClusterQuotaExceededFault":
+        return NeptuneErrorKind.GlobalClusterQuotaExceededFault
+    if name == "InstanceQuotaExceededFault":
+        return NeptuneErrorKind.InstanceQuotaExceededFault
+    if name == "InsufficientDBClusterCapacityFault":
+        return NeptuneErrorKind.InsufficientDBClusterCapacityFault
+    if name == "InsufficientDBInstanceCapacityFault":
+        return NeptuneErrorKind.InsufficientDBInstanceCapacityFault
+    if name == "InsufficientStorageClusterCapacityFault":
+        return NeptuneErrorKind.InsufficientStorageClusterCapacityFault
+    if name == "InvalidDBClusterEndpointStateFault":
+        return NeptuneErrorKind.InvalidDBClusterEndpointStateFault
+    if name == "InvalidDBClusterSnapshotStateFault":
+        return NeptuneErrorKind.InvalidDBClusterSnapshotStateFault
+    if name == "InvalidDBClusterStateFault":
+        return NeptuneErrorKind.InvalidDBClusterStateFault
+    if name == "InvalidDBInstanceStateFault":
+        return NeptuneErrorKind.InvalidDBInstanceStateFault
+    if name == "InvalidDBParameterGroupStateFault":
+        return NeptuneErrorKind.InvalidDBParameterGroupStateFault
+    if name == "InvalidDBSecurityGroupStateFault":
+        return NeptuneErrorKind.InvalidDBSecurityGroupStateFault
+    if name == "InvalidDBSnapshotStateFault":
+        return NeptuneErrorKind.InvalidDBSnapshotStateFault
+    if name == "InvalidDBSubnetGroupStateFault":
+        return NeptuneErrorKind.InvalidDBSubnetGroupStateFault
+    if name == "InvalidDBSubnetStateFault":
+        return NeptuneErrorKind.InvalidDBSubnetStateFault
+    if name == "InvalidEventSubscriptionStateFault":
+        return NeptuneErrorKind.InvalidEventSubscriptionStateFault
+    if name == "InvalidGlobalClusterStateFault":
+        return NeptuneErrorKind.InvalidGlobalClusterStateFault
+    if name == "InvalidRestoreFault":
+        return NeptuneErrorKind.InvalidRestoreFault
+    if name == "InvalidSubnet":
+        return NeptuneErrorKind.InvalidSubnet
+    if name == "InvalidVPCNetworkStateFault":
+        return NeptuneErrorKind.InvalidVPCNetworkStateFault
+    if name == "KMSKeyNotAccessibleFault":
+        return NeptuneErrorKind.KMSKeyNotAccessibleFault
+    if name == "NetworkTypeNotSupportedFault":
+        return NeptuneErrorKind.NetworkTypeNotSupportedFault
+    if name == "OptionGroupNotFoundFault":
+        return NeptuneErrorKind.OptionGroupNotFoundFault
+    if name == "ProvisionedIopsNotAvailableInAZFault":
+        return NeptuneErrorKind.ProvisionedIopsNotAvailableInAZFault
+    if name == "ResourceNotFoundFault":
+        return NeptuneErrorKind.ResourceNotFoundFault
+    if name == "SNSInvalidTopicFault":
+        return NeptuneErrorKind.SNSInvalidTopicFault
+    if name == "SNSNoAuthorizationFault":
+        return NeptuneErrorKind.SNSNoAuthorizationFault
+    if name == "SNSTopicArnNotFoundFault":
+        return NeptuneErrorKind.SNSTopicArnNotFoundFault
+    if name == "SharedSnapshotQuotaExceededFault":
+        return NeptuneErrorKind.SharedSnapshotQuotaExceededFault
+    if name == "SnapshotQuotaExceededFault":
+        return NeptuneErrorKind.SnapshotQuotaExceededFault
+    if name == "SourceNotFoundFault":
+        return NeptuneErrorKind.SourceNotFoundFault
+    if name == "StorageQuotaExceededFault":
+        return NeptuneErrorKind.StorageQuotaExceededFault
+    if name == "StorageTypeNotSupportedFault":
+        return NeptuneErrorKind.StorageTypeNotSupportedFault
+    if name == "SubnetAlreadyInUse":
+        return NeptuneErrorKind.SubnetAlreadyInUse
+    if name == "SubscriptionAlreadyExistFault":
+        return NeptuneErrorKind.SubscriptionAlreadyExistFault
+    if name == "SubscriptionCategoryNotFoundFault":
+        return NeptuneErrorKind.SubscriptionCategoryNotFoundFault
+    if name == "SubscriptionNotFoundFault":
+        return NeptuneErrorKind.SubscriptionNotFoundFault
+    return NeptuneErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def rds_error_name(NeptuneErrorKind k) -> str:
+    match k:
+        case NeptuneErrorKind.AuthorizationNotFoundFault:
+            return "AuthorizationNotFoundFault"
+        case NeptuneErrorKind.CertificateNotFoundFault:
+            return "CertificateNotFoundFault"
+        case NeptuneErrorKind.DBClusterAlreadyExistsFault:
+            return "DBClusterAlreadyExistsFault"
+        case NeptuneErrorKind.DBClusterEndpointAlreadyExistsFault:
+            return "DBClusterEndpointAlreadyExistsFault"
+        case NeptuneErrorKind.DBClusterEndpointNotFoundFault:
+            return "DBClusterEndpointNotFoundFault"
+        case NeptuneErrorKind.DBClusterEndpointQuotaExceededFault:
+            return "DBClusterEndpointQuotaExceededFault"
+        case NeptuneErrorKind.DBClusterNotFoundFault:
+            return "DBClusterNotFoundFault"
+        case NeptuneErrorKind.DBClusterParameterGroupNotFoundFault:
+            return "DBClusterParameterGroupNotFoundFault"
+        case NeptuneErrorKind.DBClusterQuotaExceededFault:
+            return "DBClusterQuotaExceededFault"
+        case NeptuneErrorKind.DBClusterRoleAlreadyExistsFault:
+            return "DBClusterRoleAlreadyExistsFault"
+        case NeptuneErrorKind.DBClusterRoleNotFoundFault:
+            return "DBClusterRoleNotFoundFault"
+        case NeptuneErrorKind.DBClusterRoleQuotaExceededFault:
+            return "DBClusterRoleQuotaExceededFault"
+        case NeptuneErrorKind.DBClusterSnapshotAlreadyExistsFault:
+            return "DBClusterSnapshotAlreadyExistsFault"
+        case NeptuneErrorKind.DBClusterSnapshotNotFoundFault:
+            return "DBClusterSnapshotNotFoundFault"
+        case NeptuneErrorKind.DBInstanceAlreadyExistsFault:
+            return "DBInstanceAlreadyExistsFault"
+        case NeptuneErrorKind.DBInstanceNotFoundFault:
+            return "DBInstanceNotFoundFault"
+        case NeptuneErrorKind.DBParameterGroupAlreadyExistsFault:
+            return "DBParameterGroupAlreadyExistsFault"
+        case NeptuneErrorKind.DBParameterGroupNotFoundFault:
+            return "DBParameterGroupNotFoundFault"
+        case NeptuneErrorKind.DBParameterGroupQuotaExceededFault:
+            return "DBParameterGroupQuotaExceededFault"
+        case NeptuneErrorKind.DBSecurityGroupNotFoundFault:
+            return "DBSecurityGroupNotFoundFault"
+        case NeptuneErrorKind.DBSnapshotAlreadyExistsFault:
+            return "DBSnapshotAlreadyExistsFault"
+        case NeptuneErrorKind.DBSnapshotNotFoundFault:
+            return "DBSnapshotNotFoundFault"
+        case NeptuneErrorKind.DBSubnetGroupAlreadyExistsFault:
+            return "DBSubnetGroupAlreadyExistsFault"
+        case NeptuneErrorKind.DBSubnetGroupDoesNotCoverEnoughAZs:
+            return "DBSubnetGroupDoesNotCoverEnoughAZs"
+        case NeptuneErrorKind.DBSubnetGroupNotFoundFault:
+            return "DBSubnetGroupNotFoundFault"
+        case NeptuneErrorKind.DBSubnetGroupQuotaExceededFault:
+            return "DBSubnetGroupQuotaExceededFault"
+        case NeptuneErrorKind.DBSubnetQuotaExceededFault:
+            return "DBSubnetQuotaExceededFault"
+        case NeptuneErrorKind.DBUpgradeDependencyFailureFault:
+            return "DBUpgradeDependencyFailureFault"
+        case NeptuneErrorKind.DomainNotFoundFault:
+            return "DomainNotFoundFault"
+        case NeptuneErrorKind.EventSubscriptionQuotaExceededFault:
+            return "EventSubscriptionQuotaExceededFault"
+        case NeptuneErrorKind.GlobalClusterAlreadyExistsFault:
+            return "GlobalClusterAlreadyExistsFault"
+        case NeptuneErrorKind.GlobalClusterNotFoundFault:
+            return "GlobalClusterNotFoundFault"
+        case NeptuneErrorKind.GlobalClusterQuotaExceededFault:
+            return "GlobalClusterQuotaExceededFault"
+        case NeptuneErrorKind.InstanceQuotaExceededFault:
+            return "InstanceQuotaExceededFault"
+        case NeptuneErrorKind.InsufficientDBClusterCapacityFault:
+            return "InsufficientDBClusterCapacityFault"
+        case NeptuneErrorKind.InsufficientDBInstanceCapacityFault:
+            return "InsufficientDBInstanceCapacityFault"
+        case NeptuneErrorKind.InsufficientStorageClusterCapacityFault:
+            return "InsufficientStorageClusterCapacityFault"
+        case NeptuneErrorKind.InvalidDBClusterEndpointStateFault:
+            return "InvalidDBClusterEndpointStateFault"
+        case NeptuneErrorKind.InvalidDBClusterSnapshotStateFault:
+            return "InvalidDBClusterSnapshotStateFault"
+        case NeptuneErrorKind.InvalidDBClusterStateFault:
+            return "InvalidDBClusterStateFault"
+        case NeptuneErrorKind.InvalidDBInstanceStateFault:
+            return "InvalidDBInstanceStateFault"
+        case NeptuneErrorKind.InvalidDBParameterGroupStateFault:
+            return "InvalidDBParameterGroupStateFault"
+        case NeptuneErrorKind.InvalidDBSecurityGroupStateFault:
+            return "InvalidDBSecurityGroupStateFault"
+        case NeptuneErrorKind.InvalidDBSnapshotStateFault:
+            return "InvalidDBSnapshotStateFault"
+        case NeptuneErrorKind.InvalidDBSubnetGroupStateFault:
+            return "InvalidDBSubnetGroupStateFault"
+        case NeptuneErrorKind.InvalidDBSubnetStateFault:
+            return "InvalidDBSubnetStateFault"
+        case NeptuneErrorKind.InvalidEventSubscriptionStateFault:
+            return "InvalidEventSubscriptionStateFault"
+        case NeptuneErrorKind.InvalidGlobalClusterStateFault:
+            return "InvalidGlobalClusterStateFault"
+        case NeptuneErrorKind.InvalidRestoreFault:
+            return "InvalidRestoreFault"
+        case NeptuneErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case NeptuneErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case NeptuneErrorKind.KMSKeyNotAccessibleFault:
+            return "KMSKeyNotAccessibleFault"
+        case NeptuneErrorKind.NetworkTypeNotSupportedFault:
+            return "NetworkTypeNotSupportedFault"
+        case NeptuneErrorKind.OptionGroupNotFoundFault:
+            return "OptionGroupNotFoundFault"
+        case NeptuneErrorKind.ProvisionedIopsNotAvailableInAZFault:
+            return "ProvisionedIopsNotAvailableInAZFault"
+        case NeptuneErrorKind.ResourceNotFoundFault:
+            return "ResourceNotFoundFault"
+        case NeptuneErrorKind.SNSInvalidTopicFault:
+            return "SNSInvalidTopicFault"
+        case NeptuneErrorKind.SNSNoAuthorizationFault:
+            return "SNSNoAuthorizationFault"
+        case NeptuneErrorKind.SNSTopicArnNotFoundFault:
+            return "SNSTopicArnNotFoundFault"
+        case NeptuneErrorKind.SharedSnapshotQuotaExceededFault:
+            return "SharedSnapshotQuotaExceededFault"
+        case NeptuneErrorKind.SnapshotQuotaExceededFault:
+            return "SnapshotQuotaExceededFault"
+        case NeptuneErrorKind.SourceNotFoundFault:
+            return "SourceNotFoundFault"
+        case NeptuneErrorKind.StorageQuotaExceededFault:
+            return "StorageQuotaExceededFault"
+        case NeptuneErrorKind.StorageTypeNotSupportedFault:
+            return "StorageTypeNotSupportedFault"
+        case NeptuneErrorKind.SubnetAlreadyInUse:
+            return "SubnetAlreadyInUse"
+        case NeptuneErrorKind.SubscriptionAlreadyExistFault:
+            return "SubscriptionAlreadyExistFault"
+        case NeptuneErrorKind.SubscriptionCategoryNotFoundFault:
+            return "SubscriptionCategoryNotFoundFault"
+        case NeptuneErrorKind.SubscriptionNotFoundFault:
+            return "SubscriptionNotFoundFault"
+        case NeptuneErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

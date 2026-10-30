@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service cognito-sync)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -402,9 +403,16 @@ struct UpdateRecordsResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by cognito_sync_error_from_code.
-enum Cognito_SyncError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Cognito_SyncErrorKind:
     AlreadyStreamedException
     ConcurrentModificationException
     DuplicateRequestException
@@ -420,36 +428,75 @@ enum Cognito_SyncError:
     TooManyRequestsException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def cognito_sync_error_from_code(str code) -> Cognito_SyncError:
-    if code == "AlreadyStreamedException":
-        return Cognito_SyncError.AlreadyStreamedException
-    if code == "ConcurrentModificationException":
-        return Cognito_SyncError.ConcurrentModificationException
-    if code == "DuplicateRequestException":
-        return Cognito_SyncError.DuplicateRequestException
-    if code == "InternalErrorException":
-        return Cognito_SyncError.InternalErrorException
-    if code == "InvalidConfigurationException":
-        return Cognito_SyncError.InvalidConfigurationException
-    if code == "InvalidLambdaFunctionOutputException":
-        return Cognito_SyncError.InvalidLambdaFunctionOutputException
-    if code == "InvalidParameterException":
-        return Cognito_SyncError.InvalidParameterException
-    if code == "LambdaThrottledException":
-        return Cognito_SyncError.LambdaThrottledException
-    if code == "LimitExceededException":
-        return Cognito_SyncError.LimitExceededException
-    if code == "NotAuthorizedException":
-        return Cognito_SyncError.NotAuthorizedException
-    if code == "ResourceConflictException":
-        return Cognito_SyncError.ResourceConflictException
-    if code == "ResourceNotFoundException":
-        return Cognito_SyncError.ResourceNotFoundException
-    if code == "TooManyRequestsException":
-        return Cognito_SyncError.TooManyRequestsException
-    return Cognito_SyncError.Unknown(code=code)
+# Classify an AWS error code into `Cognito_SyncErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cognito_sync_error_kind(str code) -> Cognito_SyncErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AlreadyStreamedException":
+        return Cognito_SyncErrorKind.AlreadyStreamedException
+    if name == "ConcurrentModificationException":
+        return Cognito_SyncErrorKind.ConcurrentModificationException
+    if name == "DuplicateRequestException":
+        return Cognito_SyncErrorKind.DuplicateRequestException
+    if name == "InternalErrorException":
+        return Cognito_SyncErrorKind.InternalErrorException
+    if name == "InvalidConfigurationException":
+        return Cognito_SyncErrorKind.InvalidConfigurationException
+    if name == "InvalidLambdaFunctionOutputException":
+        return Cognito_SyncErrorKind.InvalidLambdaFunctionOutputException
+    if name == "InvalidParameterException":
+        return Cognito_SyncErrorKind.InvalidParameterException
+    if name == "LambdaThrottledException":
+        return Cognito_SyncErrorKind.LambdaThrottledException
+    if name == "LimitExceededException":
+        return Cognito_SyncErrorKind.LimitExceededException
+    if name == "NotAuthorizedException":
+        return Cognito_SyncErrorKind.NotAuthorizedException
+    if name == "ResourceConflictException":
+        return Cognito_SyncErrorKind.ResourceConflictException
+    if name == "ResourceNotFoundException":
+        return Cognito_SyncErrorKind.ResourceNotFoundException
+    if name == "TooManyRequestsException":
+        return Cognito_SyncErrorKind.TooManyRequestsException
+    return Cognito_SyncErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cognito_sync_error_name(Cognito_SyncErrorKind k) -> str:
+    match k:
+        case Cognito_SyncErrorKind.AlreadyStreamedException:
+            return "AlreadyStreamedException"
+        case Cognito_SyncErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Cognito_SyncErrorKind.DuplicateRequestException:
+            return "DuplicateRequestException"
+        case Cognito_SyncErrorKind.InternalErrorException:
+            return "InternalErrorException"
+        case Cognito_SyncErrorKind.InvalidConfigurationException:
+            return "InvalidConfigurationException"
+        case Cognito_SyncErrorKind.InvalidLambdaFunctionOutputException:
+            return "InvalidLambdaFunctionOutputException"
+        case Cognito_SyncErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Cognito_SyncErrorKind.LambdaThrottledException:
+            return "LambdaThrottledException"
+        case Cognito_SyncErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Cognito_SyncErrorKind.NotAuthorizedException:
+            return "NotAuthorizedException"
+        case Cognito_SyncErrorKind.ResourceConflictException:
+            return "ResourceConflictException"
+        case Cognito_SyncErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Cognito_SyncErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case Cognito_SyncErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

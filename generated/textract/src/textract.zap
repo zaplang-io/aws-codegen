@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Textract)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -953,9 +955,16 @@ struct Warning:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by textract_error_from_code.
-enum TextractError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum TextractErrorKind:
     AccessDeniedException
     BadDocumentException
     ConflictException
@@ -976,45 +985,95 @@ enum TextractError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def textract_error_from_code(str code) -> TextractError:
-    if code == "AccessDeniedException":
-        return TextractError.AccessDeniedException
-    if code == "BadDocumentException":
-        return TextractError.BadDocumentException
-    if code == "ConflictException":
-        return TextractError.ConflictException
-    if code == "DocumentTooLargeException":
-        return TextractError.DocumentTooLargeException
-    if code == "HumanLoopQuotaExceededException":
-        return TextractError.HumanLoopQuotaExceededException
-    if code == "IdempotentParameterMismatchException":
-        return TextractError.IdempotentParameterMismatchException
-    if code == "InternalServerError":
-        return TextractError.InternalServerError
-    if code == "InvalidJobIdException":
-        return TextractError.InvalidJobIdException
-    if code == "InvalidKMSKeyException":
-        return TextractError.InvalidKMSKeyException
-    if code == "InvalidParameterException":
-        return TextractError.InvalidParameterException
-    if code == "InvalidS3ObjectException":
-        return TextractError.InvalidS3ObjectException
-    if code == "LimitExceededException":
-        return TextractError.LimitExceededException
-    if code == "ProvisionedThroughputExceededException":
-        return TextractError.ProvisionedThroughputExceededException
-    if code == "ResourceNotFoundException":
-        return TextractError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return TextractError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return TextractError.ThrottlingException
-    if code == "UnsupportedDocumentException":
-        return TextractError.UnsupportedDocumentException
-    if code == "ValidationException":
-        return TextractError.ValidationException
-    return TextractError.Unknown(code=code)
+# Classify an AWS error code into `TextractErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def textract_error_kind(str code) -> TextractErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return TextractErrorKind.AccessDeniedException
+    if name == "BadDocumentException":
+        return TextractErrorKind.BadDocumentException
+    if name == "ConflictException":
+        return TextractErrorKind.ConflictException
+    if name == "DocumentTooLargeException":
+        return TextractErrorKind.DocumentTooLargeException
+    if name == "HumanLoopQuotaExceededException":
+        return TextractErrorKind.HumanLoopQuotaExceededException
+    if name == "IdempotentParameterMismatchException":
+        return TextractErrorKind.IdempotentParameterMismatchException
+    if name == "InternalServerError":
+        return TextractErrorKind.InternalServerError
+    if name == "InvalidJobIdException":
+        return TextractErrorKind.InvalidJobIdException
+    if name == "InvalidKMSKeyException":
+        return TextractErrorKind.InvalidKMSKeyException
+    if name == "InvalidParameterException":
+        return TextractErrorKind.InvalidParameterException
+    if name == "InvalidS3ObjectException":
+        return TextractErrorKind.InvalidS3ObjectException
+    if name == "LimitExceededException":
+        return TextractErrorKind.LimitExceededException
+    if name == "ProvisionedThroughputExceededException":
+        return TextractErrorKind.ProvisionedThroughputExceededException
+    if name == "ResourceNotFoundException":
+        return TextractErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return TextractErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return TextractErrorKind.ThrottlingException
+    if name == "UnsupportedDocumentException":
+        return TextractErrorKind.UnsupportedDocumentException
+    if name == "ValidationException":
+        return TextractErrorKind.ValidationException
+    return TextractErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def textract_error_name(TextractErrorKind k) -> str:
+    match k:
+        case TextractErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case TextractErrorKind.BadDocumentException:
+            return "BadDocumentException"
+        case TextractErrorKind.ConflictException:
+            return "ConflictException"
+        case TextractErrorKind.DocumentTooLargeException:
+            return "DocumentTooLargeException"
+        case TextractErrorKind.HumanLoopQuotaExceededException:
+            return "HumanLoopQuotaExceededException"
+        case TextractErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case TextractErrorKind.InternalServerError:
+            return "InternalServerError"
+        case TextractErrorKind.InvalidJobIdException:
+            return "InvalidJobIdException"
+        case TextractErrorKind.InvalidKMSKeyException:
+            return "InvalidKMSKeyException"
+        case TextractErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case TextractErrorKind.InvalidS3ObjectException:
+            return "InvalidS3ObjectException"
+        case TextractErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case TextractErrorKind.ProvisionedThroughputExceededException:
+            return "ProvisionedThroughputExceededException"
+        case TextractErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case TextractErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case TextractErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case TextractErrorKind.UnsupportedDocumentException:
+            return "UnsupportedDocumentException"
+        case TextractErrorKind.ValidationException:
+            return "ValidationException"
+        case TextractErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 
