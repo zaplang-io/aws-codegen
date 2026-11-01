@@ -19,6 +19,7 @@
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   112 structs (62 @derive(Json)), 14 enums, 6 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The AppConfig rest-json protocol: SigV4 service "appconfig" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -2362,6 +2364,54 @@ struct AppConfigClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetDeployment for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_deployment(self, GetDeploymentRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        auto resp = core.send(host, self.get_deployment(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetEnvironment for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_environment(self, GetEnvironmentRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        auto resp = core.send(host, self.get_environment(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter DeploymentComplete — polls GetDeployment until a success acceptor fires (delay 30s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_deployment_complete.
+    def wait_deployment_complete(self, GetDeploymentRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DeploymentComplete",
+            delay=30,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "COMPLETE"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "ROLLED_BACK"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "REVERTED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_deployment(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter EnvironmentReadyForDeployment — polls GetEnvironment until a success acceptor fires (delay 30s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_environment_ready_for_deployment.
+    def wait_environment_ready_for_deployment(self, GetEnvironmentRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="EnvironmentReadyForDeployment",
+            delay=30,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ReadyForDeployment"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "RolledBack"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "Reverted")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_environment(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a AppConfigClient bound to credentials + region.
 def appconfig_client(core.Credentials creds, str region) -> AppConfigClient:

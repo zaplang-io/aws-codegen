@@ -19,6 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   100 structs (69 @derive(Json)), 14 enums, 7 error variants.
 #   5 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).

@@ -18,6 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   103 structs (64 @derive(Json)), 17 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -30,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The b2bi awsJson protocol: version 1.0, API id "B2BI".
 def b2bi_protocol() -> awsjson.AwsJson:
@@ -1952,6 +1954,29 @@ struct b2biClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetTransformerJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_transformer_job(self, GetTransformerJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(b2bi_protocol().service, self.region)
+        auto resp = core.send(host, self.get_transformer_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter TransformerJobSucceeded — polls GetTransformerJob until a success acceptor fires (delay 10s,
+    # max 12 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_transformer_job_succeeded.
+    def wait_transformer_job_succeeded(self, GetTransformerJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TransformerJobSucceeded",
+            delay=10,
+            max_attempts=12,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "succeeded"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_transformer_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a b2biClient bound to credentials + region.
 def b2bi_client(core.Credentials creds, str region) -> b2biClient:

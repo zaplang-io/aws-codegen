@@ -11,7 +11,7 @@ use crate::binding::{
 };
 use crate::cborbody::{compute_cbor_serializable, CborSer};
 use crate::jsonbody::{compute_json_serializable, plan_enc, JsonSer};
-use crate::model::{Model, Paginators, Shape};
+use crate::model::{Model, Paginators, Shape, Waiters};
 use crate::naming::{escape_ident, snake_case};
 use crate::query::{compute_query_serializable, plan_query, QueryFlavor, QueryOp, QuerySer};
 use crate::types::{compute_derivable, resolve, ZapType};
@@ -61,15 +61,20 @@ pub struct Coverage {
     /// Paginated operations we could not surface (non-derivable input or a
     /// token that is not a simple string field).
     pub paginators_skipped: usize,
+    /// Waiters that got a generated `wait_<name>` method + acceptor table.
+    pub waiters: usize,
+    /// Waiters we could not surface (operation not generated, this protocol does
+    /// not surface waiters yet, or an unsupported matcher/state).
+    pub waiters_skipped: usize,
 }
 
 const IND: &str = "    ";
 
-/// Emit the full Zap client for `model`, driving paginators off `paginators`
-/// (pass `&Paginators::default()` for none). Returns the source and a coverage
-/// summary.
-pub fn generate(model: &Model, paginators: &Paginators) -> (String, Coverage) {
-    let g = Generator::new(model, paginators);
+/// Emit the full Zap client for `model`, driving paginators off `paginators` and
+/// waiters off `waiters` (pass `&Paginators::default()` / `&Waiters::default()`
+/// for none). Returns the source and a coverage summary.
+pub fn generate(model: &Model, paginators: &Paginators, waiters: &Waiters) -> (String, Coverage) {
+    let g = Generator::new(model, paginators, waiters);
     g.run()
 }
 
@@ -108,6 +113,7 @@ pub fn package_manifest(name: &str) -> String {
 struct Generator<'a> {
     model: &'a Model,
     paginators: &'a Paginators,
+    waiters: &'a Waiters,
     derivable: HashMap<String, bool>,
     /// Which structures the explicit JSON emitter can serialize (a superset of
     /// `derivable` that also covers collections / nesting; zaplang-io/zap#424).
@@ -142,7 +148,7 @@ struct Generator<'a> {
 }
 
 impl<'a> Generator<'a> {
-    fn new(model: &'a Model, paginators: &'a Paginators) -> Self {
+    fn new(model: &'a Model, paginators: &'a Paginators, waiters: &'a Waiters) -> Self {
         let md = &model.metadata;
         let type_prefix = if !md.service_id.is_empty() {
             escape_ident(&md.service_id).0
@@ -180,6 +186,7 @@ impl<'a> Generator<'a> {
         Generator {
             model,
             paginators,
+            waiters,
             derivable,
             json_serializable,
             type_prefix,
@@ -420,6 +427,10 @@ impl<'a> Generator<'a> {
             "#   {} paginators generated ({} paginated ops skipped) from paginators-1.json.\n",
             cov.paginators, cov.paginators_skipped
         ));
+        h.push_str(&format!(
+            "#   {} waiters generated ({} skipped) from waiters-2.json.\n",
+            cov.waiters, cov.waiters_skipped
+        ));
         if self.protocol.uses_json_derive() {
             h.push_str("# @derive(Json) is attached to structs whose members are all derive-\n");
             h.push_str("# serializable; structs with list/map members stay plain and are\n");
@@ -445,7 +456,8 @@ impl<'a> Generator<'a> {
         let mut mods: Vec<&str> = vec!["core", "errors"];
         match self.protocol {
             Protocol::AwsJson => {
-                if cov.paginators > 0 {
+                // Paginators and waiters both resolve a host via `endpoints`.
+                if cov.paginators > 0 || cov.waiters > 0 {
                     mods.push("endpoints");
                 }
                 mods.push("awsjson");
@@ -467,6 +479,11 @@ impl<'a> Generator<'a> {
                 mods.push("endpoints");
                 mods.push("cbor");
             }
+        }
+        // The waiter engine + the `wait_<name>` helpers (zaplang-io/aws-codegen#22)
+        // live in `aws_core.waiters`; only the JSON protocols surface waiters today.
+        if cov.waiters > 0 {
+            mods.push("waiters");
         }
         let mut s = String::new();
         s.push_str("# Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/\n");
@@ -1010,6 +1027,11 @@ impl<'a> Generator<'a> {
         }
 
         let (paginator_methods, paginators_skipped) = self.paginator_methods(cov, &mut ser);
+        let host_expr = format!(
+            "endpoints.regional_host({}_protocol().service, self.region)",
+            self.fn_prefix
+        );
+        let (waiter_methods, waiters_skipped) = self.waiter_methods(cov, &host_expr);
 
         let mut out = String::new();
         if !skipped.is_empty() {
@@ -1034,6 +1056,15 @@ impl<'a> Generator<'a> {
             }
             out.push('\n');
         }
+        if !waiters_skipped.is_empty() {
+            out.push_str(
+                "# Waiters (waiters-2.json) not surfaced — the polled operation is skipped\n# above, or an acceptor uses an unsupported matcher/state:\n",
+            );
+            for s in &waiters_skipped {
+                out.push_str(&format!("#   {s}\n"));
+            }
+            out.push('\n');
+        }
         if !serializers.is_empty() {
             out.push_str(&self.json_helpers(needs_iso_helper));
             out.push('\n');
@@ -1048,7 +1079,7 @@ impl<'a> Generator<'a> {
         ));
         out.push_str(&format!("struct {client_name}:\n"));
         out.push_str(&format!("{IND}core.Credentials creds\n{IND}str region\n"));
-        if methods.is_empty() && paginator_methods.is_empty() {
+        if methods.is_empty() && paginator_methods.is_empty() && waiter_methods.is_empty() {
             // Defensive: keep the struct valid if nothing was derivable.
             out.push_str(&format!(
                 "\n{IND}# no derivable-input operations were generated for this service in v0\n"
@@ -1057,6 +1088,7 @@ impl<'a> Generator<'a> {
             out.push('\n');
             out.push_str(&methods);
             out.push_str(&paginator_methods);
+            out.push_str(&waiter_methods);
         }
 
         out.push_str(&format!(
@@ -1158,6 +1190,11 @@ impl<'a> Generator<'a> {
         }
 
         let (paginator_methods, paginators_skipped) = self.rest_paginator_methods(cov);
+        let host_expr = format!(
+            "endpoints.regional_host({}_service(), self.region)",
+            self.fn_prefix
+        );
+        let (waiter_methods, waiters_skipped) = self.waiter_methods(cov, &host_expr);
 
         let mut out = String::new();
         if !skipped.is_empty() {
@@ -1181,6 +1218,15 @@ impl<'a> Generator<'a> {
                 "# skipped above, or the continuation token is not a simple string field:\n",
             );
             for s in &paginators_skipped {
+                out.push_str(&format!("#   {s}\n"));
+            }
+            out.push('\n');
+        }
+        if !waiters_skipped.is_empty() {
+            out.push_str(
+                "# Waiters (waiters-2.json) not surfaced — the polled operation is skipped\n# above, or an acceptor uses an unsupported matcher/state:\n",
+            );
+            for s in &waiters_skipped {
                 out.push_str(&format!("#   {s}\n"));
             }
             out.push('\n');
@@ -1212,7 +1258,7 @@ impl<'a> Generator<'a> {
         ));
         out.push_str(&format!("struct {client_name}:\n"));
         out.push_str(&format!("{IND}core.Credentials creds\n{IND}str region\n"));
-        if methods.is_empty() && paginator_methods.is_empty() {
+        if methods.is_empty() && paginator_methods.is_empty() && waiter_methods.is_empty() {
             out.push_str(&format!(
                 "\n{IND}# no bindable operations were generated for this service in v0\n"
             ));
@@ -1220,6 +1266,7 @@ impl<'a> Generator<'a> {
             out.push('\n');
             out.push_str(&methods);
             out.push_str(&paginator_methods);
+            out.push_str(&waiter_methods);
         }
 
         out.push_str(&format!(
@@ -1615,6 +1662,7 @@ impl<'a> Generator<'a> {
             out.push('\n');
         }
         self.paginators_not_surfaced_note(&mut out, cov);
+        self.waiters_not_surfaced_note(&mut out, cov);
 
         if self.xml_needs_bool.get() {
             out.push_str(
@@ -2226,6 +2274,7 @@ impl<'a> Generator<'a> {
             out.push('\n');
         }
         self.paginators_not_surfaced_note(&mut out, cov);
+        self.waiters_not_surfaced_note(&mut out, cov);
 
         if !serializers.is_empty() {
             out.push_str(
@@ -2394,6 +2443,7 @@ impl<'a> Generator<'a> {
             out.push('\n');
         }
         self.cbor_paginators_not_surfaced_note(&mut out, cov);
+        self.waiters_not_surfaced_note(&mut out, cov);
 
         if !serializers.is_empty() {
             out.push_str(
@@ -2466,6 +2516,201 @@ impl<'a> Generator<'a> {
         for n in &names {
             out.push_str(&format!("#   {n}\n"));
             cov.paginators_skipped += 1;
+        }
+        out.push('\n');
+    }
+
+    // --- waiters -----------------------------------------------------------
+
+    /// Emit the `wait_<name>` waiter methods + their shared poll helpers for the
+    /// JSON protocols (awsJson / rest-json), plus the list of waiters skipped.
+    /// `host_expr` is the protocol's `endpoints.regional_host(...)` expression
+    /// (the awsJson `_protocol().service` and rest `_service()` host seams differ).
+    ///
+    /// Waiters are the poll-until-state twin of `paginate_<op>` (D-0012): each
+    /// builds an acceptor table (one `WaiterConfig`) and a `fn() -> waiters.Poll`
+    /// closure, then delegates to the hand-written engine via
+    /// `waiters.waiter(cfg, poll).wait_or_raise()`. The returned string is the
+    /// shared per-operation poll helpers followed by the `wait_<name>` methods;
+    /// both sit inside the client struct body, like the paginator methods.
+    fn waiter_methods(&self, cov: &mut Coverage, host_expr: &str) -> (String, Vec<String>) {
+        let mut methods = String::new();
+        let mut skipped: Vec<String> = Vec::new();
+        // One poll helper per polled operation, shared by every waiter on it
+        // (DynamoDB's TableExists + TableNotExists both poll DescribeTable), so it
+        // is emitted exactly once. Insertion order is deterministic — waiter names
+        // are already sorted.
+        let mut poll_helpers: Vec<(String, String)> = Vec::new();
+        for name in self.waiters.sorted_waiter_names() {
+            let w = &self.waiters.waiters[name];
+            match self.plan_waiter(name, w, host_expr) {
+                Ok(plan) => {
+                    if !poll_helpers
+                        .iter()
+                        .any(|(n, _)| n == &plan.poll_helper_name)
+                    {
+                        poll_helpers.push((plan.poll_helper_name.clone(), plan.poll_helper));
+                    }
+                    methods.push_str(&plan.method);
+                    methods.push('\n');
+                    cov.waiters += 1;
+                }
+                Err(reason) => {
+                    skipped.push(format!("{name} ({reason})"));
+                    cov.waiters_skipped += 1;
+                }
+            }
+        }
+        let mut out = String::new();
+        for (_, helper) in &poll_helpers {
+            out.push_str(helper);
+            out.push('\n');
+        }
+        out.push_str(&methods);
+        (out, skipped)
+    }
+
+    /// Plan one waiter: resolve the polled operation's generated method and build
+    /// its acceptor table + `wait_<name>` method + shared poll helper, or return a
+    /// short reason the waiter was skipped.
+    fn plan_waiter(
+        &self,
+        name: &str,
+        w: &crate::model::Waiter,
+        host_expr: &str,
+    ) -> Result<WaiterPlan, String> {
+        if w.operation.is_empty() {
+            return Err("waiter has no operation".to_string());
+        }
+        if w.acceptors.is_empty() {
+            return Err("waiter has no acceptors".to_string());
+        }
+        let op = self
+            .model
+            .operations
+            .get(&w.operation)
+            .ok_or("operation not in service-2.json")?;
+        // The op must have a generated method; `input_type` is its input struct
+        // when the method takes one (`self.<op>(input)`), else None (`self.<op>()`).
+        let input_type = self.waiter_op_input(op)?;
+
+        // Render the acceptor table up front: any unsupported matcher/state fails
+        // the whole waiter (we never emit a half-built table).
+        let mut acc_lines = Vec::new();
+        for a in &w.acceptors {
+            acc_lines.push(render_acceptor(a)?);
+        }
+
+        let op_method = snake_case(&w.operation);
+        let method_name = format!("wait_{}", snake_case(name));
+        let poll_helper_name = format!("_waiter_poll_{op_method}");
+        let (param, call_arg) = match &input_type {
+            Some(ty) => (format!(", {ty} input"), "input"),
+            None => (String::new(), ""),
+        };
+
+        // Shared poll helper: send the signed operation request and parse the
+        // response body into the matcher DOM. (`aws_core.waiters.send_poll` is the
+        // same shape, but the generated op method already returns a signed request,
+        // so the helper sends that and parses rather than rebuilding a Request.)
+        let mut poll_helper = String::new();
+        poll_helper.push_str(&format!(
+            "{IND}# One poll of {} for its waiter(s): send the signed operation request\n{IND}# and parse the response body into the matcher DOM.\n",
+            w.operation
+        ));
+        poll_helper.push_str(&format!(
+            "{IND}def {poll_helper_name}(self{param}) -> waiters.Poll:\n"
+        ));
+        poll_helper.push_str(&format!("{IND}{IND}auto host = {host_expr}\n"));
+        poll_helper.push_str(&format!(
+            "{IND}{IND}auto resp = core.send(host, self.{op_method}({call_arg}))\n"
+        ));
+        poll_helper.push_str(&format!(
+            "{IND}{IND}return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))\n"
+        ));
+
+        // The waiter method: build the acceptor table, bind the poll closure, run.
+        let mut method = String::new();
+        method.push_str(&format!(
+            "{IND}# Waiter {name} — polls {} until a success acceptor fires (delay {}s,\n{IND}# max {} attempts), then returns; raises on a failure acceptor or timeout.\n{IND}# boto3: {method_name}.\n",
+            w.operation, w.delay, w.max_attempts
+        ));
+        method.push_str(&format!("{IND}def {method_name}(self{param}):\n"));
+        method.push_str(&format!(
+            "{IND}{IND}auto cfg = waiters.WaiterConfig(\n{IND}{IND}{IND}name=\"{name}\",\n{IND}{IND}{IND}delay={},\n{IND}{IND}{IND}max_attempts={},\n{IND}{IND}{IND}acceptors=[\n",
+            w.delay, w.max_attempts
+        ));
+        for (i, line) in acc_lines.iter().enumerate() {
+            let comma = if i + 1 < acc_lines.len() { "," } else { "" };
+            method.push_str(&format!("{IND}{IND}{IND}{IND}{line}{comma}\n"));
+        }
+        method.push_str(&format!("{IND}{IND}{IND}],\n{IND}{IND})\n"));
+        method.push_str(&format!(
+            "{IND}{IND}fn() -> waiters.Poll poll = lambda: self.{poll_helper_name}({call_arg})\n"
+        ));
+        method.push_str(&format!(
+            "{IND}{IND}waiters.waiter(cfg, poll).wait_or_raise()\n"
+        ));
+
+        Ok(WaiterPlan {
+            method,
+            poll_helper_name,
+            poll_helper,
+        })
+    }
+
+    /// The input struct the polled operation's generated method takes, or `None`
+    /// when it takes no parameter (empty/absent input). Errors when the operation
+    /// has no generated method on this protocol (so the waiter is skipped).
+    fn waiter_op_input(&self, op: &crate::model::Operation) -> Result<Option<String>, String> {
+        match self.protocol {
+            Protocol::RestJson => {
+                // `plan.input_shape` is already the escaped carrier-struct name the
+                // rest method emits (`def <op>(self, <Shape> input)`); use it verbatim.
+                let plan = plan_operation(self.model, op, &self.derivable, &self.json_serializable)
+                    .map_err(|_| "operation not generated".to_string())?;
+                Ok(plan.input_shape.clone())
+            }
+            Protocol::AwsJson => {
+                let input_struct = op.input.as_ref().map(|r| r.shape.as_str()).and_then(|s| {
+                    self.model
+                        .shape(s)
+                        .filter(|sh| sh.is_structure())
+                        .map(|sh| (s, sh))
+                });
+                match input_struct {
+                    Some((n, sh))
+                        if !sh.members.is_empty()
+                            && (self.is_derivable(n) || self.is_json_serializable(n)) =>
+                    {
+                        Ok(Some(escape_ident(n).0))
+                    }
+                    Some((_, sh)) if sh.members.is_empty() => Ok(None),
+                    None => Ok(None),
+                    Some((n, _)) => Err(format!(
+                        "operation input {n} not serializable (no generated method)"
+                    )),
+                }
+            }
+            _ => Err("protocol does not surface waiters".to_string()),
+        }
+    }
+
+    /// For the protocols that do not surface waiters yet (rest-xml / query / ec2 /
+    /// cbor — their waiter-response DOM needs the per-protocol parse adapter, a
+    /// follow-up), note each waiter and record it as skipped. Mirrors
+    /// `paginators_not_surfaced_note`.
+    fn waiters_not_surfaced_note(&self, out: &mut String, cov: &mut Coverage) {
+        let names = self.waiters.sorted_waiter_names();
+        if names.is_empty() {
+            return;
+        }
+        out.push_str(
+            "# Waiters (waiters-2.json) are not surfaced for this protocol yet — the\n# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):\n",
+        );
+        for n in &names {
+            out.push_str(&format!("#   {n}\n"));
+            cov.waiters_skipped += 1;
         }
         out.push('\n');
     }
@@ -2702,6 +2947,14 @@ impl<'a> Generator<'a> {
 }
 
 /// A ready-to-emit paginator for one operation.
+/// The emitted pieces of one waiter: its `wait_<name>` method and the shared
+/// per-operation poll helper (deduplicated across waiters by `poll_helper_name`).
+struct WaiterPlan {
+    method: String,
+    poll_helper_name: String,
+    poll_helper: String,
+}
+
 struct PaginatorPlan {
     op_name: String,
     method: String,
@@ -2775,6 +3028,60 @@ impl PaginatorPlan {
 /// flat fields are readable by the emitted `next_page_json` flat lookup.
 fn is_flat_field(token: &str) -> bool {
     !token.is_empty() && !token.contains('.') && !token.contains('[')
+}
+
+/// Render one waiters-2.json acceptor as the `waiters.acceptor_*` constructor
+/// call the acceptor table lists, dispatching on its matcher kind and state.
+/// Errors on an unknown state, an unsupported matcher, or a path matcher with no
+/// argument, so the whole waiter is skipped rather than half-emitted.
+fn render_acceptor(a: &crate::model::Acceptor) -> Result<String, String> {
+    let state = match a.state.as_str() {
+        "success" => "state_success",
+        "failure" => "state_failure",
+        "retry" => "state_retry",
+        other => return Err(format!("unknown acceptor state `{other}`")),
+    };
+    let expected = zap_str_lit(&a.expected.0);
+    match a.matcher.as_str() {
+        "status" => Ok(format!(
+            "waiters.acceptor_status(waiters.{state}(), {expected})"
+        )),
+        "error" => Ok(format!(
+            "waiters.acceptor_error(waiters.{state}(), {expected})"
+        )),
+        "path" | "pathAll" | "pathAny" => {
+            let argument = a
+                .argument
+                .as_deref()
+                .filter(|s| !s.is_empty())
+                .ok_or_else(|| format!("{} matcher has no argument", a.matcher))?;
+            let ctor = match a.matcher.as_str() {
+                "path" => "acceptor_path",
+                "pathAll" => "acceptor_path_all",
+                _ => "acceptor_path_any",
+            };
+            Ok(format!(
+                "waiters.{ctor}(waiters.{state}(), {}, {expected})",
+                zap_str_lit(argument)
+            ))
+        }
+        other => Err(format!("unsupported matcher `{other}`")),
+    }
+}
+
+/// A Zap double-quoted string literal for `s`, escaping backslashes and quotes.
+fn zap_str_lit(s: &str) -> String {
+    let mut out = String::with_capacity(s.len() + 2);
+    out.push('"');
+    for c in s.chars() {
+        match c {
+            '\\' => out.push_str("\\\\"),
+            '"' => out.push_str("\\\""),
+            _ => out.push(c),
+        }
+    }
+    out.push('"');
+    out
 }
 
 /// Make `base` unique against `used` by appending `_`, `_2`, ... deterministically.

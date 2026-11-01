@@ -18,6 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   81 structs (63 @derive(Json)), 10 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   4 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -30,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The Machine_Learning awsJson protocol: version 1.1, API id "AmazonML_20141212".
 def machinelearning_protocol() -> awsjson.AwsJson:
@@ -1190,6 +1192,98 @@ struct Machine_LearningClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeBatchPredictions for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_batch_predictions(self, DescribeBatchPredictionsInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(machinelearning_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_batch_predictions(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeDataSources for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_data_sources(self, DescribeDataSourcesInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(machinelearning_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_data_sources(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeEvaluations for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_evaluations(self, DescribeEvaluationsInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(machinelearning_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_evaluations(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMLModels for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_ml_models(self, DescribeMLModelsInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(machinelearning_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_ml_models(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter BatchPredictionAvailable — polls DescribeBatchPredictions until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_batch_prediction_available.
+    def wait_batch_prediction_available(self, DescribeBatchPredictionsInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="BatchPredictionAvailable",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Results[].Status", "COMPLETED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Results[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_batch_predictions(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DataSourceAvailable — polls DescribeDataSources until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_data_source_available.
+    def wait_data_source_available(self, DescribeDataSourcesInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="DataSourceAvailable",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Results[].Status", "COMPLETED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Results[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_data_sources(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter EvaluationAvailable — polls DescribeEvaluations until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_evaluation_available.
+    def wait_evaluation_available(self, DescribeEvaluationsInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="EvaluationAvailable",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Results[].Status", "COMPLETED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Results[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_evaluations(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MLModelAvailable — polls DescribeMLModels until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_ml_model_available.
+    def wait_ml_model_available(self, DescribeMLModelsInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="MLModelAvailable",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Results[].Status", "COMPLETED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Results[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_ml_models(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Machine_LearningClient bound to credentials + region.
 def machinelearning_client(core.Credentials creds, str region) -> Machine_LearningClient:

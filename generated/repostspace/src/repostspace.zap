@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   46 structs (24 @derive(Json)), 9 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   4 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The repostspace rest-json protocol: SigV4 service "repostspace" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -894,6 +896,90 @@ struct repostspaceClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetChannel for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_channel(self, GetChannelInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        auto resp = core.send(host, self.get_channel(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetSpace for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_space(self, GetSpaceInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        auto resp = core.send(host, self.get_space(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ChannelCreated — polls GetChannel until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_created.
+    def wait_channel_created(self, GetChannelInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelCreated",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "channelStatus", "CREATED"),
+                waiters.acceptor_path(waiters.state_failure(), "channelStatus", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_retry(), "channelStatus", "CREATING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelDeleted — polls GetChannel until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_deleted.
+    def wait_channel_deleted(self, GetChannelInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_success(), "channelStatus", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "channelStatus", "DELETE_FAILED"),
+                waiters.acceptor_path(waiters.state_retry(), "channelStatus", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SpaceCreated — polls GetSpace until a success acceptor fires (delay 300s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_space_created.
+    def wait_space_created(self, GetSpaceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="SpaceCreated",
+            delay=300,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "CREATED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CREATING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_space(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SpaceDeleted — polls GetSpace until a success acceptor fires (delay 300s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_space_deleted.
+    def wait_space_deleted(self, GetSpaceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="SpaceDeleted",
+            delay=300,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_space(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a repostspaceClient bound to credentials + region.
 def repostspace_client(core.Credentials creds, str region) -> repostspaceClient:

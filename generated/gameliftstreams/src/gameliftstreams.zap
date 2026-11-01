@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   79 structs (42 @derive(Json)), 15 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   5 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The GameLiftStreams rest-json protocol: SigV4 service "gameliftstreams" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1624,6 +1626,107 @@ struct GameLiftStreamsClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetApplication for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_application(self, GetApplicationInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        auto resp = core.send(host, self.get_application(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetStreamGroup for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_stream_group(self, GetStreamGroupInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        auto resp = core.send(host, self.get_stream_group(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetStreamSession for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_stream_session(self, GetStreamSessionInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        auto resp = core.send(host, self.get_stream_session(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ApplicationDeleted — polls GetApplication until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_application_deleted.
+    def wait_application_deleted(self, GetApplicationInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ApplicationDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_application(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ApplicationReady — polls GetApplication until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_application_ready.
+    def wait_application_ready(self, GetApplicationInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ApplicationReady",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "READY"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_application(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamGroupActive — polls GetStreamGroup until a success acceptor fires (delay 30s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_group_active.
+    def wait_stream_group_active(self, GetStreamGroupInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamGroupActive",
+            delay=30,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "ERROR"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "ACTIVE_WITH_ERRORS"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_stream_group(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamGroupDeleted — polls GetStreamGroup until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_group_deleted.
+    def wait_stream_group_deleted(self, GetStreamGroupInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamGroupDeleted",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_stream_group(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamSessionActive — polls GetStreamSession until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_session_active.
+    def wait_stream_session_active(self, GetStreamSessionInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamSessionActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_stream_session(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a GameLiftStreamsClient bound to credentials + region.
 def gameliftstreams_client(core.Credentials creds, str region) -> GameLiftStreamsClient:

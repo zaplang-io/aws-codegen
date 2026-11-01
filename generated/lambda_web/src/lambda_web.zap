@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   61 structs (36 @derive(Json)), 9 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Lambda_Web rest-json protocol: SigV4 service "lambda" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1160,6 +1162,129 @@ struct Lambda_WebClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetWebFunction for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_web_function(self, GetWebFunctionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_web_function(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetWebFunctionEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_web_function_endpoint(self, GetWebFunctionEndpointRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_web_function_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetWebFunctionRevision for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_web_function_revision(self, GetWebFunctionRevisionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_web_function_revision(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter WebFunctionActive — polls GetWebFunction until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_web_function_active.
+    def wait_web_function_active(self, GetWebFunctionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WebFunctionActive",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "state", "Active"),
+                waiters.acceptor_path(waiters.state_failure(), "state", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "state", "Deleting"),
+                waiters.acceptor_path(waiters.state_retry(), "state", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_web_function(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WebFunctionDeleted — polls GetWebFunction until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_web_function_deleted.
+    def wait_web_function_deleted(self, GetWebFunctionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WebFunctionDeleted",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "state", "Deleting")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_web_function(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WebFunctionEndpointActive — polls GetWebFunctionEndpoint until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_web_function_endpoint_active.
+    def wait_web_function_endpoint_active(self, GetWebFunctionEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WebFunctionEndpointActive",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "state", "Active"),
+                waiters.acceptor_path(waiters.state_failure(), "state", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "state", "Deleting"),
+                waiters.acceptor_path(waiters.state_retry(), "state", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_web_function_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WebFunctionEndpointDeleted — polls GetWebFunctionEndpoint until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_web_function_endpoint_deleted.
+    def wait_web_function_endpoint_deleted(self, GetWebFunctionEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WebFunctionEndpointDeleted",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "state", "Deleting")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_web_function_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WebFunctionEndpointUpdated — polls GetWebFunctionEndpoint until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_web_function_endpoint_updated.
+    def wait_web_function_endpoint_updated(self, GetWebFunctionEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WebFunctionEndpointUpdated",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "updateStatus", "Successful"),
+                waiters.acceptor_path(waiters.state_failure(), "updateStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "updateStatus", "InProgress")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_web_function_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WebFunctionRevisionActive — polls GetWebFunctionRevision until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_web_function_revision_active.
+    def wait_web_function_revision_active(self, GetWebFunctionRevisionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WebFunctionRevisionActive",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "state", "Active"),
+                waiters.acceptor_path(waiters.state_failure(), "state", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "state", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_web_function_revision(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Lambda_WebClient bound to credentials + region.
 def lambda__client(core.Credentials creds, str region) -> Lambda_WebClient:

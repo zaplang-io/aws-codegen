@@ -19,6 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   65 structs (44 @derive(Json)), 6 enums, 10 error variants.
 #   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The signer rest-json protocol: SigV4 service "signer" (also the endpoint
@@ -977,6 +979,30 @@ struct signerClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeSigningJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_signing_job(self, DescribeSigningJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        auto resp = core.send(host, self.describe_signing_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter SuccessfulSigningJob — polls DescribeSigningJob until a success acceptor fires (delay 20s,
+    # max 25 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_successful_signing_job.
+    def wait_successful_signing_job(self, DescribeSigningJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SuccessfulSigningJob",
+            delay=20,
+            max_attempts=25,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "Succeeded"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "Failed"),
+                waiters.acceptor_error(waiters.state_failure(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_signing_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a signerClient bound to credentials + region.
 def signer_client(core.Credentials creds, str region) -> signerClient:

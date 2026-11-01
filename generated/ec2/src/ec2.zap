@@ -19,6 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   2547 structs (plain carriers), 447 enums, 0 error variants.
 #   0 paginators generated (174 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (43 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -21088,6 +21089,52 @@ def ec2_error_name(EC2ErrorKind k) -> str:
 #   SearchLocalGatewayRoutes
 #   SearchTransitGatewayMulticastGroups
 #   SearchTransitGatewayRoutes
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   BundleTaskComplete
+#   ConversionTaskCancelled
+#   ConversionTaskCompleted
+#   ConversionTaskDeleted
+#   CustomerGatewayAvailable
+#   ExportTaskCancelled
+#   ExportTaskCompleted
+#   ImageAvailable
+#   ImageExists
+#   ImageUsageReportAvailable
+#   InstanceExists
+#   InstanceRunning
+#   InstanceStatusOk
+#   InstanceStopped
+#   InstanceTerminated
+#   InternetGatewayExists
+#   KeyPairExists
+#   NatGatewayAvailable
+#   NatGatewayDeleted
+#   NetworkInterfaceAvailable
+#   PasswordDataAvailable
+#   SecondaryNetworkCreateComplete
+#   SecondaryNetworkDeleteComplete
+#   SecondarySubnetCreateComplete
+#   SecondarySubnetDeleteComplete
+#   SecurityGroupExists
+#   SecurityGroupVpcAssociationAssociated
+#   SecurityGroupVpcAssociationDisassociated
+#   SnapshotCompleted
+#   SnapshotImported
+#   SpotInstanceRequestFulfilled
+#   StoreImageTaskComplete
+#   SubnetAvailable
+#   SystemStatusOk
+#   VolumeAvailable
+#   VolumeDeleted
+#   VolumeInUse
+#   VpcAvailable
+#   VpcExists
+#   VpcPeeringConnectionDeleted
+#   VpcPeeringConnectionExists
+#   VpnConnectionAvailable
+#   VpnConnectionDeleted
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

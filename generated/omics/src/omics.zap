@@ -19,6 +19,7 @@
 #   4 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   307 structs (193 @derive(Json)), 46 enums, 10 error variants.
 #   25 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   16 waiters generated (2 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import base64
 
 # The Omics rest-json protocol: SigV4 service "omics" (also the endpoint
@@ -3247,6 +3249,11 @@ def omics_error_name(OmicsErrorKind k) -> str:
 #   GetWorkflow (httpQuery `export` has unsupported type list[WorkflowExport])
 #   GetWorkflowVersion (httpQuery `export` has unsupported type list[WorkflowExport])
 
+# Waiters (waiters-2.json) not surfaced — the polled operation is skipped
+# above, or an acceptor uses an unsupported matcher/state:
+#   WorkflowActive (operation not generated)
+#   WorkflowVersionActive (operation not generated)
+
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -5644,6 +5651,388 @@ struct OmicsClient:
             if not np.has_more:
                 break
             input.startingToken = Optional.Some(np.token)
+
+    # One poll of GetAnnotationImportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_annotation_import_job(self, GetAnnotationImportRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_annotation_import_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetAnnotationStore for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_annotation_store(self, GetAnnotationStoreRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_annotation_store(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetAnnotationStoreVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_annotation_store_version(self, GetAnnotationStoreVersionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_annotation_store_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetReadSetActivationJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_read_set_activation_job(self, GetReadSetActivationJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_read_set_activation_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetReadSetExportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_read_set_export_job(self, GetReadSetExportJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_read_set_export_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetReadSetImportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_read_set_import_job(self, GetReadSetImportJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_read_set_import_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetReferenceImportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_reference_import_job(self, GetReferenceImportJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_reference_import_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRun for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_run(self, GetRunRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_run(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRunTask for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_run_task(self, GetRunTaskRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_run_task(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetVariantImportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_variant_import_job(self, GetVariantImportRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_variant_import_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetVariantStore for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_variant_store(self, GetVariantStoreRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        auto resp = core.send(host, self.get_variant_store(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter AnnotationImportJobCreated — polls GetAnnotationImportJob until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_annotation_import_job_created.
+    def wait_annotation_import_job_created(self, GetAnnotationImportRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnnotationImportJobCreated",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_retry(), "status", "SUBMITTED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_annotation_import_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AnnotationStoreCreated — polls GetAnnotationStore until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_annotation_store_created.
+    def wait_annotation_store_created(self, GetAnnotationStoreRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnnotationStoreCreated",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "UPDATING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_annotation_store(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AnnotationStoreDeleted — polls GetAnnotationStore until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_annotation_store_deleted.
+    def wait_annotation_store_deleted(self, GetAnnotationStoreRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnnotationStoreDeleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_annotation_store(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AnnotationStoreVersionCreated — polls GetAnnotationStoreVersion until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_annotation_store_version_created.
+    def wait_annotation_store_version_created(self, GetAnnotationStoreVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnnotationStoreVersionCreated",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "UPDATING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_annotation_store_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AnnotationStoreVersionDeleted — polls GetAnnotationStoreVersion until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_annotation_store_version_deleted.
+    def wait_annotation_store_version_deleted(self, GetAnnotationStoreVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnnotationStoreVersionDeleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_annotation_store_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReadSetActivationJobCompleted — polls GetReadSetActivationJob until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_read_set_activation_job_completed.
+    def wait_read_set_activation_job_completed(self, GetReadSetActivationJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReadSetActivationJobCompleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "SUBMITTED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CANCELLING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "COMPLETED_WITH_FAILURES")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_read_set_activation_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReadSetExportJobCompleted — polls GetReadSetExportJob until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_read_set_export_job_completed.
+    def wait_read_set_export_job_completed(self, GetReadSetExportJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReadSetExportJobCompleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "SUBMITTED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CANCELLING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "COMPLETED_WITH_FAILURES")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_read_set_export_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReadSetImportJobCompleted — polls GetReadSetImportJob until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_read_set_import_job_completed.
+    def wait_read_set_import_job_completed(self, GetReadSetImportJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReadSetImportJobCompleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "SUBMITTED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CANCELLING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "COMPLETED_WITH_FAILURES")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_read_set_import_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReferenceImportJobCompleted — polls GetReferenceImportJob until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_reference_import_job_completed.
+    def wait_reference_import_job_completed(self, GetReferenceImportJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReferenceImportJobCompleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "SUBMITTED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CANCELLING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "COMPLETED_WITH_FAILURES")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_reference_import_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RunCompleted — polls GetRun until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_run_completed.
+    def wait_run_completed(self, GetRunRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RunCompleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "PENDING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "STARTING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "RUNNING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "STOPPING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_run(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RunRunning — polls GetRun until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_run_running.
+    def wait_run_running(self, GetRunRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RunRunning",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "RUNNING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "PENDING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "STARTING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_run(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TaskCompleted — polls GetRunTask until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_task_completed.
+    def wait_task_completed(self, GetRunTaskRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TaskCompleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "PENDING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "STARTING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "RUNNING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "STOPPING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_run_task(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TaskRunning — polls GetRunTask until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_task_running.
+    def wait_task_running(self, GetRunTaskRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TaskRunning",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "RUNNING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "PENDING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "STARTING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_run_task(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter VariantImportJobCreated — polls GetVariantImportJob until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_variant_import_job_created.
+    def wait_variant_import_job_created(self, GetVariantImportRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="VariantImportJobCreated",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_retry(), "status", "SUBMITTED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_variant_import_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter VariantStoreCreated — polls GetVariantStore until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_variant_store_created.
+    def wait_variant_store_created(self, GetVariantStoreRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="VariantStoreCreated",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "UPDATING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_variant_store(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter VariantStoreDeleted — polls GetVariantStore until a success acceptor fires (delay 30s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_variant_store_deleted.
+    def wait_variant_store_deleted(self, GetVariantStoreRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="VariantStoreDeleted",
+            delay=30,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_variant_store(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a OmicsClient bound to credentials + region.
 def omics_client(core.Credentials creds, str region) -> OmicsClient:

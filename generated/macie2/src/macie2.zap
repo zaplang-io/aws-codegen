@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   313 structs (206 @derive(Json)), 56 enums, 8 error variants.
 #   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Macie2 rest-json protocol: SigV4 service "macie2" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -4527,6 +4529,29 @@ struct Macie2Client:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetSensitiveDataOccurrences for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_sensitive_data_occurrences(self, GetSensitiveDataOccurrencesRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        auto resp = core.send(host, self.get_sensitive_data_occurrences(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter FindingRevealed — polls GetSensitiveDataOccurrences until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_finding_revealed.
+    def wait_finding_revealed(self, GetSensitiveDataOccurrencesRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FindingRevealed",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "SUCCESS"),
+                waiters.acceptor_path(waiters.state_success(), "status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_sensitive_data_occurrences(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Macie2Client bound to credentials + region.
 def macie2_client(core.Credentials creds, str region) -> Macie2Client:

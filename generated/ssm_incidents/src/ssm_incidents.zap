@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   109 structs (72 @derive(Json)), 8 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The SSM_Incidents rest-json protocol: SigV4 service "ssm-incidents" (also the endpoint
@@ -1730,6 +1732,48 @@ struct SSM_IncidentsClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetReplicationSet for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_replication_set(self, GetReplicationSetInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        auto resp = core.send(host, self.get_replication_set(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter WaitForReplicationSetActive — polls GetReplicationSet until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_wait_for_replication_set_active.
+    def wait_wait_for_replication_set_active(self, GetReplicationSetInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="WaitForReplicationSetActive",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "replicationSet.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "replicationSet.status", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "replicationSet.status", "UPDATING"),
+                waiters.acceptor_path(waiters.state_failure(), "replicationSet.status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_replication_set(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WaitForReplicationSetDeleted — polls GetReplicationSet until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_wait_for_replication_set_deleted.
+    def wait_wait_for_replication_set_deleted(self, GetReplicationSetInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="WaitForReplicationSetDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "replicationSet.status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "replicationSet.status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_replication_set(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a SSM_IncidentsClient bound to credentials + region.
 def ssm_incidents_client(core.Credentials creds, str region) -> SSM_IncidentsClient:

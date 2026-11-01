@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   734 structs (413 @derive(Json)), 343 enums, 9 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   22 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The MediaLive rest-json protocol: SigV4 service "medialive" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -13013,6 +13015,443 @@ struct MediaLiveClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeChannel for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_channel(self, DescribeChannelRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.describe_channel(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeChannelPlacementGroup for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_channel_placement_group(self, DescribeChannelPlacementGroupRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.describe_channel_placement_group(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeCluster for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_cluster(self, DescribeClusterRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.describe_cluster(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeInput for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_input(self, DescribeInputRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.describe_input(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMultiplex for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_multiplex(self, DescribeMultiplexRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.describe_multiplex(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeNode for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_node(self, DescribeNodeRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.describe_node(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetSignalMap for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_signal_map(self, GetSignalMapRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        auto resp = core.send(host, self.get_signal_map(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ChannelCreated — polls DescribeChannel until a success acceptor fires (delay 3s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_created.
+    def wait_channel_created(self, DescribeChannelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelCreated",
+            delay=3,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "IDLE"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "CREATING"),
+                waiters.acceptor_status(waiters.state_retry(), "500"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "CREATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelDeleted — polls DescribeChannel until a success acceptor fires (delay 5s,
+    # max 84 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_deleted.
+    def wait_channel_deleted(self, DescribeChannelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelDeleted",
+            delay=5,
+            max_attempts=84,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DELETING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelPlacementGroupAssigned — polls DescribeChannelPlacementGroup until a success acceptor fires (delay 3s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_placement_group_assigned.
+    def wait_channel_placement_group_assigned(self, DescribeChannelPlacementGroupRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelPlacementGroupAssigned",
+            delay=3,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ASSIGNED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "ASSIGNING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel_placement_group(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelPlacementGroupDeleted — polls DescribeChannelPlacementGroup until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_placement_group_deleted.
+    def wait_channel_placement_group_deleted(self, DescribeChannelPlacementGroupRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelPlacementGroupDeleted",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DELETING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel_placement_group(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelPlacementGroupUnassigned — polls DescribeChannelPlacementGroup until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_placement_group_unassigned.
+    def wait_channel_placement_group_unassigned(self, DescribeChannelPlacementGroupRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelPlacementGroupUnassigned",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "UNASSIGNED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "UNASSIGNING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel_placement_group(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelRunning — polls DescribeChannel until a success acceptor fires (delay 5s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_running.
+    def wait_channel_running(self, DescribeChannelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelRunning",
+            delay=5,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "RUNNING"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "STARTING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ChannelStopped — polls DescribeChannel until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_stopped.
+    def wait_channel_stopped(self, DescribeChannelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelStopped",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "IDLE"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "STOPPING"),
+                waiters.acceptor_status(waiters.state_retry(), "500"),
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETING"),
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETED"),
+                waiters.acceptor_error(waiters.state_failure(), "NotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterCreated — polls DescribeCluster until a success acceptor fires (delay 3s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_created.
+    def wait_cluster_created(self, DescribeClusterRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterCreated",
+            delay=3,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "CREATING"),
+                waiters.acceptor_status(waiters.state_retry(), "500"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "CREATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterDeleted — polls DescribeCluster until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_deleted.
+    def wait_cluster_deleted(self, DescribeClusterRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterDeleted",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DELETING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InputAttached — polls DescribeInput until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_input_attached.
+    def wait_input_attached(self, DescribeInputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InputAttached",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ATTACHED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DETACHED"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_input(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InputDeleted — polls DescribeInput until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_input_deleted.
+    def wait_input_deleted(self, DescribeInputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InputDeleted",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DELETING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_input(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InputDetached — polls DescribeInput until a success acceptor fires (delay 5s,
+    # max 84 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_input_detached.
+    def wait_input_detached(self, DescribeInputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InputDetached",
+            delay=5,
+            max_attempts=84,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DETACHED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "ATTACHED"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_input(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MultiplexCreated — polls DescribeMultiplex until a success acceptor fires (delay 3s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_multiplex_created.
+    def wait_multiplex_created(self, DescribeMultiplexRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MultiplexCreated",
+            delay=3,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "IDLE"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "CREATING"),
+                waiters.acceptor_status(waiters.state_retry(), "500"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "CREATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_multiplex(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MultiplexDeleted — polls DescribeMultiplex until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_multiplex_deleted.
+    def wait_multiplex_deleted(self, DescribeMultiplexRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MultiplexDeleted",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DELETED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DELETING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_multiplex(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MultiplexRunning — polls DescribeMultiplex until a success acceptor fires (delay 5s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_multiplex_running.
+    def wait_multiplex_running(self, DescribeMultiplexRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MultiplexRunning",
+            delay=5,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "RUNNING"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "STARTING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_multiplex(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MultiplexStopped — polls DescribeMultiplex until a success acceptor fires (delay 5s,
+    # max 28 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_multiplex_stopped.
+    def wait_multiplex_stopped(self, DescribeMultiplexRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MultiplexStopped",
+            delay=5,
+            max_attempts=28,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "IDLE"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "STOPPING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_multiplex(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NodeDeregistered — polls DescribeNode until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_node_deregistered.
+    def wait_node_deregistered(self, DescribeNodeRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="NodeDeregistered",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "DEREGISTERED"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DEREGISTERING"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "DRAINING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_node(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NodeRegistered — polls DescribeNode until a success acceptor fires (delay 3s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_node_registered.
+    def wait_node_registered(self, DescribeNodeRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="NodeRegistered",
+            delay=3,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "REGISTERING"),
+                waiters.acceptor_status(waiters.state_retry(), "404"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "REGISTRATION_FAILED"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_node(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SignalMapCreated — polls GetSignalMap until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_signal_map_created.
+    def wait_signal_map_created(self, GetSignalMapRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SignalMapCreated",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "CREATE_COMPLETE"),
+                waiters.acceptor_path(waiters.state_retry(), "Status", "CREATE_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "CREATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_signal_map(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SignalMapMonitorDeleted — polls GetSignalMap until a success acceptor fires (delay 5s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_signal_map_monitor_deleted.
+    def wait_signal_map_monitor_deleted(self, GetSignalMapRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SignalMapMonitorDeleted",
+            delay=5,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "MonitorDeployment.Status", "DELETE_COMPLETE"),
+                waiters.acceptor_path(waiters.state_retry(), "MonitorDeployment.Status", "DELETE_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "MonitorDeployment.Status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_signal_map(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SignalMapMonitorDeployed — polls GetSignalMap until a success acceptor fires (delay 5s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_signal_map_monitor_deployed.
+    def wait_signal_map_monitor_deployed(self, GetSignalMapRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SignalMapMonitorDeployed",
+            delay=5,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "MonitorDeployment.Status", "DRY_RUN_DEPLOYMENT_COMPLETE"),
+                waiters.acceptor_path(waiters.state_success(), "MonitorDeployment.Status", "DEPLOYMENT_COMPLETE"),
+                waiters.acceptor_path(waiters.state_retry(), "MonitorDeployment.Status", "DRY_RUN_DEPLOYMENT_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_retry(), "MonitorDeployment.Status", "DEPLOYMENT_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "MonitorDeployment.Status", "DRY_RUN_DEPLOYMENT_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "MonitorDeployment.Status", "DEPLOYMENT_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_signal_map(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SignalMapUpdated — polls GetSignalMap until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_signal_map_updated.
+    def wait_signal_map_updated(self, GetSignalMapRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SignalMapUpdated",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "UPDATE_COMPLETE"),
+                waiters.acceptor_path(waiters.state_retry(), "Status", "UPDATE_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "UPDATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "UPDATE_REVERTED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_signal_map(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a MediaLiveClient bound to credentials + region.
 def medialive_client(core.Credentials creds, str region) -> MediaLiveClient:

@@ -259,6 +259,85 @@ impl Paginators {
     }
 }
 
+/// The botocore `waiters-2.json` sidecar: poll-until-state waiter definitions
+/// keyed by waiter name (e.g. `TableExists`). Botocore ships it as its own file
+/// next to `service-2.json`, so — like [`Paginators`] — it is parsed and threaded
+/// in independently. The shape mirrors `aws_core.waiters`' `WaiterConfig`.
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct Waiters {
+    #[serde(default)]
+    pub waiters: IndexMap<String, Waiter>,
+}
+
+/// One waiter definition: which `operation` to poll, the `delay` (seconds)
+/// between polls and the `max_attempts` poll cap, and the ordered `acceptors`
+/// that decide success/failure/retry from each response.
+#[derive(Debug, Clone, Deserialize)]
+pub struct Waiter {
+    #[serde(default)]
+    pub operation: String,
+    #[serde(default)]
+    pub delay: i64,
+    #[serde(rename = "maxAttempts", default)]
+    pub max_attempts: i64,
+    #[serde(default)]
+    pub acceptors: Vec<Acceptor>,
+}
+
+/// One acceptor: the `state` transition to take when `matcher` matches a
+/// response. `argument` is the JMESPath for the `path`/`pathAll`/`pathAny`
+/// matchers (absent for `status`/`error`); `expected` is the comparison value,
+/// normalized to the string the engine compares against ("200", "ACTIVE", …).
+#[derive(Debug, Clone, Deserialize)]
+pub struct Acceptor {
+    #[serde(default)]
+    pub state: String,
+    #[serde(default)]
+    pub matcher: String,
+    #[serde(default)]
+    pub argument: Option<String>,
+    #[serde(default)]
+    pub expected: Expected,
+}
+
+/// An acceptor's `expected` value. botocore writes it as a string ("ACTIVE"), an
+/// integer (an HTTP status code, `200`) or a bool (`true`, for a boolean path
+/// match); all three normalize to the string the waiter engine compares a
+/// response against (`str(resp.status)`, an enum value, `"true"`/`"false"`).
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Expected(pub String);
+
+impl<'de> Deserialize<'de> for Expected {
+    fn deserialize<D>(d: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let v = serde_json::Value::deserialize(d)?;
+        let s = match v {
+            serde_json::Value::String(s) => s,
+            serde_json::Value::Bool(b) => b.to_string(),
+            serde_json::Value::Number(n) => n.to_string(),
+            serde_json::Value::Null => String::new(),
+            other => other.to_string(),
+        };
+        Ok(Expected(s))
+    }
+}
+
+impl Waiters {
+    /// Parse `waiters-2.json`.
+    pub fn from_json_str(s: &str) -> Result<Waiters, String> {
+        serde_json::from_str(s).map_err(|e| format!("parsing waiters-2.json: {e}"))
+    }
+
+    /// Waiter names, sorted for deterministic iteration.
+    pub fn sorted_waiter_names(&self) -> Vec<&String> {
+        let mut v: Vec<&String> = self.waiters.keys().collect();
+        v.sort();
+        v
+    }
+}
+
 impl Model {
     /// Parse a model from the raw `service-2.json` text.
     pub fn from_json_str(s: &str) -> Result<Model, String> {
@@ -378,5 +457,78 @@ mod tests {
         let p = Paginators::default();
         assert!(p.pagination.is_empty());
         assert!(p.sorted_operation_names().is_empty());
+    }
+
+    #[test]
+    fn waiters_parse_operation_delay_and_acceptors() {
+        // A DynamoDB-shaped table: two waiters on DescribeTable, with path/error
+        // acceptors and a string `expected`.
+        let w = Waiters::from_json_str(
+            r#"{"version":2,"waiters":{
+                 "TableExists":{"delay":20,"operation":"DescribeTable","maxAttempts":25,
+                   "acceptors":[
+                     {"expected":"ACTIVE","matcher":"path","state":"success","argument":"Table.TableStatus"},
+                     {"expected":"ResourceNotFoundException","matcher":"error","state":"retry"}]},
+                 "TableNotExists":{"delay":20,"operation":"DescribeTable","maxAttempts":25,
+                   "acceptors":[
+                     {"expected":"ResourceNotFoundException","matcher":"error","state":"success"}]}
+               }}"#,
+        )
+        .unwrap();
+
+        let te = &w.waiters["TableExists"];
+        assert_eq!(te.operation, "DescribeTable");
+        assert_eq!(te.delay, 20);
+        assert_eq!(te.max_attempts, 25);
+        assert_eq!(te.acceptors.len(), 2);
+        assert_eq!(te.acceptors[0].matcher, "path");
+        assert_eq!(te.acceptors[0].state, "success");
+        assert_eq!(
+            te.acceptors[0].argument.as_deref(),
+            Some("Table.TableStatus")
+        );
+        assert_eq!(te.acceptors[0].expected, Expected("ACTIVE".to_string()));
+        // An error matcher carries no JMESPath argument.
+        assert_eq!(te.acceptors[1].matcher, "error");
+        assert_eq!(te.acceptors[1].argument, None);
+
+        // Deterministic ordering of waiter names.
+        assert_eq!(
+            w.sorted_waiter_names(),
+            vec!["TableExists", "TableNotExists"]
+        );
+    }
+
+    #[test]
+    fn waiters_normalize_non_string_expected() {
+        // S3 BucketExists uses integer status codes; botocore also writes boolean
+        // path matches. Both normalize to the string the engine compares.
+        let w = Waiters::from_json_str(
+            r#"{"version":2,"waiters":{
+                 "BucketExists":{"delay":5,"operation":"HeadBucket","maxAttempts":20,
+                   "acceptors":[
+                     {"expected":200,"matcher":"status","state":"success"},
+                     {"expected":404,"matcher":"status","state":"retry"}]},
+                 "FlagSet":{"delay":1,"operation":"Describe","maxAttempts":2,
+                   "acceptors":[
+                     {"expected":true,"matcher":"path","state":"success","argument":"Enabled"}]}
+               }}"#,
+        )
+        .unwrap();
+
+        let be = &w.waiters["BucketExists"];
+        assert_eq!(be.acceptors[0].expected, Expected("200".to_string()));
+        assert_eq!(be.acceptors[0].matcher, "status");
+        assert_eq!(be.acceptors[1].expected, Expected("404".to_string()));
+
+        let fs = &w.waiters["FlagSet"];
+        assert_eq!(fs.acceptors[0].expected, Expected("true".to_string()));
+    }
+
+    #[test]
+    fn absent_waiters_is_empty() {
+        let w = Waiters::default();
+        assert!(w.waiters.is_empty());
+        assert!(w.sorted_waiter_names().is_empty());
     }
 }

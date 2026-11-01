@@ -18,6 +18,7 @@
 #   3 skipped (input has a non-string-keyed map or free-form document member).
 #   215 structs (144 @derive(Json)), 8 enums, 8 error variants.
 #   16 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).

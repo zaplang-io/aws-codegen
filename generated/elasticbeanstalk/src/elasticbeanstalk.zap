@@ -19,6 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   149 structs (plain carriers), 21 enums, 19 error variants.
 #   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (3 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1206,6 +1207,12 @@ def elasticbeanstalk_error_name(Elastic_BeanstalkErrorKind k) -> str:
 #   DescribeEnvironments
 #   DescribeEvents
 #   ListPlatformVersions
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   EnvironmentExists
+#   EnvironmentTerminated
+#   EnvironmentUpdated
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

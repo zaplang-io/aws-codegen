@@ -18,6 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   374 structs (216 @derive(Json)), 42 enums, 26 error variants.
 #   16 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   17 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -30,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 import base64
 import datetime
 
@@ -6240,6 +6242,383 @@ struct Database_Migration_ServiceClient:
             if not np.has_more:
                 break
             input.Marker = Optional.Some(np.token)
+
+    # One poll of DescribeEndpoints for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_endpoints(self, DescribeEndpointsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_endpoints(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeExtensionPackAssociations for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_extension_pack_associations(self, DescribeExtensionPackAssociationsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_extension_pack_associations(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMetadataModelAssessments for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_metadata_model_assessments(self, DescribeMetadataModelAssessmentsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_metadata_model_assessments(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMetadataModelConversions for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_metadata_model_conversions(self, DescribeMetadataModelConversionsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_metadata_model_conversions(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMetadataModelCreations for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_metadata_model_creations(self, DescribeMetadataModelCreationsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_metadata_model_creations(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMetadataModelExportsAsScript for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_metadata_model_exports_as_script(self, DescribeMetadataModelExportsAsScriptMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_metadata_model_exports_as_script(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMetadataModelExportsToTarget for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_metadata_model_exports_to_target(self, DescribeMetadataModelExportsToTargetMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_metadata_model_exports_to_target(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeMetadataModelImports for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_metadata_model_imports(self, DescribeMetadataModelImportsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_metadata_model_imports(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeReplicationInstances for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_replication_instances(self, DescribeReplicationInstancesMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_replication_instances(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeReplicationTasks for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_replication_tasks(self, DescribeReplicationTasksMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_replication_tasks(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeConnections for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_connections(self, DescribeConnectionsMessage input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dms_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_connections(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter EndpointDeleted — polls DescribeEndpoints until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_endpoint_deleted.
+    def wait_endpoint_deleted(self, DescribeEndpointsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="EndpointDeleted",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundFault"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Endpoints[].Status", "active"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Endpoints[].Status", "creating")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_endpoints(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ExtensionPackAssociated — polls DescribeExtensionPackAssociations until a success acceptor fires (delay 10s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_extension_pack_associated.
+    def wait_extension_pack_associated(self, DescribeExtensionPackAssociationsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ExtensionPackAssociated",
+            delay=10,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_extension_pack_associations(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelAssessed — polls DescribeMetadataModelAssessments until a success acceptor fires (delay 30s,
+    # max 360 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_assessed.
+    def wait_metadata_model_assessed(self, DescribeMetadataModelAssessmentsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelAssessed",
+            delay=30,
+            max_attempts=360,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_assessments(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelConversionCancelled — polls DescribeMetadataModelConversions until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_conversion_cancelled.
+    def wait_metadata_model_conversion_cancelled(self, DescribeMetadataModelConversionsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelConversionCancelled",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "CANCELED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_conversions(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelConverted — polls DescribeMetadataModelConversions until a success acceptor fires (delay 30s,
+    # max 240 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_converted.
+    def wait_metadata_model_converted(self, DescribeMetadataModelConversionsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelConverted",
+            delay=30,
+            max_attempts=240,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_conversions(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelCreated — polls DescribeMetadataModelCreations until a success acceptor fires (delay 15s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_created.
+    def wait_metadata_model_created(self, DescribeMetadataModelCreationsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelCreated",
+            delay=15,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_creations(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelCreationCancelled — polls DescribeMetadataModelCreations until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_creation_cancelled.
+    def wait_metadata_model_creation_cancelled(self, DescribeMetadataModelCreationsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelCreationCancelled",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "CANCELED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_creations(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelExportedAsScript — polls DescribeMetadataModelExportsAsScript until a success acceptor fires (delay 20s,
+    # max 90 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_exported_as_script.
+    def wait_metadata_model_exported_as_script(self, DescribeMetadataModelExportsAsScriptMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelExportedAsScript",
+            delay=20,
+            max_attempts=90,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_exports_as_script(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelExportedToTarget — polls DescribeMetadataModelExportsToTarget until a success acceptor fires (delay 20s,
+    # max 90 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_exported_to_target.
+    def wait_metadata_model_exported_to_target(self, DescribeMetadataModelExportsToTargetMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelExportedToTarget",
+            delay=20,
+            max_attempts=90,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_exports_to_target(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MetadataModelImported — polls DescribeMetadataModelImports until a success acceptor fires (delay 60s,
+    # max 30 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_metadata_model_imported.
+    def wait_metadata_model_imported(self, DescribeMetadataModelImportsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="MetadataModelImported",
+            delay=60,
+            max_attempts=30,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Requests[].Status", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Requests[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_metadata_model_imports(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReplicationInstanceAvailable — polls DescribeReplicationInstances until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_replication_instance_available.
+    def wait_replication_instance_available(self, DescribeReplicationInstancesMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReplicationInstanceAvailable",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "ReplicationInstances[].ReplicationInstanceStatus", "available"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationInstances[].ReplicationInstanceStatus", "deleting"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationInstances[].ReplicationInstanceStatus", "incompatible-credentials"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationInstances[].ReplicationInstanceStatus", "incompatible-network"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationInstances[].ReplicationInstanceStatus", "inaccessible-encryption-credentials")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_replication_instances(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReplicationInstanceDeleted — polls DescribeReplicationInstances until a success acceptor fires (delay 15s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_replication_instance_deleted.
+    def wait_replication_instance_deleted(self, DescribeReplicationInstancesMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReplicationInstanceDeleted",
+            delay=15,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationInstances[].ReplicationInstanceStatus", "available"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundFault")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_replication_instances(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReplicationTaskDeleted — polls DescribeReplicationTasks until a success acceptor fires (delay 15s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_replication_task_deleted.
+    def wait_replication_task_deleted(self, DescribeReplicationTasksMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReplicationTaskDeleted",
+            delay=15,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "ready"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "creating"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "stopped"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "running"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "failed"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundFault")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_replication_tasks(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReplicationTaskReady — polls DescribeReplicationTasks until a success acceptor fires (delay 15s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_replication_task_ready.
+    def wait_replication_task_ready(self, DescribeReplicationTasksMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReplicationTaskReady",
+            delay=15,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "ReplicationTasks[].Status", "ready"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "starting"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "running"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "stopping"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "stopped"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "failed"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "modifying"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "testing"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "deleting")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_replication_tasks(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReplicationTaskRunning — polls DescribeReplicationTasks until a success acceptor fires (delay 15s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_replication_task_running.
+    def wait_replication_task_running(self, DescribeReplicationTasksMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReplicationTaskRunning",
+            delay=15,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "ReplicationTasks[].Status", "running"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "ready"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "creating"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "stopping"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "stopped"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "failed"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "modifying"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "testing"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "deleting")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_replication_tasks(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ReplicationTaskStopped — polls DescribeReplicationTasks until a success acceptor fires (delay 15s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_replication_task_stopped.
+    def wait_replication_task_stopped(self, DescribeReplicationTasksMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReplicationTaskStopped",
+            delay=15,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "ReplicationTasks[].Status", "stopped"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "ready"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "creating"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "starting"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "failed"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "modifying"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "testing"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ReplicationTasks[].Status", "deleting")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_replication_tasks(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TestConnectionSucceeds — polls DescribeConnections until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_test_connection_succeeds.
+    def wait_test_connection_succeeds(self, DescribeConnectionsMessage input):
+        auto cfg = waiters.WaiterConfig(
+            name="TestConnectionSucceeds",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Connections[].Status", "successful"),
+                waiters.acceptor_path_any(waiters.state_failure(), "Connections[].Status", "failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_connections(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Database_Migration_ServiceClient bound to credentials + region.
 def dms_client(core.Credentials creds, str region) -> Database_Migration_ServiceClient:

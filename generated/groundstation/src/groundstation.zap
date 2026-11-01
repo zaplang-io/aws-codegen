@@ -19,6 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   164 structs (113 @derive(Json)), 21 enums, 6 error variants.
 #   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The GroundStation rest-json protocol: SigV4 service "groundstation" (also the endpoint
@@ -2436,6 +2438,52 @@ struct GroundStationClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeContact for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_contact(self, DescribeContactRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto resp = core.send(host, self.describe_contact(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeContactVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_contact_version(self, DescribeContactVersionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        auto resp = core.send(host, self.describe_contact_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ContactScheduled — polls DescribeContact until a success acceptor fires (delay 5s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_contact_scheduled.
+    def wait_contact_scheduled(self, DescribeContactRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ContactScheduled",
+            delay=5,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "contactStatus", "FAILED_TO_SCHEDULE"),
+                waiters.acceptor_path(waiters.state_success(), "contactStatus", "SCHEDULED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_contact(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ContactUpdated — polls DescribeContactVersion until a success acceptor fires (delay 5s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_contact_updated.
+    def wait_contact_updated(self, DescribeContactVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ContactUpdated",
+            delay=5,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "version.status", "FAILED_TO_UPDATE"),
+                waiters.acceptor_path(waiters.state_success(), "version.status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_contact_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a GroundStationClient bound to credentials + region.
 def groundstation_client(core.Credentials creds, str region) -> GroundStationClient:

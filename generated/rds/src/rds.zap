@@ -19,6 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   593 structs (plain carriers), 37 enums, 150 error variants.
 #   0 paginators generated (43 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (11 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -5150,6 +5151,20 @@ def rds_error_name(RDSErrorKind k) -> str:
 #   DescribeSourceRegions
 #   DescribeTenantDatabases
 #   DownloadDBLogFilePortion
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   DBClusterAvailable
+#   DBClusterDeleted
+#   DBClusterSnapshotAvailable
+#   DBClusterSnapshotDeleted
+#   DBInstanceAvailable
+#   DBInstanceDeleted
+#   DBSnapshotAvailable
+#   DBSnapshotCompleted
+#   DBSnapshotDeleted
+#   TenantDatabaseAvailable
+#   TenantDatabaseDeleted
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

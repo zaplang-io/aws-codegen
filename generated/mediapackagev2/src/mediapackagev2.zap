@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   115 structs (67 @derive(Json)), 33 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The MediaPackageV2 rest-json protocol: SigV4 service "mediapackagev2" (also the endpoint
@@ -2531,6 +2533,32 @@ struct MediaPackageV2Client:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetHarvestJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_harvest_job(self, GetHarvestJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        auto resp = core.send(host, self.get_harvest_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter HarvestJobFinished — polls GetHarvestJob until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_harvest_job_finished.
+    def wait_harvest_job_finished(self, GetHarvestJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="HarvestJobFinished",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_success(), "Status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "FAILED"),
+                waiters.acceptor_path(waiters.state_retry(), "Status", "QUEUED"),
+                waiters.acceptor_path(waiters.state_retry(), "Status", "IN_PROGRESS")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_harvest_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a MediaPackageV2Client bound to credentials + region.
 def mediapackagev2_client(core.Credentials creds, str region) -> MediaPackageV2Client:

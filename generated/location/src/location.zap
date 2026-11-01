@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   202 structs (106 @derive(Json)), 17 enums, 7 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import base64
 import datetime
 
@@ -3403,6 +3405,30 @@ struct LocationClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_job(self, GetJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        auto resp = core.send(host, self.get_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter JobCompleted — polls GetJob until a success acceptor fires (delay 60s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_job_completed.
+    def wait_job_completed(self, GetJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="JobCompleted",
+            delay=60,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "Completed"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "Cancelled")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a LocationClient bound to credentials + region.
 def geo_client(core.Credentials creds, str region) -> LocationClient:

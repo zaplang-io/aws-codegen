@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   105 structs (66 @derive(Json)), 13 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   15 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The RTBFabric rest-json protocol: SigV4 service "rtbfabric" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1846,6 +1848,319 @@ struct RTBFabricClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetCertificateAssociation for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_certificate_association(self, GetCertificateAssociationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_certificate_association(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetInboundExternalLink for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_inbound_external_link(self, GetInboundExternalLinkRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_inbound_external_link(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetLink for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_link(self, GetLinkRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_link(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetLinkRoutingRule for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_link_routing_rule(self, GetLinkRoutingRuleRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_link_routing_rule(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetOutboundExternalLink for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_outbound_external_link(self, GetOutboundExternalLinkRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_outbound_external_link(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRequesterGateway for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_requester_gateway(self, GetRequesterGatewayRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_requester_gateway(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetResponderGateway for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_responder_gateway(self, GetResponderGatewayRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        auto resp = core.send(host, self.get_responder_gateway(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter CertificateAssociated — polls GetCertificateAssociation until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_certificate_associated.
+    def wait_certificate_associated(self, GetCertificateAssociationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CertificateAssociated",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ASSOCIATED"),
+                waiters.acceptor_error(waiters.state_failure(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DISASSOCIATED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "PENDING_DISASSOCIATION")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_certificate_association(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter CertificateDisassociated — polls GetCertificateAssociation until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_certificate_disassociated.
+    def wait_certificate_disassociated(self, GetCertificateAssociationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CertificateDisassociated",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DISASSOCIATED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "PENDING_ASSOCIATION")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_certificate_association(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InboundExternalLinkActive — polls GetInboundExternalLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_inbound_external_link_active.
+    def wait_inbound_external_link_active(self, GetInboundExternalLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InboundExternalLinkActive",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ISOLATED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_inbound_external_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InboundExternalLinkDeleted — polls GetInboundExternalLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_inbound_external_link_deleted.
+    def wait_inbound_external_link_deleted(self, GetInboundExternalLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InboundExternalLinkDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_inbound_external_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LinkAccepted — polls GetLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_link_accepted.
+    def wait_link_accepted(self, GetLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LinkAccepted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACCEPTED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LinkActive — polls GetLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_link_active.
+    def wait_link_active(self, GetLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LinkActive",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LinkDeleted — polls GetLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_link_deleted.
+    def wait_link_deleted(self, GetLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LinkDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LinkRoutingRuleActive — polls GetLinkRoutingRule until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_link_routing_rule_active.
+    def wait_link_routing_rule_active(self, GetLinkRoutingRuleRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LinkRoutingRuleActive",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_link_routing_rule(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LinkRoutingRuleDeleted — polls GetLinkRoutingRule until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_link_routing_rule_deleted.
+    def wait_link_routing_rule_deleted(self, GetLinkRoutingRuleRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LinkRoutingRuleDeleted",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_link_routing_rule(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutboundExternalLinkActive — polls GetOutboundExternalLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_outbound_external_link_active.
+    def wait_outbound_external_link_active(self, GetOutboundExternalLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutboundExternalLinkActive",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ISOLATED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_outbound_external_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutboundExternalLinkDeleted — polls GetOutboundExternalLink until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_outbound_external_link_deleted.
+    def wait_outbound_external_link_deleted(self, GetOutboundExternalLinkRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutboundExternalLinkDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_outbound_external_link(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RequesterGatewayActive — polls GetRequesterGateway until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_requester_gateway_active.
+    def wait_requester_gateway_active(self, GetRequesterGatewayRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RequesterGatewayActive",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_requester_gateway(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RequesterGatewayDeleted — polls GetRequesterGateway until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_requester_gateway_deleted.
+    def wait_requester_gateway_deleted(self, GetRequesterGatewayRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RequesterGatewayDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_requester_gateway(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ResponderGatewayActive — polls GetResponderGateway until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_responder_gateway_active.
+    def wait_responder_gateway_active(self, GetResponderGatewayRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ResponderGatewayActive",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_responder_gateway(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ResponderGatewayDeleted — polls GetResponderGateway until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_responder_gateway_deleted.
+    def wait_responder_gateway_deleted(self, GetResponderGatewayRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ResponderGatewayDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_responder_gateway(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a RTBFabricClient bound to credentials + region.
 def rtbfabric_client(core.Credentials creds, str region) -> RTBFabricClient:

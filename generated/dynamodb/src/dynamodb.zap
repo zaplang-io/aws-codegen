@@ -18,6 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   272 structs (136 @derive(Json)), 45 enums, 34 error variants.
 #   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -30,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 import base64
 import datetime
 
@@ -4561,6 +4563,137 @@ struct DynamoDBClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeContributorInsights for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_contributor_insights(self, DescribeContributorInsightsInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_contributor_insights(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeExport for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_export(self, DescribeExportInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_export(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeImport for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_import(self, DescribeImportInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_import(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeKinesisStreamingDestination for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_kinesis_streaming_destination(self, DescribeKinesisStreamingDestinationInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_kinesis_streaming_destination(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeTable for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_table(self, DescribeTableInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_table(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ContributorInsightsEnabled — polls DescribeContributorInsights until a success acceptor fires (delay 20s,
+    # max 30 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_contributor_insights_enabled.
+    def wait_contributor_insights_enabled(self, DescribeContributorInsightsInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ContributorInsightsEnabled",
+            delay=20,
+            max_attempts=30,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ContributorInsightsStatus", "ENABLED"),
+                waiters.acceptor_path(waiters.state_failure(), "ContributorInsightsStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_contributor_insights(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ExportCompleted — polls DescribeExport until a success acceptor fires (delay 20s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_export_completed.
+    def wait_export_completed(self, DescribeExportInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ExportCompleted",
+            delay=20,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ExportDescription.ExportStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "ExportDescription.ExportStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_export(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImportCompleted — polls DescribeImport until a success acceptor fires (delay 20s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_import_completed.
+    def wait_import_completed(self, DescribeImportInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImportCompleted",
+            delay=20,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ImportTableDescription.ImportStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "ImportTableDescription.ImportStatus", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "ImportTableDescription.ImportStatus", "CANCELLED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_import(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter KinesisStreamingDestinationActive — polls DescribeKinesisStreamingDestination until a success acceptor fires (delay 20s,
+    # max 30 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_kinesis_streaming_destination_active.
+    def wait_kinesis_streaming_destination_active(self, DescribeKinesisStreamingDestinationInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="KinesisStreamingDestinationActive",
+            delay=20,
+            max_attempts=30,
+            acceptors=[
+                waiters.acceptor_path_any(waiters.state_success(), "KinesisDataStreamDestinations[].DestinationStatus", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "length(KinesisDataStreamDestinations) > `0`  && length(KinesisDataStreamDestinations[?DestinationStatus == 'DISABLED' || DestinationStatus == 'ENABLE_FAILED']) ==  length(KinesisDataStreamDestinations)", "true")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_kinesis_streaming_destination(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TableExists — polls DescribeTable until a success acceptor fires (delay 20s,
+    # max 25 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_table_exists.
+    def wait_table_exists(self, DescribeTableInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="TableExists",
+            delay=20,
+            max_attempts=25,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Table.TableStatus", "ACTIVE"),
+                waiters.acceptor_error(waiters.state_retry(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_table(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TableNotExists — polls DescribeTable until a success acceptor fires (delay 20s,
+    # max 25 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_table_not_exists.
+    def wait_table_not_exists(self, DescribeTableInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="TableNotExists",
+            delay=20,
+            max_attempts=25,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_table(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a DynamoDBClient bound to credentials + region.
 def dynamodb_client(core.Credentials creds, str region) -> DynamoDBClient:

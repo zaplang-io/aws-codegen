@@ -19,6 +19,7 @@
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   61 structs (36 @derive(Json)), 11 enums, 7 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The CodeGuru_Reviewer rest-json protocol: SigV4 service "codeguru-reviewer" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -847,6 +849,54 @@ struct CodeGuru_ReviewerClient:
         multi_query["tagKeys"] = input.TagKeys
         auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
+
+    # One poll of DescribeCodeReview for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_code_review(self, DescribeCodeReviewRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        auto resp = core.send(host, self.describe_code_review(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeRepositoryAssociation for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_repository_association(self, DescribeRepositoryAssociationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        auto resp = core.send(host, self.describe_repository_association(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter CodeReviewCompleted — polls DescribeCodeReview until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_code_review_completed.
+    def wait_code_review_completed(self, DescribeCodeReviewRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CodeReviewCompleted",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "CodeReview.State", "Completed"),
+                waiters.acceptor_path(waiters.state_failure(), "CodeReview.State", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "CodeReview.State", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_code_review(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RepositoryAssociationSucceeded — polls DescribeRepositoryAssociation until a success acceptor fires (delay 10s,
+    # max 30 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_repository_association_succeeded.
+    def wait_repository_association_succeeded(self, DescribeRepositoryAssociationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RepositoryAssociationSucceeded",
+            delay=10,
+            max_attempts=30,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RepositoryAssociation.State", "Associated"),
+                waiters.acceptor_path(waiters.state_failure(), "RepositoryAssociation.State", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "RepositoryAssociation.State", "Associating")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_repository_association(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a CodeGuru_ReviewerClient bound to credentials + region.
 def codeguru_reviewer_client(core.Credentials creds, str region) -> CodeGuru_ReviewerClient:

@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   400 structs (221 @derive(Json)), 114 enums, 8 error variants.
 #   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   3 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Inspector2 rest-json protocol: SigV4 service "inspector2" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -7792,6 +7794,63 @@ struct Inspector2Client:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of ListConnectors for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_list_connectors(self, ListConnectorsRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        auto resp = core.send(host, self.list_connectors(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ConnectorConnected — polls ListConnectors until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_connector_connected.
+    def wait_connector_connected(self, ListConnectorsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ConnectorConnected",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "items[].health.connectorStatus", "CONNECTED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "items[].health.connectorStatus", "FAILED_TO_CONNECT"),
+                waiters.acceptor_path_any(waiters.state_failure(), "items[].enablementStatus", "FAILED_TO_ENABLE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_list_connectors(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ConnectorDeleted — polls ListConnectors until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_connector_deleted.
+    def wait_connector_deleted(self, ListConnectorsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ConnectorDeleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "length(items) == `0`", "true"),
+                waiters.acceptor_path_any(waiters.state_failure(), "items[].enablementStatus", "FAILED_TO_DELETE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_list_connectors(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ConnectorEnabled — polls ListConnectors until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_connector_enabled.
+    def wait_connector_enabled(self, ListConnectorsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ConnectorEnabled",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "items[].enablementStatus", "ENABLED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "items[].enablementStatus", "FAILED_TO_ENABLE"),
+                waiters.acceptor_path_any(waiters.state_failure(), "items[].enablementStatus", "FAILED_TO_UPDATE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_list_connectors(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Inspector2Client bound to credentials + region.
 def inspector2_client(core.Credentials creds, str region) -> Inspector2Client:

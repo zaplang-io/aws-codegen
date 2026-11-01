@@ -19,6 +19,7 @@
 #   4 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   285 structs (171 @derive(Json)), 50 enums, 7 error variants.
 #   20 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   3 waiters generated (1 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The resiliencehubv2 rest-json protocol: SigV4 service "resiliencehub" (also the endpoint
@@ -2697,6 +2699,10 @@ def resiliencehub_error_name(resiliencehubv2ErrorKind k) -> str:
 #   ListServiceEvents (operation not generated)
 #   ListSystemEvents (operation not generated)
 
+# Waiters (waiters-2.json) not surfaced — the polled operation is skipped
+# above, or an acceptor uses an unsupported matcher/state:
+#   FailureModeAssessmentSuccess (operation not generated)
+
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4296,6 +4302,70 @@ struct resiliencehubv2Client:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of ListReports for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_list_reports(self, ListReportsRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto resp = core.send(host, self.list_reports(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetService for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_service(self, GetServiceRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        auto resp = core.send(host, self.get_service(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ReportSucceeded — polls ListReports until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_report_succeeded.
+    def wait_report_succeeded(self, ListReportsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ReportSucceeded",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_retry(), "length(reportGenerationResults[]) == `0`", "true"),
+                waiters.acceptor_path_all(waiters.state_success(), "reportGenerationResults[].status", "SUCCEEDED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "reportGenerationResults[].status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_list_reports(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceAssessmentCompleted — polls GetService until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_assessment_completed.
+    def wait_service_assessment_completed(self, GetServiceRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceAssessmentCompleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "service.assessmentStatus", "SUCCESS"),
+                waiters.acceptor_path(waiters.state_failure(), "service.assessmentStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceResourceDiscoveryCompleted — polls GetService until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_resource_discovery_completed.
+    def wait_service_resource_discovery_completed(self, GetServiceRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceResourceDiscoveryCompleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "service.resourceDiscovery.status", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_success(), "service.resourceDiscovery.status", "COMPLETED_WITH_FAILURES"),
+                waiters.acceptor_path(waiters.state_failure(), "service.resourceDiscovery.status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a resiliencehubv2Client bound to credentials + region.
 def resiliencehub_client(core.Credentials creds, str region) -> resiliencehubv2Client:

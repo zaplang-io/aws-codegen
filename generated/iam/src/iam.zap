@@ -19,6 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   373 structs (plain carriers), 28 enums, 38 error variants.
 #   0 paginators generated (34 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (4 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -2365,6 +2366,13 @@ def iam_error_name(IAMErrorKind k) -> str:
 #   ListVirtualMFADevices
 #   SimulateCustomPolicy
 #   SimulatePrincipalPolicy
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   InstanceProfileExists
+#   PolicyExists
+#   RoleExists
+#   UserExists
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

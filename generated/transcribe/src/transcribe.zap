@@ -18,6 +18,7 @@
 #   2 skipped (input has a non-string-keyed map or free-form document member).
 #   132 structs (75 @derive(Json)), 22 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   7 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -28,7 +29,9 @@
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
 import aws_core.errors
+import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The Transcribe awsJson protocol: version 1.1, API id "Transcribe".
 def transcribe_protocol() -> awsjson.AwsJson:
@@ -2063,6 +2066,167 @@ struct TranscribeClient:
     def update_vocabulary_filter(self, UpdateVocabularyFilterRequest input) -> str:
         auto body = update_vocabulary_filter_request_to_json(input)
         return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateVocabularyFilter", body)
+
+    # One poll of GetCallAnalyticsJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_call_analytics_job(self, GetCallAnalyticsJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.get_call_analytics_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeLanguageModel for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_language_model(self, DescribeLanguageModelRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_language_model(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetMedicalScribeJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_medical_scribe_job(self, GetMedicalScribeJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.get_medical_scribe_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetMedicalTranscriptionJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_medical_transcription_job(self, GetMedicalTranscriptionJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.get_medical_transcription_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetMedicalVocabulary for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_medical_vocabulary(self, GetMedicalVocabularyRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.get_medical_vocabulary(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetTranscriptionJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_transcription_job(self, GetTranscriptionJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.get_transcription_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetVocabulary for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_vocabulary(self, GetVocabularyRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
+        auto resp = core.send(host, self.get_vocabulary(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter CallAnalyticsJobCompleted — polls GetCallAnalyticsJob until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_call_analytics_job_completed.
+    def wait_call_analytics_job_completed(self, GetCallAnalyticsJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CallAnalyticsJobCompleted",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "CallAnalyticsJob.CallAnalyticsJobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "CallAnalyticsJob.CallAnalyticsJobStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_call_analytics_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LanguageModelCompleted — polls DescribeLanguageModel until a success acceptor fires (delay 120s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_language_model_completed.
+    def wait_language_model_completed(self, DescribeLanguageModelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LanguageModelCompleted",
+            delay=120,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "LanguageModel.ModelStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "LanguageModel.ModelStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_language_model(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MedicalScribeJobCompleted — polls GetMedicalScribeJob until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_medical_scribe_job_completed.
+    def wait_medical_scribe_job_completed(self, GetMedicalScribeJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MedicalScribeJobCompleted",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "MedicalScribeJob.MedicalScribeJobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "MedicalScribeJob.MedicalScribeJobStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_medical_scribe_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MedicalTranscriptionJobCompleted — polls GetMedicalTranscriptionJob until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_medical_transcription_job_completed.
+    def wait_medical_transcription_job_completed(self, GetMedicalTranscriptionJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MedicalTranscriptionJobCompleted",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "MedicalTranscriptionJob.TranscriptionJobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "MedicalTranscriptionJob.TranscriptionJobStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_medical_transcription_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter MedicalVocabularyReady — polls GetMedicalVocabulary until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_medical_vocabulary_ready.
+    def wait_medical_vocabulary_ready(self, GetMedicalVocabularyRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="MedicalVocabularyReady",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "VocabularyState", "READY"),
+                waiters.acceptor_path(waiters.state_failure(), "VocabularyState", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_medical_vocabulary(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TranscriptionJobCompleted — polls GetTranscriptionJob until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_transcription_job_completed.
+    def wait_transcription_job_completed(self, GetTranscriptionJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TranscriptionJobCompleted",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "TranscriptionJob.TranscriptionJobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "TranscriptionJob.TranscriptionJobStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_transcription_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter VocabularyReady — polls GetVocabulary until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_vocabulary_ready.
+    def wait_vocabulary_ready(self, GetVocabularyRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="VocabularyReady",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "VocabularyState", "READY"),
+                waiters.acceptor_path(waiters.state_failure(), "VocabularyState", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_vocabulary(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a TranscribeClient bound to credentials + region.
 def transcribe_client(core.Credentials creds, str region) -> TranscribeClient:

@@ -19,6 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   328 structs (227 @derive(Json)), 41 enums, 56 error variants.
 #   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import base64
 import datetime
 
@@ -5325,6 +5327,121 @@ struct LambdaClient:
             if not np.has_more:
                 break
             input.Marker = Optional.Some(np.token)
+
+    # One poll of GetFunctionConfiguration for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_function_configuration(self, GetFunctionConfigurationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_function_configuration(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetFunction for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_function(self, GetFunctionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_function(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter FunctionActive — polls GetFunctionConfiguration until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_function_active.
+    def wait_function_active(self, GetFunctionConfigurationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FunctionActive",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "Active"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_function_configuration(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FunctionActiveV2 — polls GetFunction until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_function_active_v2.
+    def wait_function_active_v2(self, GetFunctionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FunctionActiveV2",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Configuration.State", "Active"),
+                waiters.acceptor_path(waiters.state_failure(), "Configuration.State", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "Configuration.State", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_function(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FunctionExists — polls GetFunction until a success acceptor fires (delay 1s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_function_exists.
+    def wait_function_exists(self, GetFunctionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FunctionExists",
+            delay=1,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "false"),
+                waiters.acceptor_error(waiters.state_retry(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_function(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FunctionUpdated — polls GetFunctionConfiguration until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_function_updated.
+    def wait_function_updated(self, GetFunctionConfigurationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FunctionUpdated",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "LastUpdateStatus", "Successful"),
+                waiters.acceptor_path(waiters.state_failure(), "LastUpdateStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "LastUpdateStatus", "InProgress")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_function_configuration(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FunctionUpdatedV2 — polls GetFunction until a success acceptor fires (delay 1s,
+    # max 300 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_function_updated_v2.
+    def wait_function_updated_v2(self, GetFunctionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FunctionUpdatedV2",
+            delay=1,
+            max_attempts=300,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Configuration.LastUpdateStatus", "Successful"),
+                waiters.acceptor_path(waiters.state_failure(), "Configuration.LastUpdateStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "Configuration.LastUpdateStatus", "InProgress")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_function(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PublishedVersionActive — polls GetFunctionConfiguration until a success acceptor fires (delay 5s,
+    # max 312 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_published_version_active.
+    def wait_published_version_active(self, GetFunctionConfigurationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PublishedVersionActive",
+            delay=5,
+            max_attempts=312,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "Active"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "Failed"),
+                waiters.acceptor_path(waiters.state_retry(), "State", "Pending")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_function_configuration(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a LambdaClient bound to credentials + region.
 def lambda__client(core.Credentials creds, str region) -> LambdaClient:

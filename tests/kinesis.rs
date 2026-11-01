@@ -22,9 +22,17 @@ fn kinesis_paginators() -> String {
     read("models/kinesis/2013-12-02/paginators-1.json")
 }
 
+fn kinesis_waiters() -> String {
+    read("models/kinesis/2013-12-02/waiters-2.json")
+}
+
 fn generate_kinesis() -> (String, aws_codegen::Coverage) {
-    aws_codegen::generate_from_json_with_paginators(&kinesis_model(), Some(&kinesis_paginators()))
-        .expect("Kinesis model generates")
+    aws_codegen::generate_from_json_with_sidecars(
+        &kinesis_model(),
+        Some(&kinesis_paginators()),
+        Some(&kinesis_waiters()),
+    )
+    .expect("Kinesis model generates")
 }
 
 #[test]

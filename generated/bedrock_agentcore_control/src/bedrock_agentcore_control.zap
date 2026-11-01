@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   786 structs (459 @derive(Json)), 102 enums, 16 error variants.
 #   39 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Bedrock_AgentCore_Control rest-json protocol: SigV4 service "bedrock-agentcore" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -12980,6 +12982,139 @@ struct Bedrock_AgentCore_ControlClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetMemory for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_memory(self, GetMemoryInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto resp = core.send(host, self.get_memory(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetPolicy for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_policy(self, GetPolicyRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto resp = core.send(host, self.get_policy(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetPolicyEngine for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_policy_engine(self, GetPolicyEngineRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto resp = core.send(host, self.get_policy_engine(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetPolicyGeneration for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_policy_generation(self, GetPolicyGenerationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto resp = core.send(host, self.get_policy_generation(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter MemoryCreated — polls GetMemory until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_memory_created.
+    def wait_memory_created(self, GetMemoryInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="MemoryCreated",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_retry(), "memory.status", "CREATING"),
+                waiters.acceptor_path(waiters.state_success(), "memory.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "memory.status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_memory(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PolicyActive — polls GetPolicy until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_policy_active.
+    def wait_policy_active(self, GetPolicyRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PolicyActive",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "UPDATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_policy(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PolicyDeleted — polls GetPolicy until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_policy_deleted.
+    def wait_policy_deleted(self, GetPolicyRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PolicyDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_policy(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PolicyEngineActive — polls GetPolicyEngine until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_policy_engine_active.
+    def wait_policy_engine_active(self, GetPolicyEngineRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PolicyEngineActive",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "UPDATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_policy_engine(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PolicyEngineDeleted — polls GetPolicyEngine until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_policy_engine_deleted.
+    def wait_policy_engine_deleted(self, GetPolicyEngineRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PolicyEngineDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_policy_engine(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PolicyGenerationCompleted — polls GetPolicyGeneration until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_policy_generation_completed.
+    def wait_policy_generation_completed(self, GetPolicyGenerationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PolicyGenerationCompleted",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "GENERATED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "GENERATING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "GENERATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_policy_generation(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Bedrock_AgentCore_ControlClient bound to credentials + region.
 def bedrock_agentcore_control_client(core.Credentials creds, str region) -> Bedrock_AgentCore_ControlClient:

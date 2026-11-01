@@ -19,6 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   14 structs (13 @derive(Json)), 2 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The SimpleDBv2 rest-json protocol: SigV4 service "sdb" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -287,6 +289,29 @@ struct SimpleDBv2Client:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetExport for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_export(self, GetExportRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(sdb_service(), self.region)
+        auto resp = core.send(host, self.get_export(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ExportSucceeded — polls GetExport until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_export_succeeded.
+    def wait_export_succeeded(self, GetExportRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ExportSucceeded",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "exportStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "exportStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_export(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a SimpleDBv2Client bound to credentials + region.
 def sdb_client(core.Credentials creds, str region) -> SimpleDBv2Client:
