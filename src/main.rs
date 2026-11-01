@@ -58,16 +58,18 @@ fn run(args: &[String]) -> Result<(), String> {
     let json =
         std::fs::read_to_string(&model_path).map_err(|e| format!("reading {model_path}: {e}"))?;
 
-    // Botocore ships pagination metadata in a `paginators-1.json` sidecar next to
-    // the model; pick it up automatically when present.
+    // Botocore ships pagination metadata in a `paginators-1.json` sidecar and
+    // waiter definitions in a `waiters-2.json` sidecar, both next to the model;
+    // pick each up automatically when present.
     let paginators_path = std::path::Path::new(&model_path).with_file_name("paginators-1.json");
-    let paginators_json = match std::fs::read_to_string(&paginators_path) {
-        Ok(s) => Some(s),
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
-        Err(e) => return Err(format!("reading {}: {e}", paginators_path.display())),
-    };
-    let (src, cov) =
-        aws_codegen::generate_from_json_with_paginators(&json, paginators_json.as_deref())?;
+    let paginators_json = read_optional_sidecar(&paginators_path)?;
+    let waiters_path = std::path::Path::new(&model_path).with_file_name("waiters-2.json");
+    let waiters_json = read_optional_sidecar(&waiters_path)?;
+    let (src, cov) = aws_codegen::generate_from_json_with_sidecars(
+        &json,
+        paginators_json.as_deref(),
+        waiters_json.as_deref(),
+    )?;
 
     // --package writes the full zenv package (zap.toml + src/<name>.zap); -o
     // writes the raw client source; with neither, the client goes to stdout.
@@ -98,7 +100,7 @@ fn run(args: &[String]) -> Result<(), String> {
     }
 
     eprintln!(
-        "aws-codegen: {} operations ({} methods, {} skipped), {} structs ({} derived), {} enums, {} error variants, {} paginators ({} skipped){}",
+        "aws-codegen: {} operations ({} methods, {} skipped), {} structs ({} derived), {} enums, {} error variants, {} paginators ({} skipped), {} waiters ({} skipped){}",
         cov.operations_total,
         cov.operations_methods,
         cov.operations_skipped,
@@ -108,12 +110,25 @@ fn run(args: &[String]) -> Result<(), String> {
         cov.error_variants,
         cov.paginators,
         cov.paginators_skipped,
+        cov.waiters,
+        cov.waiters_skipped,
         package_dir
             .map(|d| format!(" -> {d}/ (package)"))
             .or_else(|| out_path.map(|p| format!(" -> {p}")))
             .unwrap_or_default(),
     );
     Ok(())
+}
+
+/// Read a botocore sidecar (`paginators-1.json` / `waiters-2.json`) if it exists
+/// next to the model; a missing file is not an error (the service simply has
+/// none), any other read failure is.
+fn read_optional_sidecar(path: &std::path::Path) -> Result<Option<String>, String> {
+    match std::fs::read_to_string(path) {
+        Ok(s) => Ok(Some(s)),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
+        Err(e) => Err(format!("reading {}: {e}", path.display())),
+    }
 }
 
 fn print_usage() {

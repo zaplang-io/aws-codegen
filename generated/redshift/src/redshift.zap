@@ -19,6 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   488 structs (plain carriers), 37 enums, 145 error variants.
 #   0 paginators generated (38 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (0 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================

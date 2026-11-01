@@ -20,6 +20,7 @@
 #   0 skipped (input has a non-text-keyed map member).
 #   175 structs (plain carriers), 17 enums, 19 error variants.
 #   0 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (0 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
