@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   97 structs (57 @derive(Json)), 3 enums, 10 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The schemas rest-json protocol: SigV4 service "schemas" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1348,6 +1349,31 @@ struct schemasClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeCodeBinding for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_code_binding(self, DescribeCodeBindingRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        auto resp = core.send(host, self.describe_code_binding(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter CodeBindingExists — polls DescribeCodeBinding until a success acceptor fires (delay 2s,
+    # max 30 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_code_binding_exists.
+    def wait_code_binding_exists(self, DescribeCodeBindingRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CodeBindingExists",
+            delay=2,
+            max_attempts=30,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Status", "CREATE_COMPLETE"),
+                waiters.acceptor_path(waiters.state_retry(), "Status", "CREATE_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "Status", "CREATE_FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "NotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_code_binding(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a schemasClient bound to credentials + region.
 def schemas_client(core.Credentials creds, str region) -> schemasClient:

@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   69 structs (46 @derive(Json)), 3 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Route53_Recovery_Control_Config rest-json protocol: SigV4 service "route53-recovery-control-config" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1020,6 +1021,129 @@ struct Route53_Recovery_Control_ConfigClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeCluster for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_cluster(self, DescribeClusterRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        auto resp = core.send(host, self.describe_cluster(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeControlPanel for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_control_panel(self, DescribeControlPanelRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        auto resp = core.send(host, self.describe_control_panel(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeRoutingControl for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_routing_control(self, DescribeRoutingControlRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        auto resp = core.send(host, self.describe_routing_control(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ClusterCreated — polls DescribeCluster until a success acceptor fires (delay 5s,
+    # max 26 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_created.
+    def wait_cluster_created(self, DescribeClusterRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterCreated",
+            delay=5,
+            max_attempts=26,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Cluster.Status", "DEPLOYED"),
+                waiters.acceptor_path(waiters.state_retry(), "Cluster.Status", "PENDING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterDeleted — polls DescribeCluster until a success acceptor fires (delay 5s,
+    # max 26 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_deleted.
+    def wait_cluster_deleted(self, DescribeClusterRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterDeleted",
+            delay=5,
+            max_attempts=26,
+            acceptors=[
+                waiters.acceptor_status(waiters.state_success(), "404"),
+                waiters.acceptor_path(waiters.state_retry(), "Cluster.Status", "PENDING_DELETION"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ControlPanelCreated — polls DescribeControlPanel until a success acceptor fires (delay 5s,
+    # max 26 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_control_panel_created.
+    def wait_control_panel_created(self, DescribeControlPanelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ControlPanelCreated",
+            delay=5,
+            max_attempts=26,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ControlPanel.Status", "DEPLOYED"),
+                waiters.acceptor_path(waiters.state_retry(), "ControlPanel.Status", "PENDING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_control_panel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ControlPanelDeleted — polls DescribeControlPanel until a success acceptor fires (delay 5s,
+    # max 26 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_control_panel_deleted.
+    def wait_control_panel_deleted(self, DescribeControlPanelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ControlPanelDeleted",
+            delay=5,
+            max_attempts=26,
+            acceptors=[
+                waiters.acceptor_status(waiters.state_success(), "404"),
+                waiters.acceptor_path(waiters.state_retry(), "ControlPanel.Status", "PENDING_DELETION"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_control_panel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RoutingControlCreated — polls DescribeRoutingControl until a success acceptor fires (delay 5s,
+    # max 26 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_routing_control_created.
+    def wait_routing_control_created(self, DescribeRoutingControlRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RoutingControlCreated",
+            delay=5,
+            max_attempts=26,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RoutingControl.Status", "DEPLOYED"),
+                waiters.acceptor_path(waiters.state_retry(), "RoutingControl.Status", "PENDING"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_routing_control(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RoutingControlDeleted — polls DescribeRoutingControl until a success acceptor fires (delay 5s,
+    # max 26 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_routing_control_deleted.
+    def wait_routing_control_deleted(self, DescribeRoutingControlRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RoutingControlDeleted",
+            delay=5,
+            max_attempts=26,
+            acceptors=[
+                waiters.acceptor_status(waiters.state_success(), "404"),
+                waiters.acceptor_path(waiters.state_retry(), "RoutingControl.Status", "PENDING_DELETION"),
+                waiters.acceptor_status(waiters.state_retry(), "500")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_routing_control(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Route53_Recovery_Control_ConfigClient bound to credentials + region.
 def route53_recovery_control_config_client(core.Credentials creds, str region) -> Route53_Recovery_Control_ConfigClient:

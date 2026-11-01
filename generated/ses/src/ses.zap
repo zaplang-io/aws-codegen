@@ -19,7 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   206 structs (plain carriers), 15 enums, 34 error variants.
 #   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (1 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1249,6 +1249,10 @@ def email_error_name(SESErrorKind k) -> str:
 #   ListIdentities
 #   ListReceiptRuleSets
 #   ListTemplates
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   IdentityExists
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

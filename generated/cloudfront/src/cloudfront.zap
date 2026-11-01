@@ -19,7 +19,7 @@
 #   0 skipped (a body member is not yet serializable by the XML emitter).
 #   133 structs (plain carriers), 9 enums, 49 error variants.
 #   0 paginators generated (4 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (3 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -979,6 +979,12 @@ def cloudfront_error_name(CloudFrontErrorKind k) -> str:
 #   ListDistributions
 #   ListInvalidations
 #   ListStreamingDistributions
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   DistributionDeployed
+#   InvalidationCompleted
+#   StreamingDistributionDeployed
 
 # Render a boolean as its XML text (the rest-xml codec has no bool helper).
 def cloudfront_xml_bool(bool b) -> str:

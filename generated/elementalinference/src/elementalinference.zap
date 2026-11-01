@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   79 structs (49 @derive(Json)), 11 enums, 9 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The ElementalInference rest-json protocol: SigV4 service "elemental-inference" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1238,6 +1239,32 @@ struct ElementalInferenceClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetFeed for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_feed(self, GetFeedRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        auto resp = core.send(host, self.get_feed(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter FeedDeleted — polls GetFeed until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_feed_deleted.
+    def wait_feed_deleted(self, GetFeedRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FeedDeleted",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_success(), "status", "DELETED"),
+                waiters.acceptor_path(waiters.state_retry(), "status", "DELETING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_feed(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ElementalInferenceClient bound to credentials + region.
 def elemental_inference_client(core.Credentials creds, str region) -> ElementalInferenceClient:

@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   233 structs (153 @derive(Json)), 24 enums, 50 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The ECR awsJson protocol: version 1.1, API id "AmazonEC2ContainerRegistry_V20150921".
 def api_ecr_protocol() -> awsjson.AwsJson:
@@ -3048,6 +3049,52 @@ struct ECRClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeImageScanFindings for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_image_scan_findings(self, DescribeImageScanFindingsRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_ecr_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_image_scan_findings(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetLifecyclePolicyPreview for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_lifecycle_policy_preview(self, GetLifecyclePolicyPreviewRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_ecr_protocol().service, self.region)
+        auto resp = core.send(host, self.get_lifecycle_policy_preview(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ImageScanComplete — polls DescribeImageScanFindings until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_image_scan_complete.
+    def wait_image_scan_complete(self, DescribeImageScanFindingsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImageScanComplete",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "imageScanStatus.status", "COMPLETE"),
+                waiters.acceptor_path(waiters.state_failure(), "imageScanStatus.status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_image_scan_findings(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LifecyclePolicyPreviewComplete — polls GetLifecyclePolicyPreview until a success acceptor fires (delay 5s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_lifecycle_policy_preview_complete.
+    def wait_lifecycle_policy_preview_complete(self, GetLifecyclePolicyPreviewRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LifecyclePolicyPreviewComplete",
+            delay=5,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "COMPLETE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_lifecycle_policy_preview(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ECRClient bound to credentials + region.
 def api_ecr_client(core.Credentials creds, str region) -> ECRClient:

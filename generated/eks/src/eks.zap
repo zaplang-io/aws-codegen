@@ -19,7 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   313 structs (147 @derive(Json)), 46 enums, 15 error variants.
 #   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   9 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The EKS rest-json protocol: SigV4 service "eks" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -4979,6 +4980,190 @@ struct EKSClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeAddon for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_addon(self, DescribeAddonRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto resp = core.send(host, self.describe_addon(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeUpdate for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_update(self, DescribeUpdateRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto resp = core.send(host, self.describe_update(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeCluster for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_cluster(self, DescribeClusterRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto resp = core.send(host, self.describe_cluster(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeFargateProfile for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_fargate_profile(self, DescribeFargateProfileRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto resp = core.send(host, self.describe_fargate_profile(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeNodegroup for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_nodegroup(self, DescribeNodegroupRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        auto resp = core.send(host, self.describe_nodegroup(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter AddonActive — polls DescribeAddon until a success acceptor fires (delay 10s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_addon_active.
+    def wait_addon_active(self, DescribeAddonRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AddonActive",
+            delay=10,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "addon.status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "addon.status", "DEGRADED"),
+                waiters.acceptor_path(waiters.state_success(), "addon.status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_addon(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AddonDeleted — polls DescribeAddon until a success acceptor fires (delay 10s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_addon_deleted.
+    def wait_addon_deleted(self, DescribeAddonRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AddonDeleted",
+            delay=10,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "addon.status", "DELETE_FAILED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_addon(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter CertificateAuthorityUpdateComplete — polls DescribeUpdate until a success acceptor fires (delay 30s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_certificate_authority_update_complete.
+    def wait_certificate_authority_update_complete(self, DescribeUpdateRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CertificateAuthorityUpdateComplete",
+            delay=30,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "update.status", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "update.status", "Cancelled"),
+                waiters.acceptor_path(waiters.state_success(), "update.status", "Successful")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_update(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterActive — polls DescribeCluster until a success acceptor fires (delay 30s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_active.
+    def wait_cluster_active(self, DescribeClusterRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterActive",
+            delay=30,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "cluster.status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "cluster.status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "cluster.status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterDeleted — polls DescribeCluster until a success acceptor fires (delay 30s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_deleted.
+    def wait_cluster_deleted(self, DescribeClusterRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterDeleted",
+            delay=30,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "cluster.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "cluster.status", "CREATING"),
+                waiters.acceptor_path(waiters.state_failure(), "cluster.status", "PENDING"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FargateProfileActive — polls DescribeFargateProfile until a success acceptor fires (delay 10s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fargate_profile_active.
+    def wait_fargate_profile_active(self, DescribeFargateProfileRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FargateProfileActive",
+            delay=10,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "fargateProfile.status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "fargateProfile.status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_fargate_profile(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FargateProfileDeleted — polls DescribeFargateProfile until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fargate_profile_deleted.
+    def wait_fargate_profile_deleted(self, DescribeFargateProfileRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FargateProfileDeleted",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "fargateProfile.status", "DELETE_FAILED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_fargate_profile(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NodegroupActive — polls DescribeNodegroup until a success acceptor fires (delay 30s,
+    # max 80 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_nodegroup_active.
+    def wait_nodegroup_active(self, DescribeNodegroupRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="NodegroupActive",
+            delay=30,
+            max_attempts=80,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "nodegroup.status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "nodegroup.status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_nodegroup(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NodegroupDeleted — polls DescribeNodegroup until a success acceptor fires (delay 30s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_nodegroup_deleted.
+    def wait_nodegroup_deleted(self, DescribeNodegroupRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="NodegroupDeleted",
+            delay=30,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "nodegroup.status", "DELETE_FAILED"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_nodegroup(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a EKSClient bound to credentials + region.
 def eks_client(core.Credentials creds, str region) -> EKSClient:

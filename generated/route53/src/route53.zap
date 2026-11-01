@@ -19,7 +19,7 @@
 #   0 skipped (a body member is not yet serializable by the XML emitter).
 #   254 structs (plain carriers), 18 enums, 69 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (1 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1830,6 +1830,10 @@ def route53_error_name(Route_53ErrorKind k) -> str:
 #   ListQueryLoggingConfigs
 #   ListResourceRecordSets
 #   ListVPCAssociationAuthorizations
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   ResourceRecordSetsChanged
 
 # Render a boolean as its XML text (the rest-xml codec has no bool helper).
 def route53_xml_bool(bool b) -> str:

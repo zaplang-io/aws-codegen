@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   45 structs (32 @derive(Json)), 6 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   4 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The DSQL rest-json protocol: SigV4 service "dsql" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -801,6 +802,80 @@ struct DSQLClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetCluster for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_cluster(self, GetClusterInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        auto resp = core.send(host, self.get_cluster(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetStream for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_stream(self, GetStreamInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        auto resp = core.send(host, self.get_stream(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ClusterActive — polls GetCluster until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_active.
+    def wait_cluster_active(self, GetClusterInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterNotExists — polls GetCluster until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_not_exists.
+    def wait_cluster_not_exists(self, GetClusterInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterNotExists",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamActive — polls GetStream until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_active.
+    def wait_stream_active(self, GetStreamInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_stream(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamNotExists — polls GetStream until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_not_exists.
+    def wait_stream_not_exists(self, GetStreamInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamNotExists",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_stream(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a DSQLClient bound to credentials + region.
 def dsql_client(core.Credentials creds, str region) -> DSQLClient:

@@ -20,7 +20,7 @@
 #   0 skipped (input has a non-text-keyed map member).
 #   112 structs (plain carriers), 27 enums, 6 error variants.
 #   0 paginators generated (9 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (2 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1026,6 +1026,11 @@ def arc_region_switch_error_name(ARC_Region_switchErrorKind k) -> str:
 #   ListRoute53HealthChecks
 #   ListRoute53HealthChecksInRegion
 #   ListServiceQuotaWarnings
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   PlanEvaluationStatusPassed
+#   PlanExecutionCompleted
 
 # CBOR body serializers: each builds a `cbor.CborValue` map for its shape
 # (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/

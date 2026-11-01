@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   83 structs (64 @derive(Json)), 9 enums, 9 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Glacier rest-json protocol: SigV4 service "glacier" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1388,6 +1389,45 @@ struct GlacierClient:
             if not np.has_more:
                 break
             input.marker = Optional.Some(np.token)
+
+    # One poll of DescribeVault for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_vault(self, DescribeVaultInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(glacier_service(), self.region)
+        auto resp = core.send(host, self.describe_vault(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter VaultExists — polls DescribeVault until a success acceptor fires (delay 3s,
+    # max 15 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_vault_exists.
+    def wait_vault_exists(self, DescribeVaultInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="VaultExists",
+            delay=3,
+            max_attempts=15,
+            acceptors=[
+                waiters.acceptor_status(waiters.state_success(), "200"),
+                waiters.acceptor_error(waiters.state_retry(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_vault(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter VaultNotExists — polls DescribeVault until a success acceptor fires (delay 3s,
+    # max 15 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_vault_not_exists.
+    def wait_vault_not_exists(self, DescribeVaultInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="VaultNotExists",
+            delay=3,
+            max_attempts=15,
+            acceptors=[
+                waiters.acceptor_status(waiters.state_retry(), "200"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_vault(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a GlacierClient bound to credentials + region.
 def glacier_client(core.Credentials creds, str region) -> GlacierClient:

@@ -18,7 +18,7 @@
 #   1 skipped (input has a non-string-keyed map or free-form document member).
 #   235 structs (133 @derive(Json)), 45 enums, 3 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   3 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 import datetime
 
 # The EMR awsJson protocol: version 1.1, API id "ElasticMapReduce".
@@ -3702,6 +3703,72 @@ struct EMRClient:
             if not np.has_more:
                 break
             input.Marker = Optional.Some(np.token)
+
+    # One poll of DescribeCluster for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_cluster(self, DescribeClusterInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(elasticmapreduce_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_cluster(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeStep for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_step(self, DescribeStepInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(elasticmapreduce_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_step(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ClusterRunning — polls DescribeCluster until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_running.
+    def wait_cluster_running(self, DescribeClusterInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterRunning",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Cluster.Status.State", "RUNNING"),
+                waiters.acceptor_path(waiters.state_success(), "Cluster.Status.State", "WAITING"),
+                waiters.acceptor_path(waiters.state_failure(), "Cluster.Status.State", "TERMINATING"),
+                waiters.acceptor_path(waiters.state_failure(), "Cluster.Status.State", "TERMINATED"),
+                waiters.acceptor_path(waiters.state_failure(), "Cluster.Status.State", "TERMINATED_WITH_ERRORS")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ClusterTerminated — polls DescribeCluster until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_cluster_terminated.
+    def wait_cluster_terminated(self, DescribeClusterInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ClusterTerminated",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Cluster.Status.State", "TERMINATED"),
+                waiters.acceptor_path(waiters.state_failure(), "Cluster.Status.State", "TERMINATED_WITH_ERRORS")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_cluster(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StepComplete — polls DescribeStep until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_step_complete.
+    def wait_step_complete(self, DescribeStepInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StepComplete",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Step.Status.State", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "Step.Status.State", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "Step.Status.State", "CANCELLED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_step(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a EMRClient bound to credentials + region.
 def elasticmapreduce_client(core.Credentials creds, str region) -> EMRClient:

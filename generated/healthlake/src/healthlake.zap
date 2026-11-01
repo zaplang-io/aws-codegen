@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   101 structs (77 @derive(Json)), 13 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   5 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The HealthLake awsJson protocol: version 1.0, API id "HealthLake".
 def healthlake_protocol() -> awsjson.AwsJson:
@@ -1355,6 +1356,120 @@ struct HealthLakeClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeDataTransformationJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_data_transformation_job(self, DescribeDataTransformationJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(healthlake_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_data_transformation_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeFHIRDatastore for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_fhir_datastore(self, DescribeFHIRDatastoreRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(healthlake_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_fhir_datastore(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeFHIRExportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_fhir_export_job(self, DescribeFHIRExportJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(healthlake_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_fhir_export_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeFHIRImportJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_fhir_import_job(self, DescribeFHIRImportJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(healthlake_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_fhir_import_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter DataTransformationJobCompleted — polls DescribeDataTransformationJob until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_data_transformation_job_completed.
+    def wait_data_transformation_job_completed(self, DescribeDataTransformationJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DataTransformationJobCompleted",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "TransformationJobProperties.JobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_success(), "TransformationJobProperties.JobStatus", "COMPLETED_WITH_ERRORS"),
+                waiters.acceptor_path(waiters.state_failure(), "TransformationJobProperties.JobStatus", "FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_data_transformation_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FHIRDatastoreActive — polls DescribeFHIRDatastore until a success acceptor fires (delay 60s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fhir_datastore_active.
+    def wait_fhir_datastore_active(self, DescribeFHIRDatastoreRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FHIRDatastoreActive",
+            delay=60,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "DatastoreProperties.DatastoreStatus", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "DatastoreProperties.DatastoreStatus", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "DatastoreProperties.DatastoreStatus", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_fhir_datastore(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FHIRDatastoreDeleted — polls DescribeFHIRDatastore until a success acceptor fires (delay 120s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fhir_datastore_deleted.
+    def wait_fhir_datastore_deleted(self, DescribeFHIRDatastoreRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FHIRDatastoreDeleted",
+            delay=120,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "DatastoreProperties.DatastoreStatus", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_fhir_datastore(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FHIRExportJobCompleted — polls DescribeFHIRExportJob until a success acceptor fires (delay 120s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fhir_export_job_completed.
+    def wait_fhir_export_job_completed(self, DescribeFHIRExportJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FHIRExportJobCompleted",
+            delay=120,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ExportJobProperties.JobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_success(), "ExportJobProperties.JobStatus", "COMPLETED_WITH_ERRORS"),
+                waiters.acceptor_path(waiters.state_failure(), "ExportJobProperties.JobStatus", "CANCEL_COMPLETED"),
+                waiters.acceptor_path(waiters.state_failure(), "ExportJobProperties.JobStatus", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "ExportJobProperties.JobStatus", "CANCEL_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_fhir_export_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FHIRImportJobCompleted — polls DescribeFHIRImportJob until a success acceptor fires (delay 120s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fhir_import_job_completed.
+    def wait_fhir_import_job_completed(self, DescribeFHIRImportJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FHIRImportJobCompleted",
+            delay=120,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ImportJobProperties.JobStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_success(), "ImportJobProperties.JobStatus", "COMPLETED_WITH_ERRORS"),
+                waiters.acceptor_path(waiters.state_failure(), "ImportJobProperties.JobStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_fhir_import_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a HealthLakeClient bound to credentials + region.
 def healthlake_client(core.Credentials creds, str region) -> HealthLakeClient:

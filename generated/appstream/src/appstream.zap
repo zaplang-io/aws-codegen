@@ -20,7 +20,7 @@
 #   0 skipped (input has a non-text-keyed map member).
 #   251 structs (plain carriers), 44 enums, 15 error variants.
 #   0 paginators generated (10 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (2 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1915,6 +1915,11 @@ def appstream2_error_name(AppStreamErrorKind k) -> str:
 #   DescribeUsers
 #   ListAssociatedFleets
 #   ListAssociatedStacks
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   FleetStarted
+#   FleetStopped
 
 # CBOR body serializers: each builds a `cbor.CborValue` map for its shape
 # (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/

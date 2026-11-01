@@ -21,6 +21,8 @@ Deterministic format (matches the hand-curated snapshot byte-for-byte):
                        re-serialized with ``json.dumps(indent=1, ensure_ascii=False)``
                        preserving botocore's key order, with a trailing newline.
   * paginators-1.json -- copied verbatim from botocore (byte-identical).
+  * waiters-2.json -- copied verbatim from botocore (byte-identical), when the
+                      service ships one; the waiter emitter reads it.
 """
 
 from __future__ import annotations
@@ -146,6 +148,12 @@ def extract_service(zf: zipfile.ZipFile, service: str, api_version: str) -> dict
     except KeyError:
         sys.stderr.write(
             f"sync-models: note: {service} {api_version} has no paginators-1.json upstream; skipping\n"
+        )
+    try:
+        out["waiters-2.json"] = zf.read(f"{base}/waiters-2.json")
+    except KeyError:
+        sys.stderr.write(
+            f"sync-models: note: {service} {api_version} has no waiters-2.json upstream; skipping\n"
         )
     return out
 

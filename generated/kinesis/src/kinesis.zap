@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   132 structs (94 @derive(Json)), 16 enums, 17 error variants.
 #   4 paginators generated (1 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   3 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The Kinesis awsJson protocol: version 1.1, API id "Kinesis_20131202".
 def kinesis_protocol() -> awsjson.AwsJson:
@@ -1793,6 +1794,69 @@ struct KinesisClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeChannel for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_channel(self, DescribeChannelInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(kinesis_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_channel(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeStream for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_stream(self, DescribeStreamInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(kinesis_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_stream(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ChannelActive — polls DescribeChannel until a success acceptor fires (delay 10s,
+    # max 18 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_channel_active.
+    def wait_channel_active(self, DescribeChannelInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ChannelActive",
+            delay=10,
+            max_attempts=18,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ChannelDescription.ChannelStatus", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "ChannelDescription.ChannelStatus", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "ChannelDescription.ChannelStatus", "UPDATING"),
+                waiters.acceptor_path(waiters.state_failure(), "ChannelDescription.ChannelStatus", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "ChannelDescription.ChannelStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_channel(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamExists — polls DescribeStream until a success acceptor fires (delay 10s,
+    # max 18 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_exists.
+    def wait_stream_exists(self, DescribeStreamInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamExists",
+            delay=10,
+            max_attempts=18,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "StreamDescription.StreamStatus", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_stream(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter StreamNotExists — polls DescribeStream until a success acceptor fires (delay 10s,
+    # max 18 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_stream_not_exists.
+    def wait_stream_not_exists(self, DescribeStreamInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="StreamNotExists",
+            delay=10,
+            max_attempts=18,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_stream(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a KinesisClient bound to credentials + region.
 def kinesis_client(core.Credentials creds, str region) -> KinesisClient:

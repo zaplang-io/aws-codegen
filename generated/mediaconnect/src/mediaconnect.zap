@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   437 structs (283 @derive(Json)), 71 enums, 17 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   21 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The MediaConnect rest-json protocol: SigV4 service "mediaconnect" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -6297,6 +6298,444 @@ struct MediaConnectClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetDestinationEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_destination_endpoint(self, GetDestinationEndpointRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto resp = core.send(host, self.get_destination_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeFlow for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_flow(self, DescribeFlowRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto resp = core.send(host, self.describe_flow(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRouterInput for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_router_input(self, GetRouterInputRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto resp = core.send(host, self.get_router_input(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRouterOutput for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_router_output(self, GetRouterOutputRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto resp = core.send(host, self.get_router_output(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetSourceEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_source_endpoint(self, GetSourceEndpointRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto resp = core.send(host, self.get_source_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter DestinationEndpointConnected — polls GetDestinationEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_destination_endpoint_connected.
+    def wait_destination_endpoint_connected(self, GetDestinationEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DestinationEndpointConnected",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "DestinationEndpoint.ConnectionState", "CONNECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "DestinationEndpoint.ConnectionState", "DISCONNECTED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_destination_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DestinationEndpointDeregistered — polls GetDestinationEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_destination_endpoint_deregistered.
+    def wait_destination_endpoint_deregistered(self, GetDestinationEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DestinationEndpointDeregistered",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "NotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "DestinationEndpoint.RegistrationState", "REGISTRATION_FAILED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_destination_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DestinationEndpointDisconnected — polls GetDestinationEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_destination_endpoint_disconnected.
+    def wait_destination_endpoint_disconnected(self, GetDestinationEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DestinationEndpointDisconnected",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "DestinationEndpoint.ConnectionState", "DISCONNECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "DestinationEndpoint.ConnectionState", "CONNECTED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_destination_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DestinationEndpointRegistered — polls GetDestinationEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_destination_endpoint_registered.
+    def wait_destination_endpoint_registered(self, GetDestinationEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DestinationEndpointRegistered",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "DestinationEndpoint.RegistrationState", "REGISTERED"),
+                waiters.acceptor_path(waiters.state_failure(), "DestinationEndpoint.RegistrationState", "REGISTRATION_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "DestinationEndpoint.RegistrationState", "DEREGISTERING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_destination_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FlowActive — polls DescribeFlow until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_flow_active.
+    def wait_flow_active(self, DescribeFlowRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FlowActive",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Flow.Status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "Flow.Status", "STARTING"),
+                waiters.acceptor_path(waiters.state_retry(), "Flow.Status", "UPDATING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "Flow.Status", "STANDBY"),
+                waiters.acceptor_path(waiters.state_failure(), "Flow.Status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_flow(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FlowDeleted — polls DescribeFlow until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_flow_deleted.
+    def wait_flow_deleted(self, DescribeFlowRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FlowDeleted",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "NotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "Flow.Status", "DELETING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "Flow.Status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_flow(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter FlowStandby — polls DescribeFlow until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_flow_standby.
+    def wait_flow_standby(self, DescribeFlowRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FlowStandby",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "Flow.Status", "STANDBY"),
+                waiters.acceptor_path(waiters.state_retry(), "Flow.Status", "STOPPING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "Flow.Status", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_flow(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InputActive — polls GetRouterInput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_input_active.
+    def wait_input_active(self, GetRouterInputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InputActive",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RouterInput.State", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterInput.State", "STARTING"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterInput.State", "UPDATING"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterInput.State", "MIGRATING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "RouterInput.State", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_input(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InputDeleted — polls GetRouterInput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_input_deleted.
+    def wait_input_deleted(self, GetRouterInputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InputDeleted",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_retry(), "RouterInput.State", "DELETING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "RouterInput.State", "ERROR"),
+                waiters.acceptor_error(waiters.state_success(), "NotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_input(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter InputStandby — polls GetRouterInput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_input_standby.
+    def wait_input_standby(self, GetRouterInputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="InputStandby",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RouterInput.State", "STANDBY"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterInput.State", "STOPPING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "RouterInput.State", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_input(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutputActive — polls GetRouterOutput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_output_active.
+    def wait_output_active(self, GetRouterOutputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutputActive",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RouterOutput.State", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.State", "STARTING"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.State", "UPDATING"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.State", "MIGRATING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "RouterOutput.State", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_output(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutputDeleted — polls GetRouterOutput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_output_deleted.
+    def wait_output_deleted(self, GetRouterOutputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutputDeleted",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.State", "DELETING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "RouterOutput.State", "ERROR"),
+                waiters.acceptor_error(waiters.state_success(), "NotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_output(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutputRouted — polls GetRouterOutput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_output_routed.
+    def wait_output_routed(self, GetRouterOutputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutputRouted",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RouterOutput.RoutedState", "ROUTED"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.RoutedState", "ROUTING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_output(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutputStandby — polls GetRouterOutput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_output_standby.
+    def wait_output_standby(self, GetRouterOutputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutputStandby",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RouterOutput.State", "STANDBY"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.State", "STOPPING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_path(waiters.state_failure(), "RouterOutput.State", "ERROR")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_output(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter OutputUnrouted — polls GetRouterOutput until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_output_unrouted.
+    def wait_output_unrouted(self, GetRouterOutputRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="OutputUnrouted",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "RouterOutput.RoutedState", "UNROUTED"),
+                waiters.acceptor_path(waiters.state_retry(), "RouterOutput.RoutedState", "ROUTING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_router_output(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SourceEndpointConnected — polls GetSourceEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_source_endpoint_connected.
+    def wait_source_endpoint_connected(self, GetSourceEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SourceEndpointConnected",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.ConnectionState", "CONNECTED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_source_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SourceEndpointConnecting — polls GetSourceEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_source_endpoint_connecting.
+    def wait_source_endpoint_connecting(self, GetSourceEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SourceEndpointConnecting",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.ConnectionState", "CONNECTING"),
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.ConnectionState", "CONNECTED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_source_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SourceEndpointDeregistered — polls GetSourceEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_source_endpoint_deregistered.
+    def wait_source_endpoint_deregistered(self, GetSourceEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SourceEndpointDeregistered",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "NotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "SourceEndpoint.RegistrationState", "REGISTRATION_FAILED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_source_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SourceEndpointDisconnected — polls GetSourceEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_source_endpoint_disconnected.
+    def wait_source_endpoint_disconnected(self, GetSourceEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SourceEndpointDisconnected",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.ConnectionState", "DISCONNECTED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_source_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SourceEndpointDisconnecting — polls GetSourceEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_source_endpoint_disconnecting.
+    def wait_source_endpoint_disconnecting(self, GetSourceEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SourceEndpointDisconnecting",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.ConnectionState", "DISCONNECTING"),
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.ConnectionState", "DISCONNECTED"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_source_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter SourceEndpointRegistered — polls GetSourceEndpoint until a success acceptor fires (delay 3s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_source_endpoint_registered.
+    def wait_source_endpoint_registered(self, GetSourceEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="SourceEndpointRegistered",
+            delay=3,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "SourceEndpoint.RegistrationState", "REGISTERED"),
+                waiters.acceptor_path(waiters.state_failure(), "SourceEndpoint.RegistrationState", "REGISTRATION_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "SourceEndpoint.RegistrationState", "DEREGISTERING"),
+                waiters.acceptor_error(waiters.state_retry(), "InternalServerErrorException"),
+                waiters.acceptor_error(waiters.state_retry(), "ServiceUnavailableException"),
+                waiters.acceptor_error(waiters.state_retry(), "TooManyRequestsException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_source_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a MediaConnectClient bound to credentials + region.
 def mediaconnect_client(core.Credentials creds, str region) -> MediaConnectClient:

@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   93 structs (65 @derive(Json)), 15 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   11 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Neptune_Graph rest-json protocol: SigV4 service "neptune-graph" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1739,6 +1740,225 @@ struct Neptune_GraphClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetExportTask for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_export_task(self, GetExportTaskInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto resp = core.send(host, self.get_export_task(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetGraph for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_graph(self, GetGraphInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto resp = core.send(host, self.get_graph(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetGraphSnapshot for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_graph_snapshot(self, GetGraphSnapshotInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto resp = core.send(host, self.get_graph_snapshot(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetImportTask for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_import_task(self, GetImportTaskInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto resp = core.send(host, self.get_import_task(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetPrivateGraphEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_private_graph_endpoint(self, GetPrivateGraphEndpointInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto resp = core.send(host, self.get_private_graph_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ExportTaskCancelled — polls GetExportTask until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_export_task_cancelled.
+    def wait_export_task_cancelled(self, GetExportTaskInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ExportTaskCancelled",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status != 'CANCELLING' && status != 'CANCELLED'", "true"),
+                waiters.acceptor_path(waiters.state_success(), "status", "CANCELLED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_export_task(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ExportTaskSuccessful — polls GetExportTask until a success acceptor fires (delay 60s,
+    # max 480 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_export_task_successful.
+    def wait_export_task_successful(self, GetExportTaskInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ExportTaskSuccessful",
+            delay=60,
+            max_attempts=480,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "SUCCEEDED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_export_task(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter GraphAvailable — polls GetGraph until a success acceptor fires (delay 60s,
+    # max 480 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_graph_available.
+    def wait_graph_available(self, GetGraphInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="GraphAvailable",
+            delay=60,
+            max_attempts=480,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "AVAILABLE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_graph(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter GraphDeleted — polls GetGraph until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_graph_deleted.
+    def wait_graph_deleted(self, GetGraphInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="GraphDeleted",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status != 'DELETING'", "true"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_graph(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter GraphSnapshotAvailable — polls GetGraphSnapshot until a success acceptor fires (delay 60s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_graph_snapshot_available.
+    def wait_graph_snapshot_available(self, GetGraphSnapshotInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="GraphSnapshotAvailable",
+            delay=60,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "AVAILABLE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_graph_snapshot(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter GraphSnapshotDeleted — polls GetGraphSnapshot until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_graph_snapshot_deleted.
+    def wait_graph_snapshot_deleted(self, GetGraphSnapshotInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="GraphSnapshotDeleted",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status != 'DELETING'", "true"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_graph_snapshot(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter GraphStopped — polls GetGraph until a success acceptor fires (delay 20s,
+    # max 90 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_graph_stopped.
+    def wait_graph_stopped(self, GetGraphInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="GraphStopped",
+            delay=20,
+            max_attempts=90,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "STOPPED"),
+                waiters.acceptor_path(waiters.state_failure(), "status != 'STOPPING'", "true")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_graph(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImportTaskCancelled — polls GetImportTask until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_import_task_cancelled.
+    def wait_import_task_cancelled(self, GetImportTaskInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImportTaskCancelled",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status != 'CANCELLING' && status != 'CANCELLED'", "true"),
+                waiters.acceptor_path(waiters.state_success(), "status", "CANCELLED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_import_task(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImportTaskSuccessful — polls GetImportTask until a success acceptor fires (delay 60s,
+    # max 480 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_import_task_successful.
+    def wait_import_task_successful(self, GetImportTaskInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImportTaskSuccessful",
+            delay=60,
+            max_attempts=480,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "ROLLING_BACK"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "SUCCEEDED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_import_task(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PrivateGraphEndpointAvailable — polls GetPrivateGraphEndpoint until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_private_graph_endpoint_available.
+    def wait_private_graph_endpoint_available(self, GetPrivateGraphEndpointInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="PrivateGraphEndpointAvailable",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETING"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "status", "AVAILABLE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_private_graph_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PrivateGraphEndpointDeleted — polls GetPrivateGraphEndpoint until a success acceptor fires (delay 10s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_private_graph_endpoint_deleted.
+    def wait_private_graph_endpoint_deleted(self, GetPrivateGraphEndpointInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="PrivateGraphEndpointDeleted",
+            delay=10,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_failure(), "status != 'DELETING'", "true"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_private_graph_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Neptune_GraphClient bound to credentials + region.
 def neptune_graph_client(core.Credentials creds, str region) -> Neptune_GraphClient:

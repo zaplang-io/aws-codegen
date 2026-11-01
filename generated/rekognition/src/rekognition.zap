@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   325 structs (207 @derive(Json)), 44 enums, 23 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The Rekognition awsJson protocol: version 1.1, API id "RekognitionService".
 def rekognition_protocol() -> awsjson.AwsJson:
@@ -4080,6 +4081,45 @@ struct RekognitionClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeProjectVersions for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_project_versions(self, DescribeProjectVersionsRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(rekognition_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_project_versions(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ProjectVersionRunning — polls DescribeProjectVersions until a success acceptor fires (delay 30s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_project_version_running.
+    def wait_project_version_running(self, DescribeProjectVersionsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ProjectVersionRunning",
+            delay=30,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "ProjectVersionDescriptions[].Status", "RUNNING"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ProjectVersionDescriptions[].Status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_project_versions(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ProjectVersionTrainingCompleted — polls DescribeProjectVersions until a success acceptor fires (delay 120s,
+    # max 360 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_project_version_training_completed.
+    def wait_project_version_training_completed(self, DescribeProjectVersionsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ProjectVersionTrainingCompleted",
+            delay=120,
+            max_attempts=360,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "ProjectVersionDescriptions[].Status", "TRAINING_COMPLETED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "ProjectVersionDescriptions[].Status", "TRAINING_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_project_versions(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a RekognitionClient bound to credentials + region.
 def rekognition_client(core.Credentials creds, str region) -> RekognitionClient:

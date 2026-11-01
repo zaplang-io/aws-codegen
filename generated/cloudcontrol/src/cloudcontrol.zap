@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   41 structs (36 @derive(Json)), 3 enums, 21 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The CloudControl awsJson protocol: version 1.0, API id "CloudApiService".
 def cloudcontrolapi_protocol() -> awsjson.AwsJson:
@@ -580,6 +581,30 @@ struct CloudControlClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetResourceRequestStatus for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_resource_request_status(self, GetResourceRequestStatusInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(cloudcontrolapi_protocol().service, self.region)
+        auto resp = core.send(host, self.get_resource_request_status(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ResourceRequestSuccess — polls GetResourceRequestStatus until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_resource_request_success.
+    def wait_resource_request_success(self, GetResourceRequestStatusInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ResourceRequestSuccess",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ProgressEvent.OperationStatus", "SUCCESS"),
+                waiters.acceptor_path(waiters.state_failure(), "ProgressEvent.OperationStatus", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "ProgressEvent.OperationStatus", "CANCEL_COMPLETE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_resource_request_status(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a CloudControlClient bound to credentials + region.
 def cloudcontrolapi_client(core.Credentials creds, str region) -> CloudControlClient:

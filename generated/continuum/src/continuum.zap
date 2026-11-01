@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   146 structs (106 @derive(Json)), 40 enums, 7 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Continuum rest-json protocol: SigV4 service "continuum" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -2359,6 +2360,29 @@ struct ContinuumClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetCodeScan for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_code_scan(self, GetCodeScanInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(continuum_service(), self.region)
+        auto resp = core.send(host, self.get_code_scan(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter CodeScanSucceeded — polls GetCodeScan until a success acceptor fires (delay 60s,
+    # max 480 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_code_scan_succeeded.
+    def wait_code_scan_succeeded(self, GetCodeScanInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="CodeScanSucceeded",
+            delay=60,
+            max_attempts=480,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "scan.status", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "scan.status", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_code_scan(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ContinuumClient bound to credentials + region.
 def continuum_client(core.Credentials creds, str region) -> ContinuumClient:

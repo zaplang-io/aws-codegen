@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   234 structs (177 @derive(Json)), 19 enums, 7 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   10 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The Proton awsJson protocol: version 1.0, API id "AwsProton20200720".
 def proton_protocol() -> awsjson.AwsJson:
@@ -3162,6 +3163,215 @@ struct ProtonClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetComponent for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_component(self, GetComponentInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        auto resp = core.send(host, self.get_component(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetEnvironment for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_environment(self, GetEnvironmentInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        auto resp = core.send(host, self.get_environment(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetEnvironmentTemplateVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_environment_template_version(self, GetEnvironmentTemplateVersionInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        auto resp = core.send(host, self.get_environment_template_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetService for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_service(self, GetServiceInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        auto resp = core.send(host, self.get_service(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetServiceInstance for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_service_instance(self, GetServiceInstanceInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        auto resp = core.send(host, self.get_service_instance(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetServiceTemplateVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_service_template_version(self, GetServiceTemplateVersionInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(proton_protocol().service, self.region)
+        auto resp = core.send(host, self.get_service_template_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ComponentDeleted — polls GetComponent until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_component_deleted.
+    def wait_component_deleted(self, GetComponentInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ComponentDeleted",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "component.deploymentStatus", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_component(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ComponentDeployed — polls GetComponent until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_component_deployed.
+    def wait_component_deployed(self, GetComponentInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ComponentDeployed",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "component.deploymentStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "component.deploymentStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_component(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter EnvironmentDeployed — polls GetEnvironment until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_environment_deployed.
+    def wait_environment_deployed(self, GetEnvironmentInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="EnvironmentDeployed",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "environment.deploymentStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "environment.deploymentStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_environment(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter EnvironmentTemplateVersionRegistered — polls GetEnvironmentTemplateVersion until a success acceptor fires (delay 2s,
+    # max 150 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_environment_template_version_registered.
+    def wait_environment_template_version_registered(self, GetEnvironmentTemplateVersionInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="EnvironmentTemplateVersionRegistered",
+            delay=2,
+            max_attempts=150,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "environmentTemplateVersion.status", "DRAFT"),
+                waiters.acceptor_path(waiters.state_success(), "environmentTemplateVersion.status", "PUBLISHED"),
+                waiters.acceptor_path(waiters.state_failure(), "environmentTemplateVersion.status", "REGISTRATION_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_environment_template_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceCreated — polls GetService until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_created.
+    def wait_service_created(self, GetServiceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceCreated",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "service.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "CREATE_FAILED_CLEANUP_COMPLETE"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "CREATE_FAILED_CLEANUP_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "CREATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceDeleted — polls GetService until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_deleted.
+    def wait_service_deleted(self, GetServiceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceDeleted",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceInstanceDeployed — polls GetServiceInstance until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_instance_deployed.
+    def wait_service_instance_deployed(self, GetServiceInstanceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceInstanceDeployed",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "serviceInstance.deploymentStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "serviceInstance.deploymentStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service_instance(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServicePipelineDeployed — polls GetService until a success acceptor fires (delay 10s,
+    # max 360 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_pipeline_deployed.
+    def wait_service_pipeline_deployed(self, GetServiceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServicePipelineDeployed",
+            delay=10,
+            max_attempts=360,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "service.pipeline.deploymentStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "service.pipeline.deploymentStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceTemplateVersionRegistered — polls GetServiceTemplateVersion until a success acceptor fires (delay 2s,
+    # max 150 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_template_version_registered.
+    def wait_service_template_version_registered(self, GetServiceTemplateVersionInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceTemplateVersionRegistered",
+            delay=2,
+            max_attempts=150,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "serviceTemplateVersion.status", "DRAFT"),
+                waiters.acceptor_path(waiters.state_success(), "serviceTemplateVersion.status", "PUBLISHED"),
+                waiters.acceptor_path(waiters.state_failure(), "serviceTemplateVersion.status", "REGISTRATION_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service_template_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServiceUpdated — polls GetService until a success acceptor fires (delay 5s,
+    # max 999 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_service_updated.
+    def wait_service_updated(self, GetServiceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServiceUpdated",
+            delay=5,
+            max_attempts=999,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "service.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "UPDATE_FAILED_CLEANUP_COMPLETE"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "UPDATE_FAILED_CLEANUP_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "UPDATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "service.status", "UPDATE_COMPLETE_CLEANUP_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_service(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ProtonClient bound to credentials + region.
 def proton_client(core.Credentials creds, str region) -> ProtonClient:

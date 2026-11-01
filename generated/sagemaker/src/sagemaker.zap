@@ -18,7 +18,7 @@
 #   1 skipped (input has a non-string-keyed map or free-form document member).
 #   1580 structs (1036 @derive(Json)), 349 enums, 4 error variants.
 #   90 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   13 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 import datetime
 
 # The SageMaker awsJson protocol: version 1.1, API id "SageMaker".
@@ -26863,6 +26864,275 @@ struct SageMakerClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_endpoint(self, DescribeEndpointInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeImage for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_image(self, DescribeImageRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_image(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeImageVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_image_version(self, DescribeImageVersionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_image_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeNotebookInstance for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_notebook_instance(self, DescribeNotebookInstanceInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_notebook_instance(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeProcessingJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_processing_job(self, DescribeProcessingJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_processing_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeTrainingJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_training_job(self, DescribeTrainingJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_training_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeTransformJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_transform_job(self, DescribeTransformJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_transform_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter EndpointDeleted — polls DescribeEndpoint until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_endpoint_deleted.
+    def wait_endpoint_deleted(self, DescribeEndpointInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="EndpointDeleted",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ValidationException"),
+                waiters.acceptor_path(waiters.state_failure(), "EndpointStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter EndpointInService — polls DescribeEndpoint until a success acceptor fires (delay 30s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_endpoint_in_service.
+    def wait_endpoint_in_service(self, DescribeEndpointInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="EndpointInService",
+            delay=30,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "EndpointStatus", "InService"),
+                waiters.acceptor_path(waiters.state_failure(), "EndpointStatus", "Failed"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImageCreated — polls DescribeImage until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_image_created.
+    def wait_image_created(self, DescribeImageRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImageCreated",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ImageStatus", "CREATED"),
+                waiters.acceptor_path(waiters.state_failure(), "ImageStatus", "CREATE_FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_image(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImageDeleted — polls DescribeImage until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_image_deleted.
+    def wait_image_deleted(self, DescribeImageRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImageDeleted",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "ImageStatus", "DELETE_FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_image(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImageUpdated — polls DescribeImage until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_image_updated.
+    def wait_image_updated(self, DescribeImageRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImageUpdated",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ImageStatus", "CREATED"),
+                waiters.acceptor_path(waiters.state_failure(), "ImageStatus", "UPDATE_FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_image(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImageVersionCreated — polls DescribeImageVersion until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_image_version_created.
+    def wait_image_version_created(self, DescribeImageVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImageVersionCreated",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ImageVersionStatus", "CREATED"),
+                waiters.acceptor_path(waiters.state_failure(), "ImageVersionStatus", "CREATE_FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_image_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ImageVersionDeleted — polls DescribeImageVersion until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_image_version_deleted.
+    def wait_image_version_deleted(self, DescribeImageVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ImageVersionDeleted",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "ImageVersionStatus", "DELETE_FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_image_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NotebookInstanceDeleted — polls DescribeNotebookInstance until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_notebook_instance_deleted.
+    def wait_notebook_instance_deleted(self, DescribeNotebookInstanceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="NotebookInstanceDeleted",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ValidationException"),
+                waiters.acceptor_path(waiters.state_failure(), "NotebookInstanceStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_notebook_instance(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NotebookInstanceInService — polls DescribeNotebookInstance until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_notebook_instance_in_service.
+    def wait_notebook_instance_in_service(self, DescribeNotebookInstanceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="NotebookInstanceInService",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "NotebookInstanceStatus", "InService"),
+                waiters.acceptor_path(waiters.state_failure(), "NotebookInstanceStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_notebook_instance(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter NotebookInstanceStopped — polls DescribeNotebookInstance until a success acceptor fires (delay 30s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_notebook_instance_stopped.
+    def wait_notebook_instance_stopped(self, DescribeNotebookInstanceInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="NotebookInstanceStopped",
+            delay=30,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "NotebookInstanceStatus", "Stopped"),
+                waiters.acceptor_path(waiters.state_failure(), "NotebookInstanceStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_notebook_instance(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ProcessingJobCompletedOrStopped — polls DescribeProcessingJob until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_processing_job_completed_or_stopped.
+    def wait_processing_job_completed_or_stopped(self, DescribeProcessingJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ProcessingJobCompletedOrStopped",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "ProcessingJobStatus", "Completed"),
+                waiters.acceptor_path(waiters.state_success(), "ProcessingJobStatus", "Stopped"),
+                waiters.acceptor_path(waiters.state_failure(), "ProcessingJobStatus", "Failed"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_processing_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TrainingJobCompletedOrStopped — polls DescribeTrainingJob until a success acceptor fires (delay 120s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_training_job_completed_or_stopped.
+    def wait_training_job_completed_or_stopped(self, DescribeTrainingJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TrainingJobCompletedOrStopped",
+            delay=120,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "TrainingJobStatus", "Completed"),
+                waiters.acceptor_path(waiters.state_success(), "TrainingJobStatus", "Stopped"),
+                waiters.acceptor_path(waiters.state_failure(), "TrainingJobStatus", "Failed"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_training_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TransformJobCompletedOrStopped — polls DescribeTransformJob until a success acceptor fires (delay 60s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_transform_job_completed_or_stopped.
+    def wait_transform_job_completed_or_stopped(self, DescribeTransformJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TransformJobCompletedOrStopped",
+            delay=60,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "TransformJobStatus", "Completed"),
+                waiters.acceptor_path(waiters.state_success(), "TransformJobStatus", "Stopped"),
+                waiters.acceptor_path(waiters.state_failure(), "TransformJobStatus", "Failed"),
+                waiters.acceptor_error(waiters.state_failure(), "ValidationException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_transform_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a SageMakerClient bound to credentials + region.
 def api_sagemaker_client(core.Credentials creds, str region) -> SageMakerClient:

@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   249 structs (180 @derive(Json)), 32 enums, 40 error variants.
 #   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The Directory_Service awsJson protocol: version 1.1, API id "DirectoryService_20150416".
 def ds_protocol() -> awsjson.AwsJson:
@@ -3411,6 +3412,29 @@ struct Directory_ServiceClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeHybridADUpdate for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_hybrid_ad_update(self, DescribeHybridADUpdateRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ds_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_hybrid_ad_update(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter HybridADUpdated — polls DescribeHybridADUpdate until a success acceptor fires (delay 120s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_hybrid_ad_updated.
+    def wait_hybrid_ad_updated(self, DescribeHybridADUpdateRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="HybridADUpdated",
+            delay=120,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "UpdateActivities.SelfManagedInstances[].Status", "Updated"),
+                waiters.acceptor_path_any(waiters.state_failure(), "UpdateActivities.SelfManagedInstances[].Status", "UpdateFailed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_hybrid_ad_update(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Directory_ServiceClient bound to credentials + region.
 def ds_client(core.Credentials creds, str region) -> Directory_ServiceClient:

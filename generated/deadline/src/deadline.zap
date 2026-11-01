@@ -19,7 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   431 structs (277 @derive(Json)), 66 enums, 7 error variants.
 #   30 paginators generated (1 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   10 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The deadline rest-json protocol: SigV4 service "deadline" (also the endpoint
@@ -7219,6 +7220,217 @@ struct deadlineClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetFleet for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_fleet(self, GetFleetRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        auto resp = core.send(host, self.get_fleet(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetJob for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_job(self, GetJobRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        auto resp = core.send(host, self.get_job(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetLicenseEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_license_endpoint(self, GetLicenseEndpointRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        auto resp = core.send(host, self.get_license_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetQueueFleetAssociation for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_queue_fleet_association(self, GetQueueFleetAssociationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        auto resp = core.send(host, self.get_queue_fleet_association(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetQueueLimitAssociation for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_queue_limit_association(self, GetQueueLimitAssociationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        auto resp = core.send(host, self.get_queue_limit_association(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetQueue for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_queue(self, GetQueueRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        auto resp = core.send(host, self.get_queue(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter FleetActive — polls GetFleet until a success acceptor fires (delay 5s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_fleet_active.
+    def wait_fleet_active(self, GetFleetRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="FleetActive",
+            delay=5,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "UPDATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_fleet(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter JobComplete — polls GetJob until a success acceptor fires (delay 15s,
+    # max 240 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_job_complete.
+    def wait_job_complete(self, GetJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="JobComplete",
+            delay=15,
+            max_attempts=240,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "taskRunStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_success(), "taskRunStatus", "FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "taskRunStatus", "CANCELED"),
+                waiters.acceptor_path(waiters.state_success(), "taskRunStatus", "SUSPENDED"),
+                waiters.acceptor_path(waiters.state_success(), "taskRunStatus", "NOT_COMPATIBLE"),
+                waiters.acceptor_path(waiters.state_success(), "lifecycleStatus", "ARCHIVED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter JobCreateComplete — polls GetJob until a success acceptor fires (delay 1s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_job_create_complete.
+    def wait_job_create_complete(self, GetJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="JobCreateComplete",
+            delay=1,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "lifecycleStatus", "CREATE_COMPLETE"),
+                waiters.acceptor_path(waiters.state_success(), "lifecycleStatus", "UPDATE_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_success(), "lifecycleStatus", "UPDATE_FAILED"),
+                waiters.acceptor_path(waiters.state_success(), "lifecycleStatus", "UPDATE_SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "lifecycleStatus", "UPLOAD_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "lifecycleStatus", "CREATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter JobSucceeded — polls GetJob until a success acceptor fires (delay 15s,
+    # max 240 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_job_succeeded.
+    def wait_job_succeeded(self, GetJobRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="JobSucceeded",
+            delay=15,
+            max_attempts=240,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "taskRunStatus", "SUCCEEDED"),
+                waiters.acceptor_path(waiters.state_failure(), "taskRunStatus", "FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "taskRunStatus", "CANCELED"),
+                waiters.acceptor_path(waiters.state_failure(), "taskRunStatus", "SUSPENDED"),
+                waiters.acceptor_path(waiters.state_failure(), "taskRunStatus", "NOT_COMPATIBLE"),
+                waiters.acceptor_path(waiters.state_failure(), "lifecycleStatus", "ARCHIVED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_job(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LicenseEndpointDeleted — polls GetLicenseEndpoint until a success acceptor fires (delay 10s,
+    # max 234 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_license_endpoint_deleted.
+    def wait_license_endpoint_deleted(self, GetLicenseEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LicenseEndpointDeleted",
+            delay=10,
+            max_attempts=234,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "NOT_READY")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_license_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter LicenseEndpointValid — polls GetLicenseEndpoint until a success acceptor fires (delay 10s,
+    # max 114 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_license_endpoint_valid.
+    def wait_license_endpoint_valid(self, GetLicenseEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="LicenseEndpointValid",
+            delay=10,
+            max_attempts=114,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "READY"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "NOT_READY")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_license_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter QueueFleetAssociationStopped — polls GetQueueFleetAssociation until a success acceptor fires (delay 10s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_queue_fleet_association_stopped.
+    def wait_queue_fleet_association_stopped(self, GetQueueFleetAssociationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="QueueFleetAssociationStopped",
+            delay=10,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "STOPPED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_queue_fleet_association(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter QueueLimitAssociationStopped — polls GetQueueLimitAssociation until a success acceptor fires (delay 10s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_queue_limit_association_stopped.
+    def wait_queue_limit_association_stopped(self, GetQueueLimitAssociationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="QueueLimitAssociationStopped",
+            delay=10,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "STOPPED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_queue_limit_association(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter QueueScheduling — polls GetQueue until a success acceptor fires (delay 10s,
+    # max 70 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_queue_scheduling.
+    def wait_queue_scheduling(self, GetQueueRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="QueueScheduling",
+            delay=10,
+            max_attempts=70,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "SCHEDULING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_queue(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter QueueSchedulingBlocked — polls GetQueue until a success acceptor fires (delay 10s,
+    # max 30 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_queue_scheduling_blocked.
+    def wait_queue_scheduling_blocked(self, GetQueueRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="QueueSchedulingBlocked",
+            delay=10,
+            max_attempts=30,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "SCHEDULING_BLOCKED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_queue(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a deadlineClient bound to credentials + region.
 def deadline_client(core.Credentials creds, str region) -> deadlineClient:

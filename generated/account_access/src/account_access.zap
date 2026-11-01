@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   49 structs (42 @derive(Json)), 2 enums, 8 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Account_Access rest-json protocol: SigV4 service "account-access" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -570,6 +571,30 @@ struct Account_AccessClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetApplication for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_application(self, GetApplicationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(account_access_service(), self.region)
+        auto resp = core.send(host, self.get_application(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter ApplicationActive — polls GetApplication until a success acceptor fires (delay 5s,
+    # max 24 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_application_active.
+    def wait_application_active(self, GetApplicationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ApplicationActive",
+            delay=5,
+            max_attempts=24,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_application(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Account_AccessClient bound to credentials + region.
 def account_access_client(core.Credentials creds, str region) -> Account_AccessClient:

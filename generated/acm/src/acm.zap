@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   136 structs (91 @derive(Json)), 27 enums, 18 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   5 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 import base64
 
 # The ACM awsJson protocol: version 1.1, API id "CertificateManager".
@@ -2047,6 +2048,111 @@ struct ACMClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeAcmeDomainValidation for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_acme_domain_validation(self, DescribeAcmeDomainValidationRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(acm_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_acme_domain_validation(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeAcmeEndpoint for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_acme_endpoint(self, DescribeAcmeEndpointRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(acm_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_acme_endpoint(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeCertificate for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_certificate(self, DescribeCertificateRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(acm_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_certificate(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter AcmeDomainValidationDeleted — polls DescribeAcmeDomainValidation until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_acme_domain_validation_deleted.
+    def wait_acme_domain_validation_deleted(self, DescribeAcmeDomainValidationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AcmeDomainValidationDeleted",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "AcmeDomainValidation.Status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_acme_domain_validation(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AcmeDomainValidationValidated — polls DescribeAcmeDomainValidation until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_acme_domain_validation_validated.
+    def wait_acme_domain_validation_validated(self, DescribeAcmeDomainValidationRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AcmeDomainValidationValidated",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "AcmeDomainValidation.Status", "VALID"),
+                waiters.acceptor_path(waiters.state_failure(), "AcmeDomainValidation.Status", "INVALID"),
+                waiters.acceptor_path(waiters.state_retry(), "AcmeDomainValidation.Status", "VALIDATING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_acme_domain_validation(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AcmeEndpointActive — polls DescribeAcmeEndpoint until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_acme_endpoint_active.
+    def wait_acme_endpoint_active(self, DescribeAcmeEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AcmeEndpointActive",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "AcmeEndpoint.Status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "AcmeEndpoint.Status", "FAILED"),
+                waiters.acceptor_path(waiters.state_retry(), "AcmeEndpoint.Status", "CREATING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_acme_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AcmeEndpointDeleted — polls DescribeAcmeEndpoint until a success acceptor fires (delay 5s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_acme_endpoint_deleted.
+    def wait_acme_endpoint_deleted(self, DescribeAcmeEndpointRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AcmeEndpointDeleted",
+            delay=5,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "AcmeEndpoint.Status", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_acme_endpoint(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter CertificateValidated — polls DescribeCertificate until a success acceptor fires (delay 60s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_certificate_validated.
+    def wait_certificate_validated(self, DescribeCertificateRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="CertificateValidated",
+            delay=60,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "Certificate.DomainValidationOptions[].ValidationStatus", "SUCCESS"),
+                waiters.acceptor_path_any(waiters.state_retry(), "Certificate.DomainValidationOptions[].ValidationStatus", "PENDING_VALIDATION"),
+                waiters.acceptor_path(waiters.state_failure(), "Certificate.Status", "FAILED"),
+                waiters.acceptor_error(waiters.state_failure(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_certificate(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ACMClient bound to credentials + region.
 def acm_client(core.Credentials creds, str region) -> ACMClient:

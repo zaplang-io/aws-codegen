@@ -19,7 +19,7 @@
 #   3 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   522 structs (333 @derive(Json)), 72 enums, 14 error variants.
 #   38 paginators generated (3 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The IoTSiteWise rest-json protocol: SigV4 service "iotsitewise" (also the endpoint
@@ -8272,6 +8273,119 @@ struct IoTSiteWiseClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeAsset for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_asset(self, DescribeAssetRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto resp = core.send(host, self.describe_asset(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeAssetModel for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_asset_model(self, DescribeAssetModelRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto resp = core.send(host, self.describe_asset_model(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribePortal for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_portal(self, DescribePortalRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto resp = core.send(host, self.describe_portal(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter AssetActive — polls DescribeAsset until a success acceptor fires (delay 3s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_asset_active.
+    def wait_asset_active(self, DescribeAssetRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AssetActive",
+            delay=3,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "assetStatus.state", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "assetStatus.state", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_asset(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AssetModelActive — polls DescribeAssetModel until a success acceptor fires (delay 3s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_asset_model_active.
+    def wait_asset_model_active(self, DescribeAssetModelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AssetModelActive",
+            delay=3,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "assetModelStatus.state", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "assetModelStatus.state", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_asset_model(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AssetModelNotExists — polls DescribeAssetModel until a success acceptor fires (delay 3s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_asset_model_not_exists.
+    def wait_asset_model_not_exists(self, DescribeAssetModelRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AssetModelNotExists",
+            delay=3,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_asset_model(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AssetNotExists — polls DescribeAsset until a success acceptor fires (delay 3s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_asset_not_exists.
+    def wait_asset_not_exists(self, DescribeAssetRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AssetNotExists",
+            delay=3,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_asset(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PortalActive — polls DescribePortal until a success acceptor fires (delay 3s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_portal_active.
+    def wait_portal_active(self, DescribePortalRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PortalActive",
+            delay=3,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "portalStatus.state", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_portal(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter PortalNotExists — polls DescribePortal until a success acceptor fires (delay 3s,
+    # max 20 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_portal_not_exists.
+    def wait_portal_not_exists(self, DescribePortalRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="PortalNotExists",
+            delay=3,
+            max_attempts=20,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_portal(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a IoTSiteWiseClient bound to credentials + region.
 def iotsitewise_client(core.Credentials creds, str region) -> IoTSiteWiseClient:

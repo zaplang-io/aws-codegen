@@ -18,7 +18,7 @@
 #   0 skipped (input has a non-string-keyed map or free-form document member).
 #   442 structs (230 @derive(Json)), 104 enums, 31 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   9 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 import datetime
 
 # The ECS awsJson protocol: version 1.1, API id "AmazonEC2ContainerServiceV20141113".
@@ -8082,6 +8083,190 @@ struct ECSClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeDaemon for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_daemon(self, DescribeDaemonRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_daemon(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeDaemonDeployments for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_daemon_deployments(self, DescribeDaemonDeploymentsRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_daemon_deployments(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeDaemonTaskDefinition for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_daemon_task_definition(self, DescribeDaemonTaskDefinitionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_daemon_task_definition(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeServices for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_services(self, DescribeServicesRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_services(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeTasks for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_tasks(self, DescribeTasksRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(ecs_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_tasks(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter DaemonActive — polls DescribeDaemon until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_daemon_active.
+    def wait_daemon_active(self, DescribeDaemonRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DaemonActive",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "daemon.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "daemon.status", "DELETE_IN_PROGRESS")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_daemon(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DaemonDeploymentStopped — polls DescribeDaemonDeployments until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_daemon_deployment_stopped.
+    def wait_daemon_deployment_stopped(self, DescribeDaemonDeploymentsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DaemonDeploymentStopped",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "daemonDeployments[].status", "STOPPED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "failures[].reason", "MISSING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_daemon_deployments(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DaemonDeploymentSuccessful — polls DescribeDaemonDeployments until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_daemon_deployment_successful.
+    def wait_daemon_deployment_successful(self, DescribeDaemonDeploymentsRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DaemonDeploymentSuccessful",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "daemonDeployments[].status", "SUCCESSFUL"),
+                waiters.acceptor_path_any(waiters.state_failure(), "daemonDeployments[].status", "STOPPED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "daemonDeployments[].status", "ROLLBACK_FAILED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "daemonDeployments[].status", "ROLLBACK_SUCCESSFUL"),
+                waiters.acceptor_path_any(waiters.state_failure(), "failures[].reason", "MISSING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_daemon_deployments(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DaemonTaskDefinitionActive — polls DescribeDaemonTaskDefinition until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_daemon_task_definition_active.
+    def wait_daemon_task_definition_active(self, DescribeDaemonTaskDefinitionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DaemonTaskDefinitionActive",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "daemonTaskDefinition.status", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "daemonTaskDefinition.status", "DELETE_IN_PROGRESS"),
+                waiters.acceptor_path(waiters.state_failure(), "daemonTaskDefinition.status", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_daemon_task_definition(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter DaemonTaskDefinitionDeleted — polls DescribeDaemonTaskDefinition until a success acceptor fires (delay 15s,
+    # max 8 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_daemon_task_definition_deleted.
+    def wait_daemon_task_definition_deleted(self, DescribeDaemonTaskDefinitionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="DaemonTaskDefinitionDeleted",
+            delay=15,
+            max_attempts=8,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "daemonTaskDefinition.status", "DELETED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_daemon_task_definition(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServicesInactive — polls DescribeServices until a success acceptor fires (delay 15s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_services_inactive.
+    def wait_services_inactive(self, DescribeServicesRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServicesInactive",
+            delay=15,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path_any(waiters.state_failure(), "failures[].reason", "MISSING"),
+                waiters.acceptor_path_any(waiters.state_success(), "services[].status", "INACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_services(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ServicesStable — polls DescribeServices until a success acceptor fires (delay 15s,
+    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_services_stable.
+    def wait_services_stable(self, DescribeServicesRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ServicesStable",
+            delay=15,
+            max_attempts=40,
+            acceptors=[
+                waiters.acceptor_path_any(waiters.state_failure(), "failures[].reason", "MISSING"),
+                waiters.acceptor_path_any(waiters.state_failure(), "services[].status", "DRAINING"),
+                waiters.acceptor_path_any(waiters.state_failure(), "services[].status", "INACTIVE"),
+                waiters.acceptor_path(waiters.state_success(), "length(services[?!(length(deployments) == `1` && runningCount == desiredCount)]) == `0`", "true")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_services(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TasksRunning — polls DescribeTasks until a success acceptor fires (delay 6s,
+    # max 100 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_tasks_running.
+    def wait_tasks_running(self, DescribeTasksRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TasksRunning",
+            delay=6,
+            max_attempts=100,
+            acceptors=[
+                waiters.acceptor_path_any(waiters.state_failure(), "tasks[].lastStatus", "STOPPED"),
+                waiters.acceptor_path_any(waiters.state_failure(), "failures[].reason", "MISSING"),
+                waiters.acceptor_path_all(waiters.state_success(), "tasks[].lastStatus", "RUNNING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_tasks(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter TasksStopped — polls DescribeTasks until a success acceptor fires (delay 6s,
+    # max 100 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_tasks_stopped.
+    def wait_tasks_stopped(self, DescribeTasksRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="TasksStopped",
+            delay=6,
+            max_attempts=100,
+            acceptors=[
+                waiters.acceptor_path_all(waiters.state_success(), "tasks[].lastStatus", "STOPPED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_tasks(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ECSClient bound to credentials + region.
 def ecs_client(core.Credentials creds, str region) -> ECSClient:

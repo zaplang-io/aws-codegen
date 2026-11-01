@@ -19,7 +19,7 @@
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   130 structs (81 @derive(Json)), 12 enums, 7 error variants.
 #   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import base64
 
 # The amp rest-json protocol: SigV4 service "aps" (also the endpoint
@@ -1937,6 +1938,125 @@ struct ampClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeAnomalyDetector for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_anomaly_detector(self, DescribeAnomalyDetectorRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        auto resp = core.send(host, self.describe_anomaly_detector(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeScraper for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_scraper(self, DescribeScraperRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        auto resp = core.send(host, self.describe_scraper(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeWorkspace for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_workspace(self, DescribeWorkspaceRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        auto resp = core.send(host, self.describe_workspace(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter AnomalyDetectorActive — polls DescribeAnomalyDetector until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_anomaly_detector_active.
+    def wait_anomaly_detector_active(self, DescribeAnomalyDetectorRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnomalyDetectorActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "anomalyDetector.status.statusCode", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "anomalyDetector.status.statusCode", "CREATING"),
+                waiters.acceptor_path(waiters.state_retry(), "anomalyDetector.status.statusCode", "UPDATING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_anomaly_detector(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter AnomalyDetectorDeleted — polls DescribeAnomalyDetector until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_anomaly_detector_deleted.
+    def wait_anomaly_detector_deleted(self, DescribeAnomalyDetectorRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="AnomalyDetectorDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "anomalyDetector.status.statusCode", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_anomaly_detector(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ScraperActive — polls DescribeScraper until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_scraper_active.
+    def wait_scraper_active(self, DescribeScraperRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ScraperActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "scraper.status.statusCode", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "scraper.status.statusCode", "CREATION_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_scraper(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter ScraperDeleted — polls DescribeScraper until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_scraper_deleted.
+    def wait_scraper_deleted(self, DescribeScraperRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="ScraperDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_failure(), "scraper.status.statusCode", "DELETION_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_scraper(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WorkspaceActive — polls DescribeWorkspace until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_workspace_active.
+    def wait_workspace_active(self, DescribeWorkspaceRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WorkspaceActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "workspace.status.statusCode", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_retry(), "workspace.status.statusCode", "UPDATING"),
+                waiters.acceptor_path(waiters.state_retry(), "workspace.status.statusCode", "CREATING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_workspace(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter WorkspaceDeleted — polls DescribeWorkspace until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_workspace_deleted.
+    def wait_workspace_deleted(self, DescribeWorkspaceRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="WorkspaceDeleted",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_path(waiters.state_retry(), "workspace.status.statusCode", "DELETING")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_workspace(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a ampClient bound to credentials + region.
 def aps_client(core.Credentials creds, str region) -> ampClient:

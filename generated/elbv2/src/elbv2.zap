@@ -19,7 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   214 structs (plain carriers), 27 enums, 56 error variants.
 #   0 paginators generated (10 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (5 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1606,6 +1606,14 @@ def elasticloadbalancing_error_name(Elastic_Load_Balancing_v2ErrorKind k) -> str
 #   DescribeTrustStoreAssociations
 #   DescribeTrustStoreRevocations
 #   DescribeTrustStores
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   LoadBalancerAvailable
+#   LoadBalancerExists
+#   LoadBalancersDeleted
+#   TargetDeregistered
+#   TargetInService
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

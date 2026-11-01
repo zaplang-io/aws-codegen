@@ -19,7 +19,7 @@
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   116 structs (47 @derive(Json)), 15 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Agent_Registry_Control rest-json protocol: SigV4 service "agent-registry" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -2028,6 +2029,56 @@ struct Agent_Registry_ControlClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetRegistry for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_registry(self, GetRegistryRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        auto resp = core.send(host, self.get_registry(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRegistryRecord for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_registry_record(self, GetRegistryRecordRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        auto resp = core.send(host, self.get_registry_record(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter RegistryReady — polls GetRegistry until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_registry_ready.
+    def wait_registry_ready(self, GetRegistryRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RegistryReady",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "READY"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "UPDATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "DELETE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_registry(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RegistryRecordApproved — polls GetRegistryRecord until a success acceptor fires (delay 30s,
+    # max 5 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_registry_record_approved.
+    def wait_registry_record_approved(self, GetRegistryRecordRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RegistryRecordApproved",
+            delay=30,
+            max_attempts=5,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "status", "APPROVED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "REJECTED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "CREATE_FAILED"),
+                waiters.acceptor_path(waiters.state_failure(), "status", "UPDATE_FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_registry_record(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Agent_Registry_ControlClient bound to credentials + region.
 def agent_registry_control_client(core.Credentials creds, str region) -> Agent_Registry_ControlClient:

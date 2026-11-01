@@ -18,7 +18,7 @@
 #   1 skipped (input has a non-string-keyed map or free-form document member).
 #   255 structs (189 @derive(Json)), 36 enums, 111 error variants.
 #   8 paginators generated (1 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
+import aws_core.waiters
 
 # The CodeDeploy awsJson protocol: version 1.1, API id "CodeDeploy_20141006".
 def codedeploy_protocol() -> awsjson.AwsJson:
@@ -3510,6 +3511,30 @@ struct CodeDeployClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of GetDeployment for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_deployment(self, GetDeploymentInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
+        auto resp = core.send(host, self.get_deployment(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter DeploymentSuccessful — polls GetDeployment until a success acceptor fires (delay 15s,
+    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_deployment_successful.
+    def wait_deployment_successful(self, GetDeploymentInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="DeploymentSuccessful",
+            delay=15,
+            max_attempts=120,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "deploymentInfo.status", "Succeeded"),
+                waiters.acceptor_path(waiters.state_failure(), "deploymentInfo.status", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "deploymentInfo.status", "Stopped")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_deployment(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a CodeDeployClient bound to credentials + region.
 def codedeploy_client(core.Credentials creds, str region) -> CodeDeployClient:

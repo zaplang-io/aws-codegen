@@ -19,7 +19,7 @@
 #   0 skipped (a member type is not yet serializable (nesting/map)).
 #   291 structs (plain carriers), 80 enums, 29 error variants.
 #   0 paginators generated (21 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (10 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -2777,6 +2777,19 @@ def cloudformation_error_name(CloudFormationErrorKind k) -> str:
 #   ListStackSets
 #   ListStacks
 #   ListTypes
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   ChangeSetCreateComplete
+#   StackCreateComplete
+#   StackDeleteComplete
+#   StackExists
+#   StackImportComplete
+#   StackRefactorCreateComplete
+#   StackRefactorExecuteComplete
+#   StackRollbackComplete
+#   StackUpdateComplete
+#   TypeRegistrationComplete
 
 # Serializers for nested structures reached from a request body (#426): each
 # appends its members to the form parameter list under the caller's key prefix.

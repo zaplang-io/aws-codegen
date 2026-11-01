@@ -33,10 +33,19 @@ fn lambda_paginators() -> String {
     read_model("models/lambda/2015-03-31/paginators-1.json")
 }
 
-/// Generate the checked-in Lambda client (rest-json, model + paginators sidecar).
+fn lambda_waiters() -> String {
+    read_model("models/lambda/2015-03-31/waiters-2.json")
+}
+
+/// Generate the checked-in Lambda client (rest-json, model + paginators + waiters
+/// sidecars).
 fn generate_lambda() -> (String, aws_codegen::Coverage) {
-    aws_codegen::generate_from_json_with_paginators(&lambda_model(), Some(&lambda_paginators()))
-        .unwrap()
+    aws_codegen::generate_from_json_with_sidecars(
+        &lambda_model(),
+        Some(&lambda_paginators()),
+        Some(&lambda_waiters()),
+    )
+    .unwrap()
 }
 
 fn dynamodb_paginators() -> String {
@@ -44,10 +53,19 @@ fn dynamodb_paginators() -> String {
     std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("reading {}: {e}", p.display()))
 }
 
-/// Generate the checked-in DynamoDB client (model + pinned paginators sidecar).
+fn dynamodb_waiters() -> String {
+    read_model("models/dynamodb/2012-08-10/waiters-2.json")
+}
+
+/// Generate the checked-in DynamoDB client (model + pinned paginators + waiters
+/// sidecars).
 fn generate_dynamodb() -> (String, aws_codegen::Coverage) {
-    aws_codegen::generate_from_json_with_paginators(&dynamodb_model(), Some(&dynamodb_paginators()))
-        .unwrap()
+    aws_codegen::generate_from_json_with_sidecars(
+        &dynamodb_model(),
+        Some(&dynamodb_paginators()),
+        Some(&dynamodb_waiters()),
+    )
+    .unwrap()
 }
 
 #[test]
@@ -379,12 +397,17 @@ fn keyword_and_reserved_names_are_escaped() {
 
 // --- CloudFront (rest-xml), SimpleDB (query), EC2 (ec2) ----------------------
 
-/// Generate a checked-in client from its pinned model + paginators sidecar
-/// (exactly what `cargo run` / the CI determinism loop does).
+/// Generate a checked-in client from its pinned model + paginators / waiters
+/// sidecars (exactly what `cargo run` / the CI determinism loop does). Both
+/// sidecars are optional — read them only when present, like `src/main.rs`.
 fn generate_with_sidecar(service: &str, api_version: &str) -> (String, aws_codegen::Coverage) {
     let model = read_model(&format!("models/{service}/{api_version}/service-2.json"));
     let pag = read_model(&format!("models/{service}/{api_version}/paginators-1.json"));
-    aws_codegen::generate_from_json_with_paginators(&model, Some(&pag)).unwrap()
+    let wait = std::fs::read_to_string(
+        repo_root().join(format!("models/{service}/{api_version}/waiters-2.json")),
+    )
+    .ok();
+    aws_codegen::generate_from_json_with_sidecars(&model, Some(&pag), wait.as_deref()).unwrap()
 }
 
 fn assert_current(service: &str, api_version: &str, out_rel: &str) {
@@ -686,11 +709,15 @@ fn all_checked_in_packages_are_current() {
         let pkg = svc.replace('-', "_");
 
         let model = read_model(&format!("models/{svc}/{ver}/service-2.json"));
-        // Paginators are an optional sidecar; the CLI picks it up when present.
+        // paginators-1.json / waiters-2.json are optional sidecars; the CLI picks
+        // each up when present (see src/main.rs).
         let pag_path = repo_root().join(format!("models/{svc}/{ver}/paginators-1.json"));
         let pag = std::fs::read_to_string(&pag_path).ok();
-        let (src, _cov) = aws_codegen::generate_from_json_with_paginators(&model, pag.as_deref())
-            .unwrap_or_else(|e| panic!("generating {svc}: {e}"));
+        let wait_path = repo_root().join(format!("models/{svc}/{ver}/waiters-2.json"));
+        let wait = std::fs::read_to_string(&wait_path).ok();
+        let (src, _cov) =
+            aws_codegen::generate_from_json_with_sidecars(&model, pag.as_deref(), wait.as_deref())
+                .unwrap_or_else(|e| panic!("generating {svc}: {e}"));
 
         let client_rel = format!("generated/{pkg}/src/{pkg}.zap");
         let on_disk = std::fs::read_to_string(repo_root().join(&client_rel))

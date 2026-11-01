@@ -19,7 +19,7 @@
 #   4 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   487 structs (288 @derive(Json)), 89 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   8 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 import datetime
 
 # The Lex_Models_V2 rest-json protocol: SigV4 service "lex" (also the endpoint
@@ -7015,6 +7016,191 @@ struct Lex_Models_V2Client:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # One poll of DescribeBotAlias for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_bot_alias(self, DescribeBotAliasRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto resp = core.send(host, self.describe_bot_alias(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeBot for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_bot(self, DescribeBotRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto resp = core.send(host, self.describe_bot(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeExport for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_export(self, DescribeExportRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto resp = core.send(host, self.describe_export(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeImport for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_import(self, DescribeImportRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto resp = core.send(host, self.describe_import(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeBotLocale for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_bot_locale(self, DescribeBotLocaleRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto resp = core.send(host, self.describe_bot_locale(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of DescribeBotVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_bot_version(self, DescribeBotVersionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(models_v2_lex_service(), self.region)
+        auto resp = core.send(host, self.describe_bot_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter BotAliasAvailable — polls DescribeBotAlias until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_alias_available.
+    def wait_bot_alias_available(self, DescribeBotAliasRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotAliasAvailable",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "botAliasStatus", "Available"),
+                waiters.acceptor_path(waiters.state_failure(), "botAliasStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "botAliasStatus", "Deleting")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bot_alias(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotAvailable — polls DescribeBot until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_available.
+    def wait_bot_available(self, DescribeBotRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotAvailable",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "botStatus", "Available"),
+                waiters.acceptor_path(waiters.state_failure(), "botStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "botStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "botStatus", "Inactive")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bot(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotExportCompleted — polls DescribeExport until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_export_completed.
+    def wait_bot_export_completed(self, DescribeExportRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotExportCompleted",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "exportStatus", "Completed"),
+                waiters.acceptor_path(waiters.state_failure(), "exportStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "exportStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_export(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotImportCompleted — polls DescribeImport until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_import_completed.
+    def wait_bot_import_completed(self, DescribeImportRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotImportCompleted",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "importStatus", "Completed"),
+                waiters.acceptor_path(waiters.state_failure(), "importStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "importStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_import(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotLocaleBuilt — polls DescribeBotLocale until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_locale_built.
+    def wait_bot_locale_built(self, DescribeBotLocaleRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotLocaleBuilt",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "botLocaleStatus", "Built"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "NotBuilt")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bot_locale(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotLocaleCreated — polls DescribeBotLocale until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_locale_created.
+    def wait_bot_locale_created(self, DescribeBotLocaleRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotLocaleCreated",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "botLocaleStatus", "Built"),
+                waiters.acceptor_path(waiters.state_success(), "botLocaleStatus", "ReadyExpressTesting"),
+                waiters.acceptor_path(waiters.state_success(), "botLocaleStatus", "NotBuilt"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "Failed")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bot_locale(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotLocaleExpressTestingAvailable — polls DescribeBotLocale until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_locale_express_testing_available.
+    def wait_bot_locale_express_testing_available(self, DescribeBotLocaleRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotLocaleExpressTestingAvailable",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "botLocaleStatus", "Built"),
+                waiters.acceptor_path(waiters.state_success(), "botLocaleStatus", "ReadyExpressTesting"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "Failed"),
+                waiters.acceptor_path(waiters.state_failure(), "botLocaleStatus", "NotBuilt")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bot_locale(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter BotVersionAvailable — polls DescribeBotVersion until a success acceptor fires (delay 10s,
+    # max 35 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bot_version_available.
+    def wait_bot_version_available(self, DescribeBotVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="BotVersionAvailable",
+            delay=10,
+            max_attempts=35,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "botStatus", "Available"),
+                waiters.acceptor_path(waiters.state_failure(), "botStatus", "Deleting"),
+                waiters.acceptor_path(waiters.state_failure(), "botStatus", "Failed"),
+                waiters.acceptor_status(waiters.state_retry(), "404")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bot_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Lex_Models_V2Client bound to credentials + region.
 def models_v2_lex_client(core.Credentials creds, str region) -> Lex_Models_V2Client:

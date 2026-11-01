@@ -20,7 +20,7 @@
 #   0 skipped (input has a non-text-keyed map member).
 #   175 structs (plain carriers), 17 enums, 19 error variants.
 #   0 paginators generated (7 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   0 waiters generated (4 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
@@ -1313,6 +1313,13 @@ def monitoring_error_name(CloudWatchErrorKind k) -> str:
 #   ListAlarmMuteRules
 #   ListDashboards
 #   ListMetrics
+
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   AlarmExists
+#   AlarmMuteRuleExists
+#   CompositeAlarmExists
+#   LogAlarmExists
 
 # CBOR body serializers: each builds a `cbor.CborValue` map for its shape
 # (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
