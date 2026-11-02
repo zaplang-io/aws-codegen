@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 35 operations — 35 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   382 structs (217 @derive(Json)), 62 enums, 10 error variants.
+#   384 structs (218 @derive(Json)), 62 enums, 10 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -115,6 +115,7 @@ enum AgenticRetrieveStep:
     SpeculativeRetrieval
     FullDocumentExpansion
     SessionHistoryLoad
+    CodeExecution
     Unknown(str value)
 
 @derive(Json)
@@ -669,10 +670,11 @@ struct AgentCollaboratorOutputPayload:
     Optional[str] text
     Optional[PayloadType] type
 
-# no @derive(Json): member(s) retrieve: AgenticRetrieveActionDetails not derivable (list/map collections);
+# no @derive(Json): member(s) codeExecution: AgenticRetrieveCodeExecutionDetails, retrieve: AgenticRetrieveActionDetails not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AgenticRetrieveAction:
+    Optional[AgenticRetrieveCodeExecutionDetails] codeExecution
     Optional[AgenticRetrieveFullDocExpansionDetails] fullDocumentExpansion
     Optional[AgenticRetrieveMemoryRetrieveDetails] memoryRetrieve
     Optional[AgenticRetrieveActionDetails] retrieve
@@ -713,6 +715,17 @@ struct AgenticRetrieveCitation:
 @derive(Json)
 struct AgenticRetrieveCitationReference:
     int64 resultIndex
+
+# no @derive(Json): member(s) documents: list[AgenticRetrieveCodeExecutionDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AgenticRetrieveCodeExecutionDetails:
+    Optional[list[AgenticRetrieveCodeExecutionDocument]] documents
+
+@derive(Json)
+struct AgenticRetrieveCodeExecutionDocument:
+    Optional[str] documentId
+    Optional[AgenticRetrieveSourceRetriever] sourceRetriever
 
 @derive(Json)
 struct AgenticRetrieveConfiguration:

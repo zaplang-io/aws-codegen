@@ -10437,6 +10437,9 @@
    "members": {
     "instanceName": {
      "shape": "ResourceName"
+    },
+    "includeHealthStatus": {
+     "shape": "boolean"
     }
    }
   },
@@ -10510,6 +10513,9 @@
    "members": {
     "pageToken": {
      "shape": "string"
+    },
+    "includeHealthStatus": {
+     "shape": "boolean"
     }
    }
   },
@@ -11369,6 +11375,12 @@
     },
     "metadataOptions": {
      "shape": "InstanceMetadataOptions"
+    },
+    "instanceStatus": {
+     "shape": "InstanceHealthStatus"
+    },
+    "systemStatus": {
+     "shape": "InstanceHealthStatus"
     }
    }
   },
@@ -11496,6 +11508,62 @@
     "unused",
     "draining",
     "unavailable"
+   ]
+  },
+  "InstanceHealthStatus": {
+   "type": "structure",
+   "members": {
+    "status": {
+     "shape": "InstanceHealthStatusValue"
+    },
+    "details": {
+     "shape": "InstanceHealthStatusDetailList"
+    }
+   }
+  },
+  "InstanceHealthStatusDetail": {
+   "type": "structure",
+   "members": {
+    "name": {
+     "shape": "InstanceHealthStatusDetailName"
+    },
+    "status": {
+     "shape": "InstanceHealthStatusDetailValue"
+    },
+    "impairedSince": {
+     "shape": "IsoDate"
+    }
+   }
+  },
+  "InstanceHealthStatusDetailList": {
+   "type": "list",
+   "member": {
+    "shape": "InstanceHealthStatusDetail"
+   }
+  },
+  "InstanceHealthStatusDetailName": {
+   "type": "string",
+   "enum": [
+    "reachability"
+   ]
+  },
+  "InstanceHealthStatusDetailValue": {
+   "type": "string",
+   "enum": [
+    "passed",
+    "failed",
+    "insufficient-data",
+    "initializing"
+   ]
+  },
+  "InstanceHealthStatusValue": {
+   "type": "string",
+   "enum": [
+    "ok",
+    "impaired",
+    "initializing",
+    "insufficient-data",
+    "not-applicable"
    ]
   },
   "InstanceHealthSummary": {

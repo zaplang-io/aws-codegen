@@ -2126,6 +2126,9 @@
    "members": {
     "RequestBody": {
      "shape": "RequestBody"
+    },
+    "ChallengeJavascriptSdkInjection": {
+     "shape": "ChallengeJavascriptSdkInjection"
     }
    }
   },
@@ -2284,6 +2287,20 @@
      "shape": "ImmunityTimeProperty"
     }
    }
+  },
+  "ChallengeJavascriptSdkInjection": {
+   "type": "map",
+   "key": {
+    "shape": "AssociatedResourceType"
+   },
+   "value": {
+    "shape": "ChallengeJavascriptSdkInjectionConfig"
+   },
+   "min": 1
+  },
+  "ChallengeJavascriptSdkInjectionConfig": {
+   "type": "structure",
+   "members": {}
   },
   "ChallengeResponse": {
    "type": "structure",
@@ -5703,7 +5720,8 @@
     "WALLET_ADDRESS",
     "PRICE_AMOUNT",
     "PAYMENT_NETWORK",
-    "PRE_PARSE_TEXT_TRANSFORMATION"
+    "PRE_PARSE_TEXT_TRANSFORMATION",
+    "CHALLENGE_JAVASCRIPT_SDK_INJECTION_CONFIG"
    ]
   },
   "ParameterExceptionParameter": {

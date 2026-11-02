@@ -2090,6 +2090,7 @@ struct InvokeAgentRuntimeRequest:
 @derive(Json)
 struct InvokeAgentRuntimeResponse:
     Optional[str] runtimeSessionId
+    Optional[str] sessionEndpointUrl
     Optional[str] mcpSessionId
     Optional[str] mcpProtocolVersion
     Optional[str] traceId

@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 88 operations — 87 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   328 structs (227 @derive(Json)), 41 enums, 56 error variants.
+#   328 structs (227 @derive(Json)), 42 enums, 56 error variants.
 #   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
 #   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -184,6 +184,13 @@ enum InvocationType:
 enum InvokeMode:
     BUFFERED
     RESPONSE_STREAM
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum KafkaEventSourceMappingConsumptionMode:
+    Stream
+    Queue
     Unknown(str value)
 
 @derive(Json)
@@ -2490,6 +2497,7 @@ struct SelfManagedEventSource:
 struct SelfManagedKafkaEventSourceConfig:
     Optional[str] ConsumerGroupId
     Optional[KafkaSchemaRegistryConfig] SchemaRegistryConfig
+    Optional[KafkaEventSourceMappingConsumptionMode] ConsumptionMode
 
 # rest-json request for SendDurableExecutionCallbackFailureRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -3570,6 +3578,9 @@ def self_managed_kafka_event_source_config_to_json(SelfManagedKafkaEventSourceCo
     if v.SchemaRegistryConfig.is_some():
         auto u1 = v.SchemaRegistryConfig.unwrap()
         parts.append("\"SchemaRegistryConfig\":" + kafka_schema_registry_config_to_json(u1))
+    if v.ConsumptionMode.is_some():
+        auto u2 = v.ConsumptionMode.unwrap()
+        parts.append("\"ConsumptionMode\":" + u2.to_json())
     return lambda__json_obj(parts)
 
 # Serialize VpcConfig to a compact JSON object (declaration order).

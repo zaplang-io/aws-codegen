@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 59 operations — 57 with a generated method,
 #   2 skipped (input has a non-string-keyed map or free-form document member).
-#   292 structs (162 @derive(Json)), 44 enums, 20 error variants.
+#   293 structs (163 @derive(Json)), 44 enums, 20 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -565,6 +565,7 @@ enum ParameterExceptionField:
     PRICE_AMOUNT
     PAYMENT_NETWORK
     PRE_PARSE_TEXT_TRANSFORMATION
+    CHALLENGE_JAVASCRIPT_SDK_INJECTION_CONFIG
     Unknown(str value)
 
 @derive(Json)
@@ -856,11 +857,12 @@ struct AssociateWebACLResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) RequestBody: dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig] not derivable (list/map collections);
+# no @derive(Json): member(s) RequestBody: dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig], ChallengeJavascriptSdkInjection: dict[AssociatedResourceType, ChallengeJavascriptSdkInjectionConfig] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AssociationConfig:
     Optional[dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig]] RequestBody
+    Optional[dict[AssociatedResourceType, ChallengeJavascriptSdkInjectionConfig]] ChallengeJavascriptSdkInjection
 
 # no @derive(Json): member(s) CustomResponse: CustomResponse not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -913,6 +915,11 @@ struct ChallengeAction:
 @derive(Json)
 struct ChallengeConfig:
     Optional[ImmunityTimeProperty] ImmunityTimeProperty
+
+@derive(Json)
+struct ChallengeJavascriptSdkInjectionConfig:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 @derive(Json)
 struct ChallengeResponse:

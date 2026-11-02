@@ -7891,6 +7891,36 @@
    "max": 10000000,
    "min": 0
   },
+  "AcceleratorPartitionLayout": {
+   "type": "structure",
+   "members": {
+    "AcceleratorPartitionTypes": {
+     "shape": "AcceleratorPartitionTypeList"
+    }
+   }
+  },
+  "AcceleratorPartitionLayouts": {
+   "type": "list",
+   "member": {
+    "shape": "AcceleratorPartitionLayout"
+   },
+   "max": 32,
+   "min": 0
+  },
+  "AcceleratorPartitionType": {
+   "type": "string",
+   "max": 32,
+   "min": 0,
+   "pattern": "mig-[0-9]+g\\.[0-9]+gb([+-][a-z0-9.]+)*"
+  },
+  "AcceleratorPartitionTypeList": {
+   "type": "list",
+   "member": {
+    "shape": "AcceleratorPartitionType"
+   },
+   "max": 32,
+   "min": 0
+  },
   "AcceleratorsAmount": {
    "type": "integer",
    "box": true,
@@ -28731,6 +28761,9 @@
     },
     "MaxMemoryRequiredInMb": {
      "shape": "MemoryInMb"
+    },
+    "AcceleratorPartitionType": {
+     "shape": "AcceleratorPartitionType"
     }
    }
   },
@@ -39158,6 +39191,9 @@
     },
     "RoutingConfig": {
      "shape": "ProductionVariantRoutingConfig"
+    },
+    "AcceleratorPartitionLayouts": {
+     "shape": "AcceleratorPartitionLayouts"
     }
    }
   },
@@ -40531,8 +40567,19 @@
     },
     "CapacityReservationConfig": {
      "shape": "ProductionVariantCapacityReservationConfig"
+    },
+    "AcceleratorPartitionLayouts": {
+     "shape": "ProductionVariantAcceleratorPartitionLayoutsList"
     }
    }
+  },
+  "ProductionVariantAcceleratorPartitionLayoutsList": {
+   "type": "list",
+   "member": {
+    "shape": "AcceleratorPartitionLayout"
+   },
+   "max": 32,
+   "min": 1
   },
   "ProductionVariantAcceleratorType": {
    "type": "string",
@@ -41055,6 +41102,9 @@
     },
     "CapacityReservationConfig": {
      "shape": "ProductionVariantCapacityReservationSummary"
+    },
+    "AcceleratorPartitionLayouts": {
+     "shape": "AcceleratorPartitionLayouts"
     }
    }
   },

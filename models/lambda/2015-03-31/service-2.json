@@ -7265,6 +7265,13 @@
    "exception": true,
    "fault": true
   },
+  "KafkaEventSourceMappingConsumptionMode": {
+   "type": "string",
+   "enum": [
+    "Stream",
+    "Queue"
+   ]
+  },
   "KafkaSchemaRegistryAccessConfig": {
    "type": "structure",
    "members": {
@@ -9559,6 +9566,9 @@
     },
     "SchemaRegistryConfig": {
      "shape": "KafkaSchemaRegistryConfig"
+    },
+    "ConsumptionMode": {
+     "shape": "KafkaEventSourceMappingConsumptionMode"
     }
    }
   },

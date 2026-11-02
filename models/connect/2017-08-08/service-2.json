@@ -15646,6 +15646,34 @@
     }
    }
   },
+  "CategoriesAttributeAndCondition": {
+   "type": "structure",
+   "members": {
+    "TagConditions": {
+     "shape": "TagAndConditionList"
+    }
+   }
+  },
+  "CategoriesAttributeFilter": {
+   "type": "structure",
+   "members": {
+    "OrConditions": {
+     "shape": "CategoriesAttributeOrConditionList"
+    },
+    "AndCondition": {
+     "shape": "CategoriesAttributeAndCondition"
+    },
+    "TagCondition": {
+     "shape": "TagCondition"
+    }
+   }
+  },
+  "CategoriesAttributeOrConditionList": {
+   "type": "list",
+   "member": {
+    "shape": "CategoriesAttributeAndCondition"
+   }
+  },
   "Channel": {
    "type": "string",
    "enum": [
@@ -30088,6 +30116,9 @@
     },
     "SegmentTypes": {
      "shape": "RealTimeContactAnalysisSegmentTypes"
+    },
+    "ListFilter": {
+     "shape": "RealTimeContactAnalysisSegmentsFilter"
     }
    }
   },
@@ -33598,7 +33629,8 @@
   "PreEvaluationFilterResourceType": {
    "type": "string",
    "enum": [
-    "CONTACT"
+    "CONTACT",
+    "CONTACT_EVALUATION"
    ]
   },
   "PreEvaluationFilterType": {
@@ -34605,6 +34637,9 @@
     "PointsOfInterest"
    ],
    "members": {
+    "RuleId": {
+     "shape": "RuleId256"
+    },
     "PointsOfInterest": {
      "shape": "RealTimeContactAnalysisPointsOfInterest"
     }
@@ -34942,6 +34977,14 @@
     "shape": "RealTimeContactAnalysisSegmentType"
    },
    "max": 7
+  },
+  "RealTimeContactAnalysisSegmentsFilter": {
+   "type": "structure",
+   "members": {
+    "CategoriesAttributeFilter": {
+     "shape": "CategoriesAttributeFilter"
+    }
+   }
   },
   "RealTimeContactAnalysisSentimentLabel": {
    "type": "string",
@@ -36287,6 +36330,11 @@
    "type": "string"
   },
   "RuleId": {
+   "type": "string",
+   "max": 256,
+   "min": 1
+  },
+  "RuleId256": {
    "type": "string",
    "max": 256,
    "min": 1

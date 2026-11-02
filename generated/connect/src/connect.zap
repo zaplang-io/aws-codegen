@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 404 operations — 393 with a generated method,
 #   11 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   1362 structs (780 @derive(Json)), 174 enums, 29 error variants.
+#   1365 structs (780 @derive(Json)), 175 enums, 29 error variants.
 #   83 paginators generated (6 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1425,6 +1425,13 @@ enum Policy:
 
 @derive(Json)
 @json(open)
+enum PreEvaluationFilterResourceType:
+    CONTACT
+    CONTACT_EVALUATION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum PropertyValidationExceptionReason:
     INVALID_FORMAT
     UNIQUE_CONSTRAINT_VIOLATED
@@ -2749,6 +2756,20 @@ struct CaseSlaConfiguration:
     Optional[str] FieldId
     Optional[list[FieldValueUnion]] TargetFieldValues
     int64 TargetSlaMinutes
+
+# no @derive(Json): member(s) TagConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CategoriesAttributeAndCondition:
+    Optional[list[TagCondition]] TagConditions
+
+# no @derive(Json): member(s) OrConditions: list[CategoriesAttributeAndCondition], AndCondition: CategoriesAttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CategoriesAttributeFilter:
+    Optional[list[CategoriesAttributeAndCondition]] OrConditions
+    Optional[CategoriesAttributeAndCondition] AndCondition
+    Optional[TagCondition] TagCondition
 
 @derive(Json)
 struct ChatContactMetrics:
@@ -7491,6 +7512,7 @@ struct ListRealtimeContactAnalysisSegmentsV2Request:
     Optional[str] NextToken
     RealTimeContactAnalysisOutputType OutputType
     list[RealTimeContactAnalysisSegmentType] SegmentTypes
+    Optional[RealTimeContactAnalysisSegmentsFilter] ListFilter
 
 # no @derive(Json): member(s) Segments: list[RealtimeContactAnalysisSegment] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -8434,7 +8456,7 @@ struct PostAcceptTimeoutConfig:
 
 @derive(Json)
 struct PreEvaluationFilter:
-    str ResourceType
+    PreEvaluationFilterResourceType ResourceType
     str FilterType
     str FilterKey
     str FilterValue
@@ -8734,6 +8756,7 @@ struct RealTimeContactAnalysisAttachment:
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct RealTimeContactAnalysisCategoryDetails:
+    Optional[str] RuleId
     list[RealTimeContactAnalysisPointOfInterest] PointsOfInterest
 
 @derive(Json)
@@ -8821,6 +8844,12 @@ struct RealTimeContactAnalysisSegmentTranscript:
     RealTimeContactAnalysisTimeData Time
     Optional[RealTimeContactAnalysisTranscriptItemRedaction] Redaction
     Optional[RealTimeContactAnalysisSentimentLabel] Sentiment
+
+# no @derive(Json): member(s) CategoriesAttributeFilter: CategoriesAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RealTimeContactAnalysisSegmentsFilter:
+    Optional[CategoriesAttributeFilter] CategoriesAttributeFilter
 
 @derive(Json)
 struct RealTimeContactAnalysisTimeData:
@@ -13097,6 +13126,34 @@ def calculation_component_to_json(CalculationComponent v) -> str:
         parts.append("\"MetricFilters\":" + connect_json_arr(e3))
     return connect_json_obj(parts)
 
+# Serialize CategoriesAttributeAndCondition to a compact JSON object (declaration order).
+def categories_attribute_and_condition_to_json(CategoriesAttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + connect_json_arr(e1))
+    return connect_json_obj(parts)
+
+# Serialize CategoriesAttributeFilter to a compact JSON object (declaration order).
+def categories_attribute_filter_to_json(CategoriesAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(categories_attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + connect_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + categories_attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    return connect_json_obj(parts)
+
 # Serialize ChatParticipantRoleConfig to a compact JSON object (declaration order).
 def chat_participant_role_config_to_json(ChatParticipantRoleConfig v) -> str:
     list[str] parts = []
@@ -14476,6 +14533,14 @@ def quick_connect_search_filter_to_json(QuickConnectSearchFilter v) -> str:
     if v.TagFilter.is_some():
         auto u0 = v.TagFilter.unwrap()
         parts.append("\"TagFilter\":" + control_plane_tag_filter_to_json(u0))
+    return connect_json_obj(parts)
+
+# Serialize RealTimeContactAnalysisSegmentsFilter to a compact JSON object (declaration order).
+def real_time_contact_analysis_segments_filter_to_json(RealTimeContactAnalysisSegmentsFilter v) -> str:
+    list[str] parts = []
+    if v.CategoriesAttributeFilter.is_some():
+        auto u0 = v.CategoriesAttributeFilter.unwrap()
+        parts.append("\"CategoriesAttributeFilter\":" + categories_attribute_filter_to_json(u0))
     return connect_json_obj(parts)
 
 # Serialize RecommenderConfig to a compact JSON object (declaration order).
@@ -18904,6 +18969,9 @@ struct ConnectClient:
         for x2 in input.SegmentTypes:
             e2.append(x2.to_json())
         parts.append("\"SegmentTypes\":" + connect_json_arr(e2))
+        if input.ListFilter.is_some():
+            auto u3 = input.ListFilter.unwrap()
+            parts.append("\"ListFilter\":" + real_time_contact_analysis_segments_filter_to_json(u3))
         auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 

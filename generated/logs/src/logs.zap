@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 118 operations — 118 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   340 structs (209 @derive(Json)), 39 enums, 18 error variants.
+#   343 structs (209 @derive(Json)), 39 enums, 18 error variants.
 #   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -263,6 +263,7 @@ enum PolicyType:
     FIELD_INDEX_POLICY
     TRANSFORMER_POLICY
     METRIC_EXTRACTION_POLICY
+    RETENTION_POLICY
     Unknown(str value)
 
 @derive(Json)
@@ -697,6 +698,13 @@ struct DateTimeConverter:
 struct DeleteAccountPolicyRequest:
     str policyName
     PolicyType policyType
+    Optional[bool] dryRun
+
+# no @derive(Json): member(s) dryRunResult: DryRunResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DeleteAccountPolicyResponse:
+    Optional[DryRunResult] dryRunResult
 
 @derive(Json)
 struct DeleteDataProtectionPolicyRequest:
@@ -1184,6 +1192,17 @@ struct DisassociateSourceFromS3TableIntegrationRequest:
 @derive(Json)
 struct DisassociateSourceFromS3TableIntegrationResponse:
     Optional[str] identifier
+
+# no @derive(Json): member(s) topLogGroupsImpacted: list[LogGroupImpact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DryRunResult:
+    Optional[int64] totalMatchedLogGroups
+    Optional[int64] increasedRetentionLogGroupCount
+    Optional[int64] decreasedRetentionLogGroupCount
+    Optional[int64] unchangedRetentionLogGroupCount
+    Optional[int64] failedAnalysisCount
+    Optional[list[LogGroupImpact]] topLogGroupsImpacted
 
 # no @derive(Json): member(s) keyAttributes: dict[str, str], attributes: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1828,11 +1847,19 @@ struct LogGroup:
     Optional[str] logGroupArn
     Optional[bool] deletionProtectionEnabled
     Optional[bool] bearerTokenAuthenticationEnabled
+    Optional[str] retentionPolicyName
 
 @derive(Json)
 struct LogGroupField:
     Optional[str] name
     Optional[int64] percent
+
+@derive(Json)
+struct LogGroupImpact:
+    Optional[str] logGroupName
+    Optional[str] currentRetention
+    Optional[str] proposedRetention
+    Optional[int64] storedBytes
 
 @derive(Json)
 struct LogGroupSummary:
@@ -2100,10 +2127,14 @@ struct PutAccountPolicyRequest:
     # wire name "scope" differs from field; derive rename is a #346 follow-up
     Optional[str] scope_
     Optional[str] selectionCriteria
+    Optional[bool] dryRun
 
-@derive(Json)
+# no @derive(Json): member(s) dryRunResult: DryRunResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAccountPolicyResponse:
     Optional[AccountPolicy] accountPolicy
+    Optional[DryRunResult] dryRunResult
 
 @derive(Json)
 struct PutBearerTokenAuthenticationRequest:

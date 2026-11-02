@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 55 operations — 55 with a generated method,
+# Coverage (query): 56 operations — 56 with a generated method,
 #   0 skipped (a member type is not yet serializable (nesting/map)).
-#   201 structs (plain carriers), 4 enums, 58 error variants.
-#   0 paginators generated (13 paginated ops skipped) from paginators-1.json.
+#   204 structs (plain carriers), 4 enums, 58 error variants.
+#   0 paginators generated (14 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (2 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
@@ -284,6 +284,7 @@ struct DBCluster:
     Optional[DateTime] IOOptimizedNextAllowedModificationTime
     Optional[str] StorageType
     Optional[ServerlessV2ScalingConfigurationInfo] ServerlessV2ScalingConfiguration
+    Optional[str] ServerlessV2PlatformVersion
     Optional[ClusterMasterUserSecret] MasterUserSecret
     Optional[str] NetworkType
     Optional[bool] CopyTagsToSnapshot
@@ -656,6 +657,15 @@ struct DescribePendingMaintenanceActionsMessage:
     Optional[list[Filter]] Filters
     Optional[str] Marker
     Optional[int64] MaxRecords
+
+struct DescribeServerlessV2PlatformVersionsMessage:
+    Optional[str] ServerlessV2PlatformVersion
+    Optional[str] Engine
+    Optional[list[Filter]] Filters
+    Optional[bool] DefaultOnly
+    Optional[bool] IncludeAll
+    Optional[int64] MaxRecords
+    Optional[str] Marker
 
 struct Endpoint:
     Optional[str] Address
@@ -1084,6 +1094,18 @@ struct ServerlessV2FeaturesSupport:
     Optional[float64] MinCapacity
     Optional[float64] MaxCapacity
 
+struct ServerlessV2PlatformVersionInfo:
+    Optional[str] ServerlessV2PlatformVersion
+    Optional[str] ServerlessV2PlatformVersionDescription
+    Optional[str] Engine
+    Optional[ServerlessV2FeaturesSupport] ServerlessV2FeaturesSupport
+    Optional[str] Status
+    Optional[bool] IsDefault
+
+struct ServerlessV2PlatformVersionsMessage:
+    Optional[str] Marker
+    Optional[list[ServerlessV2PlatformVersionInfo]] ServerlessV2PlatformVersions
+
 struct ServerlessV2ScalingConfiguration:
     Optional[float64] MinCapacity
     Optional[float64] MaxCapacity
@@ -1509,6 +1531,7 @@ def rds_error_name(DocDBErrorKind k) -> str:
 #   DescribeGlobalClusters
 #   DescribeOrderableDBInstanceOptions
 #   DescribePendingMaintenanceActions
+#   DescribeServerlessV2PlatformVersions
 
 # Waiters (waiters-2.json) are not surfaced for this protocol yet — the
 # waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
@@ -2198,6 +2221,30 @@ struct DocDBClient:
             p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         if input.MaxRecords.is_some():
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeServerlessV2PlatformVersions
+    def describe_serverless_v2_platform_versions(self, DescribeServerlessV2PlatformVersionsMessage input) -> str:
+        auto p = query.query_params("DescribeServerlessV2PlatformVersions", "2014-10-31")
+        if input.ServerlessV2PlatformVersion.is_some():
+            auto t0 = input.ServerlessV2PlatformVersion.unwrap()
+            p = query.query_scalar(p, "ServerlessV2PlatformVersion", t0)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DefaultOnly.is_some():
+            auto t3 = query.query_bool(input.DefaultOnly.unwrap())
+            p = query.query_scalar(p, "DefaultOnly", t3)
+        if input.IncludeAll.is_some():
+            auto t4 = query.query_bool(input.IncludeAll.unwrap())
+            p = query.query_scalar(p, "IncludeAll", t4)
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # FailoverDBCluster
