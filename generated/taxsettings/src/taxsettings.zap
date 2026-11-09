@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 16 operations — 16 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   93 structs (67 @derive(Json)), 21 enums, 7 error variants.
+#   95 structs (68 @derive(Json)), 21 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -190,6 +190,11 @@ enum TaxRegistrationType:
     NRIC
     PAN
     NIP
+    CUIT
+    CDI
+    RUT
+    NIE
+    CI
     Unknown(str value)
 
 @derive(Json)
@@ -274,7 +279,7 @@ struct AdditionalInfoRequest:
     Optional[GermanyAdditionalInfo] germanyAdditionalInfo
     Optional[MexicoAdditionalInfo] mexicoAdditionalInfo
 
-# no @derive(Json): member(s) malaysiaAdditionalInfo: MalaysiaAdditionalInfo not derivable (list/map collections);
+# no @derive(Json): member(s) malaysiaAdditionalInfo: MalaysiaAdditionalInfo, colombiaAdditionalInfo: ColombiaAdditionalInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AdditionalInfoResponse:
@@ -306,6 +311,7 @@ struct AdditionalInfoResponse:
     Optional[MonacoAdditionalInfo] monacoAdditionalInfo
     Optional[GermanyAdditionalInfo] germanyAdditionalInfo
     Optional[MexicoAdditionalInfo] mexicoAdditionalInfo
+    Optional[ColombiaAdditionalInfo] colombiaAdditionalInfo
 
 @derive(Json)
 struct Address:
@@ -400,6 +406,14 @@ struct CaseCreationLimitExceededException:
 struct ChileAdditionalInfo:
     Optional[ChileDocumentType] documentType
     Optional[str] businessActivity
+
+# no @derive(Json): member(s) responsibilityCodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ColombiaAdditionalInfo:
+    Optional[list[str]] responsibilityCodes
+    Optional[str] taxpayerTypeCode
+    Optional[str] issueDate
 
 @derive(Json)
 struct ConflictException:
@@ -747,6 +761,7 @@ struct TaxRegistration:
     Optional[list[TaxDocumentMetadata]] taxDocumentMetadatas
     Optional[str] certifiedEmailId
     Optional[AdditionalInfoResponse] additionalTaxInformation
+    Optional[TaxRegistrationStatusReason] statusReason
     Address legalAddress
 
 @derive(Json)
@@ -772,6 +787,11 @@ struct TaxRegistrationEntry:
     Optional[VerificationDetails] verificationDetails
     Optional[str] certifiedEmailId
 
+@derive(Json)
+struct TaxRegistrationStatusReason:
+    Optional[str] code
+    Optional[str] message
+
 # no @derive(Json): member(s) taxDocumentMetadatas: list[TaxDocumentMetadata], additionalTaxInformation: AdditionalInfoResponse not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -784,6 +804,7 @@ struct TaxRegistrationWithJurisdiction:
     Optional[list[TaxDocumentMetadata]] taxDocumentMetadatas
     Optional[str] certifiedEmailId
     Optional[AdditionalInfoResponse] additionalTaxInformation
+    Optional[TaxRegistrationStatusReason] statusReason
     Jurisdiction jurisdiction
 
 @derive(Json)

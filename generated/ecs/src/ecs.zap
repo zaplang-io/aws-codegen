@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 88 operations — 88 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   442 structs (230 @derive(Json)), 104 enums, 31 error variants.
+#   443 structs (231 @derive(Json)), 104 enums, 31 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   9 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1686,6 +1686,7 @@ struct DaemonTaskDefinitionSummary:
 struct DaemonVolume:
     Optional[str] name
     Optional[HostVolumeProperties] host
+    Optional[LogDriverVolumeConfiguration] logDriverVolumeConfiguration
 
 @derive(Json)
 struct DeleteAccountSettingRequest:
@@ -3060,6 +3061,10 @@ struct LogConfiguration:
     LogDriver logDriver
     Optional[dict[str, str]] options
     Optional[list[Secret]] secretOptions
+
+@derive(Json)
+struct LogDriverVolumeConfiguration:
+    LogDriver driver
 
 @derive(Json)
 struct ManagedAgent:

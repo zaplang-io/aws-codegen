@@ -62,6 +62,7 @@ struct AssumeRoleForPodIdentityResponse:
     PodIdentityAssociation podIdentityAssociation
     AssumedRoleUser assumedRoleUser
     Credentials credentials
+    Optional[str] workloadIdentityProviderArn
 
 @derive(Json)
 struct AssumedRoleUser:

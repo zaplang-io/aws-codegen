@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 9 with a generated method,
+# Coverage (rest-json): 13 operations — 12 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   58 structs (44 @derive(Json)), 10 enums, 24 error variants.
+#   67 structs (49 @derive(Json)), 10 enums, 27 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -375,6 +375,10 @@ struct InvalidSsmlException:
     Optional[str] message
 
 @derive(Json)
+struct InvalidTagParameterException:
+    Optional[str] message
+
+@derive(Json)
 struct InvalidTaskIdException:
     Optional[str] message
 
@@ -436,6 +440,17 @@ struct ListSpeechSynthesisTasksOutput:
     Optional[str] NextToken
     Optional[list[SynthesisTask]] SynthesisTasks
 
+# rest-json request for ListTagsForResourceInput: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct ListTagsForResourceInput:
+    str ResourceArn
+
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListTagsForResourceOutput:
+    Optional[dict[str, str]] Tags
+
 @derive(Json)
 struct MarksNotSupportedForFormatException:
     Optional[str] message
@@ -453,11 +468,18 @@ struct MaxLexiconsNumberExceededException:
 struct PutLexiconInput:
     str Name
     str Content
+    Optional[dict[str, str]] Tags
 
 @derive(Json)
 struct PutLexiconOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
+
+@derive(Json)
+struct ResourceNotFoundException:
+    str message
+    str resourceId
+    str resourceType
 
 @derive(Json)
 struct ServiceFailureException:
@@ -579,6 +601,17 @@ struct SynthesizeSpeechOutput:
     Optional[str] ContentType
     Optional[int64] RequestCharacters
 
+# rest-json request for TagResourceInput: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct TagResourceInput:
+    str ResourceArn
+    dict[str, str] Tags
+
+@derive(Json)
+struct TagResourceOutput:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
 @derive(Json)
 struct TextEvent:
     str Text
@@ -602,12 +635,27 @@ struct ThrottlingReason:
     Optional[str] resource
 
 @derive(Json)
+struct TooManyTagsException:
+    Optional[str] message
+
+@derive(Json)
 struct UnsupportedPlsAlphabetException:
     Optional[str] message
 
 @derive(Json)
 struct UnsupportedPlsLanguageException:
     Optional[str] message
+
+# rest-json request for UntagResourceInput: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UntagResourceInput:
+    str ResourceArn
+    list[str] TagKeys
+
+@derive(Json)
+struct UntagResourceOutput:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 # no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -654,6 +702,7 @@ enum PollyErrorKind:
     InvalidSampleRateException
     InvalidSnsTopicArnException
     InvalidSsmlException
+    InvalidTagParameterException
     InvalidTaskIdException
     LanguageNotSupportedException
     LexiconNotFoundException
@@ -661,12 +710,14 @@ enum PollyErrorKind:
     MarksNotSupportedForFormatException
     MaxLexemeLengthExceededException
     MaxLexiconsNumberExceededException
+    ResourceNotFoundException
     ServiceFailureException
     ServiceQuotaExceededException
     SsmlMarksNotSupportedForTextTypeException
     SynthesisTaskNotFoundException
     TextLengthExceededException
     ThrottlingException
+    TooManyTagsException
     UnsupportedPlsAlphabetException
     UnsupportedPlsLanguageException
     ValidationException
@@ -693,6 +744,8 @@ def polly_error_kind(str code) -> PollyErrorKind:
         return PollyErrorKind.InvalidSnsTopicArnException
     if name == "InvalidSsmlException":
         return PollyErrorKind.InvalidSsmlException
+    if name == "InvalidTagParameterException":
+        return PollyErrorKind.InvalidTagParameterException
     if name == "InvalidTaskIdException":
         return PollyErrorKind.InvalidTaskIdException
     if name == "LanguageNotSupportedException":
@@ -707,6 +760,8 @@ def polly_error_kind(str code) -> PollyErrorKind:
         return PollyErrorKind.MaxLexemeLengthExceededException
     if name == "MaxLexiconsNumberExceededException":
         return PollyErrorKind.MaxLexiconsNumberExceededException
+    if name == "ResourceNotFoundException":
+        return PollyErrorKind.ResourceNotFoundException
     if name == "ServiceFailureException":
         return PollyErrorKind.ServiceFailureException
     if name == "ServiceQuotaExceededException":
@@ -719,6 +774,8 @@ def polly_error_kind(str code) -> PollyErrorKind:
         return PollyErrorKind.TextLengthExceededException
     if name == "ThrottlingException":
         return PollyErrorKind.ThrottlingException
+    if name == "TooManyTagsException":
+        return PollyErrorKind.TooManyTagsException
     if name == "UnsupportedPlsAlphabetException":
         return PollyErrorKind.UnsupportedPlsAlphabetException
     if name == "UnsupportedPlsLanguageException":
@@ -751,6 +808,8 @@ def polly_error_name(PollyErrorKind k) -> str:
             return "InvalidSnsTopicArnException"
         case PollyErrorKind.InvalidSsmlException:
             return "InvalidSsmlException"
+        case PollyErrorKind.InvalidTagParameterException:
+            return "InvalidTagParameterException"
         case PollyErrorKind.InvalidTaskIdException:
             return "InvalidTaskIdException"
         case PollyErrorKind.LanguageNotSupportedException:
@@ -765,6 +824,8 @@ def polly_error_name(PollyErrorKind k) -> str:
             return "MaxLexemeLengthExceededException"
         case PollyErrorKind.MaxLexiconsNumberExceededException:
             return "MaxLexiconsNumberExceededException"
+        case PollyErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
         case PollyErrorKind.ServiceFailureException:
             return "ServiceFailureException"
         case PollyErrorKind.ServiceQuotaExceededException:
@@ -777,6 +838,8 @@ def polly_error_name(PollyErrorKind k) -> str:
             return "TextLengthExceededException"
         case PollyErrorKind.ThrottlingException:
             return "ThrottlingException"
+        case PollyErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
         case PollyErrorKind.UnsupportedPlsAlphabetException:
             return "UnsupportedPlsAlphabetException"
         case PollyErrorKind.UnsupportedPlsLanguageException:
@@ -792,14 +855,6 @@ def polly_error_name(PollyErrorKind k) -> str:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   StartSpeechSynthesisStream (httpHeader `LexiconNames` has unsupported type list[str])
-
-# Per-operation JSON document bodies (the unbound "document" members of an
-# operation's input, serialized with @derive(Json)).
-
-@derive(Json)
-struct PutLexiconDocument:
-    # document members of PutLexicon
-    str Content
 
 # Render a bool bound to a URI/query/header slot as its wire text.
 def polly_bind_bool(bool b) -> str:
@@ -880,15 +935,31 @@ struct PollyClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/synthesisTasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
 
+    # ListTagsForResource  GET /v1/listTagsForResource/
+    # errors: InvalidTagParameterException, ResourceNotFoundException, ServiceFailureException, ThrottlingException, ValidationException
+    def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        dict[str, str] query = {}
+        query["arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/listTagsForResource/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
+
     # PutLexicon  PUT /v1/lexicons/{LexiconName}
-    # errors: InvalidLexiconException, LexiconSizeExceededException, MaxLexemeLengthExceededException, MaxLexiconsNumberExceededException, ServiceFailureException, UnsupportedPlsAlphabetException, UnsupportedPlsLanguageException
+    # errors: InvalidLexiconException, InvalidTagParameterException, LexiconSizeExceededException, MaxLexemeLengthExceededException, MaxLexiconsNumberExceededException, ServiceFailureException, TooManyTagsException, UnsupportedPlsAlphabetException, UnsupportedPlsLanguageException, ValidationException
     def put_lexicon(self, PutLexiconInput input) -> str:
         auto host = endpoints.regional_host(polly_service(), self.region)
         dict[str, str] labels = {}
         labels["LexiconName"] = input.Name
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = PutLexiconDocument(Content=input.Content)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        parts.append("\"Content\":" + polly_json_str(input.Content))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(polly_json_str(k1) + ":" + polly_json_str(u0[k1]))
+            parts.append("\"Tags\":" + polly_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
 
     # StartSpeechSynthesisTask  POST /v1/synthesisTasks
@@ -967,6 +1038,34 @@ struct PollyClient:
             auto u7 = input.TextType.unwrap()
             parts.append("\"TextType\":" + u7.to_json())
         parts.append("\"VoiceId\":" + input.VoiceId.to_json())
+        auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
+
+    # TagResource  POST /v1/tagResource
+    # errors: InvalidTagParameterException, ResourceNotFoundException, ServiceFailureException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + polly_json_str(input.ResourceArn))
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(polly_json_str(k0) + ":" + polly_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + polly_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
+
+    # UntagResource  POST /v1/untagResource
+    # errors: InvalidTagParameterException, ResourceNotFoundException, ServiceFailureException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/untagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + polly_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(polly_json_str(x0))
+        parts.append("\"TagKeys\":" + polly_json_arr(e0))
         auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
 

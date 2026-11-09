@@ -1651,6 +1651,7 @@ struct CreateDatasetExportJobRequest:
     Optional[str] clientToken
     str destinationS3Uri
     ProcessingInput input
+    Optional[str] jobName
     ExportErrorReportLocation errorReportLocation
 
 @derive(Json)
@@ -2369,6 +2370,7 @@ struct DescribeDatasetExportJobRequest:
 struct DescribeDatasetExportJobResponse:
     str jobId
     str workspaceName
+    Optional[str] jobName
     DatasetExportJobStatus status
     DateTime startedAt
     Optional[DateTime] completedAt
@@ -2829,6 +2831,7 @@ struct ExportErrorReportLocation:
 @derive(Json)
 struct ExportJobSummary:
     str jobId
+    Optional[str] jobName
     DatasetExportJobStatus status
     DateTime startedAt
     Optional[DateTime] completedAt
@@ -5933,6 +5936,9 @@ struct IoTSiteWiseClient:
             parts.append("\"clientToken\":" + iotsitewise_json_str(u0))
         parts.append("\"destinationS3Uri\":" + iotsitewise_json_str(input.destinationS3Uri))
         parts.append("\"input\":" + processing_input_to_json(input.input))
+        if input.jobName.is_some():
+            auto u1 = input.jobName.unwrap()
+            parts.append("\"jobName\":" + iotsitewise_json_str(u1))
         parts.append("\"errorReportLocation\":" + input.errorReportLocation.to_json())
         auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)

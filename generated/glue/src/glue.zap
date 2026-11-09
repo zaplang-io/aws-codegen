@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 306 operations — 301 with a generated method,
+# Coverage (v0, awsJson only): 309 operations — 304 with a generated method,
 #   5 skipped (input has a non-string-keyed map or free-form document member).
-#   1134 structs (632 @derive(Json)), 144 enums, 49 error variants.
+#   1141 structs (639 @derive(Json)), 148 enums, 49 error variants.
 #   37 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -81,6 +81,17 @@ enum AuthenticationType:
     OAUTH2
     CUSTOM
     IAM
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum AutoUpgradeStatus:
+    OBSERVING
+    UPGRADING
+    UPGRADE_SUCCEEDED
+    UPGRADE_FAILED
+    STOPPED
+    WAITING_FOR_CONSENT
     Unknown(str value)
 
 @derive(Json)
@@ -712,6 +723,13 @@ enum GlueResourceType:
 
 @derive(Json)
 @json(open)
+enum GovernanceMode:
+    IAM_ONLY
+    LAKE_FORMATION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum HTTPMethod:
     GET
     POST
@@ -1297,6 +1315,18 @@ enum StatisticEvaluationLevel:
 
 @derive(Json)
 @json(open)
+enum Status:
+    OBSERVING
+    WAITING_FOR_CONSENT
+    UPGRADING
+    SUCCEEDED
+    FAILED
+    TIMEOUT
+    STOPPED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum SubObjectSourceType:
     HIVE_PARQUET
     HIVE_ORC
@@ -1451,6 +1481,13 @@ enum UpdateBehavior:
 enum UpdateCatalogBehavior:
     UPDATE_IN_DATABASE
     LOG
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum UpgradeConsent:
+    APPROVE
+    DECLINE
     Unknown(str value)
 
 @derive(Json)
@@ -1697,6 +1734,13 @@ struct AuthorizationCodeProperties:
 struct AutoDataQuality:
     Optional[bool] IsEnabled
     Optional[str] EvaluationContext
+
+@derive(Json)
+struct AutoUpgradeMetadata:
+    Optional[str] TargetVersion
+    Optional[str] SourceVersion
+    Optional[AutoUpgradeStatus] Status
+    Optional[str] AnalysisId
 
 # no @derive(Json): member(s) Partitions: list[PartitionValueList] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -5457,6 +5501,23 @@ struct GetJobRunsResponse:
     Optional[str] NextToken
 
 @derive(Json)
+struct GetJobUpgradeAnalysisRequest:
+    str analysisId
+    str jobName
+
+@derive(Json)
+struct GetJobUpgradeAnalysisResponse:
+    str jobName
+    str analysisId
+    Status status
+    Optional[str] sourceVersion
+    str targetVersion
+    Optional[str] analysisType
+    Optional[str] autoUpgradeEvaluationSummary
+    Optional[str] errorMessage
+    Optional[str] autoUpgradeEligibilitySummary
+
+@derive(Json)
 struct GetJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -6621,6 +6682,7 @@ struct Job:
     Optional[SourceControlDetails] SourceControlDetails
     Optional[str] MaintenanceWindow
     Optional[str] ProfileName
+    Optional[AutoUpgradeMetadata] AutoUpgradeMetadata
 
 @derive(Json)
 struct JobBookmarkEntry:
@@ -8145,6 +8207,7 @@ struct ResourceNumberLimitExceededException:
 struct ResourceUri:
     Optional[ResourceType] ResourceType
     Optional[str] Uri
+    Optional[DateTime] LastModified
 
 @derive(Json)
 struct ResponseConfiguration:
@@ -9029,6 +9092,17 @@ struct StartJobRunResponse:
     Optional[str] JobRunId
 
 @derive(Json)
+struct StartJobUpgradeAnalysisRequest:
+    str jobName
+    Optional[str] analysisId
+    Optional[UpgradeConsent] upgradeConsent
+
+@derive(Json)
+struct StartJobUpgradeAnalysisResponse:
+    Optional[str] analysisId
+    Optional[str] jobName
+
+@derive(Json)
 struct StartMLEvaluationTaskRunRequest:
     str TransformId
 
@@ -9184,6 +9258,16 @@ struct StopCrawlerScheduleRequest:
 
 @derive(Json)
 struct StopCrawlerScheduleResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct StopJobUpgradeAnalysisRequest:
+    str jobName
+    str analysisId
+
+@derive(Json)
+struct StopJobUpgradeAnalysisResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -10121,6 +10205,8 @@ struct UserDefinedFunction:
     Optional[PrincipalType] OwnerType
     Optional[DateTime] CreateTime
     Optional[list[ResourceUri]] ResourceUris
+    Optional[str] ArtifactLocation
+    Optional[GovernanceMode] GovernanceMode
     Optional[str] CatalogId
 
 # no @derive(Json): member(s) ResourceUris: list[ResourceUri] not derivable (list/map collections);
@@ -10133,6 +10219,8 @@ struct UserDefinedFunctionInput:
     Optional[FunctionType] FunctionType
     Optional[PrincipalType] OwnerType
     Optional[list[ResourceUri]] ResourceUris
+    Optional[str] ArtifactLocation
+    Optional[GovernanceMode] GovernanceMode
 
 @derive(Json)
 struct ValidationException:
@@ -14761,6 +14849,12 @@ def user_defined_function_input_to_json(UserDefinedFunctionInput v) -> str:
         for x6 in u5:
             e6.append(x6.to_json())
         parts.append("\"ResourceUris\":" + glue_json_arr(e6))
+    if v.ArtifactLocation.is_some():
+        auto u7 = v.ArtifactLocation.unwrap()
+        parts.append("\"ArtifactLocation\":" + glue_json_str(u7))
+    if v.GovernanceMode.is_some():
+        auto u8 = v.GovernanceMode.unwrap()
+        parts.append("\"GovernanceMode\":" + u8.to_json())
     return glue_json_obj(parts)
 
 # Serialize ViewDefinitionInput to a compact JSON object (declaration order).
@@ -15712,6 +15806,12 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetJobRuns", body)
 
+    # GetJobUpgradeAnalysis
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException
+    def get_job_upgrade_analysis(self, GetJobUpgradeAnalysisRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetJobUpgradeAnalysis", body)
+
     # GetJobs
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_jobs(self, GetJobsRequest input) -> str:
@@ -16366,6 +16466,12 @@ struct GlueClient:
         auto body = start_job_run_request_to_json(input)
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartJobRun", body)
 
+    # StartJobUpgradeAnalysis
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException, ResourceNumberLimitExceededException, ValidationException
+    def start_job_upgrade_analysis(self, StartJobUpgradeAnalysisRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartJobUpgradeAnalysis", body)
+
     # StartMLEvaluationTaskRun
     # errors: ConcurrentRunsExceededException, EntityNotFoundException, InternalServiceException, InvalidInputException, MLTransformNotReadyException, OperationTimeoutException
     def start_ml_evaluation_task_run(self, StartMLEvaluationTaskRunRequest input) -> str:
@@ -16419,6 +16525,12 @@ struct GlueClient:
     def stop_crawler_schedule(self, StopCrawlerScheduleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StopCrawlerSchedule", body)
+
+    # StopJobUpgradeAnalysis
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException, ThrottlingException
+    def stop_job_upgrade_analysis(self, StopJobUpgradeAnalysisRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StopJobUpgradeAnalysis", body)
 
     # StopMaterializedViewRefreshTaskRun
     # errors: AccessDeniedException, InvalidInputException, MaterializedViewRefreshTaskNotRunningException, MaterializedViewRefreshTaskStoppingException, OperationTimeoutException

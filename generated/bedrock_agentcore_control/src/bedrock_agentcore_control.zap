@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 172 operations — 172 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   786 structs (459 @derive(Json)), 102 enums, 16 error variants.
+#   788 structs (461 @derive(Json)), 102 enums, 16 error variants.
 #   39 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1077,6 +1077,11 @@ struct AgentSkillsDescriptor:
     Optional[SkillMdDefinition] skillMd
     Optional[SkillDefinition] skillDefinition
 
+@derive(Json)
+struct AllowedPort:
+    Optional[int64] port
+    Optional[PortRange] portRange
+
 # no @derive(Json): member(s) hostingEnvironments: list[HostingEnvironment], workloadIdentities: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1553,6 +1558,7 @@ struct CreateAgentRuntimeRequest:
     Optional[CapacityProviderConfiguration] capacityProviderConfiguration
     Optional[dict[str, str]] tags
     Optional[str] platformVersion
+    Optional[list[AllowedPort]] allowedPorts
 
 @derive(Json)
 struct CreateAgentRuntimeResponse:
@@ -3083,7 +3089,7 @@ struct GetAgentRuntimeRequest:
     str agentRuntimeId
     Optional[str] agentRuntimeVersion
 
-# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, agentRuntimeArtifact: AgentRuntimeArtifact, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, requestHeaderConfiguration: RequestHeaderConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not derivable (list/map collections);
+# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, agentRuntimeArtifact: AgentRuntimeArtifact, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, requestHeaderConfiguration: RequestHeaderConfiguration, filesystemConfigurations: list[FilesystemConfiguration], allowedPorts: list[AllowedPort] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct GetAgentRuntimeResponse:
@@ -3109,6 +3115,7 @@ struct GetAgentRuntimeResponse:
     Optional[list[FilesystemConfiguration]] filesystemConfigurations
     Optional[CapacityProviderConfiguration] capacityProviderConfiguration
     Optional[str] platformVersion
+    Optional[list[AllowedPort]] allowedPorts
 
 # rest-json request for GetApiKeyCredentialProviderRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -5526,6 +5533,11 @@ struct PolicySummary:
     PolicyStatus status
     Optional[EnforcementMode] enforcementMode
 
+@derive(Json)
+struct PortRange:
+    int64 from
+    int64 to
+
 # no @derive(Json): member(s) managedVpcResource: ManagedVpcResource not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -5556,6 +5568,8 @@ struct PrivateKeySource:
 @derive(Json)
 struct ProtocolConfiguration:
     ServerProtocol serverProtocol
+    Optional[int64] port
+    Optional[str] path
 
 @derive(Json)
 struct ProviderPrefix:
@@ -6307,6 +6321,7 @@ struct UpdateAgentRuntimeRequest:
     Optional[list[FilesystemConfiguration]] filesystemConfigurations
     Optional[CapacityProviderConfiguration] capacityProviderConfiguration
     Optional[str] platformVersion
+    Optional[list[AllowedPort]] allowedPorts
     Optional[str] clientToken
 
 @derive(Json)
@@ -9605,6 +9620,12 @@ struct Bedrock_AgentCore_ControlClient:
         if input.platformVersion.is_some():
             auto u14 = input.platformVersion.unwrap()
             parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u14))
+        if input.allowedPorts.is_some():
+            auto u15 = input.allowedPorts.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"allowedPorts\":" + bedrock_agentcore_control_json_arr(e16))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
@@ -11824,9 +11845,15 @@ struct Bedrock_AgentCore_ControlClient:
         if input.platformVersion.is_some():
             auto u12 = input.platformVersion.unwrap()
             parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u12))
+        if input.allowedPorts.is_some():
+            auto u13 = input.allowedPorts.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(x14.to_json())
+            parts.append("\"allowedPorts\":" + bedrock_agentcore_control_json_arr(e14))
         if input.clientToken.is_some():
-            auto u13 = input.clientToken.unwrap()
-            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u13))
+            auto u15 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u15))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 

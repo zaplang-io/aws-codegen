@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 35 operations — 35 with a generated method,
+# Coverage (v0, awsJson only): 36 operations — 36 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   92 structs (74 @derive(Json)), 13 enums, 8 error variants.
+#   94 structs (76 @derive(Json)), 13 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -895,6 +895,15 @@ struct ResendOperationAuthorizationRequest:
     str OperationId
 
 @derive(Json)
+struct RestoreDomainRequest:
+    str DomainName
+    Optional[Consent] Consent
+
+@derive(Json)
+struct RestoreDomainResponse:
+    Optional[str] OperationId
+
+@derive(Json)
 struct RetrieveDomainAuthCodeRequest:
     str DomainName
 
@@ -1554,6 +1563,12 @@ struct Route_53_DomainsClient:
     def resend_operation_authorization(self, ResendOperationAuthorizationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ResendOperationAuthorization", body)
+
+    # RestoreDomain
+    # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, UnsupportedTLD
+    def restore_domain(self, RestoreDomainRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RestoreDomain", body)
 
     # RetrieveDomainAuthCode
     # errors: InvalidInput, TLDInMaintenance, UnsupportedTLD

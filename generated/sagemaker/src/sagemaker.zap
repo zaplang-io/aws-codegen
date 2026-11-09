@@ -16,8 +16,8 @@
 #
 # Coverage (v0, awsJson only): 409 operations — 408 with a generated method,
 #   1 skipped (input has a non-string-keyed map or free-form document member).
-#   1580 structs (1036 @derive(Json)), 349 enums, 4 error variants.
-#   90 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1581 structs (1036 @derive(Json)), 349 enums, 4 error variants.
+#   91 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   13 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -4924,6 +4924,12 @@ struct AIWorkloadS3DataSource:
 struct AcceleratorPartitionConfig:
     MIGProfileType Type
     int64 Count
+
+# no @derive(Json): member(s) AcceleratorPartitionTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AcceleratorPartitionLayout:
+    Optional[list[str]] AcceleratorPartitionTypes
 
 @derive(Json)
 struct ActionSource:
@@ -11047,6 +11053,7 @@ struct InferenceComponentComputeResourceRequirements:
     Optional[float64] NumberOfAcceleratorDevicesRequired
     int64 MinMemoryRequiredInMb
     Optional[int64] MaxMemoryRequiredInMb
+    Optional[str] AcceleratorPartitionType
 
 # no @derive(Json): member(s) Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -14236,7 +14243,7 @@ struct PendingDeploymentSummary:
     Optional[DateTime] StartTime
     Optional[list[PendingProductionVariantSummary]] ShadowProductionVariants
 
-# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus] not derivable (list/map collections);
+# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], AcceleratorPartitionLayouts: list[AcceleratorPartitionLayout] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct PendingProductionVariantSummary:
@@ -14254,6 +14261,7 @@ struct PendingProductionVariantSummary:
     Optional[ProductionVariantServerlessConfig] DesiredServerlessConfig
     Optional[ProductionVariantManagedInstanceScaling] ManagedInstanceScaling
     Optional[ProductionVariantRoutingConfig] RoutingConfig
+    Optional[list[AcceleratorPartitionLayout]] AcceleratorPartitionLayouts
 
 @derive(Json)
 struct Phase:
@@ -14536,7 +14544,7 @@ struct ProcessingS3Output:
 struct ProcessingStoppingCondition:
     int64 MaxRuntimeInSeconds
 
-# no @derive(Json): member(s) InstancePools: list[InstancePool] not derivable (list/map collections);
+# no @derive(Json): member(s) InstancePools: list[InstancePool], AcceleratorPartitionLayouts: list[AcceleratorPartitionLayout] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ProductionVariant:
@@ -14558,6 +14566,7 @@ struct ProductionVariant:
     Optional[ProductionVariantRoutingConfig] RoutingConfig
     Optional[ProductionVariantInferenceAmiVersion] InferenceAmiVersion
     Optional[ProductionVariantCapacityReservationConfig] CapacityReservationConfig
+    Optional[list[AcceleratorPartitionLayout]] AcceleratorPartitionLayouts
 
 @derive(Json)
 struct ProductionVariantCapacityReservationConfig:
@@ -14615,7 +14624,7 @@ struct ProductionVariantStatus:
     Optional[str] StatusMessage
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], CapacityReservationConfig: ProductionVariantCapacityReservationSummary not derivable (list/map collections);
+# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], CapacityReservationConfig: ProductionVariantCapacityReservationSummary, AcceleratorPartitionLayouts: list[AcceleratorPartitionLayout] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ProductionVariantSummary:
@@ -14632,6 +14641,7 @@ struct ProductionVariantSummary:
     Optional[ProductionVariantManagedInstanceScaling] ManagedInstanceScaling
     Optional[ProductionVariantRoutingConfig] RoutingConfig
     Optional[ProductionVariantCapacityReservationSummary] CapacityReservationConfig
+    Optional[list[AcceleratorPartitionLayout]] AcceleratorPartitionLayouts
 
 # no @derive(Json): member(s) ProfilingParameters: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -17266,6 +17276,17 @@ def ai_recommendation_performance_target_to_json(AIRecommendationPerformanceTarg
     for x0 in v.Constraints:
         e0.append(x0.to_json())
     parts.append("\"Constraints\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AcceleratorPartitionLayout to a compact JSON object (declaration order).
+def accelerator_partition_layout_to_json(AcceleratorPartitionLayout v) -> str:
+    list[str] parts = []
+    if v.AcceleratorPartitionTypes.is_some():
+        auto u0 = v.AcceleratorPartitionTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"AcceleratorPartitionTypes\":" + api_sagemaker_json_arr(e1))
     return api_sagemaker_json_obj(parts)
 
 # Serialize AddClusterNodeSpecification to a compact JSON object (declaration order).
@@ -21514,6 +21535,12 @@ def production_variant_to_json(ProductionVariant v) -> str:
     if v.CapacityReservationConfig.is_some():
         auto u17 = v.CapacityReservationConfig.unwrap()
         parts.append("\"CapacityReservationConfig\":" + u17.to_json())
+    if v.AcceleratorPartitionLayouts.is_some():
+        auto u18 = v.AcceleratorPartitionLayouts.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(accelerator_partition_layout_to_json(x19))
+        parts.append("\"AcceleratorPartitionLayouts\":" + api_sagemaker_json_arr(e19))
     return api_sagemaker_json_obj(parts)
 
 # Serialize ProfilerConfig to a compact JSON object (declaration order).
@@ -26613,6 +26640,20 @@ struct SageMakerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListProjects — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ProjectSummaryList).
+    def paginate_list_projects(self, ListProjectsInput input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListProjects", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListResourceCatalogs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceCatalogs).
     def paginate_list_resource_catalogs(self, ListResourceCatalogsRequest input):
@@ -26973,7 +27014,7 @@ struct SageMakerClient:
             delay=60,
             max_attempts=60,
             acceptors=[
-                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFound"),
                 waiters.acceptor_path(waiters.state_failure(), "ImageStatus", "DELETE_FAILED"),
                 waiters.acceptor_error(waiters.state_failure(), "ValidationException")
             ],
@@ -27024,7 +27065,7 @@ struct SageMakerClient:
             delay=60,
             max_attempts=60,
             acceptors=[
-                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFound"),
                 waiters.acceptor_path(waiters.state_failure(), "ImageVersionStatus", "DELETE_FAILED"),
                 waiters.acceptor_error(waiters.state_failure(), "ValidationException")
             ],

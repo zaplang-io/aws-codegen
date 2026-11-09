@@ -2194,6 +2194,76 @@
    "deprecatedMessage": "QueryAssistant API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.",
    "readonly": true
   },
+  "RegisterAssistantReplicaKey": {
+   "name": "RegisterAssistantReplicaKey",
+   "http": {
+    "method": "PUT",
+    "requestUri": "/assistants/{assistantId}/replicaKey",
+    "responseCode": 200
+   },
+   "input": {
+    "shape": "RegisterAssistantReplicaKeyRequest"
+   },
+   "output": {
+    "shape": "RegisterAssistantReplicaKeyResponse"
+   },
+   "errors": [
+    {
+     "shape": "ConflictException"
+    },
+    {
+     "shape": "ValidationException"
+    },
+    {
+     "shape": "UnauthorizedException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "ThrottlingException"
+    }
+   ],
+   "idempotent": true
+  },
+  "RegisterKnowledgeBaseReplicaKey": {
+   "name": "RegisterKnowledgeBaseReplicaKey",
+   "http": {
+    "method": "PUT",
+    "requestUri": "/knowledgeBases/{knowledgeBaseId}/replicaKey",
+    "responseCode": 200
+   },
+   "input": {
+    "shape": "RegisterKnowledgeBaseReplicaKeyRequest"
+   },
+   "output": {
+    "shape": "RegisterKnowledgeBaseReplicaKeyResponse"
+   },
+   "errors": [
+    {
+     "shape": "ConflictException"
+    },
+    {
+     "shape": "ValidationException"
+    },
+    {
+     "shape": "UnauthorizedException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "ThrottlingException"
+    }
+   ],
+   "idempotent": true
+  },
   "RemoveAssistantAIAgent": {
    "name": "RemoveAssistantAIAgent",
    "http": {
@@ -2210,6 +2280,9 @@
    "errors": [
     {
      "shape": "ValidationException"
+    },
+    {
+     "shape": "ConflictException"
     },
     {
      "shape": "AccessDeniedException"
@@ -2709,6 +2782,9 @@
      "shape": "ValidationException"
     },
     {
+     "shape": "ConflictException"
+    },
+    {
      "shape": "AccessDeniedException"
     },
     {
@@ -3028,6 +3104,12 @@
     "modifiedTime": {
      "shape": "Timestamp"
     },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
     "description": {
      "shape": "Description"
     },
@@ -3077,6 +3159,12 @@
     },
     "modifiedTime": {
      "shape": "Timestamp"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     },
     "visibilityStatus": {
      "shape": "VisibilityStatus"
@@ -3237,6 +3325,12 @@
     },
     "modifiedTime": {
      "shape": "Timestamp"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     }
    }
   },
@@ -3291,6 +3385,12 @@
     },
     "modifiedTime": {
      "shape": "Timestamp"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     },
     "visibilityStatus": {
      "shape": "VisibilityStatus"
@@ -3406,6 +3506,12 @@
     "modifiedTime": {
      "shape": "Timestamp"
     },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
     "description": {
      "shape": "Description"
     },
@@ -3480,6 +3586,12 @@
     },
     "modifiedTime": {
      "shape": "Timestamp"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     },
     "templateType": {
      "shape": "AIPromptTemplateType"
@@ -3757,6 +3869,12 @@
     },
     "tags": {
      "shape": "Tags"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     }
    }
   },
@@ -3823,6 +3941,12 @@
     },
     "tags": {
      "shape": "Tags"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     }
    }
   },
@@ -3892,8 +4016,24 @@
     },
     "orchestratorConfigurationList": {
      "shape": "OrchestratorConfigurationList"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
+    "assistantGlobalResiliencyStatus": {
+     "shape": "AssistantGlobalResiliencyStatus"
     }
    }
+  },
+  "AssistantGlobalResiliencyStatus": {
+   "type": "string",
+   "enum": [
+    "ENABLED",
+    "DISABLED"
+   ]
   },
   "AssistantIntegrationConfiguration": {
    "type": "structure",
@@ -3965,6 +4105,12 @@
     },
     "orchestratorConfigurationList": {
      "shape": "OrchestratorConfigurationList"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     }
    }
   },
@@ -4016,6 +4162,12 @@
    "min": 1,
    "pattern": "[\\p{L}\\p{M}\\p{N}_\\s&@()+,;=\\-]+\\.[A-Za-z0-9]+",
    "sensitive": true
+  },
+  "AwsRegion": {
+   "type": "string",
+   "max": 31,
+   "min": 8,
+   "pattern": "[a-z]{2}(-[a-z]+){1,2}(-[0-9])?"
   },
   "BedrockFoundationModelConfigurationForParsing": {
    "type": "structure",
@@ -4405,6 +4557,15 @@
     },
     "urlExpiry": {
      "shape": "SyntheticTimestamp_epoch_seconds"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
+    "fileHash": {
+     "shape": "NonEmptyString"
     }
    }
   },
@@ -4531,6 +4692,15 @@
     },
     "tags": {
      "shape": "Tags"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
+    "fileHash": {
+     "shape": "NonEmptyString"
     }
    }
   },
@@ -6923,6 +7093,13 @@
     }
    }
   },
+  "GlobalResiliencyStatus": {
+   "type": "string",
+   "enum": [
+    "SUPPORTED",
+    "UNSUPPORTED"
+   ]
+  },
   "GroupingConfiguration": {
    "type": "structure",
    "members": {
@@ -7650,6 +7827,12 @@
     },
     "ingestionFailureReasons": {
      "shape": "FailureReason"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     }
    }
   },
@@ -7719,6 +7902,12 @@
     },
     "tags": {
      "shape": "Tags"
+    },
+    "lastModifiedTime": {
+     "shape": "Timestamp"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     }
    }
   },
@@ -9202,6 +9391,9 @@
     },
     "endOfLifeTimestamp": {
      "shape": "Timestamp"
+    },
+    "globalResiliencyStatus": {
+     "shape": "GlobalResiliencyStatus"
     }
    }
   },
@@ -9977,6 +10169,9 @@
     "lastModifiedTime": {
      "shape": "SyntheticTimestamp_epoch_seconds"
     },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
     "contents": {
      "shape": "QuickResponseContents"
     },
@@ -10201,6 +10396,9 @@
     "lastModifiedTime": {
      "shape": "SyntheticTimestamp_epoch_seconds"
     },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
+    },
     "isActive": {
      "shape": "Boolean"
     },
@@ -10292,6 +10490,9 @@
     },
     "lastModifiedTime": {
      "shape": "SyntheticTimestamp_epoch_seconds"
+    },
+    "lastModifiedRegion": {
+     "shape": "AwsRegion"
     },
     "description": {
      "shape": "QuickResponseDescription"
@@ -10470,6 +10671,70 @@
     "BEDROCK_KB_SQL"
    ]
   },
+  "RegisterAssistantReplicaKeyRequest": {
+   "type": "structure",
+   "required": [
+    "assistantId",
+    "replicaKmsKey"
+   ],
+   "members": {
+    "assistantId": {
+     "shape": "UuidOrArn",
+     "location": "uri",
+     "locationName": "assistantId"
+    },
+    "replicaKmsKey": {
+     "shape": "ReplicaKmsKey"
+    },
+    "clientToken": {
+     "shape": "ClientToken",
+     "idempotencyToken": true
+    }
+   }
+  },
+  "RegisterAssistantReplicaKeyResponse": {
+   "type": "structure",
+   "required": [
+    "assistant"
+   ],
+   "members": {
+    "assistant": {
+     "shape": "AssistantData"
+    }
+   }
+  },
+  "RegisterKnowledgeBaseReplicaKeyRequest": {
+   "type": "structure",
+   "required": [
+    "knowledgeBaseId",
+    "replicaKmsKey"
+   ],
+   "members": {
+    "knowledgeBaseId": {
+     "shape": "UuidOrArn",
+     "location": "uri",
+     "locationName": "knowledgeBaseId"
+    },
+    "replicaKmsKey": {
+     "shape": "ReplicaKmsKey"
+    },
+    "clientToken": {
+     "shape": "ClientToken",
+     "idempotencyToken": true
+    }
+   }
+  },
+  "RegisterKnowledgeBaseReplicaKeyResponse": {
+   "type": "structure",
+   "required": [
+    "knowledgeBase"
+   ],
+   "members": {
+    "knowledgeBase": {
+     "shape": "KnowledgeBaseData"
+    }
+   }
+  },
   "Relevance": {
    "type": "string",
    "enum": [
@@ -10581,6 +10846,25 @@
      "shape": "Uri"
     }
    }
+  },
+  "ReplicaKmsKey": {
+   "type": "structure",
+   "required": [
+    "arn"
+   ],
+   "members": {
+    "arn": {
+     "shape": "NonEmptyString"
+    }
+   }
+  },
+  "ReplicaKmsKeyList": {
+   "type": "list",
+   "member": {
+    "shape": "ReplicaKmsKey"
+   },
+   "max": 5,
+   "min": 1
   },
   "RequestTimeoutException": {
    "type": "structure",
@@ -11227,6 +11511,9 @@
    "members": {
     "kmsKeyId": {
      "shape": "NonEmptyString"
+    },
+    "replicaKmsKeys": {
+     "shape": "ReplicaKmsKeyList"
     }
    }
   },
@@ -12338,6 +12625,9 @@
    "members": {
     "message": {
      "shape": "String"
+    },
+    "reason": {
+     "shape": "UnprocessableContentReason"
     }
    },
    "error": {
@@ -12345,6 +12635,13 @@
     "senderFault": true
    },
    "exception": true
+  },
+  "UnprocessableContentReason": {
+   "type": "string",
+   "enum": [
+    "ORCHESTRATION_ERROR",
+    "AI_INFERENCE_MODEL_UNAVAILABLE"
+   ]
   },
   "UntagResourceRequest": {
    "type": "structure",

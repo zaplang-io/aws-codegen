@@ -121,6 +121,25 @@
     }
    }
   },
+  "CancelBulkOperation": {
+   "name": "CancelBulkOperation",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "CancelBulkOperationInput"
+   },
+   "output": {
+    "shape": "CancelBulkOperationOutput"
+   },
+   "errors": [
+    {
+     "shape": "ResourceNotFoundException"
+    }
+   ],
+   "endpointdiscovery": {}
+  },
   "CreateBackup": {
    "name": "CreateBackup",
    "http": {
@@ -356,6 +375,25 @@
     },
     {
      "shape": "InternalServerError"
+    }
+   ],
+   "endpointdiscovery": {}
+  },
+  "DescribeBulkOperation": {
+   "name": "DescribeBulkOperation",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "DescribeBulkOperationInput"
+   },
+   "output": {
+    "shape": "DescribeBulkOperationOutput"
+   },
+   "errors": [
+    {
+     "shape": "ResourceNotFoundException"
     }
    ],
    "endpointdiscovery": {}
@@ -883,6 +921,20 @@
    ],
    "endpointdiscovery": {}
   },
+  "ListBulkOperations": {
+   "name": "ListBulkOperations",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "ListBulkOperationsInput"
+   },
+   "output": {
+    "shape": "ListBulkOperationsOutput"
+   },
+   "endpointdiscovery": {}
+  },
   "ListContributorInsights": {
    "name": "ListContributorInsights",
    "http": {
@@ -1241,6 +1293,34 @@
      "value": true
     }
    }
+  },
+  "StartBulkPutItems": {
+   "name": "StartBulkPutItems",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "StartBulkPutItemsInput"
+   },
+   "output": {
+    "shape": "StartBulkPutItemsOutput"
+   },
+   "errors": [
+    {
+     "shape": "LimitExceededException"
+    },
+    {
+     "shape": "ResourceInUseException"
+    },
+    {
+     "shape": "IdempotentParameterMismatchException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    }
+   ],
+   "endpointdiscovery": {}
   },
   "TagResource": {
    "name": "TagResource",
@@ -2276,6 +2356,231 @@
   "BooleanObject": {
    "type": "boolean"
   },
+  "BulkOperationArn": {
+   "type": "string",
+   "max": 1024,
+   "min": 37
+  },
+  "BulkOperationBytes": {
+   "type": "structure",
+   "members": {
+    "BulkPutBytes": {
+     "shape": "NonNegativeLongObject"
+    }
+   }
+  },
+  "BulkOperationDescription": {
+   "type": "structure",
+   "members": {
+    "BulkOperationArn": {
+     "shape": "BulkOperationArn"
+    },
+    "BulkOperationStatus": {
+     "shape": "BulkOperationStatus"
+    },
+    "TableDetails": {
+     "shape": "BulkOperationTableDetails"
+    },
+    "ClientToken": {
+     "shape": "ClientToken"
+    },
+    "InputS3Configuration": {
+     "shape": "InputS3Configuration"
+    },
+    "OutputS3Configuration": {
+     "shape": "OutputS3Configuration"
+    },
+    "StartTime": {
+     "shape": "BulkOperationStartTime"
+    },
+    "EndTime": {
+     "shape": "BulkOperationEndTime"
+    },
+    "ProcessedItemCount": {
+     "shape": "BulkOperationItemCount"
+    },
+    "ProcessedInputBytes": {
+     "shape": "ProcessedInputBytes"
+    },
+    "TotalInputBytes": {
+     "shape": "TotalInputBytes"
+    },
+    "BulkOperationUsage": {
+     "shape": "BulkOperationUsageMultiple"
+    },
+    "FailedItemCount": {
+     "shape": "BulkOperationItemCount"
+    },
+    "FailureCode": {
+     "shape": "FailureCode"
+    },
+    "FailureMessage": {
+     "shape": "FailureMessage"
+    },
+    "MaxWriteRequestUnits": {
+     "shape": "BulkOperationMaxWriteRequestUnits"
+    },
+    "PerformanceTier": {
+     "shape": "BulkOperationPerformanceTier"
+    }
+   }
+  },
+  "BulkOperationEndTime": {
+   "type": "timestamp"
+  },
+  "BulkOperationInputFormat": {
+   "type": "string",
+   "enum": [
+    "DYNAMODB_JSON",
+    "ION"
+   ]
+  },
+  "BulkOperationItemCount": {
+   "type": "long",
+   "min": 0
+  },
+  "BulkOperationMaxWriteRequestUnits": {
+   "type": "long",
+   "min": 1024
+  },
+  "BulkOperationNextToken": {
+   "type": "string",
+   "max": 1024,
+   "min": 1,
+   "pattern": "([0-9a-f]{16})+"
+  },
+  "BulkOperationPerformanceTier": {
+   "type": "string",
+   "enum": [
+    "STANDARD",
+    "ACCELERATED"
+   ]
+  },
+  "BulkOperationStartTime": {
+   "type": "timestamp"
+  },
+  "BulkOperationStatus": {
+   "type": "string",
+   "enum": [
+    "IN_PROGRESS",
+    "COMPLETED",
+    "COMPLETED_WITH_ERRORS",
+    "CANCELLING",
+    "CANCELLED",
+    "FAILED"
+   ]
+  },
+  "BulkOperationSummary": {
+   "type": "structure",
+   "required": [
+    "BulkOperationArn",
+    "BulkOperationStatus",
+    "StartTime"
+   ],
+   "members": {
+    "BulkOperationArn": {
+     "shape": "BulkOperationArn"
+    },
+    "BulkOperationStatus": {
+     "shape": "BulkOperationStatus"
+    },
+    "StartTime": {
+     "shape": "BulkOperationStartTime"
+    },
+    "EndTime": {
+     "shape": "BulkOperationEndTime"
+    }
+   }
+  },
+  "BulkOperationTableDetail": {
+   "type": "structure",
+   "members": {
+    "TableName": {
+     "shape": "TableArn"
+    },
+    "TableId": {
+     "shape": "TableId"
+    }
+   }
+  },
+  "BulkOperationTableDetails": {
+   "type": "list",
+   "member": {
+    "shape": "BulkOperationTableDetail"
+   }
+  },
+  "BulkOperationUsage": {
+   "type": "structure",
+   "members": {
+    "TableName": {
+     "shape": "TableArn"
+    },
+    "BulkPutBytes": {
+     "shape": "NonNegativeLongObject"
+    },
+    "Table": {
+     "shape": "BulkOperationBytes"
+    },
+    "LocalSecondaryIndexes": {
+     "shape": "SecondaryIndexesBulkBytesMap"
+    },
+    "GlobalSecondaryIndexes": {
+     "shape": "SecondaryIndexesBulkBytesMap"
+    },
+    "VectorIndexes": {
+     "shape": "VectorIndexesBulkVectorBytesMap"
+    }
+   }
+  },
+  "BulkOperationUsageMultiple": {
+   "type": "list",
+   "member": {
+    "shape": "BulkOperationUsage"
+   }
+  },
+  "BulkOperationVectorBytes": {
+   "type": "structure",
+   "members": {
+    "BulkPutVectorBytes": {
+     "shape": "NonNegativeLongObject"
+    }
+   }
+  },
+  "BulkOperationsSummaryList": {
+   "type": "list",
+   "member": {
+    "shape": "BulkOperationSummary"
+   }
+  },
+  "CancelBulkOperationInput": {
+   "type": "structure",
+   "required": [
+    "BulkOperationArn"
+   ],
+   "members": {
+    "BulkOperationArn": {
+     "shape": "BulkOperationArn",
+     "contextParam": {
+      "name": "ResourceArn"
+     }
+    }
+   }
+  },
+  "CancelBulkOperationOutput": {
+   "type": "structure",
+   "required": [
+    "BulkOperationArn",
+    "BulkOperationStatus"
+   ],
+   "members": {
+    "BulkOperationArn": {
+     "shape": "BulkOperationArn"
+    },
+    "BulkOperationStatus": {
+     "shape": "BulkOperationStatus"
+    }
+   }
+  },
   "CancellationReason": {
    "type": "structure",
    "members": {
@@ -3050,6 +3355,31 @@
    "members": {
     "BackupDescription": {
      "shape": "BackupDescription"
+    }
+   }
+  },
+  "DescribeBulkOperationInput": {
+   "type": "structure",
+   "required": [
+    "BulkOperationArn"
+   ],
+   "members": {
+    "BulkOperationArn": {
+     "shape": "BulkOperationArn",
+     "contextParam": {
+      "name": "ResourceArn"
+     }
+    }
+   }
+  },
+  "DescribeBulkOperationOutput": {
+   "type": "structure",
+   "required": [
+    "BulkOperationDescription"
+   ],
+   "members": {
+    "BulkOperationDescription": {
+     "shape": "BulkOperationDescription"
     }
    }
   },
@@ -4459,6 +4789,30 @@
     }
    }
   },
+  "InputS3Configuration": {
+   "type": "structure",
+   "required": [
+    "S3Bucket",
+    "InputFormat"
+   ],
+   "members": {
+    "S3BucketOwner": {
+     "shape": "S3BucketOwner"
+    },
+    "S3Bucket": {
+     "shape": "S3Bucket"
+    },
+    "S3KeyPrefix": {
+     "shape": "S3Prefix"
+    },
+    "InputFormat": {
+     "shape": "BulkOperationInputFormat"
+    },
+    "InputCompressionType": {
+     "shape": "InputCompressionType"
+    }
+   }
+  },
   "Integer": {
    "type": "integer"
   },
@@ -4777,6 +5131,33 @@
     },
     "LastEvaluatedBackupArn": {
      "shape": "BackupArn"
+    }
+   }
+  },
+  "ListBulkOperationsInput": {
+   "type": "structure",
+   "members": {
+    "MaxResults": {
+     "shape": "ListBulkOperationsMaxLimit"
+    },
+    "NextToken": {
+     "shape": "BulkOperationNextToken"
+    }
+   }
+  },
+  "ListBulkOperationsMaxLimit": {
+   "type": "integer",
+   "max": 25,
+   "min": 1
+  },
+  "ListBulkOperationsOutput": {
+   "type": "structure",
+   "members": {
+    "BulkOperationsSummaryList": {
+     "shape": "BulkOperationsSummaryList"
+    },
+    "NextToken": {
+     "shape": "BulkOperationNextToken"
     }
    }
   },
@@ -5105,6 +5486,45 @@
     }
    }
   },
+  "OutputS3Configuration": {
+   "type": "structure",
+   "required": [
+    "OutputType"
+   ],
+   "members": {
+    "S3BucketOwner": {
+     "shape": "S3BucketOwner"
+    },
+    "S3Bucket": {
+     "shape": "S3Bucket"
+    },
+    "S3KeyPrefix": {
+     "shape": "S3Prefix"
+    },
+    "S3SseAlgorithm": {
+     "shape": "S3SseAlgorithm"
+    },
+    "S3SseKmsKeyId": {
+     "shape": "S3SseKmsKeyId"
+    },
+    "OutputType": {
+     "shape": "OutputTypeList"
+    }
+   }
+  },
+  "OutputTypeEnum": {
+   "type": "string",
+   "enum": [
+    "ERROR",
+    "CONDITION_CHECK_FAILURE"
+   ]
+  },
+  "OutputTypeList": {
+   "type": "list",
+   "member": {
+    "shape": "OutputTypeEnum"
+   }
+  },
   "ParameterizedStatement": {
    "type": "structure",
    "required": [
@@ -5229,6 +5649,10 @@
     "shape": "AttributeValue"
    },
    "min": 1
+  },
+  "ProcessedInputBytes": {
+   "type": "long",
+   "min": 0
   },
   "ProcessedItemCount": {
    "type": "long",
@@ -6462,6 +6886,15 @@
     }
    }
   },
+  "SecondaryIndexesBulkBytesMap": {
+   "type": "map",
+   "key": {
+    "shape": "IndexName"
+   },
+   "value": {
+    "shape": "BulkOperationBytes"
+   }
+  },
   "SecondaryIndexesCapacityMap": {
    "type": "map",
    "key": {
@@ -6542,6 +6975,49 @@
     },
     "VectorIndexes": {
      "shape": "VectorIndexes"
+    }
+   }
+  },
+  "StartBulkPutItemsInput": {
+   "type": "structure",
+   "required": [
+    "InputS3Configuration",
+    "OutputS3Configuration",
+    "TableName"
+   ],
+   "members": {
+    "ClientToken": {
+     "shape": "ClientToken",
+     "idempotencyToken": true
+    },
+    "InputS3Configuration": {
+     "shape": "InputS3Configuration"
+    },
+    "OutputS3Configuration": {
+     "shape": "OutputS3Configuration"
+    },
+    "TableName": {
+     "shape": "TableArn",
+     "contextParam": {
+      "name": "ResourceArn"
+     }
+    },
+    "MaxWriteRequestUnits": {
+     "shape": "BulkOperationMaxWriteRequestUnits"
+    },
+    "PerformanceTier": {
+     "shape": "BulkOperationPerformanceTier"
+    }
+   }
+  },
+  "StartBulkPutItemsOutput": {
+   "type": "structure",
+   "required": [
+    "BulkOperationDescription"
+   ],
+   "members": {
+    "BulkOperationDescription": {
+     "shape": "BulkOperationDescription"
     }
    }
   },
@@ -6968,6 +7444,10 @@
    "type": "integer",
    "box": true,
    "min": 1
+  },
+  "TotalInputBytes": {
+   "type": "long",
+   "min": 0
   },
   "TransactGetItem": {
    "type": "structure",
@@ -7728,6 +8208,15 @@
    "type": "list",
    "member": {
     "shape": "VectorIndexInfo"
+   }
+  },
+  "VectorIndexesBulkVectorBytesMap": {
+   "type": "map",
+   "key": {
+    "shape": "IndexName"
+   },
+   "value": {
+    "shape": "BulkOperationVectorBytes"
    }
   },
   "VectorIndexesCapacityMap": {

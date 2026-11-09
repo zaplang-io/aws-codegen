@@ -4926,6 +4926,7 @@ enum SupportabilityScore:
     high
     medium
     low
+    unsupported
     Unknown(str value)
 
 @derive(Json)

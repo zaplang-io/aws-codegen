@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 107 operations — 103 with a generated method,
 #   4 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   307 structs (193 @derive(Json)), 46 enums, 10 error variants.
+#   307 structs (193 @derive(Json)), 47 enums, 10 error variants.
 #   25 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   16 waiters generated (2 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -305,6 +305,13 @@ enum RunLogLevel:
     FATAL
     ERROR
     ALL
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RunOutputUriPrefixMode:
+    SERVICE_DEFINED
+    NONE_WITH_OVERWRITE
     Unknown(str value)
 
 @derive(Json)
@@ -1591,6 +1598,7 @@ struct GetRunResponse:
     Optional[VpcConfigResponse] vpcConfig
     Optional[EngineSettings] engineSettings
     Optional[str] sessionPolicy
+    Optional[RunOutputUriPrefixMode] outputUriPrefixMode
 
 # rest-json request for GetRunTaskRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -2801,6 +2809,7 @@ struct StartRunRequest:
     Optional[str] configurationName
     Optional[str] sessionPolicy
     Optional[EngineSettings] engineSettings
+    Optional[RunOutputUriPrefixMode] outputUriPrefixMode
 
 # no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -5128,6 +5137,9 @@ struct OmicsClient:
         if input.engineSettings.is_some():
             auto u21 = input.engineSettings.unwrap()
             parts.append("\"engineSettings\":" + u21.to_json())
+        if input.outputUriPrefixMode.is_some():
+            auto u22 = input.outputUriPrefixMode.unwrap()
+            parts.append("\"outputUriPrefixMode\":" + u22.to_json())
         auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 

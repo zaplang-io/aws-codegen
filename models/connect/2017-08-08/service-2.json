@@ -12984,6 +12984,7 @@
     "UPDATE_CASE",
     "ASSIGN_SLA",
     "END_ASSOCIATED_TASKS",
+    "END_ASSOCIATED_EMAILS",
     "SUBMIT_AUTO_EVALUATION",
     "EXTRACT_INFORMATION",
     "SEND_IN_APP_NOTIFICATION"
@@ -15621,6 +15622,33 @@
    "max": 100,
    "min": 1
   },
+  "CaseEntries": {
+   "type": "list",
+   "member": {
+    "shape": "CaseEntry"
+   }
+  },
+  "CaseEntry": {
+   "type": "structure",
+   "members": {
+    "CaseId": {
+     "shape": "CaseId"
+    },
+    "CaseReferenceNumber": {
+     "shape": "CaseReferenceNumber"
+    }
+   }
+  },
+  "CaseId": {
+   "type": "string",
+   "max": 36,
+   "min": 1
+  },
+  "CaseReferenceNumber": {
+   "type": "string",
+   "max": 50,
+   "min": 1
+  },
   "CaseSlaConfiguration": {
    "type": "structure",
    "required": [
@@ -15644,6 +15672,34 @@
     "TargetSlaMinutes": {
      "shape": "TargetSlaMinutes"
     }
+   }
+  },
+  "CategoriesAttributeAndCondition": {
+   "type": "structure",
+   "members": {
+    "TagConditions": {
+     "shape": "TagAndConditionList"
+    }
+   }
+  },
+  "CategoriesAttributeFilter": {
+   "type": "structure",
+   "members": {
+    "OrConditions": {
+     "shape": "CategoriesAttributeOrConditionList"
+    },
+    "AndCondition": {
+     "shape": "CategoriesAttributeAndCondition"
+    },
+    "TagCondition": {
+     "shape": "TagCondition"
+    }
+   }
+  },
+  "CategoriesAttributeOrConditionList": {
+   "type": "list",
+   "member": {
+    "shape": "CategoriesAttributeAndCondition"
    }
   },
   "Channel": {
@@ -16199,6 +16255,9 @@
     },
     "TaskTemplateInfo": {
      "shape": "TaskTemplateInfoV2"
+    },
+    "Cases": {
+     "shape": "CaseEntries"
     },
     "ContactDetails": {
      "shape": "ContactDetails"
@@ -23251,6 +23310,10 @@
     "KMS"
    ]
   },
+  "EndAssociatedEmailsActionDefinition": {
+   "type": "structure",
+   "members": {}
+  },
   "EndAssociatedTasksActionDefinition": {
    "type": "structure",
    "members": {}
@@ -30088,6 +30151,9 @@
     },
     "SegmentTypes": {
      "shape": "RealTimeContactAnalysisSegmentTypes"
+    },
+    "ListFilter": {
+     "shape": "RealTimeContactAnalysisSegmentsFilter"
     }
    }
   },
@@ -33598,7 +33664,8 @@
   "PreEvaluationFilterResourceType": {
    "type": "string",
    "enum": [
-    "CONTACT"
+    "CONTACT",
+    "CONTACT_EVALUATION"
    ]
   },
   "PreEvaluationFilterType": {
@@ -34605,6 +34672,9 @@
     "PointsOfInterest"
    ],
    "members": {
+    "RuleId": {
+     "shape": "RuleId256"
+    },
     "PointsOfInterest": {
      "shape": "RealTimeContactAnalysisPointsOfInterest"
     }
@@ -34942,6 +35012,14 @@
     "shape": "RealTimeContactAnalysisSegmentType"
    },
    "max": 7
+  },
+  "RealTimeContactAnalysisSegmentsFilter": {
+   "type": "structure",
+   "members": {
+    "CategoriesAttributeFilter": {
+     "shape": "CategoriesAttributeFilter"
+    }
+   }
   },
   "RealTimeContactAnalysisSentimentLabel": {
    "type": "string",
@@ -36226,6 +36304,9 @@
     "EndAssociatedTasksAction": {
      "shape": "EndAssociatedTasksActionDefinition"
     },
+    "EndAssociatedEmailsAction": {
+     "shape": "EndAssociatedEmailsActionDefinition"
+    },
     "SubmitAutoEvaluationAction": {
      "shape": "SubmitAutoEvaluationActionDefinition"
     },
@@ -36287,6 +36368,11 @@
    "type": "string"
   },
   "RuleId": {
+   "type": "string",
+   "max": 256,
+   "min": 1
+  },
+  "RuleId256": {
    "type": "string",
    "max": 256,
    "min": 1

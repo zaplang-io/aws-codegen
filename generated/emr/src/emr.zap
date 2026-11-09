@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 65 operations — 64 with a generated method,
 #   1 skipped (input has a non-string-keyed map or free-form document member).
-#   235 structs (133 @derive(Json)), 45 enums, 3 error variants.
+#   236 structs (133 @derive(Json)), 45 enums, 3 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   3 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2098,7 +2098,7 @@ struct StartSessionOutput:
     Optional[str] AccountId
     Optional[SessionState] State
 
-# no @derive(Json): member(s) Config: HadoopStepConfig not derivable (list/map collections);
+# no @derive(Json): member(s) Config: HadoopStepConfig, AdditionalInfo: StepAdditionalInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Step:
@@ -2110,6 +2110,14 @@ struct Step:
     Optional[str] ExecutionRoleArn
     Optional[str] LogUri
     Optional[str] EncryptionKeyArn
+    Optional[StepAdditionalInfo] AdditionalInfo
+
+# no @derive(Json): member(s) ResourceManagerApplicationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct StepAdditionalInfo:
+    Optional[list[str]] ResourceManagerApplicationIds
+    Optional[str] ResourceManager
 
 # no @derive(Json): member(s) HadoopJarStep: HadoopJarStepConfig not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2151,7 +2159,7 @@ struct StepStatus:
     Optional[FailureDetails] FailureDetails
     Optional[StepTimeline] Timeline
 
-# no @derive(Json): member(s) Config: HadoopStepConfig not derivable (list/map collections);
+# no @derive(Json): member(s) Config: HadoopStepConfig, AdditionalInfo: StepAdditionalInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct StepSummary:
@@ -2162,6 +2170,7 @@ struct StepSummary:
     Optional[StepStatus] Status
     Optional[str] LogUri
     Optional[str] EncryptionKeyArn
+    Optional[StepAdditionalInfo] AdditionalInfo
 
 @derive(Json)
 struct StepTimeline:

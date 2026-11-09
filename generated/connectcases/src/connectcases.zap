@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 43 operations — 42 with a generated method,
+# Coverage (rest-json): 45 operations — 44 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   174 structs (93 @derive(Json)), 10 enums, 7 error variants.
+#   188 structs (103 @derive(Json)), 10 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -171,6 +171,38 @@ struct BasicLayout:
     Optional[LayoutSections] topPanel
     Optional[LayoutSections] moreInfo
 
+@derive(Json)
+struct BatchCreateRelatedItemErrorEntry:
+    CaseIdentifier caseIdentifier
+    str errorCode
+    str errorMessage
+
+@derive(Json)
+struct BatchCreateRelatedItemIdentifier:
+    CaseIdentifierUnion caseIdentifier
+
+# rest-json request for BatchCreateRelatedItemRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct BatchCreateRelatedItemRequest:
+    str domainId
+    RelatedItemInputContent content
+    list[BatchCreateRelatedItemIdentifier] cases
+    Optional[UserUnion] performedBy
+    Optional[str] clientToken
+
+# no @derive(Json): member(s) successfulItems: list[BatchCreateRelatedItemSuccessEntry], failedItems: list[BatchCreateRelatedItemErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct BatchCreateRelatedItemResponse:
+    list[BatchCreateRelatedItemSuccessEntry] successfulItems
+    list[BatchCreateRelatedItemErrorEntry] failedItems
+
+@derive(Json)
+struct BatchCreateRelatedItemSuccessEntry:
+    CaseIdentifier caseIdentifier
+    str relatedItemId
+    str relatedItemArn
+
 # rest-json request for BatchGetCaseRuleRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct BatchGetCaseRuleRequest:
@@ -211,6 +243,39 @@ struct BatchPutFieldOptionsRequest:
 struct BatchPutFieldOptionsResponse:
     Optional[list[FieldOptionError]] errors
 
+@derive(Json)
+struct BatchUpdateCaseErrorEntry:
+    CaseIdentifier caseIdentifier
+    str errorCode
+    str errorMessage
+
+@derive(Json)
+struct BatchUpdateCaseIdentifier:
+    CaseIdentifierUnion caseIdentifier
+
+# rest-json request for BatchUpdateCaseRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct BatchUpdateCaseRequest:
+    str domainId
+    list[BatchUpdateCaseIdentifier] cases
+    list[FieldValueInput] fields
+    Optional[UserUnion] performedBy
+    Optional[str] title
+    Optional[str] status
+    Optional[str] customerId
+    Optional[str] clientToken
+
+# no @derive(Json): member(s) successfulCases: list[BatchUpdateCaseSuccessEntry], failedCases: list[BatchUpdateCaseErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct BatchUpdateCaseResponse:
+    list[BatchUpdateCaseSuccessEntry] successfulCases
+    list[BatchUpdateCaseErrorEntry] failedCases
+
+@derive(Json)
+struct BatchUpdateCaseSuccessEntry:
+    CaseIdentifier caseIdentifier
+
 # no @derive(Json): member(s) andAll: CompoundCondition, orAll: CompoundCondition not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -242,6 +307,17 @@ struct CaseFilter:
     Optional[TagFilter] tag
     Optional[list[CaseFilter]] andAll
     Optional[list[CaseFilter]] orAll
+
+@derive(Json)
+struct CaseIdentifier:
+    Optional[str] caseId
+    Optional[str] referenceNumber
+    Optional[str] referenceId
+
+@derive(Json)
+struct CaseIdentifierUnion:
+    Optional[str] caseId
+    Optional[str] referenceId
 
 # no @derive(Json): member(s) required: RequiredCaseRule, fieldOptions: FieldOptionsCaseRule, hidden: HiddenCaseRule not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -599,6 +675,11 @@ struct FieldIdentifier:
     str id
 
 @derive(Json)
+struct FieldIdentifierUnion:
+    Optional[str] id
+    Optional[str] name
+
+@derive(Json)
 struct FieldItem:
     str id
 
@@ -634,6 +715,11 @@ struct FieldSummary:
 @derive(Json)
 struct FieldValue:
     str id
+    FieldValueUnion value
+
+@derive(Json)
+struct FieldValueInput:
+    FieldIdentifierUnion fieldIdentifier
     FieldValueUnion value
 
 @derive(Json)
@@ -1806,6 +1892,27 @@ struct ConnectCasesClient:
     core.Credentials creds
     str region
 
+    # BatchCreateRelatedItem  POST /cases:batchCreateRelatedItem
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_related_item(self, BatchCreateRelatedItemRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cases:batchCreateRelatedItem", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainId\":" + cases_json_str(input.domainId))
+        parts.append("\"content\":" + related_item_input_content_to_json(input.content))
+        list[str] e0 = []
+        for x0 in input.cases:
+            e0.append(x0.to_json())
+        parts.append("\"cases\":" + cases_json_arr(e0))
+        if input.performedBy.is_some():
+            auto u1 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u1.to_json())
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + cases_json_str(u2))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
     # BatchGetCaseRule  POST /domains/{domainId}/rules-batch
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_case_rule(self, BatchGetCaseRuleRequest input) -> str:
@@ -1849,6 +1956,39 @@ struct ConnectCasesClient:
         for x0 in input.options:
             e0.append(x0.to_json())
         parts.append("\"options\":" + cases_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # BatchUpdateCase  PUT /cases:batchUpdateCase
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_case(self, BatchUpdateCaseRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/cases:batchUpdateCase", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainId\":" + cases_json_str(input.domainId))
+        list[str] e0 = []
+        for x0 in input.cases:
+            e0.append(x0.to_json())
+        parts.append("\"cases\":" + cases_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.fields:
+            e1.append(x1.to_json())
+        parts.append("\"fields\":" + cases_json_arr(e1))
+        if input.performedBy.is_some():
+            auto u2 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u2.to_json())
+        if input.title.is_some():
+            auto u3 = input.title.unwrap()
+            parts.append("\"title\":" + cases_json_str(u3))
+        if input.status.is_some():
+            auto u4 = input.status.unwrap()
+            parts.append("\"status\":" + cases_json_str(u4))
+        if input.customerId.is_some():
+            auto u5 = input.customerId.unwrap()
+            parts.append("\"customerId\":" + cases_json_str(u5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + cases_json_str(u6))
         auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 

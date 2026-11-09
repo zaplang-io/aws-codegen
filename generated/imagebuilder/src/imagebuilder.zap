@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 77 operations — 77 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   284 structs (170 @derive(Json)), 33 enums, 20 error variants.
+#   285 structs (171 @derive(Json)), 35 enums, 20 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -107,6 +107,13 @@ enum ImageScanStatus:
     ABANDONED
     FAILED
     TIMED_OUT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ImageScanningType:
+    TEST_INSTANCE_CVE
+    ON_DEMAND_AMI_CVE
     Unknown(str value)
 
 @derive(Json)
@@ -214,6 +221,15 @@ enum LifecyclePolicyTimeUnit:
 enum MarketplaceResourceType:
     COMPONENT_DATA
     COMPONENT_ARTIFACT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MaximumSeverityLabel:
+    INFORMATIONAL
+    LOW
+    MEDIUM
+    HIGH
     Unknown(str value)
 
 @derive(Json)
@@ -1379,12 +1395,14 @@ struct ImageScanState:
     Optional[ImageScanStatus] status
     Optional[str] reason
 
-# no @derive(Json): member(s) ecrConfiguration: EcrConfiguration not derivable (list/map collections);
+# no @derive(Json): member(s) ecrConfiguration: EcrConfiguration, imageScanningTypes: list[ImageScanningType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ImageScanningConfiguration:
     Optional[bool] imageScanningEnabled
     Optional[EcrConfiguration] ecrConfiguration
+    Optional[list[ImageScanningType]] imageScanningTypes
+    Optional[ScanResultCondition] scanResultCondition
 
 # no @derive(Json): member(s) failureContext: ImageFailureContext not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2253,6 +2271,11 @@ struct S3Logs:
     Optional[str] s3KeyPrefix
 
 @derive(Json)
+struct ScanResultCondition:
+    MaximumSeverityLabel maximumSeverityLabel
+    Optional[bool] fixAvailable
+
+@derive(Json)
 struct Schedule:
     Optional[str] scheduleExpression
     Optional[str] timezone
@@ -3019,6 +3042,15 @@ def image_scanning_configuration_to_json(ImageScanningConfiguration v) -> str:
     if v.ecrConfiguration.is_some():
         auto u1 = v.ecrConfiguration.unwrap()
         parts.append("\"ecrConfiguration\":" + ecr_configuration_to_json(u1))
+    if v.imageScanningTypes.is_some():
+        auto u2 = v.imageScanningTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"imageScanningTypes\":" + imagebuilder_json_arr(e3))
+    if v.scanResultCondition.is_some():
+        auto u4 = v.scanResultCondition.unwrap()
+        parts.append("\"scanResultCondition\":" + u4.to_json())
     return imagebuilder_json_obj(parts)
 
 # Serialize InstanceConfiguration to a compact JSON object (declaration order).

@@ -4548,6 +4548,37 @@
     }
    ]
   },
+  "GetJobUpgradeAnalysis": {
+   "name": "GetJobUpgradeAnalysis",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "GetJobUpgradeAnalysisRequest"
+   },
+   "output": {
+    "shape": "GetJobUpgradeAnalysisResponse"
+   },
+   "errors": [
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "EntityNotFoundException"
+    },
+    {
+     "shape": "OperationNotSupportedException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "InternalServiceException"
+    }
+   ],
+   "readonly": true
+  },
   "GetJobs": {
    "name": "GetJobs",
    "http": {
@@ -7698,6 +7729,42 @@
     }
    ]
   },
+  "StartJobUpgradeAnalysis": {
+   "name": "StartJobUpgradeAnalysis",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "StartJobUpgradeAnalysisRequest"
+   },
+   "output": {
+    "shape": "StartJobUpgradeAnalysisResponse"
+   },
+   "errors": [
+    {
+     "shape": "ResourceNumberLimitExceededException"
+    },
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "ValidationException"
+    },
+    {
+     "shape": "EntityNotFoundException"
+    },
+    {
+     "shape": "OperationNotSupportedException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "InternalServiceException"
+    }
+   ]
+  },
   "StartMLEvaluationTaskRun": {
    "name": "StartMLEvaluationTaskRun",
    "http": {
@@ -7962,6 +8029,39 @@
     },
     {
      "shape": "OperationTimeoutException"
+    }
+   ]
+  },
+  "StopJobUpgradeAnalysis": {
+   "name": "StopJobUpgradeAnalysis",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "StopJobUpgradeAnalysisRequest"
+   },
+   "output": {
+    "shape": "StopJobUpgradeAnalysisResponse"
+   },
+   "errors": [
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "EntityNotFoundException"
+    },
+    {
+     "shape": "OperationNotSupportedException"
+    },
+    {
+     "shape": "ThrottlingException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "InternalServiceException"
     }
    ]
   },
@@ -9544,6 +9644,12 @@
     }
    }
   },
+  "AnalysisType": {
+   "type": "string",
+   "enum": [
+    "AUTO_UPGRADE"
+   ]
+  },
   "AnnotationError": {
    "type": "structure",
    "members": {
@@ -9917,6 +10023,34 @@
      "shape": "EnclosedInStringProperty"
     }
    }
+  },
+  "AutoUpgradeMetadata": {
+   "type": "structure",
+   "members": {
+    "TargetVersion": {
+     "shape": "GlueVersionString"
+    },
+    "SourceVersion": {
+     "shape": "GlueVersionString"
+    },
+    "Status": {
+     "shape": "AutoUpgradeStatus"
+    },
+    "AnalysisId": {
+     "shape": "IdString"
+    }
+   }
+  },
+  "AutoUpgradeStatus": {
+   "type": "string",
+   "enum": [
+    "OBSERVING",
+    "UPGRADING",
+    "UPGRADE_SUCCEEDED",
+    "UPGRADE_FAILED",
+    "STOPPED",
+    "WAITING_FOR_CONSENT"
+   ]
   },
   "BackfillError": {
    "type": "structure",
@@ -20334,6 +20468,59 @@
     }
    }
   },
+  "GetJobUpgradeAnalysisRequest": {
+   "type": "structure",
+   "required": [
+    "analysisId",
+    "jobName"
+   ],
+   "members": {
+    "analysisId": {
+     "shape": "Id"
+    },
+    "jobName": {
+     "shape": "Name"
+    }
+   }
+  },
+  "GetJobUpgradeAnalysisResponse": {
+   "type": "structure",
+   "required": [
+    "jobName",
+    "analysisId",
+    "status",
+    "targetVersion"
+   ],
+   "members": {
+    "jobName": {
+     "shape": "Name"
+    },
+    "analysisId": {
+     "shape": "Id"
+    },
+    "status": {
+     "shape": "Status"
+    },
+    "sourceVersion": {
+     "shape": "String"
+    },
+    "targetVersion": {
+     "shape": "String"
+    },
+    "analysisType": {
+     "shape": "AnalysisType"
+    },
+    "autoUpgradeEvaluationSummary": {
+     "shape": "String"
+    },
+    "errorMessage": {
+     "shape": "String"
+    },
+    "autoUpgradeEligibilitySummary": {
+     "shape": "String"
+    }
+   }
+  },
   "GetJobsRequest": {
    "type": "structure",
    "members": {
@@ -22031,7 +22218,14 @@
    "type": "string",
    "max": 255,
    "min": 1,
-   "pattern": "^(\\w+\\.)+\\w+$"
+   "pattern": "^((\\w+\\.)+\\w+|auto)$"
+  },
+  "GovernanceMode": {
+   "type": "string",
+   "enum": [
+    "IAM_ONLY",
+    "LAKE_FORMATION"
+   ]
   },
   "GovernedCatalogSource": {
    "type": "structure",
@@ -22701,6 +22895,12 @@
     "add-encryption-key",
     "remove-encryption-key"
    ]
+  },
+  "Id": {
+   "type": "string",
+   "max": 39,
+   "min": 39,
+   "pattern": "ja-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
   },
   "IdString": {
    "type": "string",
@@ -23659,6 +23859,9 @@
     },
     "ProfileName": {
      "shape": "NameString"
+    },
+    "AutoUpgradeMetadata": {
+     "shape": "AutoUpgradeMetadata"
     }
    }
   },
@@ -25990,6 +26193,12 @@
     }
    }
   },
+  "Name": {
+   "type": "string",
+   "max": 255,
+   "min": 1,
+   "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+  },
   "NameString": {
    "type": "string",
    "max": 255,
@@ -28234,6 +28443,9 @@
     },
     "Uri": {
      "shape": "URI"
+    },
+    "LastModified": {
+     "shape": "Timestamp"
     }
    }
   },
@@ -30824,6 +31036,34 @@
     }
    }
   },
+  "StartJobUpgradeAnalysisRequest": {
+   "type": "structure",
+   "required": [
+    "jobName"
+   ],
+   "members": {
+    "jobName": {
+     "shape": "Name"
+    },
+    "analysisId": {
+     "shape": "Id"
+    },
+    "upgradeConsent": {
+     "shape": "UpgradeConsent"
+    }
+   }
+  },
+  "StartJobUpgradeAnalysisResponse": {
+   "type": "structure",
+   "members": {
+    "analysisId": {
+     "shape": "Id"
+    },
+    "jobName": {
+     "shape": "Name"
+    }
+   }
+  },
   "StartMLEvaluationTaskRunRequest": {
    "type": "structure",
    "required": [
@@ -31148,6 +31388,18 @@
     "shape": "StatisticSummary"
    }
   },
+  "Status": {
+   "type": "string",
+   "enum": [
+    "OBSERVING",
+    "WAITING_FOR_CONSENT",
+    "UPGRADING",
+    "SUCCEEDED",
+    "FAILED",
+    "TIMEOUT",
+    "STOPPED"
+   ]
+  },
   "StatusDetails": {
    "type": "structure",
    "members": {
@@ -31230,6 +31482,25 @@
    }
   },
   "StopCrawlerScheduleResponse": {
+   "type": "structure",
+   "members": {}
+  },
+  "StopJobUpgradeAnalysisRequest": {
+   "type": "structure",
+   "required": [
+    "jobName",
+    "analysisId"
+   ],
+   "members": {
+    "jobName": {
+     "shape": "Name"
+    },
+    "analysisId": {
+     "shape": "Id"
+    }
+   }
+  },
+  "StopJobUpgradeAnalysisResponse": {
    "type": "structure",
    "members": {}
   },
@@ -33723,6 +33994,13 @@
   "UpdatedTimestamp": {
    "type": "string"
   },
+  "UpgradeConsent": {
+   "type": "string",
+   "enum": [
+    "APPROVE",
+    "DECLINE"
+   ]
+  },
   "UpsertRedshiftTargetOptions": {
    "type": "structure",
    "members": {
@@ -33797,6 +34075,12 @@
     "ResourceUris": {
      "shape": "ResourceUriList"
     },
+    "ArtifactLocation": {
+     "shape": "URI"
+    },
+    "GovernanceMode": {
+     "shape": "GovernanceMode"
+    },
     "CatalogId": {
      "shape": "CatalogIdString"
     }
@@ -33822,6 +34106,12 @@
     },
     "ResourceUris": {
      "shape": "ResourceUriList"
+    },
+    "ArtifactLocation": {
+     "shape": "URI"
+    },
+    "GovernanceMode": {
+     "shape": "GovernanceMode"
     }
    }
   },

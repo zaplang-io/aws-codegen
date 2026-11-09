@@ -36,6 +36,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -58,6 +61,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -83,6 +89,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -106,6 +115,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -129,6 +141,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -152,6 +167,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -175,6 +193,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -197,6 +218,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -219,6 +243,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -241,6 +268,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -263,6 +293,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -285,6 +318,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -304,6 +340,9 @@
    "errors": [
     {
      "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -327,6 +366,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -350,6 +392,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -376,6 +421,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -399,6 +447,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -421,6 +472,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -444,6 +498,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -467,6 +524,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -493,6 +553,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -516,6 +579,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "readonly": true
@@ -542,6 +608,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -568,6 +637,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -593,6 +665,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -618,6 +693,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     },
     {
      "shape": "TooManyTagsException"
@@ -646,6 +724,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -671,6 +752,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ]
   },
@@ -696,6 +780,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -722,6 +809,9 @@
     },
     {
      "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ServiceUnavailableException"
     }
    ],
    "idempotent": true
@@ -834,6 +924,9 @@
      "shape": "Source"
     },
     "enabled": {
+     "shape": "Boolean"
+    },
+    "crlDpRevocationEnabled": {
      "shape": "Boolean"
     },
     "tags": {
@@ -1498,6 +1591,28 @@
     }
    }
   },
+  "ServiceUnavailableException": {
+   "type": "structure",
+   "required": [
+    "message"
+   ],
+   "members": {
+    "message": {
+     "shape": "String"
+    },
+    "retryAfterSeconds": {
+     "shape": "Integer"
+    }
+   },
+   "error": {
+    "httpStatusCode": 503
+   },
+   "exception": true,
+   "fault": true,
+   "retryable": {
+    "throttling": false
+   }
+  },
   "Source": {
    "type": "structure",
    "members": {
@@ -1712,6 +1827,9 @@
     "enabled": {
      "shape": "Boolean"
     },
+    "crlDpRevocationEnabled": {
+     "shape": "Boolean"
+    },
     "createdAt": {
      "shape": "SyntheticTimestamp_date_time"
     },
@@ -1849,6 +1967,9 @@
     },
     "source": {
      "shape": "Source"
+    },
+    "crlDpRevocationEnabled": {
+     "shape": "Boolean"
     }
    }
   },

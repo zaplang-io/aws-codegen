@@ -1208,7 +1208,8 @@
    "type": "string",
    "enum": [
     "SAS",
-    "NONE"
+    "NONE",
+    "OIDC"
    ]
   },
   "AzureBlobContainerUrl": {
@@ -1244,6 +1245,38 @@
    "enum": [
     "BLOCK"
    ]
+  },
+  "AzureFederatedIdentityConfig": {
+   "type": "structure",
+   "members": {
+    "AwsIamRole": {
+     "shape": "IamRoleArn"
+    },
+    "AzureOidc": {
+     "shape": "AzureOidcConfig"
+    }
+   }
+  },
+  "AzureGuidString": {
+   "type": "string",
+   "max": 36,
+   "min": 36,
+   "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+  },
+  "AzureOidcConfig": {
+   "type": "structure",
+   "required": [
+    "TenantId",
+    "ClientId"
+   ],
+   "members": {
+    "TenantId": {
+     "shape": "AzureGuidString"
+    },
+    "ClientId": {
+     "shape": "AzureGuidString"
+    }
+   }
   },
   "BytesPerSecond": {
    "type": "long",
@@ -1324,6 +1357,9 @@
     },
     "SasConfiguration": {
      "shape": "AzureBlobSasConfiguration"
+    },
+    "FederatedIdentity": {
+     "shape": "AzureFederatedIdentityConfig"
     },
     "BlobType": {
      "shape": "AzureBlobType"
@@ -1658,6 +1694,9 @@
     "SecretKey": {
      "shape": "ObjectStorageSecretKey"
     },
+    "FederatedIdentity": {
+     "shape": "ObjectStorageFederatedIdentityConfig"
+    },
     "AgentArns": {
      "shape": "AgentArnList"
     },
@@ -1952,6 +1991,9 @@
     },
     "AuthenticationType": {
      "shape": "AzureBlobAuthenticationType"
+    },
+    "FederatedIdentity": {
+     "shape": "AzureFederatedIdentityConfig"
     },
     "BlobType": {
      "shape": "AzureBlobType"
@@ -2266,6 +2308,9 @@
     },
     "AccessKey": {
      "shape": "ObjectStorageAccessKey"
+    },
+    "FederatedIdentity": {
+     "shape": "ObjectStorageFederatedIdentityConfig"
     },
     "ServerPort": {
      "shape": "ObjectStorageServerPort"
@@ -2826,6 +2871,35 @@
     "BOTH"
    ]
   },
+  "GoogleIdentityFederationResourceString": {
+   "type": "string",
+   "max": 32,
+   "min": 4,
+   "pattern": "^(?!gcp-)[a-z][a-z0-9-]{2,30}[a-z0-9]$"
+  },
+  "GoogleOidcConfig": {
+   "type": "structure",
+   "required": [
+    "ProjectName",
+    "ProjectNumber",
+    "IdentityPoolName",
+    "IdentityProviderName"
+   ],
+   "members": {
+    "ProjectName": {
+     "shape": "ProjectNameString"
+    },
+    "ProjectNumber": {
+     "shape": "ProjectNumberString"
+    },
+    "IdentityPoolName": {
+     "shape": "GoogleIdentityFederationResourceString"
+    },
+    "IdentityProviderName": {
+     "shape": "GoogleIdentityFederationResourceString"
+    }
+   }
+  },
   "HdfsAuthenticationType": {
    "type": "string",
    "enum": [
@@ -3283,6 +3357,25 @@
    "type": "blob",
    "max": 32768
   },
+  "ObjectStorageExternalIdentityConfig": {
+   "type": "structure",
+   "members": {
+    "GoogleOidc": {
+     "shape": "GoogleOidcConfig"
+    }
+   }
+  },
+  "ObjectStorageFederatedIdentityConfig": {
+   "type": "structure",
+   "members": {
+    "AwsIamRole": {
+     "shape": "IamRoleArn"
+    },
+    "ExternalIdentity": {
+     "shape": "ObjectStorageExternalIdentityConfig"
+    }
+   }
+  },
   "ObjectStorageSecretKey": {
    "type": "string",
    "max": 200,
@@ -3480,6 +3573,18 @@
      "shape": "PLSecurityGroupArnList"
     }
    }
+  },
+  "ProjectNameString": {
+   "type": "string",
+   "max": 30,
+   "min": 6,
+   "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"
+  },
+  "ProjectNumberString": {
+   "type": "string",
+   "max": 20,
+   "min": 1,
+   "pattern": "^[0-9]+$"
   },
   "QopConfiguration": {
    "type": "structure",
@@ -4179,6 +4284,9 @@
     "SasConfiguration": {
      "shape": "AzureBlobSasConfiguration"
     },
+    "FederatedIdentity": {
+     "shape": "AzureFederatedIdentityConfig"
+    },
     "BlobType": {
      "shape": "AzureBlobType"
     },
@@ -4430,6 +4538,9 @@
     },
     "SecretKey": {
      "shape": "ObjectStorageSecretKey"
+    },
+    "FederatedIdentity": {
+     "shape": "ObjectStorageFederatedIdentityConfig"
     },
     "AgentArns": {
      "shape": "AgentArnList"

@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 96 operations — 96 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   334 structs (194 @derive(Json)), 46 enums, 7 error variants.
+#   335 structs (195 @derive(Json)), 47 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -180,8 +180,16 @@ enum ManagementType:
 
 @derive(Json)
 @json(open)
+enum MembershipType:
+    USER
+    GROUP
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum MembershipTypeFilter:
     USER
+    GROUP
     ALL
     Unknown(str value)
 
@@ -1251,7 +1259,7 @@ struct CreateMembershipRequest:
     str applicationId
     str agentSpaceId
     str membershipId
-    str memberType
+    MembershipType memberType
     Optional[MembershipConfig] config
 
 @derive(Json)
@@ -1486,7 +1494,7 @@ struct DeleteMembershipRequest:
     str applicationId
     str agentSpaceId
     str membershipId
-    Optional[str] memberType
+    Optional[MembershipType] memberType
 
 @derive(Json)
 struct DeleteMembershipResponse:
@@ -1780,6 +1788,11 @@ struct GitLabResourceCapabilities:
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
     Optional[bool] leaveComments
     Optional[bool] remediateCode
+
+@derive(Json)
+struct GroupMetadata:
+    Optional[str] displayName
+    Optional[str] description
 
 @derive(Json)
 struct HttpVerification:
@@ -2297,6 +2310,7 @@ struct LogLocation:
 @derive(Json)
 struct MemberMetadata:
     Optional[UserMetadata] user
+    Optional[GroupMetadata] group
 
 @derive(Json)
 struct MembershipConfig:
@@ -2307,7 +2321,7 @@ struct MembershipSummary:
     str membershipId
     str applicationId
     str agentSpaceId
-    str memberType
+    MembershipType memberType
     Optional[MembershipConfig] config
     Optional[MemberMetadata] metadata
     @json(timestamp="iso8601")
@@ -3351,7 +3365,7 @@ struct CreateMembershipDocument:
     str applicationId
     str agentSpaceId
     str membershipId
-    str memberType
+    MembershipType memberType
     Optional[MembershipConfig] config
 
 @derive(Json)
@@ -3381,7 +3395,7 @@ struct DeleteMembershipDocument:
     str applicationId
     str agentSpaceId
     str membershipId
-    Optional[str] memberType
+    Optional[MembershipType] memberType
 
 @derive(Json)
 struct DeletePrivateConnectionDocument:

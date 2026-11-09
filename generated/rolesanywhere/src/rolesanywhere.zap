@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 30 operations — 30 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   52 structs (25 @derive(Json)), 3 enums, 4 error variants.
+#   53 structs (26 @derive(Json)), 3 enums, 5 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -98,6 +98,7 @@ struct CreateTrustAnchorRequest:
     str name
     Source source
     Optional[bool] enabled
+    Optional[bool] crlDpRevocationEnabled
     Optional[list[Tag]] tags
     Optional[list[NotificationSetting]] notificationSettings
 
@@ -318,6 +319,11 @@ struct ScalarTrustAnchorRequest:
     str trustAnchorId
 
 @derive(Json)
+struct ServiceUnavailableException:
+    str message
+    Optional[int64] retryAfterSeconds
+
+@derive(Json)
 struct Source:
     Optional[TrustAnchorType] sourceType
     Optional[SourceData] sourceData
@@ -389,6 +395,7 @@ struct TrustAnchorDetail:
     Optional[str] name
     Optional[Source] source
     Optional[bool] enabled
+    Optional[bool] crlDpRevocationEnabled
     Optional[DateTime] createdAt
     Optional[DateTime] updatedAt
     Optional[list[NotificationSettingDetail]] notificationSettings
@@ -434,6 +441,7 @@ struct UpdateTrustAnchorRequest:
     str trustAnchorId
     Optional[str] name
     Optional[Source] source
+    Optional[bool] crlDpRevocationEnabled
 
 @derive(Json)
 struct ValidationException:
@@ -453,6 +461,7 @@ struct ValidationException:
 enum RolesAnywhereErrorKind:
     AccessDeniedException
     ResourceNotFoundException
+    ServiceUnavailableException
     TooManyTagsException
     ValidationException
     Unknown(str code)
@@ -466,6 +475,8 @@ def rolesanywhere_error_kind(str code) -> RolesAnywhereErrorKind:
         return RolesAnywhereErrorKind.AccessDeniedException
     if name == "ResourceNotFoundException":
         return RolesAnywhereErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return RolesAnywhereErrorKind.ServiceUnavailableException
     if name == "TooManyTagsException":
         return RolesAnywhereErrorKind.TooManyTagsException
     if name == "ValidationException":
@@ -484,6 +495,8 @@ def rolesanywhere_error_name(RolesAnywhereErrorKind k) -> str:
             return "AccessDeniedException"
         case RolesAnywhereErrorKind.ResourceNotFoundException:
             return "ResourceNotFoundException"
+        case RolesAnywhereErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
         case RolesAnywhereErrorKind.TooManyTagsException:
             return "TooManyTagsException"
         case RolesAnywhereErrorKind.ValidationException:
@@ -507,6 +520,7 @@ struct UpdateTrustAnchorDocument:
     # document members of UpdateTrustAnchor
     Optional[str] name
     Optional[Source] source
+    Optional[bool] crlDpRevocationEnabled
 
 # A bound RolesAnywhere client: credentials + region, threaded into every operation.
 struct RolesAnywhereClient:
@@ -514,7 +528,7 @@ struct RolesAnywhereClient:
     str region
 
     # CreateProfile  POST /profiles
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def create_profile(self, CreateProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -555,7 +569,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # CreateTrustAnchor  POST /trustanchors
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def create_trust_anchor(self, CreateTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/trustanchors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -565,23 +579,26 @@ struct RolesAnywhereClient:
         if input.enabled.is_some():
             auto u0 = input.enabled.unwrap()
             parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.crlDpRevocationEnabled.is_some():
+            auto u1 = input.crlDpRevocationEnabled.unwrap()
+            parts.append("\"crlDpRevocationEnabled\":" + json.dumps(JsonValue.Bool(u1)))
         if input.tags.is_some():
-            auto u1 = input.tags.unwrap()
-            list[str] e2 = []
-            for x2 in u1:
-                e2.append(x2.to_json())
-            parts.append("\"tags\":" + rolesanywhere_json_arr(e2))
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + rolesanywhere_json_arr(e3))
         if input.notificationSettings.is_some():
-            auto u3 = input.notificationSettings.unwrap()
-            list[str] e4 = []
-            for x4 in u3:
-                e4.append(x4.to_json())
-            parts.append("\"notificationSettings\":" + rolesanywhere_json_arr(e4))
+            auto u4 = input.notificationSettings.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"notificationSettings\":" + rolesanywhere_json_arr(e5))
         auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # DeleteAttributeMapping  DELETE /profiles/{profileId}/mappings
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def delete_attribute_mapping(self, DeleteAttributeMappingRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -595,7 +612,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DeleteCrl  DELETE /crl/{crlId}
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def delete_crl(self, ScalarCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -604,7 +621,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DeleteProfile  DELETE /profile/{profileId}
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def delete_profile(self, ScalarProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -613,7 +630,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DeleteTrustAnchor  DELETE /trustanchor/{trustAnchorId}
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def delete_trust_anchor(self, ScalarTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -622,7 +639,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DisableCrl  POST /crl/{crlId}/disable
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def disable_crl(self, ScalarCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -631,7 +648,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DisableProfile  POST /profile/{profileId}/disable
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def disable_profile(self, ScalarProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -640,7 +657,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DisableTrustAnchor  POST /trustanchor/{trustAnchorId}/disable
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def disable_trust_anchor(self, ScalarTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -649,7 +666,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # EnableCrl  POST /crl/{crlId}/enable
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def enable_crl(self, ScalarCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -658,7 +675,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # EnableProfile  POST /profile/{profileId}/enable
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def enable_profile(self, ScalarProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -667,7 +684,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # EnableTrustAnchor  POST /trustanchor/{trustAnchorId}/enable
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def enable_trust_anchor(self, ScalarTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -676,7 +693,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetCrl  GET /crl/{crlId}
-    # errors: ResourceNotFoundException
+    # errors: ResourceNotFoundException, ServiceUnavailableException
     def get_crl(self, ScalarCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -685,7 +702,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetProfile  GET /profile/{profileId}
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def get_profile(self, ScalarProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -694,7 +711,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetSubject  GET /subject/{subjectId}
-    # errors: AccessDeniedException, ResourceNotFoundException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException
     def get_subject(self, ScalarSubjectRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -703,7 +720,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetTrustAnchor  GET /trustanchor/{trustAnchorId}
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def get_trust_anchor(self, ScalarTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -712,7 +729,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ImportCrl  POST /crls
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def import_crl(self, ImportCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/crls", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -733,7 +750,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # ListCrls  GET /crls
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def list_crls(self, ListRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] query = {}
@@ -745,7 +762,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListProfiles  GET /profiles
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def list_profiles(self, ListRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] query = {}
@@ -757,7 +774,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListSubjects  GET /subjects
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def list_subjects(self, ListRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] query = {}
@@ -769,7 +786,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListTagsForResource  GET /ListTagsForResource
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] query = {}
@@ -778,7 +795,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListTrustAnchors  GET /trustanchors
-    # errors: AccessDeniedException, ValidationException
+    # errors: AccessDeniedException, ServiceUnavailableException, ValidationException
     def list_trust_anchors(self, ListRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] query = {}
@@ -790,7 +807,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # PutAttributeMapping  PUT /profiles/{profileId}/mappings
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def put_attribute_mapping(self, PutAttributeMappingRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -806,7 +823,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # PutNotificationSettings  PATCH /put-notifications-settings
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def put_notification_settings(self, PutNotificationSettingsRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="PATCH", path_template="/put-notifications-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -820,7 +837,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # ResetNotificationSettings  PATCH /reset-notifications-settings
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def reset_notification_settings(self, ResetNotificationSettingsRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="PATCH", path_template="/reset-notifications-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -834,7 +851,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # TagResource  POST /TagResource
-    # errors: AccessDeniedException, ResourceNotFoundException, TooManyTagsException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, TooManyTagsException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -848,7 +865,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # UntagResource  POST /UntagResource
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -862,7 +879,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # UpdateCrl  PATCH /crl/{crlId}
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def update_crl(self, UpdateCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -873,7 +890,7 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # UpdateProfile  PATCH /profile/{profileId}
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def update_profile(self, UpdateProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
@@ -908,13 +925,13 @@ struct RolesAnywhereClient:
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # UpdateTrustAnchor  PATCH /trustanchor/{trustAnchorId}
-    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    # errors: AccessDeniedException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def update_trust_anchor(self, UpdateTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["trustAnchorId"] = input.trustAnchorId
         auto b = binding.HttpBinding(method="PATCH", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = UpdateTrustAnchorDocument(name=input.name, source=input.source)
+        auto doc = UpdateTrustAnchorDocument(name=input.name, source=input.source, crlDpRevocationEnabled=input.crlDpRevocationEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 

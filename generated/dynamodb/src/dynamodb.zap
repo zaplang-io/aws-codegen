@@ -14,11 +14,11 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 58 operations — 58 with a generated method,
+# Coverage (v0, awsJson only): 62 operations — 62 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   272 structs (136 @derive(Json)), 45 enums, 34 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
-#   6 waiters generated (0 skipped) from waiters-2.json.
+#   288 structs (145 @derive(Json)), 49 enums, 34 error variants.
+#   4 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   7 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -102,6 +102,31 @@ enum BatchStatementErrorCodeEnum:
 enum BillingMode:
     PROVISIONED
     PAY_PER_REQUEST
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum BulkOperationInputFormat:
+    DYNAMODB_JSON
+    ION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum BulkOperationPerformanceTier:
+    STANDARD
+    ACCELERATED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum BulkOperationStatus:
+    IN_PROGRESS
+    COMPLETED
+    COMPLETED_WITH_ERRORS
+    CANCELLING
+    CANCELLED
+    FAILED
     Unknown(str value)
 
 @derive(Json)
@@ -264,6 +289,13 @@ enum KeyType:
 enum MultiRegionConsistency:
     EVENTUAL
     STRONG
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum OutputTypeEnum:
+    ERROR
+    CONDITION_CHECK_FAILURE
     Unknown(str value)
 
 @derive(Json)
@@ -621,6 +653,68 @@ struct BillingModeSummary:
     Optional[BillingMode] BillingMode
     Optional[DateTime] LastUpdateToPayPerRequestDateTime
 
+@derive(Json)
+struct BulkOperationBytes:
+    Optional[int64] BulkPutBytes
+
+# no @derive(Json): member(s) TableDetails: list[BulkOperationTableDetail], OutputS3Configuration: OutputS3Configuration, BulkOperationUsage: list[BulkOperationUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct BulkOperationDescription:
+    Optional[str] BulkOperationArn
+    Optional[BulkOperationStatus] BulkOperationStatus
+    Optional[list[BulkOperationTableDetail]] TableDetails
+    Optional[str] ClientToken
+    Optional[InputS3Configuration] InputS3Configuration
+    Optional[OutputS3Configuration] OutputS3Configuration
+    Optional[DateTime] StartTime
+    Optional[DateTime] EndTime
+    Optional[int64] ProcessedItemCount
+    Optional[int64] ProcessedInputBytes
+    Optional[int64] TotalInputBytes
+    Optional[list[BulkOperationUsage]] BulkOperationUsage
+    Optional[int64] FailedItemCount
+    Optional[str] FailureCode
+    Optional[str] FailureMessage
+    Optional[int64] MaxWriteRequestUnits
+    Optional[BulkOperationPerformanceTier] PerformanceTier
+
+@derive(Json)
+struct BulkOperationSummary:
+    str BulkOperationArn
+    BulkOperationStatus BulkOperationStatus
+    DateTime StartTime
+    Optional[DateTime] EndTime
+
+@derive(Json)
+struct BulkOperationTableDetail:
+    Optional[str] TableName
+    Optional[str] TableId
+
+# no @derive(Json): member(s) LocalSecondaryIndexes: dict[str, BulkOperationBytes], GlobalSecondaryIndexes: dict[str, BulkOperationBytes], VectorIndexes: dict[str, BulkOperationVectorBytes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct BulkOperationUsage:
+    Optional[str] TableName
+    Optional[int64] BulkPutBytes
+    Optional[BulkOperationBytes] Table
+    Optional[dict[str, BulkOperationBytes]] LocalSecondaryIndexes
+    Optional[dict[str, BulkOperationBytes]] GlobalSecondaryIndexes
+    Optional[dict[str, BulkOperationVectorBytes]] VectorIndexes
+
+@derive(Json)
+struct BulkOperationVectorBytes:
+    Optional[int64] BulkPutVectorBytes
+
+@derive(Json)
+struct CancelBulkOperationInput:
+    str BulkOperationArn
+
+@derive(Json)
+struct CancelBulkOperationOutput:
+    str BulkOperationArn
+    BulkOperationStatus BulkOperationStatus
+
 # no @derive(Json): member(s) Item: dict[str, AttributeValue] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -887,6 +981,16 @@ struct DescribeBackupInput:
 # (zaplang-io/zap#424).
 struct DescribeBackupOutput:
     Optional[BackupDescription] BackupDescription
+
+@derive(Json)
+struct DescribeBulkOperationInput:
+    str BulkOperationArn
+
+# no @derive(Json): member(s) BulkOperationDescription: BulkOperationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DescribeBulkOperationOutput:
+    BulkOperationDescription BulkOperationDescription
 
 @derive(Json)
 struct DescribeContinuousBackupsInput:
@@ -1373,6 +1477,14 @@ struct InputFormatOptions:
     Optional[CsvOptions] Csv
 
 @derive(Json)
+struct InputS3Configuration:
+    Optional[str] S3BucketOwner
+    str S3Bucket
+    Optional[str] S3KeyPrefix
+    BulkOperationInputFormat InputFormat
+    Optional[InputCompressionType] InputCompressionType
+
+@derive(Json)
 struct InternalServerError:
     Optional[str] message
 
@@ -1455,6 +1567,18 @@ struct ListBackupsInput:
 struct ListBackupsOutput:
     Optional[list[BackupSummary]] BackupSummaries
     Optional[str] LastEvaluatedBackupArn
+
+@derive(Json)
+struct ListBulkOperationsInput:
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) BulkOperationsSummaryList: list[BulkOperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListBulkOperationsOutput:
+    Optional[list[BulkOperationSummary]] BulkOperationsSummaryList
+    Optional[str] NextToken
 
 @derive(Json)
 struct ListContributorInsightsInput:
@@ -1567,6 +1691,17 @@ struct OnDemandThroughput:
 @derive(Json)
 struct OnDemandThroughputOverride:
     Optional[int64] MaxReadRequestUnits
+
+# no @derive(Json): member(s) OutputType: list[OutputTypeEnum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct OutputS3Configuration:
+    Optional[str] S3BucketOwner
+    Optional[str] S3Bucket
+    Optional[str] S3KeyPrefix
+    Optional[S3SseAlgorithm] S3SseAlgorithm
+    Optional[str] S3SseKmsKeyId
+    list[OutputTypeEnum] OutputType
 
 # no @derive(Json): member(s) Parameters: list[AttributeValue] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2018,6 +2153,23 @@ struct SourceTableFeatureDetails:
     Optional[TimeToLiveDescription] TimeToLiveDescription
     Optional[SSEDescription] SSEDescription
     Optional[list[VectorIndexInfo]] VectorIndexes
+
+# no @derive(Json): member(s) OutputS3Configuration: OutputS3Configuration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct StartBulkPutItemsInput:
+    Optional[str] ClientToken
+    InputS3Configuration InputS3Configuration
+    OutputS3Configuration OutputS3Configuration
+    str TableName
+    Optional[int64] MaxWriteRequestUnits
+    Optional[BulkOperationPerformanceTier] PerformanceTier
+
+# no @derive(Json): member(s) BulkOperationDescription: BulkOperationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct StartBulkPutItemsOutput:
+    BulkOperationDescription BulkOperationDescription
 
 @derive(Json)
 struct StreamSpecification:
@@ -3365,6 +3517,30 @@ def local_secondary_index_to_json(LocalSecondaryIndex v) -> str:
     parts.append("\"Projection\":" + projection_to_json(v.Projection))
     return dynamodb_json_obj(parts)
 
+# Serialize OutputS3Configuration to a compact JSON object (declaration order).
+def output_s3_configuration_to_json(OutputS3Configuration v) -> str:
+    list[str] parts = []
+    if v.S3BucketOwner.is_some():
+        auto u0 = v.S3BucketOwner.unwrap()
+        parts.append("\"S3BucketOwner\":" + dynamodb_json_str(u0))
+    if v.S3Bucket.is_some():
+        auto u1 = v.S3Bucket.unwrap()
+        parts.append("\"S3Bucket\":" + dynamodb_json_str(u1))
+    if v.S3KeyPrefix.is_some():
+        auto u2 = v.S3KeyPrefix.unwrap()
+        parts.append("\"S3KeyPrefix\":" + dynamodb_json_str(u2))
+    if v.S3SseAlgorithm.is_some():
+        auto u3 = v.S3SseAlgorithm.unwrap()
+        parts.append("\"S3SseAlgorithm\":" + u3.to_json())
+    if v.S3SseKmsKeyId.is_some():
+        auto u4 = v.S3SseKmsKeyId.unwrap()
+        parts.append("\"S3SseKmsKeyId\":" + dynamodb_json_str(u4))
+    list[str] e5 = []
+    for x5 in v.OutputType:
+        e5.append(x5.to_json())
+    parts.append("\"OutputType\":" + dynamodb_json_arr(e5))
+    return dynamodb_json_obj(parts)
+
 # Serialize ParameterizedStatement to a compact JSON object (declaration order).
 def parameterized_statement_to_json(ParameterizedStatement v) -> str:
     list[str] parts = []
@@ -3786,6 +3962,23 @@ def search_vectors_input_to_json(SearchVectorsInput v) -> str:
     parts.append("\"TopK\":" + str(v.TopK))
     return dynamodb_json_obj(parts)
 
+# Serialize StartBulkPutItemsInput to a compact JSON object (declaration order).
+def start_bulk_put_items_input_to_json(StartBulkPutItemsInput v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + dynamodb_json_str(u0))
+    parts.append("\"InputS3Configuration\":" + v.InputS3Configuration.to_json())
+    parts.append("\"OutputS3Configuration\":" + output_s3_configuration_to_json(v.OutputS3Configuration))
+    parts.append("\"TableName\":" + dynamodb_json_str(v.TableName))
+    if v.MaxWriteRequestUnits.is_some():
+        auto u1 = v.MaxWriteRequestUnits.unwrap()
+        parts.append("\"MaxWriteRequestUnits\":" + str(u1))
+    if v.PerformanceTier.is_some():
+        auto u2 = v.PerformanceTier.unwrap()
+        parts.append("\"PerformanceTier\":" + u2.to_json())
+    return dynamodb_json_obj(parts)
+
 # Serialize TableCreationParameters to a compact JSON object (declaration order).
 def table_creation_parameters_to_json(TableCreationParameters v) -> str:
     list[str] parts = []
@@ -4193,6 +4386,12 @@ struct DynamoDBClient:
         auto body = batch_write_item_input_to_json(input)
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "BatchWriteItem", body)
 
+    # CancelBulkOperation
+    # errors: ResourceNotFoundException
+    def cancel_bulk_operation(self, CancelBulkOperationInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "CancelBulkOperation", body)
+
     # CreateBackup
     # errors: BackupInUseException, ContinuousBackupsUnavailableException, InternalServerError, LimitExceededException, TableInUseException, TableNotFoundException
     def create_backup(self, CreateBackupInput input) -> str:
@@ -4240,6 +4439,12 @@ struct DynamoDBClient:
     def describe_backup(self, DescribeBackupInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "DescribeBackup", body)
+
+    # DescribeBulkOperation
+    # errors: ResourceNotFoundException
+    def describe_bulk_operation(self, DescribeBulkOperationInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "DescribeBulkOperation", body)
 
     # DescribeContinuousBackups
     # errors: InternalServerError, TableNotFoundException
@@ -4366,6 +4571,11 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListBackups", body)
 
+    # ListBulkOperations
+    def list_bulk_operations(self, ListBulkOperationsInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListBulkOperations", body)
+
     # ListContributorInsights
     # errors: InternalServerError, ResourceNotFoundException
     def list_contributor_insights(self, ListContributorInsightsInput input) -> str:
@@ -4443,6 +4653,12 @@ struct DynamoDBClient:
     def search_vectors(self, SearchVectorsInput input) -> str:
         auto body = search_vectors_input_to_json(input)
         return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "SearchVectors", body)
+
+    # StartBulkPutItems
+    # errors: IdempotentParameterMismatchException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def start_bulk_put_items(self, StartBulkPutItemsInput input) -> str:
+        auto body = start_bulk_put_items_input_to_json(input)
+        return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "StartBulkPutItems", body)
 
     # TagResource
     # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
@@ -4536,6 +4752,20 @@ struct DynamoDBClient:
                 break
             input.ExclusiveStartBackupArn = Optional.Some(np.token)
 
+    # Paginator for ListBulkOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: BulkOperationsSummaryList).
+    def paginate_list_bulk_operations(self, ListBulkOperationsInput input):
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListBulkOperations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListTables — yields each Response page, threading the
     # LastEvaluatedTableName -> ExclusiveStartTableName continuation token until the output token is absent (result key: TableNames).
     def paginate_list_tables(self, ListTablesInput input):
@@ -4563,6 +4793,13 @@ struct DynamoDBClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # One poll of DescribeBulkOperation for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_describe_bulk_operation(self, DescribeBulkOperationInput input) -> waiters.Poll:
+        auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
+        auto resp = core.send(host, self.describe_bulk_operation(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
 
     # One poll of DescribeContributorInsights for its waiter(s): send the signed operation request
     # and parse the response body into the matcher DOM.
@@ -4598,6 +4835,24 @@ struct DynamoDBClient:
         auto host = endpoints.regional_host(dynamodb_protocol().service, self.region)
         auto resp = core.send(host, self.describe_table(input))
         return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter BulkOperationCompleted — polls DescribeBulkOperation until a success acceptor fires (delay 20s,
+    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_bulk_operation_completed.
+    def wait_bulk_operation_completed(self, DescribeBulkOperationInput input):
+        auto cfg = waiters.WaiterConfig(
+            name="BulkOperationCompleted",
+            delay=20,
+            max_attempts=180,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "BulkOperationDescription.BulkOperationStatus", "COMPLETED"),
+                waiters.acceptor_path(waiters.state_success(), "BulkOperationDescription.BulkOperationStatus", "COMPLETED_WITH_ERRORS"),
+                waiters.acceptor_path(waiters.state_failure(), "BulkOperationDescription.BulkOperationStatus", "CANCELLED"),
+                waiters.acceptor_path(waiters.state_failure(), "BulkOperationDescription.BulkOperationStatus", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_bulk_operation(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
     # Waiter ContributorInsightsEnabled — polls DescribeContributorInsights until a success acceptor fires (delay 20s,
     # max 30 attempts), then returns; raises on a failure acceptor or timeout.

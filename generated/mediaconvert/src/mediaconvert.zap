@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 34 operations — 34 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   295 structs (198 @derive(Json)), 474 enums, 8 error variants.
+#   297 structs (200 @derive(Json)), 476 enums, 8 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -671,6 +671,13 @@ enum CaptionDestinationType:
     TELETEXT
     TTML
     WEBVTT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum CaptionSource:
+    INPUT_CAPTION_SELECTOR
+    SMART_SUBTITLE
     Unknown(str value)
 
 @derive(Json)
@@ -1555,6 +1562,13 @@ enum Eac3SurroundMode:
     NOT_INDICATED
     ENABLED
     DISABLED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ElementalInferenceFeature:
+    SMART_CROP
+    SMART_SUBTITLE
     Unknown(str value)
 
 @derive(Json)
@@ -4473,15 +4487,17 @@ struct CancelJobResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DestinationSettings: CaptionDestinationSettings not derivable (list/map collections);
+# no @derive(Json): member(s) AudioSourceNames: list[str], DestinationSettings: CaptionDestinationSettings not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CaptionDescription:
+    Optional[list[str]] AudioSourceNames
     Optional[str] CaptionSelectorName
     Optional[str] CustomLanguageCode
     Optional[CaptionDestinationSettings] DestinationSettings
     Optional[LanguageCode] LanguageCode
     Optional[str] LanguageDescription
+    Optional[CaptionSource] Source
 
 # no @derive(Json): member(s) DestinationSettings: CaptionDestinationSettings not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -4716,6 +4732,7 @@ struct CreateJobRequest:
     Optional[AccelerationSettings] AccelerationSettings
     Optional[BillingTagsSource] BillingTagsSource
     Optional[str] ClientRequestToken
+    Optional[ElementalInferenceSettings] ElementalInferenceSettings
     Optional[list[HopDestination]] HopDestinations
     Optional[str] JobEngineVersion
     Optional[str] JobTemplate
@@ -4740,6 +4757,7 @@ struct CreateJobTemplateRequest:
     Optional[AccelerationSettings] AccelerationSettings
     Optional[str] Category
     Optional[str] Description
+    Optional[ElementalInferenceSettings] ElementalInferenceSettings
     Optional[list[HopDestination]] HopDestinations
     str Name
     Optional[int64] Priority
@@ -5072,17 +5090,25 @@ struct Eac3Settings:
     Optional[Eac3SurroundExMode] SurroundExMode
     Optional[Eac3SurroundMode] SurroundMode
 
-# no @derive(Json): member(s) Features: list[str], Feeds: list[ElementalInferenceFeed] not derivable (list/map collections);
+# no @derive(Json): member(s) Features: list[ElementalInferenceFeature], Feeds: list[ElementalInferenceFeed] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ElementalInferenceConfiguration:
-    Optional[list[str]] Features
+    Optional[list[ElementalInferenceFeature]] Features
     Optional[list[ElementalInferenceFeed]] Feeds
 
 @derive(Json)
 struct ElementalInferenceFeed:
     Optional[str] Arn
     Optional[ElementalInferenceFeedManagementState] FeedManagementState
+
+@derive(Json)
+struct ElementalInferenceFeedConfigurationSource:
+    Optional[str] FeedArn
+
+@derive(Json)
+struct ElementalInferenceSettings:
+    Optional[ElementalInferenceFeedConfigurationSource] FeedConfigurationSource
 
 @derive(Json)
 struct EmbeddedDestinationSettings:
@@ -5640,6 +5666,7 @@ struct Job:
     Optional[DateTime] CreatedAt
     Optional[JobPhase] CurrentPhase
     Optional[ElementalInferenceConfiguration] ElementalInferenceConfiguration
+    Optional[ElementalInferenceSettings] ElementalInferenceSettings
     Optional[int64] ErrorCode
     Optional[str] ErrorMessage
     Optional[list[HopDestination]] HopDestinations
@@ -5706,6 +5733,7 @@ struct JobTemplate:
     Optional[str] Category
     Optional[DateTime] CreatedAt
     Optional[str] Description
+    Optional[ElementalInferenceSettings] ElementalInferenceSettings
     Optional[list[HopDestination]] HopDestinations
     Optional[DateTime] LastUpdated
     str Name
@@ -6608,6 +6636,7 @@ struct UpdateJobTemplateRequest:
     Optional[AccelerationSettings] AccelerationSettings
     Optional[str] Category
     Optional[str] Description
+    Optional[ElementalInferenceSettings] ElementalInferenceSettings
     Optional[list[HopDestination]] HopDestinations
     str Name
     Optional[int64] Priority
@@ -7354,21 +7383,30 @@ def avc_intra_settings_to_json(AvcIntraSettings v) -> str:
 # Serialize CaptionDescription to a compact JSON object (declaration order).
 def caption_description_to_json(CaptionDescription v) -> str:
     list[str] parts = []
+    if v.AudioSourceNames.is_some():
+        auto u0 = v.AudioSourceNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconvert_json_str(x1))
+        parts.append("\"audioSourceNames\":" + mediaconvert_json_arr(e1))
     if v.CaptionSelectorName.is_some():
-        auto u0 = v.CaptionSelectorName.unwrap()
-        parts.append("\"captionSelectorName\":" + mediaconvert_json_str(u0))
+        auto u2 = v.CaptionSelectorName.unwrap()
+        parts.append("\"captionSelectorName\":" + mediaconvert_json_str(u2))
     if v.CustomLanguageCode.is_some():
-        auto u1 = v.CustomLanguageCode.unwrap()
-        parts.append("\"customLanguageCode\":" + mediaconvert_json_str(u1))
+        auto u3 = v.CustomLanguageCode.unwrap()
+        parts.append("\"customLanguageCode\":" + mediaconvert_json_str(u3))
     if v.DestinationSettings.is_some():
-        auto u2 = v.DestinationSettings.unwrap()
-        parts.append("\"destinationSettings\":" + caption_destination_settings_to_json(u2))
+        auto u4 = v.DestinationSettings.unwrap()
+        parts.append("\"destinationSettings\":" + caption_destination_settings_to_json(u4))
     if v.LanguageCode.is_some():
-        auto u3 = v.LanguageCode.unwrap()
-        parts.append("\"languageCode\":" + u3.to_json())
+        auto u5 = v.LanguageCode.unwrap()
+        parts.append("\"languageCode\":" + u5.to_json())
     if v.LanguageDescription.is_some():
-        auto u4 = v.LanguageDescription.unwrap()
-        parts.append("\"languageDescription\":" + mediaconvert_json_str(u4))
+        auto u6 = v.LanguageDescription.unwrap()
+        parts.append("\"languageDescription\":" + mediaconvert_json_str(u6))
+    if v.Source.is_some():
+        auto u7 = v.Source.unwrap()
+        parts.append("\"source\":" + u7.to_json())
     return mediaconvert_json_obj(parts)
 
 # Serialize CaptionDescriptionPreset to a compact JSON object (declaration order).
@@ -9554,44 +9592,47 @@ struct MediaConvertClient:
         if input.ClientRequestToken.is_some():
             auto u2 = input.ClientRequestToken.unwrap()
             parts.append("\"clientRequestToken\":" + mediaconvert_json_str(u2))
+        if input.ElementalInferenceSettings.is_some():
+            auto u3 = input.ElementalInferenceSettings.unwrap()
+            parts.append("\"elementalInferenceSettings\":" + u3.to_json())
         if input.HopDestinations.is_some():
-            auto u3 = input.HopDestinations.unwrap()
-            list[str] e4 = []
-            for x4 in u3:
-                e4.append(x4.to_json())
-            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e4))
+            auto u4 = input.HopDestinations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e5))
         if input.JobEngineVersion.is_some():
-            auto u5 = input.JobEngineVersion.unwrap()
-            parts.append("\"jobEngineVersion\":" + mediaconvert_json_str(u5))
+            auto u6 = input.JobEngineVersion.unwrap()
+            parts.append("\"jobEngineVersion\":" + mediaconvert_json_str(u6))
         if input.JobTemplate.is_some():
-            auto u6 = input.JobTemplate.unwrap()
-            parts.append("\"jobTemplate\":" + mediaconvert_json_str(u6))
+            auto u7 = input.JobTemplate.unwrap()
+            parts.append("\"jobTemplate\":" + mediaconvert_json_str(u7))
         if input.Priority.is_some():
-            auto u7 = input.Priority.unwrap()
-            parts.append("\"priority\":" + str(u7))
+            auto u8 = input.Priority.unwrap()
+            parts.append("\"priority\":" + str(u8))
         if input.Queue.is_some():
-            auto u8 = input.Queue.unwrap()
-            parts.append("\"queue\":" + mediaconvert_json_str(u8))
+            auto u9 = input.Queue.unwrap()
+            parts.append("\"queue\":" + mediaconvert_json_str(u9))
         parts.append("\"role\":" + mediaconvert_json_str(input.Role))
         parts.append("\"settings\":" + job_settings_to_json(input.Settings))
         if input.SimulateReservedQueue.is_some():
-            auto u9 = input.SimulateReservedQueue.unwrap()
-            parts.append("\"simulateReservedQueue\":" + u9.to_json())
+            auto u10 = input.SimulateReservedQueue.unwrap()
+            parts.append("\"simulateReservedQueue\":" + u10.to_json())
         if input.StatusUpdateInterval.is_some():
-            auto u10 = input.StatusUpdateInterval.unwrap()
-            parts.append("\"statusUpdateInterval\":" + u10.to_json())
+            auto u11 = input.StatusUpdateInterval.unwrap()
+            parts.append("\"statusUpdateInterval\":" + u11.to_json())
         if input.Tags.is_some():
-            auto u11 = input.Tags.unwrap()
-            list[str] m12 = []
-            for k12 in sorted(u11.keys()):
-                m12.append(mediaconvert_json_str(k12) + ":" + mediaconvert_json_str(u11[k12]))
-            parts.append("\"tags\":" + mediaconvert_json_obj(m12))
+            auto u12 = input.Tags.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(mediaconvert_json_str(k13) + ":" + mediaconvert_json_str(u12[k13]))
+            parts.append("\"tags\":" + mediaconvert_json_obj(m13))
         if input.UserMetadata.is_some():
-            auto u13 = input.UserMetadata.unwrap()
-            list[str] m14 = []
-            for k14 in sorted(u13.keys()):
-                m14.append(mediaconvert_json_str(k14) + ":" + mediaconvert_json_str(u13[k14]))
-            parts.append("\"userMetadata\":" + mediaconvert_json_obj(m14))
+            auto u14 = input.UserMetadata.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(mediaconvert_json_str(k15) + ":" + mediaconvert_json_str(u14[k15]))
+            parts.append("\"userMetadata\":" + mediaconvert_json_obj(m15))
         auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
 
@@ -9610,29 +9651,32 @@ struct MediaConvertClient:
         if input.Description.is_some():
             auto u2 = input.Description.unwrap()
             parts.append("\"description\":" + mediaconvert_json_str(u2))
+        if input.ElementalInferenceSettings.is_some():
+            auto u3 = input.ElementalInferenceSettings.unwrap()
+            parts.append("\"elementalInferenceSettings\":" + u3.to_json())
         if input.HopDestinations.is_some():
-            auto u3 = input.HopDestinations.unwrap()
-            list[str] e4 = []
-            for x4 in u3:
-                e4.append(x4.to_json())
-            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e4))
+            auto u4 = input.HopDestinations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e5))
         parts.append("\"name\":" + mediaconvert_json_str(input.Name))
         if input.Priority.is_some():
-            auto u5 = input.Priority.unwrap()
-            parts.append("\"priority\":" + str(u5))
+            auto u6 = input.Priority.unwrap()
+            parts.append("\"priority\":" + str(u6))
         if input.Queue.is_some():
-            auto u6 = input.Queue.unwrap()
-            parts.append("\"queue\":" + mediaconvert_json_str(u6))
+            auto u7 = input.Queue.unwrap()
+            parts.append("\"queue\":" + mediaconvert_json_str(u7))
         parts.append("\"settings\":" + job_template_settings_to_json(input.Settings))
         if input.StatusUpdateInterval.is_some():
-            auto u7 = input.StatusUpdateInterval.unwrap()
-            parts.append("\"statusUpdateInterval\":" + u7.to_json())
+            auto u8 = input.StatusUpdateInterval.unwrap()
+            parts.append("\"statusUpdateInterval\":" + u8.to_json())
         if input.Tags.is_some():
-            auto u8 = input.Tags.unwrap()
-            list[str] m9 = []
-            for k9 in sorted(u8.keys()):
-                m9.append(mediaconvert_json_str(k9) + ":" + mediaconvert_json_str(u8[k9]))
-            parts.append("\"tags\":" + mediaconvert_json_obj(m9))
+            auto u9 = input.Tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(mediaconvert_json_str(k10) + ":" + mediaconvert_json_str(u9[k10]))
+            parts.append("\"tags\":" + mediaconvert_json_obj(m10))
         auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
 
@@ -10013,24 +10057,27 @@ struct MediaConvertClient:
         if input.Description.is_some():
             auto u2 = input.Description.unwrap()
             parts.append("\"description\":" + mediaconvert_json_str(u2))
+        if input.ElementalInferenceSettings.is_some():
+            auto u3 = input.ElementalInferenceSettings.unwrap()
+            parts.append("\"elementalInferenceSettings\":" + u3.to_json())
         if input.HopDestinations.is_some():
-            auto u3 = input.HopDestinations.unwrap()
-            list[str] e4 = []
-            for x4 in u3:
-                e4.append(x4.to_json())
-            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e4))
+            auto u4 = input.HopDestinations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"hopDestinations\":" + mediaconvert_json_arr(e5))
         if input.Priority.is_some():
-            auto u5 = input.Priority.unwrap()
-            parts.append("\"priority\":" + str(u5))
+            auto u6 = input.Priority.unwrap()
+            parts.append("\"priority\":" + str(u6))
         if input.Queue.is_some():
-            auto u6 = input.Queue.unwrap()
-            parts.append("\"queue\":" + mediaconvert_json_str(u6))
+            auto u7 = input.Queue.unwrap()
+            parts.append("\"queue\":" + mediaconvert_json_str(u7))
         if input.Settings.is_some():
-            auto u7 = input.Settings.unwrap()
-            parts.append("\"settings\":" + job_template_settings_to_json(u7))
+            auto u8 = input.Settings.unwrap()
+            parts.append("\"settings\":" + job_template_settings_to_json(u8))
         if input.StatusUpdateInterval.is_some():
-            auto u8 = input.StatusUpdateInterval.unwrap()
-            parts.append("\"statusUpdateInterval\":" + u8.to_json())
+            auto u9 = input.StatusUpdateInterval.unwrap()
+            parts.append("\"statusUpdateInterval\":" + u9.to_json())
         auto bp = restjson.rest_json_document(b, mediaconvert_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
 

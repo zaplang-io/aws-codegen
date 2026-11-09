@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 15 operations — 15 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   53 structs (35 @derive(Json)), 6 enums, 8 error variants.
+#   54 structs (35 @derive(Json)), 6 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -116,7 +116,7 @@ struct ConflictException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, Environment: Environment, Tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CreateWorkflowRequest:
@@ -130,6 +130,7 @@ struct CreateWorkflowRequest:
     Optional[LoggingConfiguration] LoggingConfiguration
     Optional[int64] EngineVersion
     Optional[NetworkConfiguration] NetworkConfiguration
+    Optional[Environment] Environment
     Optional[dict[str, str]] Tags
     Optional[str] TriggerMode
 
@@ -171,6 +172,12 @@ struct EncryptionConfiguration:
     EncryptionType Type
     Optional[str] KmsKeyId
 
+# no @derive(Json): member(s) Variables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Environment:
+    Optional[dict[str, str]] Variables
+
 @derive(Json)
 struct GetTaskInstanceRequest:
     str WorkflowArn
@@ -202,7 +209,7 @@ struct GetWorkflowRequest:
     str WorkflowArn
     Optional[str] WorkflowVersion
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not derivable (list/map collections);
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, Environment: Environment not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct GetWorkflowResponse:
@@ -222,6 +229,7 @@ struct GetWorkflowResponse:
     Optional[ScheduleConfiguration] ScheduleConfiguration
     Optional[str] RoleArn
     Optional[NetworkConfiguration] NetworkConfiguration
+    Optional[Environment] Environment
     Optional[str] TriggerMode
     Optional[str] WorkflowDefinition
 
@@ -427,7 +435,7 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration not derivable (list/map collections);
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, Environment: Environment not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct UpdateWorkflowRequest:
@@ -439,6 +447,7 @@ struct UpdateWorkflowRequest:
     Optional[LoggingConfiguration] LoggingConfiguration
     Optional[int64] EngineVersion
     Optional[NetworkConfiguration] NetworkConfiguration
+    Optional[Environment] Environment
     Optional[str] TriggerMode
 
 # no @derive(Json): member(s) Warnings: list[str] not derivable (list/map collections);
@@ -645,15 +654,29 @@ def create_workflow_request_to_json(CreateWorkflowRequest v) -> str:
     if v.NetworkConfiguration.is_some():
         auto u6 = v.NetworkConfiguration.unwrap()
         parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u6))
+    if v.Environment.is_some():
+        auto u7 = v.Environment.unwrap()
+        parts.append("\"Environment\":" + environment_to_json(u7))
     if v.Tags.is_some():
-        auto u7 = v.Tags.unwrap()
-        list[str] m8 = []
-        for k8 in sorted(u7.keys()):
-            m8.append(airflow_serverless_json_str(k8) + ":" + airflow_serverless_json_str(u7[k8]))
-        parts.append("\"Tags\":" + airflow_serverless_json_obj(m8))
+        auto u8 = v.Tags.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(airflow_serverless_json_str(k9) + ":" + airflow_serverless_json_str(u8[k9]))
+        parts.append("\"Tags\":" + airflow_serverless_json_obj(m9))
     if v.TriggerMode.is_some():
-        auto u9 = v.TriggerMode.unwrap()
-        parts.append("\"TriggerMode\":" + airflow_serverless_json_str(u9))
+        auto u10 = v.TriggerMode.unwrap()
+        parts.append("\"TriggerMode\":" + airflow_serverless_json_str(u10))
+    return airflow_serverless_json_obj(parts)
+
+# Serialize Environment to a compact JSON object (declaration order).
+def environment_to_json(Environment v) -> str:
+    list[str] parts = []
+    if v.Variables.is_some():
+        auto u0 = v.Variables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(airflow_serverless_json_str(k1) + ":" + airflow_serverless_json_str(u0[k1]))
+        parts.append("\"Variables\":" + airflow_serverless_json_obj(m1))
     return airflow_serverless_json_obj(parts)
 
 # Serialize NetworkConfiguration to a compact JSON object (declaration order).
@@ -732,9 +755,12 @@ def update_workflow_request_to_json(UpdateWorkflowRequest v) -> str:
     if v.NetworkConfiguration.is_some():
         auto u4 = v.NetworkConfiguration.unwrap()
         parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u4))
+    if v.Environment.is_some():
+        auto u5 = v.Environment.unwrap()
+        parts.append("\"Environment\":" + environment_to_json(u5))
     if v.TriggerMode.is_some():
-        auto u5 = v.TriggerMode.unwrap()
-        parts.append("\"TriggerMode\":" + airflow_serverless_json_str(u5))
+        auto u6 = v.TriggerMode.unwrap()
+        parts.append("\"TriggerMode\":" + airflow_serverless_json_str(u6))
     return airflow_serverless_json_obj(parts)
 
 # A bound MWAA_Serverless client: credentials + region, threaded into every operation.

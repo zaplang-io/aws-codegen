@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 94 operations — 92 with a generated method,
+# Coverage (rest-json): 96 operations — 94 with a generated method,
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   416 structs (209 @derive(Json)), 58 enums, 12 error variants.
+#   421 structs (211 @derive(Json)), 61 enums, 12 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -91,6 +91,13 @@ enum AssistantCapabilityType:
 
 @derive(Json)
 @json(open)
+enum AssistantGlobalResiliencyStatus:
+    ENABLED
+    DISABLED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum AssistantStatus:
     CREATE_IN_PROGRESS
     CREATE_FAILED
@@ -159,6 +166,13 @@ enum CrossRegionStatus:
     NONE
     REGIONAL
     GLOBAL
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum GlobalResiliencyStatus:
+    SUPPORTED
+    UNSUPPORTED
     Unknown(str value)
 
 @derive(Json)
@@ -582,6 +596,13 @@ enum ToolType:
 
 @derive(Json)
 @json(open)
+enum UnprocessableContentReason:
+    ORCHESTRATION_ERROR
+    AI_INFERENCE_MODEL_UNAVAILABLE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum VisibilityStatus:
     SAVED
     PUBLISHED
@@ -635,6 +656,8 @@ struct AIAgentData:
     AIAgentType type
     AIAgentConfiguration configuration
     Optional[DateTime] modifiedTime
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
     Optional[str] description
     VisibilityStatus visibilityStatus
     Optional[dict[str, str]] tags
@@ -652,6 +675,8 @@ struct AIAgentSummary:
     AIAgentType type
     str aiAgentArn
     Optional[DateTime] modifiedTime
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
     VisibilityStatus visibilityStatus
     Optional[AIAgentConfiguration] configuration
     Optional[Origin] origin
@@ -703,6 +728,8 @@ struct AIGuardrailData:
     Optional[dict[str, str]] tags
     Optional[Status] status
     Optional[DateTime] modifiedTime
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
 
 # no @derive(Json): member(s) piiEntitiesConfig: list[GuardrailPiiEntityConfig], regexesConfig: list[GuardrailRegexConfig] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -721,6 +748,8 @@ struct AIGuardrailSummary:
     str aiGuardrailId
     str aiGuardrailArn
     Optional[DateTime] modifiedTime
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
     VisibilityStatus visibilityStatus
     Optional[str] description
     Optional[Status] status
@@ -762,6 +791,8 @@ struct AIPromptData:
     AIPromptTemplateConfiguration templateConfiguration
     Optional[AIPromptInferenceConfiguration] inferenceConfiguration
     Optional[DateTime] modifiedTime
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
     Optional[str] description
     VisibilityStatus visibilityStatus
     Optional[dict[str, str]] tags
@@ -786,6 +817,8 @@ struct AIPromptSummary:
     AIPromptType type
     str aiPromptArn
     Optional[DateTime] modifiedTime
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
     str templateType
     str modelId
     AIPromptAPIFormat apiFormat
@@ -872,6 +905,8 @@ struct AssistantAssociationData:
     AssociationType associationType
     AssistantAssociationOutputData associationData
     Optional[dict[str, str]] tags
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
 
 @derive(Json)
 struct AssistantAssociationInputData:
@@ -894,12 +929,14 @@ struct AssistantAssociationSummary:
     AssociationType associationType
     AssistantAssociationOutputData associationData
     Optional[dict[str, str]] tags
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
 
 @derive(Json)
 struct AssistantCapabilityConfiguration:
     Optional[AssistantCapabilityType] type
 
-# no @derive(Json): member(s) tags: dict[str, str], aiAgentConfiguration: dict[AIAgentType, AIAgentConfigurationData], orchestratorConfigurationList: list[OrchestratorConfigurationEntry] not derivable (list/map collections);
+# no @derive(Json): member(s) tags: dict[str, str], serverSideEncryptionConfiguration: ServerSideEncryptionConfiguration, aiAgentConfiguration: dict[AIAgentType, AIAgentConfigurationData], orchestratorConfigurationList: list[OrchestratorConfigurationEntry] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AssistantData:
@@ -915,12 +952,15 @@ struct AssistantData:
     Optional[AssistantCapabilityConfiguration] capabilityConfiguration
     Optional[dict[AIAgentType, AIAgentConfigurationData]] aiAgentConfiguration
     Optional[list[OrchestratorConfigurationEntry]] orchestratorConfigurationList
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
+    Optional[AssistantGlobalResiliencyStatus] assistantGlobalResiliencyStatus
 
 @derive(Json)
 struct AssistantIntegrationConfiguration:
     Optional[str] topicIntegrationArn
 
-# no @derive(Json): member(s) tags: dict[str, str], aiAgentConfiguration: dict[AIAgentType, AIAgentConfigurationData], orchestratorConfigurationList: list[OrchestratorConfigurationEntry] not derivable (list/map collections);
+# no @derive(Json): member(s) tags: dict[str, str], serverSideEncryptionConfiguration: ServerSideEncryptionConfiguration, aiAgentConfiguration: dict[AIAgentType, AIAgentConfigurationData], orchestratorConfigurationList: list[OrchestratorConfigurationEntry] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AssistantSummary:
@@ -936,6 +976,8 @@ struct AssistantSummary:
     Optional[AssistantCapabilityConfiguration] capabilityConfiguration
     Optional[dict[AIAgentType, AIAgentConfigurationData]] aiAgentConfiguration
     Optional[list[OrchestratorConfigurationEntry]] orchestratorConfigurationList
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
 
 # no @derive(Json): member(s) associationConfigurationData: AssociationConfigurationData not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1056,6 +1098,9 @@ struct ContentData:
     Optional[str] linkOutUri
     str url
     DateTime urlExpiry
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
+    Optional[str] fileHash
 
 # no @derive(Json): member(s) textData: TextData not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1092,6 +1137,9 @@ struct ContentSummary:
     ContentStatus status
     dict[str, str] metadata
     Optional[dict[str, str]] tags
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
+    Optional[str] fileHash
 
 # no @derive(Json): member(s) selfServiceConversationHistory: list[SelfServiceConversationHistory] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2159,7 +2207,7 @@ struct KnowledgeBaseAssociationData:
     Optional[str] knowledgeBaseId
     Optional[str] knowledgeBaseArn
 
-# no @derive(Json): member(s) vectorIngestionConfiguration: VectorIngestionConfiguration, sourceConfiguration: SourceConfiguration, tags: dict[str, str], ingestionFailureReasons: list[str] not derivable (list/map collections);
+# no @derive(Json): member(s) vectorIngestionConfiguration: VectorIngestionConfiguration, sourceConfiguration: SourceConfiguration, serverSideEncryptionConfiguration: ServerSideEncryptionConfiguration, tags: dict[str, str], ingestionFailureReasons: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct KnowledgeBaseData:
@@ -2177,8 +2225,10 @@ struct KnowledgeBaseData:
     Optional[dict[str, str]] tags
     Optional[SyncStatus] ingestionStatus
     Optional[list[str]] ingestionFailureReasons
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
 
-# no @derive(Json): member(s) sourceConfiguration: SourceConfiguration, vectorIngestionConfiguration: VectorIngestionConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) sourceConfiguration: SourceConfiguration, vectorIngestionConfiguration: VectorIngestionConfiguration, serverSideEncryptionConfiguration: ServerSideEncryptionConfiguration, tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct KnowledgeBaseSummary:
@@ -2193,6 +2243,8 @@ struct KnowledgeBaseSummary:
     Optional[ServerSideEncryptionConfiguration] serverSideEncryptionConfiguration
     Optional[str] description
     Optional[dict[str, str]] tags
+    Optional[DateTime] lastModifiedTime
+    Optional[str] lastModifiedRegion
 
 # no @derive(Json): member(s) assistantAssociationIds: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2695,6 +2747,7 @@ struct ModelSummary:
     Optional[ModelLifecycle] modelLifecycle
     Optional[DateTime] legacyTimestamp
     Optional[DateTime] endOfLifeTimestamp
+    Optional[GlobalResiliencyStatus] globalResiliencyStatus
 
 # no @derive(Json): member(s) delegateAgentConfiguration: DelegateAgentConfiguration, handoffAgentConfiguration: HandoffAgentConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2920,6 +2973,7 @@ struct QuickResponseData:
     QuickResponseStatus status
     DateTime createdTime
     DateTime lastModifiedTime
+    Optional[str] lastModifiedRegion
     Optional[QuickResponseContents] contents
     Optional[str] description
     Optional[GroupingConfiguration] groupingConfiguration
@@ -2980,6 +3034,7 @@ struct QuickResponseSearchResultData:
     QuickResponseContents contents
     DateTime createdTime
     DateTime lastModifiedTime
+    Optional[str] lastModifiedRegion
     bool isActive
     Optional[str] description
     Optional[GroupingConfiguration] groupingConfiguration
@@ -3004,6 +3059,7 @@ struct QuickResponseSummary:
     QuickResponseStatus status
     DateTime createdTime
     DateTime lastModifiedTime
+    Optional[str] lastModifiedRegion
     Optional[str] description
     Optional[str] lastModifiedBy
     Optional[bool] isActive
@@ -3039,6 +3095,32 @@ struct RecommendationTrigger:
 @derive(Json)
 struct RecommendationTriggerData:
     Optional[QueryRecommendationTriggerData] query
+
+# rest-json request for RegisterAssistantReplicaKeyRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct RegisterAssistantReplicaKeyRequest:
+    str assistantId
+    ReplicaKmsKey replicaKmsKey
+    Optional[str] clientToken
+
+# no @derive(Json): member(s) assistant: AssistantData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RegisterAssistantReplicaKeyResponse:
+    AssistantData assistant
+
+# rest-json request for RegisterKnowledgeBaseReplicaKeyRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct RegisterKnowledgeBaseReplicaKeyRequest:
+    str knowledgeBaseId
+    ReplicaKmsKey replicaKmsKey
+    Optional[str] clientToken
+
+# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RegisterKnowledgeBaseReplicaKeyResponse:
+    KnowledgeBaseData knowledgeBase
 
 # rest-json request for RemoveAssistantAIAgentRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -3082,6 +3164,10 @@ struct RenderMessageTemplateResponse:
 @derive(Json)
 struct RenderingConfiguration:
     Optional[str] templateUri
+
+@derive(Json)
+struct ReplicaKmsKey:
+    str arn
 
 @derive(Json)
 struct RequestTimeoutException:
@@ -3288,9 +3374,12 @@ struct SendMessageResponse:
     Optional[MessageConfiguration] configuration
     str nextMessageToken
 
-@derive(Json)
+# no @derive(Json): member(s) replicaKmsKeys: list[ReplicaKmsKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerSideEncryptionConfiguration:
     Optional[str] kmsKeyId
+    Optional[list[ReplicaKmsKey]] replicaKmsKeys
 
 @derive(Json)
 struct ServiceQuotaExceededException:
@@ -3627,6 +3716,7 @@ struct UnauthorizedException:
 @derive(Json)
 struct UnprocessableContentException:
     Optional[str] message
+    Optional[UnprocessableContentReason] reason
 
 # rest-json request for UntagResourceRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -4038,6 +4128,18 @@ struct PutFeedbackDocument:
     str targetId
     TargetType targetType
     ContentFeedbackData contentFeedback
+
+@derive(Json)
+struct RegisterAssistantReplicaKeyDocument:
+    # document members of RegisterAssistantReplicaKey
+    ReplicaKmsKey replicaKmsKey
+    Optional[str] clientToken
+
+@derive(Json)
+struct RegisterKnowledgeBaseReplicaKeyDocument:
+    # document members of RegisterKnowledgeBaseReplicaKey
+    ReplicaKmsKey replicaKmsKey
+    Optional[str] clientToken
 
 @derive(Json)
 struct StartContentUploadDocument:
@@ -4979,6 +5081,20 @@ def self_service_ai_agent_configuration_to_json(SelfServiceAIAgentConfiguration 
         parts.append("\"associationConfigurations\":" + wisdom_json_arr(e4))
     return wisdom_json_obj(parts)
 
+# Serialize ServerSideEncryptionConfiguration to a compact JSON object (declaration order).
+def server_side_encryption_configuration_to_json(ServerSideEncryptionConfiguration v) -> str:
+    list[str] parts = []
+    if v.kmsKeyId.is_some():
+        auto u0 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + wisdom_json_str(u0))
+    if v.replicaKmsKeys.is_some():
+        auto u1 = v.replicaKmsKeys.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"replicaKmsKeys\":" + wisdom_json_arr(e2))
+    return wisdom_json_obj(parts)
+
 # Serialize SourceConfiguration to a compact JSON object (declaration order).
 def source_configuration_to_json(SourceConfiguration v) -> str:
     list[str] parts = []
@@ -5320,7 +5436,7 @@ struct QConnectClient:
             parts.append("\"tags\":" + wisdom_json_obj(m3))
         if input.serverSideEncryptionConfiguration.is_some():
             auto u4 = input.serverSideEncryptionConfiguration.unwrap()
-            parts.append("\"serverSideEncryptionConfiguration\":" + u4.to_json())
+            parts.append("\"serverSideEncryptionConfiguration\":" + server_side_encryption_configuration_to_json(u4))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
@@ -5425,7 +5541,7 @@ struct QConnectClient:
             parts.append("\"vectorIngestionConfiguration\":" + vector_ingestion_configuration_to_json(u3))
         if input.serverSideEncryptionConfiguration.is_some():
             auto u4 = input.serverSideEncryptionConfiguration.unwrap()
-            parts.append("\"serverSideEncryptionConfiguration\":" + u4.to_json())
+            parts.append("\"serverSideEncryptionConfiguration\":" + server_side_encryption_configuration_to_json(u4))
         if input.description.is_some():
             auto u5 = input.description.unwrap()
             parts.append("\"description\":" + wisdom_json_str(u5))
@@ -6215,8 +6331,30 @@ struct QConnectClient:
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
+    # RegisterAssistantReplicaKey  PUT /assistants/{assistantId}/replicaKey
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def register_assistant_replica_key(self, RegisterAssistantReplicaKeyRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assistantId"] = input.assistantId
+        auto b = binding.HttpBinding(method="PUT", path_template="/assistants/{assistantId}/replicaKey", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = RegisterAssistantReplicaKeyDocument(replicaKmsKey=input.replicaKmsKey, clientToken=input.clientToken)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # RegisterKnowledgeBaseReplicaKey  PUT /knowledgeBases/{knowledgeBaseId}/replicaKey
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def register_knowledge_base_replica_key(self, RegisterKnowledgeBaseReplicaKeyRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgeBases/{knowledgeBaseId}/replicaKey", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = RegisterKnowledgeBaseReplicaKeyDocument(replicaKmsKey=input.replicaKmsKey, clientToken=input.clientToken)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
     # RemoveAssistantAIAgent  DELETE /assistants/{assistantId}/aiagentConfiguration
-    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
     def remove_assistant_ai_agent(self, RemoveAssistantAIAgentRequest input) -> str:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
@@ -6508,7 +6646,7 @@ struct QConnectClient:
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
     # UpdateAssistantAIAgent  POST /assistants/{assistantId}/aiagentConfiguration
-    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_assistant_ai_agent(self, UpdateAssistantAIAgentRequest input) -> str:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}

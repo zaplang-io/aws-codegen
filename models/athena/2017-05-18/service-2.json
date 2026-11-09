@@ -237,6 +237,30 @@
     }
    ]
   },
+  "CreateSystemTableConfiguration": {
+   "name": "CreateSystemTableConfiguration",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "CreateSystemTableConfigurationInput"
+   },
+   "output": {
+    "shape": "CreateSystemTableConfigurationOutput"
+   },
+   "errors": [
+    {
+     "shape": "InvalidRequestException"
+    },
+    {
+     "shape": "TooManyRequestsException"
+    },
+    {
+     "shape": "InternalServerException"
+    }
+   ]
+  },
   "CreateWorkGroup": {
    "name": "CreateWorkGroup",
    "http": {
@@ -370,6 +394,31 @@
      "shape": "ResourceNotFoundException"
     }
    ]
+  },
+  "DeleteSystemTableConfiguration": {
+   "name": "DeleteSystemTableConfiguration",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "DeleteSystemTableConfigurationInput"
+   },
+   "output": {
+    "shape": "DeleteSystemTableConfigurationOutput"
+   },
+   "errors": [
+    {
+     "shape": "InvalidRequestException"
+    },
+    {
+     "shape": "TooManyRequestsException"
+    },
+    {
+     "shape": "InternalServerException"
+    }
+   ],
+   "idempotent": true
   },
   "DeleteWorkGroup": {
    "name": "DeleteWorkGroup",
@@ -807,6 +856,34 @@
     }
    ]
   },
+  "GetSystemTableConfiguration": {
+   "name": "GetSystemTableConfiguration",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "GetSystemTableConfigurationInput"
+   },
+   "output": {
+    "shape": "GetSystemTableConfigurationOutput"
+   },
+   "errors": [
+    {
+     "shape": "InvalidRequestException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "TooManyRequestsException"
+    },
+    {
+     "shape": "InternalServerException"
+    }
+   ],
+   "readonly": true
+  },
   "GetTableMetadata": {
    "name": "GetTableMetadata",
    "http": {
@@ -1169,6 +1246,31 @@
      "shape": "ResourceNotFoundException"
     }
    ]
+  },
+  "ListSystemTableStatuses": {
+   "name": "ListSystemTableStatuses",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "ListSystemTableStatusesInput"
+   },
+   "output": {
+    "shape": "ListSystemTableStatusesOutput"
+   },
+   "errors": [
+    {
+     "shape": "InvalidRequestException"
+    },
+    {
+     "shape": "TooManyRequestsException"
+    },
+    {
+     "shape": "InternalServerException"
+    }
+   ],
+   "readonly": true
   },
   "ListTableMetadata": {
    "name": "ListTableMetadata",
@@ -1593,6 +1695,34 @@
      "shape": "ResourceNotFoundException"
     }
    ]
+  },
+  "UpdateSystemTableConfiguration": {
+   "name": "UpdateSystemTableConfiguration",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "UpdateSystemTableConfigurationInput"
+   },
+   "output": {
+    "shape": "UpdateSystemTableConfigurationOutput"
+   },
+   "errors": [
+    {
+     "shape": "InvalidRequestException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "TooManyRequestsException"
+    },
+    {
+     "shape": "InternalServerException"
+    }
+   ],
+   "idempotent": true
   },
   "UpdateWorkGroup": {
    "name": "UpdateWorkGroup",
@@ -2336,6 +2466,44 @@
     }
    }
   },
+  "CreateSystemTableConfigurationInput": {
+   "type": "structure",
+   "required": [
+    "TableName"
+   ],
+   "members": {
+    "ClientRequestToken": {
+     "shape": "IdempotencyToken",
+     "idempotencyToken": true
+    },
+    "TableName": {
+     "shape": "SystemTableName"
+    },
+    "KmsKeyArn": {
+     "shape": "KmsKeyArn"
+    },
+    "Tags": {
+     "shape": "TagList"
+    }
+   }
+  },
+  "CreateSystemTableConfigurationOutput": {
+   "type": "structure",
+   "members": {
+    "TableName": {
+     "shape": "SystemTableName"
+    },
+    "KmsKeyArn": {
+     "shape": "KmsKeyArn"
+    },
+    "CreatedAt": {
+     "shape": "Timestamp"
+    },
+    "LastModifiedAt": {
+     "shape": "Timestamp"
+    }
+   }
+  },
   "CreateWorkGroupInput": {
    "type": "structure",
    "required": [
@@ -2579,6 +2747,21 @@
    }
   },
   "DeletePreparedStatementOutput": {
+   "type": "structure",
+   "members": {}
+  },
+  "DeleteSystemTableConfigurationInput": {
+   "type": "structure",
+   "required": [
+    "TableName"
+   ],
+   "members": {
+    "TableName": {
+     "shape": "SystemTableName"
+    }
+   }
+  },
+  "DeleteSystemTableConfigurationOutput": {
    "type": "structure",
    "members": {}
   },
@@ -3219,6 +3402,34 @@
     }
    }
   },
+  "GetSystemTableConfigurationInput": {
+   "type": "structure",
+   "required": [
+    "TableName"
+   ],
+   "members": {
+    "TableName": {
+     "shape": "SystemTableName"
+    }
+   }
+  },
+  "GetSystemTableConfigurationOutput": {
+   "type": "structure",
+   "members": {
+    "TableName": {
+     "shape": "SystemTableName"
+    },
+    "KmsKeyArn": {
+     "shape": "KmsKeyArn"
+    },
+    "CreatedAt": {
+     "shape": "Timestamp"
+    },
+    "LastModifiedAt": {
+     "shape": "Timestamp"
+    }
+   }
+  },
   "GetTableMetadataInput": {
    "type": "structure",
    "required": [
@@ -3367,7 +3578,13 @@
    "type": "string",
    "max": 2048,
    "min": 1,
-   "pattern": "^arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:key/?[a-zA-Z_0-9+=,.@\\-_/]+$|^arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:alias/?[a-zA-Z_0-9+=,.@\\-_/]+$|^alias/[a-zA-Z0-9/_-]+$|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+   "pattern": "^(arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:key/?[a-zA-Z_0-9+=,.@\\-_/]+|arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:alias/?[a-zA-Z_0-9+=,.@\\-_/]+|alias/[a-zA-Z0-9/_-]+|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$"
+  },
+  "KmsKeyArn": {
+   "type": "string",
+   "max": 2048,
+   "min": 20,
+   "pattern": "^arn:aws[a-z\\-]*:kms:[a-z0-9\\-]+:\\d{12}:(key/(mrk-)?[0-9a-f\\-]+|alias/[a-zA-Z0-9/_\\-]+)$"
   },
   "ListApplicationDPUSizesInput": {
    "type": "structure",
@@ -3733,6 +3950,31 @@
     }
    }
   },
+  "ListSystemTableStatusesInput": {
+   "type": "structure",
+   "members": {
+    "NextToken": {
+     "shape": "Token"
+    },
+    "MaxResults": {
+     "shape": "MaxSystemTableStatusesCount"
+    }
+   }
+  },
+  "ListSystemTableStatusesOutput": {
+   "type": "structure",
+   "required": [
+    "Items"
+   ],
+   "members": {
+    "Items": {
+     "shape": "SystemTableStatusList"
+    },
+    "NextToken": {
+     "shape": "Token"
+    }
+   }
+  },
   "ListTableMetadataInput": {
    "type": "structure",
    "required": [
@@ -3991,6 +4233,12 @@
    "type": "integer",
    "box": true,
    "max": 100,
+   "min": 1
+  },
+  "MaxSystemTableStatusesCount": {
+   "type": "integer",
+   "box": true,
+   "max": 50,
    "min": 1
   },
   "MaxTableMetadataCount": {
@@ -5006,6 +5254,41 @@
     "shape": "Integer"
    }
   },
+  "SystemTableName": {
+   "type": "string",
+   "enum": [
+    "ALL"
+   ]
+  },
+  "SystemTableStatus": {
+   "type": "structure",
+   "required": [
+    "TableName",
+    "Enabled"
+   ],
+   "members": {
+    "TableName": {
+     "shape": "SystemTableType"
+    },
+    "Enabled": {
+     "shape": "BoxedBoolean"
+    }
+   }
+  },
+  "SystemTableStatusList": {
+   "type": "list",
+   "member": {
+    "shape": "SystemTableStatus"
+   },
+   "max": 50,
+   "min": 0
+  },
+  "SystemTableType": {
+   "type": "string",
+   "enum": [
+    "QUERY_EXECUTIONS"
+   ]
+  },
   "TableMetadata": {
    "type": "structure",
    "required": [
@@ -5379,6 +5662,37 @@
    "type": "structure",
    "members": {}
   },
+  "UpdateSystemTableConfigurationInput": {
+   "type": "structure",
+   "required": [
+    "TableName"
+   ],
+   "members": {
+    "TableName": {
+     "shape": "SystemTableName"
+    },
+    "KmsKeyArn": {
+     "shape": "KmsKeyArn"
+    }
+   }
+  },
+  "UpdateSystemTableConfigurationOutput": {
+   "type": "structure",
+   "members": {
+    "TableName": {
+     "shape": "SystemTableName"
+    },
+    "KmsKeyArn": {
+     "shape": "KmsKeyArn"
+    },
+    "CreatedAt": {
+     "shape": "Timestamp"
+    },
+    "LastModifiedAt": {
+     "shape": "Timestamp"
+    }
+   }
+  },
   "UpdateWorkGroupInput": {
    "type": "structure",
    "required": [
@@ -5476,6 +5790,9 @@
     },
     "QueryResultsS3AccessGrantsConfiguration": {
      "shape": "QueryResultsS3AccessGrantsConfiguration"
+    },
+    "SystemTableStatuses": {
+     "shape": "SystemTableStatusList"
     }
    }
   },

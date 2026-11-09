@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 195 operations — 195 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   746 structs (434 @derive(Json)), 91 enums, 8 error variants.
+#   747 structs (433 @derive(Json)), 91 enums, 8 error variants.
 #   41 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1341,10 +1341,13 @@ struct AuthenticationConfigurationInput:
     Optional[BasicAuthenticationCredentials] basicAuthenticationCredentials
     Optional[dict[str, str]] customAuthenticationCredentials
 
-@derive(Json)
+# no @derive(Json): member(s) oAuth2Properties: OAuth2PropertiesPatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfigurationPatch:
     Optional[str] secretArn
     Optional[BasicAuthenticationCredentials] basicAuthenticationCredentials
+    Optional[OAuth2PropertiesPatch] oAuth2Properties
 
 @derive(Json)
 struct AuthorizationCodeProperties:
@@ -1597,7 +1600,7 @@ struct ConnectivityProperties:
     Optional[dict[str, str]] pythonProperties
     Optional[AuthenticationConfigurationInput] authenticationConfiguration
 
-# no @derive(Json): member(s) connectionProperties: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) connectionProperties: dict[str, str], authenticationConfiguration: AuthenticationConfigurationPatch not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ConnectivityPropertiesPatch:
@@ -4411,7 +4414,7 @@ struct GlueConnectionInput:
     Optional[dict[str, str]] pythonProperties
     Optional[AuthenticationConfigurationInput] authenticationConfiguration
 
-# no @derive(Json): member(s) connectionProperties: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) connectionProperties: dict[str, str], authenticationConfiguration: AuthenticationConfigurationPatch not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct GlueConnectionPatch:
@@ -5645,6 +5648,15 @@ struct OAuth2Properties:
     Optional[dict[str, str]] tokenUrlParametersMap
     Optional[AuthorizationCodeProperties] authorizationCodeProperties
     Optional[GlueOAuth2Credentials] oAuth2Credentials
+
+# no @derive(Json): member(s) tokenUrlParametersMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct OAuth2PropertiesPatch:
+    Optional[OAuth2GrantType] oAuth2GrantType
+    Optional[OAuth2ClientApplication] oAuth2ClientApplication
+    Optional[str] tokenUrl
+    Optional[dict[str, str]] tokenUrlParametersMap
 
 # no @derive(Json): member(s) inputs: list[NameIdentifier], outputs: list[NameIdentifier] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -8204,6 +8216,20 @@ def authentication_configuration_input_to_json(AuthenticationConfigurationInput 
         parts.append("\"customAuthenticationCredentials\":" + datazone_json_obj(m6))
     return datazone_json_obj(parts)
 
+# Serialize AuthenticationConfigurationPatch to a compact JSON object (declaration order).
+def authentication_configuration_patch_to_json(AuthenticationConfigurationPatch v) -> str:
+    list[str] parts = []
+    if v.secretArn.is_some():
+        auto u0 = v.secretArn.unwrap()
+        parts.append("\"secretArn\":" + datazone_json_str(u0))
+    if v.basicAuthenticationCredentials.is_some():
+        auto u1 = v.basicAuthenticationCredentials.unwrap()
+        parts.append("\"basicAuthenticationCredentials\":" + u1.to_json())
+    if v.oAuth2Properties.is_some():
+        auto u2 = v.oAuth2Properties.unwrap()
+        parts.append("\"oAuth2Properties\":" + o_auth2_properties_patch_to_json(u2))
+    return datazone_json_obj(parts)
+
 # Serialize ColumnFilterConfiguration to a compact JSON object (declaration order).
 def column_filter_configuration_to_json(ColumnFilterConfiguration v) -> str:
     list[str] parts = []
@@ -8387,7 +8413,7 @@ def connectivity_properties_patch_to_json(ConnectivityPropertiesPatch v) -> str:
         parts.append("\"connectionProperties\":" + datazone_json_obj(m2))
     if v.authenticationConfiguration.is_some():
         auto u3 = v.authenticationConfiguration.unwrap()
-        parts.append("\"authenticationConfiguration\":" + u3.to_json())
+        parts.append("\"authenticationConfiguration\":" + authentication_configuration_patch_to_json(u3))
     return datazone_json_obj(parts)
 
 # Serialize CreateProjectFromProjectProfilePolicyGrantDetail to a compact JSON object (declaration order).
@@ -8636,7 +8662,7 @@ def glue_connection_patch_to_json(GlueConnectionPatch v) -> str:
         parts.append("\"connectionProperties\":" + datazone_json_obj(m2))
     if v.authenticationConfiguration.is_some():
         auto u3 = v.authenticationConfiguration.unwrap()
-        parts.append("\"authenticationConfiguration\":" + u3.to_json())
+        parts.append("\"authenticationConfiguration\":" + authentication_configuration_patch_to_json(u3))
     return datazone_json_obj(parts)
 
 # Serialize GluePropertiesInput to a compact JSON object (declaration order).
@@ -8783,6 +8809,26 @@ def o_auth2_properties_to_json(OAuth2Properties v) -> str:
     if v.oAuth2Credentials.is_some():
         auto u6 = v.oAuth2Credentials.unwrap()
         parts.append("\"oAuth2Credentials\":" + u6.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize OAuth2PropertiesPatch to a compact JSON object (declaration order).
+def o_auth2_properties_patch_to_json(OAuth2PropertiesPatch v) -> str:
+    list[str] parts = []
+    if v.oAuth2GrantType.is_some():
+        auto u0 = v.oAuth2GrantType.unwrap()
+        parts.append("\"oAuth2GrantType\":" + u0.to_json())
+    if v.oAuth2ClientApplication.is_some():
+        auto u1 = v.oAuth2ClientApplication.unwrap()
+        parts.append("\"oAuth2ClientApplication\":" + u1.to_json())
+    if v.tokenUrl.is_some():
+        auto u2 = v.tokenUrl.unwrap()
+        parts.append("\"tokenUrl\":" + datazone_json_str(u2))
+    if v.tokenUrlParametersMap.is_some():
+        auto u3 = v.tokenUrlParametersMap.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(datazone_json_str(k4) + ":" + datazone_json_str(u3[k4]))
+        parts.append("\"tokenUrlParametersMap\":" + datazone_json_obj(m4))
     return datazone_json_obj(parts)
 
 # Serialize Permissions to a compact JSON object (declaration order).

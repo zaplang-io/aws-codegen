@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 49 operations — 49 with a generated method,
+# Coverage (rest-json): 55 operations — 55 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   124 structs (91 @derive(Json)), 14 enums, 8 error variants.
-#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   153 structs (114 @derive(Json)), 22 enums, 8 error variants.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -41,6 +41,24 @@ def s3tables_service() -> str:
     return "s3tables"
 
 # --- enums -----------------------------------------------------------------
+
+@derive(Json)
+@json(open)
+enum CompressionCodec:
+    zstd
+    snappy
+    gzip
+    uncompressed
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FindingCategory:
+    access
+    metadata
+    data
+    internal
+    Unknown(str value)
 
 @derive(Json)
 @json(open)
@@ -67,6 +85,13 @@ enum IcebergSortDirection:
 
 @derive(Json)
 @json(open)
+enum IncompatibleValuesPolicy:
+    fail
+    setNull
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum JobStatus:
     Not_Yet_Run
     Successful
@@ -79,6 +104,49 @@ enum JobStatus:
 enum MaintenanceStatus:
     enabled
     disabled
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MigrationFailureCode:
+    rolePermissions
+    sourcePermissions
+    destinationPermissions
+    resourceNotFound
+    sourceNotSupported
+    objectMigrationReport
+    objectCompatibilityReport
+    tableCompatibilityReport
+    internalError
+    reportBucketNotSupported
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MigrationRequestedState:
+    queued
+    cancelled
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MigrationState:
+    new
+    planning
+    pendingReview
+    queued
+    migrating
+    succeeded
+    failed
+    cancelling
+    cancelled
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MigrationType:
+    start
+    sync
     Unknown(str value)
 
 @derive(Json)
@@ -148,6 +216,13 @@ enum TableType:
     aws
     Unknown(str value)
 
+@derive(Json)
+@json(open)
+enum UnmatchedSourceFieldsPolicy:
+    fail
+    drop
+    Unknown(str value)
+
 # --- shapes ----------------------------------------------------------------
 
 @derive(Json)
@@ -157,6 +232,11 @@ struct AccessDeniedException:
 @derive(Json)
 struct BadRequestException:
     Optional[str] message
+
+# rest-json request for CompleteTableMigrationRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct CompleteTableMigrationRequest:
+    str tableARN
 
 @derive(Json)
 struct ConflictException:
@@ -203,6 +283,16 @@ struct CreateTableRequest:
 struct CreateTableResponse:
     str tableARN
     str versionToken
+
+@derive(Json)
+struct DataMigrationOverview:
+    MaintenanceSettings maintenanceSettings
+    MigrationPolicies migrationPolicies
+
+@derive(Json)
+struct DataMigrationSettings:
+    Optional[MaintenanceSettings] maintenanceSettings
+    Optional[MigrationPolicies] migrationPolicies
 
 # rest-json request for DeleteNamespaceRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -256,6 +346,20 @@ struct DeleteTableRequest:
     str namespace
     str name
     Optional[str] versionToken
+
+# no @derive(Json): member(s) tags: dict[str, str], schema: IcebergSchemaV2, icebergSortOrder: IcebergSortOrder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DestinationTable:
+    str tableBucketARN
+    str namespace
+    str name
+    Optional[EncryptionConfiguration] encryptionConfiguration
+    Optional[StorageClassConfiguration] storageClassConfiguration
+    Optional[dict[str, str]] tags
+    Optional[MigrationTableProperties] properties
+    Optional[IcebergSchemaV2] schema
+    Optional[IcebergSortOrder] icebergSortOrder
 
 @derive(Json)
 struct Document:
@@ -416,6 +520,36 @@ struct GetTableMetadataLocationResponse:
     Optional[str] metadataLocation
     str warehouseLocation
 
+# rest-json request for GetTableMigrationRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetTableMigrationRequest:
+    Optional[str] migrationId
+    Optional[str] tableARN
+
+# no @derive(Json): member(s) migrationOutput: MigrationOutputOverview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetTableMigrationResponse:
+    str migrationId
+    str tableBucketARN
+    str namespace
+    Optional[str] tableARN
+    str name
+    MigrationType type
+    MigrationState state
+    str roleARN
+    bool reviewMigrationPlan
+    Optional[bool] hasValidPlan
+    DateTime createdAt
+    DateTime stateUpdatedAt
+    Optional[MigrationFailureReason] failureReason
+    Optional[PlanningStats] planningStats
+    Optional[MigrationStats] migrationStats
+    str sourceType
+    SourceConfiguration source
+    DataMigrationOverview dataMigration
+    MigrationOutputOverview migrationOutput
+
 # rest-json request for GetTablePolicyRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct GetTablePolicyRequest:
@@ -513,6 +647,12 @@ struct GetTableStorageClassRequest:
 @derive(Json)
 struct GetTableStorageClassResponse:
     StorageClassConfiguration storageClassConfiguration
+
+@derive(Json)
+struct GlueTableSource:
+    str catalogId
+    str databaseName
+    str tableName
 
 @derive(Json)
 struct IcebergCompactionSettings:
@@ -623,6 +763,26 @@ struct ListTableBucketsResponse:
     list[TableBucketSummary] tableBuckets
     Optional[str] continuationToken
 
+# rest-json request for ListTableMigrationsRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct ListTableMigrationsRequest:
+    Optional[str] tableBucketARN
+    Optional[str] namespace
+    Optional[str] name
+    Optional[str] tableARN
+    # wire string of the MigrationState enum (querystring binding)
+    Optional[str] state
+    Optional[bool] hasValidPlan
+    Optional[int64] maxResults
+    Optional[str] nextToken
+
+# no @derive(Json): member(s) migrations: list[MigrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListTableMigrationsResponse:
+    list[MigrationSummary] migrations
+    Optional[str] nextToken
+
 # rest-json request for ListTablesRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct ListTablesRequest:
@@ -651,12 +811,85 @@ struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
 @derive(Json)
+struct MaintenanceSettings:
+    Optional[MigrationCompactionSettings] icebergCompaction
+    Optional[MigrationSnapshotManagementSettings] icebergSnapshotManagement
+
+@derive(Json)
 struct ManagedTableInformation:
     Optional[ReplicationInformation] replicationInformation
 
 @derive(Json)
 struct MethodNotAllowedException:
     Optional[str] message
+
+@derive(Json)
+struct MigrationCompactionSettings:
+    Optional[int64] targetFileSizeMB
+    Optional[IcebergCompactionStrategy] strategy
+
+@derive(Json)
+struct MigrationFailureReason:
+    MigrationFailureCode code
+    Optional[str] detail
+
+@derive(Json)
+struct MigrationOutputConfiguration:
+    str bucket
+    Optional[MigrationReportPrefixes] prefixes
+
+# no @derive(Json): member(s) tableCompatibilityReport: ReportOverview, objectCompatibilityReport: ReportOverview, objectMigrationReport: ReportOverview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct MigrationOutputOverview:
+    str bucket
+    ReportOverview tableCompatibilityReport
+    ReportOverview objectCompatibilityReport
+    ReportOverview objectMigrationReport
+
+@derive(Json)
+struct MigrationPolicies:
+    Optional[UnmatchedSourceFieldsPolicy] unmatchedSourceFieldsPolicy
+    Optional[IncompatibleValuesPolicy] incompatibleValuesPolicy
+
+@derive(Json)
+struct MigrationReportPrefixes:
+    Optional[str] tableCompatibilityReport
+    Optional[str] objectCompatibilityReport
+    Optional[str] objectMigrationReport
+
+@derive(Json)
+struct MigrationSnapshotManagementSettings:
+    Optional[int64] minSnapshotsToKeep
+    Optional[int64] maxSnapshotAgeHours
+
+@derive(Json)
+struct MigrationStats:
+    Optional[int64] objectsMigrated
+    Optional[int64] objectsFailedMigration
+    Optional[int64] objectsPendingMigration
+
+@derive(Json)
+struct MigrationSummary:
+    str migrationId
+    str tableBucketARN
+    str namespace
+    Optional[str] tableARN
+    str name
+    MigrationType type
+    MigrationState state
+    Optional[bool] hasValidPlan
+    @json(timestamp="iso8601")
+    DateTime createdAt
+    @json(timestamp="iso8601")
+    DateTime stateUpdatedAt
+
+@derive(Json)
+struct MigrationTableProperties:
+    Optional[str] writeFormat
+    Optional[int64] icebergFormatVersion
+    Optional[CompressionCodec] compressionCodec
+    Optional[bool] dictionaryEncoding
 
 # no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -672,6 +905,12 @@ struct NamespaceSummary:
 @derive(Json)
 struct NotFoundException:
     Optional[str] message
+
+@derive(Json)
+struct PlanningStats:
+    Optional[int64] objectsScanned
+    Optional[int64] objectsPlanned
+    Optional[int64] partitionCount
 
 # rest-json request for PutTableBucketEncryptionRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -777,6 +1016,15 @@ struct ReplicationDestinationStatusModel:
 struct ReplicationInformation:
     str sourceTableARN
 
+# no @derive(Json): member(s) invalidFindings: dict[FindingCategory, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ReportOverview:
+    Optional[str] prefix
+    Optional[str] key
+    Optional[str] checksumCRC64NVME
+    Optional[dict[FindingCategory, int64]] invalidFindings
+
 @derive(Json)
 struct SchemaField:
     Optional[int64] id
@@ -793,8 +1041,41 @@ struct SchemaV2Field:
     Optional[str] doc
 
 @derive(Json)
+struct SourceConfiguration:
+    Optional[GlueTableSource] glueTable
+
+# rest-json request for StartTableMigrationRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct StartTableMigrationRequest:
+    str roleARN
+    DestinationTable destinationTable
+    str sourceType
+    SourceConfiguration source
+    Optional[DataMigrationSettings] dataMigration
+    Optional[bool] reviewMigrationPlan
+    MigrationOutputConfiguration migrationOutput
+
+@derive(Json)
+struct StartTableMigrationResponse:
+    str migrationId
+    MigrationState state
+
+@derive(Json)
 struct StorageClassConfiguration:
     StorageClass storageClass
+
+# rest-json request for SyncTableMigrationRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct SyncTableMigrationRequest:
+    str roleARN
+    str tableARN
+    Optional[bool] reviewMigrationPlan
+    MigrationOutputConfiguration migrationOutput
+
+@derive(Json)
+struct SyncTableMigrationResponse:
+    str migrationId
+    MigrationState state
 
 @derive(Json)
 struct TableBucketMaintenanceConfigurationValue:
@@ -938,6 +1219,20 @@ struct UpdateTableMetadataLocationResponse:
     str versionToken
     str metadataLocation
 
+# rest-json request for UpdateTableMigrationRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateTableMigrationRequest:
+    Optional[str] tableARN
+    Optional[str] migrationId
+    MigrationRequestedState requestedState
+    Optional[str] updateDescription
+
+@derive(Json)
+struct UpdateTableMigrationResponse:
+    str migrationId
+    MigrationState state
+    Optional[str] tableARN
+
 # --- errors ----------------------------------------------------------------
 
 # Typed service errors (#361): the per-service enum + classifier + name
@@ -1058,10 +1353,24 @@ struct RenameTableDocument:
     Optional[str] versionToken
 
 @derive(Json)
+struct SyncTableMigrationDocument:
+    # document members of SyncTableMigration
+    str roleARN
+    str tableARN
+    Optional[bool] reviewMigrationPlan
+    MigrationOutputConfiguration migrationOutput
+
+@derive(Json)
 struct UpdateTableMetadataLocationDocument:
     # document members of UpdateTableMetadataLocation
     str versionToken
     str metadataLocation
+
+@derive(Json)
+struct UpdateTableMigrationDocument:
+    # document members of UpdateTableMigration
+    MigrationRequestedState requestedState
+    Optional[str] updateDescription
 
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
@@ -1092,6 +1401,35 @@ def s3tables_json_arr(list[str] parts) -> str:
 
 # Explicit JSON serializers for document bodies with collection/nested
 # members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DestinationTable to a compact JSON object (declaration order).
+def destination_table_to_json(DestinationTable v) -> str:
+    list[str] parts = []
+    parts.append("\"tableBucketARN\":" + s3tables_json_str(v.tableBucketARN))
+    parts.append("\"namespace\":" + s3tables_json_str(v.namespace))
+    parts.append("\"name\":" + s3tables_json_str(v.name))
+    if v.encryptionConfiguration.is_some():
+        auto u0 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + u0.to_json())
+    if v.storageClassConfiguration.is_some():
+        auto u1 = v.storageClassConfiguration.unwrap()
+        parts.append("\"storageClassConfiguration\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(s3tables_json_str(k3) + ":" + s3tables_json_str(u2[k3]))
+        parts.append("\"tags\":" + s3tables_json_obj(m3))
+    if v.properties.is_some():
+        auto u4 = v.properties.unwrap()
+        parts.append("\"properties\":" + u4.to_json())
+    if v.schema.is_some():
+        auto u5 = v.schema.unwrap()
+        parts.append("\"schema\":" + iceberg_schema_v2_to_json(u5))
+    if v.icebergSortOrder.is_some():
+        auto u6 = v.icebergSortOrder.unwrap()
+        parts.append("\"icebergSortOrder\":" + iceberg_sort_order_to_json(u6))
+    return s3tables_json_obj(parts)
 
 # Serialize IcebergMetadata to a compact JSON object (declaration order).
 def iceberg_metadata_to_json(IcebergMetadata v) -> str:
@@ -1212,10 +1550,25 @@ def table_replication_rule_to_json(TableReplicationRule v) -> str:
     parts.append("\"destinations\":" + s3tables_json_arr(e0))
     return s3tables_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def s3tables_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound S3Tables client: credentials + region, threaded into every operation.
 struct S3TablesClient:
     core.Credentials creds
     str region
+
+    # CompleteTableMigration  POST /complete-table-migration
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def complete_table_migration(self, CompleteTableMigrationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] query = {}
+        query["tableARN"] = input.tableARN
+        auto b = binding.HttpBinding(method="POST", path_template="/complete-table-migration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # CreateNamespace  PUT /namespaces/{tableBucketARN}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
@@ -1508,6 +1861,18 @@ struct S3TablesClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/metadata-location", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
+    # GetTableMigration  GET /get-table-migration
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def get_table_migration(self, GetTableMigrationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] query = {}
+        if input.migrationId.is_some():
+            query["migrationId"] = input.migrationId.unwrap_or("")
+        if input.tableARN.is_some():
+            query["tableARN"] = input.tableARN.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-table-migration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
+
     # GetTablePolicy  GET /tables/{tableBucketARN}/{namespace}/{name}/policy
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def get_table_policy(self, GetTablePolicyRequest input) -> str:
@@ -1596,6 +1961,31 @@ struct S3TablesClient:
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/buckets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
+
+    # ListTableMigrations  GET /list-table-migrations
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def list_table_migrations(self, ListTableMigrationsRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] query = {}
+        if input.tableBucketARN.is_some():
+            query["tableBucketARN"] = input.tableBucketARN.unwrap_or("")
+        if input.namespace.is_some():
+            query["namespace"] = input.namespace.unwrap_or("")
+        if input.name.is_some():
+            query["name"] = input.name.unwrap_or("")
+        if input.tableARN.is_some():
+            query["tableARN"] = input.tableARN.unwrap_or("")
+        if input.state.is_some():
+            query["state"] = input.state.unwrap_or("")
+        if input.hasValidPlan.is_some():
+            auto qt0 = s3tables_bind_bool(input.hasValidPlan.unwrap_or(False))
+            query["hasValidPlan"] = qt0
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-table-migrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # ListTables  GET /tables/{tableBucketARN}
@@ -1758,6 +2148,35 @@ struct S3TablesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
 
+    # StartTableMigration  POST /start-table-migration
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def start_table_migration(self, StartTableMigrationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/start-table-migration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roleARN\":" + s3tables_json_str(input.roleARN))
+        parts.append("\"destinationTable\":" + destination_table_to_json(input.destinationTable))
+        parts.append("\"sourceType\":" + s3tables_json_str(input.sourceType))
+        parts.append("\"source\":" + input.source.to_json())
+        if input.dataMigration.is_some():
+            auto u0 = input.dataMigration.unwrap()
+            parts.append("\"dataMigration\":" + u0.to_json())
+        if input.reviewMigrationPlan.is_some():
+            auto u1 = input.reviewMigrationPlan.unwrap()
+            parts.append("\"reviewMigrationPlan\":" + json.dumps(JsonValue.Bool(u1)))
+        parts.append("\"migrationOutput\":" + input.migrationOutput.to_json())
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
+    # SyncTableMigration  POST /sync-table-migration
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def sync_table_migration(self, SyncTableMigrationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sync-table-migration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = SyncTableMigrationDocument(roleARN=input.roleARN, tableARN=input.tableARN, reviewMigrationPlan=input.reviewMigrationPlan, migrationOutput=input.migrationOutput)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
     # TagResource  POST /tag/{resourceArn}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def tag_resource(self, TagResourceRequest input) -> str:
@@ -1797,6 +2216,20 @@ struct S3TablesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
 
+    # UpdateTableMigration  POST /update-table-migration
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def update_table_migration(self, UpdateTableMigrationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] query = {}
+        if input.tableARN.is_some():
+            query["tableARN"] = input.tableARN.unwrap_or("")
+        if input.migrationId.is_some():
+            query["migrationId"] = input.migrationId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-table-migration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateTableMigrationDocument(requestedState=input.requestedState, updateDescription=input.updateDescription)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
     # Paginator for ListNamespaces — yields each Response page, threading the
     # continuationToken -> continuationToken continuation token until it is absent (result key: namespaces).
     def paginate_list_namespaces(self, ListNamespacesRequest input):
@@ -1822,6 +2255,19 @@ struct S3TablesClient:
             if not np.has_more:
                 break
             input.continuationToken = Optional.Some(np.token)
+
+    # Paginator for ListTableMigrations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: migrations).
+    def paginate_list_table_migrations(self, ListTableMigrationsRequest input):
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        while True:
+            auto raw = self.list_table_migrations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListTables — yields each Response page, threading the
     # continuationToken -> continuationToken continuation token until it is absent (result key: tables).

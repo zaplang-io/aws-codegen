@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 152 operations — 152 with a generated method,
+# Coverage (v0, awsJson only): 154 operations — 154 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   621 structs (356 @derive(Json)), 93 enums, 140 error variants.
+#   625 structs (360 @derive(Json)), 94 enums, 140 error variants.
 #   52 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -283,6 +283,13 @@ enum ComplianceUploadType:
 enum ConnectionStatus:
     connected
     notconnected
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DHMCPermissionModel:
+    SERVICE_MANAGED
+    SELF_MANAGED
     Unknown(str value)
 
 @derive(Json)
@@ -1958,6 +1965,16 @@ struct DeleteResourcePolicyRequest:
 
 @derive(Json)
 struct DeleteResourcePolicyResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct DeregisterDefaultHostManagementConfigurationRequest:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct DeregisterDefaultHostManagementConfigurationResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -4742,6 +4759,16 @@ struct PutResourcePolicyRequest:
 struct PutResourcePolicyResponse:
     Optional[str] PolicyId
     Optional[str] PolicyHash
+
+@derive(Json)
+struct RegisterDefaultHostManagementConfigurationRequest:
+    DHMCPermissionModel PermissionModel
+    Optional[str] RoleArn
+    Optional[bool] Overwrite
+
+@derive(Json)
+struct RegisterDefaultHostManagementConfigurationResult:
+    Optional[str] RoleArn
 
 @derive(Json)
 struct RegisterDefaultPatchBaselineRequest:
@@ -9695,6 +9722,12 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
 
+    # DeregisterDefaultHostManagementConfiguration
+    # errors: InternalServerError
+    def deregister_default_host_management_configuration(self) -> str:
+        auto body = "{}"
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeregisterDefaultHostManagementConfiguration", body)
+
     # DeregisterManagedInstance
     # errors: InternalServerError, InvalidInstanceId
     def deregister_managed_instance(self, DeregisterManagedInstanceRequest input) -> str:
@@ -10240,6 +10273,12 @@ struct SSMClient:
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+
+    # RegisterDefaultHostManagementConfiguration
+    # errors: InternalServerError
+    def register_default_host_management_configuration(self, RegisterDefaultHostManagementConfigurationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "RegisterDefaultHostManagementConfiguration", body)
 
     # RegisterDefaultPatchBaseline
     # errors: DoesNotExistException, InternalServerError, InvalidResourceId

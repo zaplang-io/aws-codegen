@@ -685,6 +685,33 @@
     }
    ]
   },
+  "RestoreDomain": {
+   "name": "RestoreDomain",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "RestoreDomainRequest"
+   },
+   "output": {
+    "shape": "RestoreDomainResponse"
+   },
+   "errors": [
+    {
+     "shape": "InvalidInput"
+    },
+    {
+     "shape": "DuplicateRequest"
+    },
+    {
+     "shape": "OperationLimitExceeded"
+    },
+    {
+     "shape": "UnsupportedTLD"
+    }
+   ]
+  },
   "RetrieveDomainAuthCode": {
    "name": "RetrieveDomainAuthCode",
    "http": {
@@ -2573,6 +2600,28 @@
    "required": [
     "OperationId"
    ],
+   "members": {
+    "OperationId": {
+     "shape": "OperationId"
+    }
+   }
+  },
+  "RestoreDomainRequest": {
+   "type": "structure",
+   "required": [
+    "DomainName"
+   ],
+   "members": {
+    "DomainName": {
+     "shape": "DomainName"
+    },
+    "Consent": {
+     "shape": "Consent"
+    }
+   }
+  },
+  "RestoreDomainResponse": {
+   "type": "structure",
    "members": {
     "OperationId": {
      "shape": "OperationId"

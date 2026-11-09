@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 123 operations — 121 with a generated method,
+# Coverage (rest-json): 126 operations — 124 with a generated method,
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   1059 structs (646 @derive(Json)), 93 enums, 15 error variants.
-#   26 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   1072 structs (649 @derive(Json)), 95 enums, 15 error variants.
+#   28 paginators generated (2 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -980,6 +980,40 @@ enum SeverityRating:
     MEDIUM
     HIGH
     CRITICAL
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SoftwareGroupByField:
+    AccountId
+    PackageName
+    PackageVersion
+    PackageType
+    Region
+    ResourceRegion
+    ResourceType
+    ResourceId
+    ResourceProvider
+    ResourceOwnerAccountId
+    ResourceOwnerOrgId
+    ResourceCloudPartition
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SoftwareStringField:
+    AccountId
+    PackageName
+    PackageVersion
+    PackageType
+    Region
+    ResourceRegion
+    ResourceType
+    ResourceId
+    ResourceProvider
+    ResourceOwnerAccountId
+    ResourceOwnerOrgId
+    ResourceCloudPartition
     Unknown(str value)
 
 @derive(Json)
@@ -7304,6 +7338,55 @@ struct GetSecurityControlDefinitionRequest:
 struct GetSecurityControlDefinitionResponse:
     SecurityControlDefinition SecurityControlDefinition
 
+# rest-json request for GetSoftwareResourcesV2Request: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetSoftwareResourcesV2Request:
+    str PackageName
+    str PackageType
+    Optional[str] PackageVersion
+    Optional[SoftwareFilters] Filters
+    Optional[SoftwareScopes] Scopes
+    Optional[list[SortCriterion]] SortCriteria
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+# no @derive(Json): member(s) SoftwareResources: list[SoftwareResourceResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetSoftwareResourcesV2Response:
+    list[SoftwareResourceResult] SoftwareResources
+    Optional[str] NextToken
+
+# rest-json request for GetSoftwareStatisticsV2Request: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetSoftwareStatisticsV2Request:
+    list[SoftwareGroupByRule] GroupByRules
+    Optional[SoftwareScopes] Scopes
+    Optional[SortOrder] SortOrder
+    Optional[int64] MaxStatisticResults
+
+# no @derive(Json): member(s) GroupByResults: list[GroupByResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetSoftwareStatisticsV2Response:
+    list[GroupByResult] GroupByResults
+
+# rest-json request for GetSoftwareV2Request: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetSoftwareV2Request:
+    Optional[SoftwareFilters] Filters
+    Optional[SoftwareScopes] Scopes
+    Optional[list[SortCriterion]] SortCriteria
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+# no @derive(Json): member(s) Software: list[SoftwareResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetSoftwareV2Response:
+    list[SoftwareResult] Software
+    Optional[str] NextToken
+
 # no @derive(Json): member(s) GroupByValues: list[GroupByValue] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -8880,6 +8963,28 @@ struct Signal:
     Optional[list[str]] ActorIds
     Optional[list[str]] EndpointIds
 
+# no @derive(Json): member(s) StringFilters: list[SoftwareStringFilter], NestedCompositeFilters: list[SoftwareCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct SoftwareCompositeFilter:
+    Optional[list[SoftwareStringFilter]] StringFilters
+    Optional[list[SoftwareCompositeFilter]] NestedCompositeFilters
+    Optional[AllowedOperators] Operator
+
+# no @derive(Json): member(s) CompositeFilters: list[SoftwareCompositeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct SoftwareFilters:
+    Optional[list[SoftwareCompositeFilter]] CompositeFilters
+    Optional[AllowedOperators] CompositeOperator
+
+# no @derive(Json): member(s) Filters: SoftwareFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct SoftwareGroupByRule:
+    SoftwareGroupByField GroupByField
+    Optional[SoftwareFilters] Filters
+
 @derive(Json)
 struct SoftwarePackage:
     Optional[str] Name
@@ -8893,6 +8998,36 @@ struct SoftwarePackage:
     Optional[str] Remediation
     Optional[str] SourceLayerHash
     Optional[str] SourceLayerArn
+
+@derive(Json)
+struct SoftwareResourceResult:
+    str AccountId
+    str ResourceType
+    str Region
+    str ResourceId
+    Optional[str] ResourceProvider
+    Optional[str] ResourceOwnerOrgId
+    Optional[str] ResourceOwnerAccountId
+    Optional[str] ResourceCloudPartition
+    Optional[str] ResourceRegion
+
+@derive(Json)
+struct SoftwareResult:
+    str PackageName
+    Optional[str] PackageVersion
+    str PackageType
+    int64 ResourceCount
+
+# no @derive(Json): member(s) AwsOrganizations: list[AwsOrganizationScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct SoftwareScopes:
+    Optional[list[AwsOrganizationScope]] AwsOrganizations
+
+@derive(Json)
+struct SoftwareStringFilter:
+    Optional[SoftwareStringField] FieldName
+    Optional[StringFilter] Filter
 
 @derive(Json)
 struct SortCriterion:
@@ -18141,6 +18276,60 @@ def signal_to_json(Signal v) -> str:
         parts.append("\"EndpointIds\":" + securityhub_json_arr(e18))
     return securityhub_json_obj(parts)
 
+# Serialize SoftwareCompositeFilter to a compact JSON object (declaration order).
+def software_composite_filter_to_json(SoftwareCompositeFilter v) -> str:
+    list[str] parts = []
+    if v.StringFilters.is_some():
+        auto u0 = v.StringFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StringFilters\":" + securityhub_json_arr(e1))
+    if v.NestedCompositeFilters.is_some():
+        auto u2 = v.NestedCompositeFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(software_composite_filter_to_json(x3))
+        parts.append("\"NestedCompositeFilters\":" + securityhub_json_arr(e3))
+    if v.Operator.is_some():
+        auto u4 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u4.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize SoftwareFilters to a compact JSON object (declaration order).
+def software_filters_to_json(SoftwareFilters v) -> str:
+    list[str] parts = []
+    if v.CompositeFilters.is_some():
+        auto u0 = v.CompositeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(software_composite_filter_to_json(x1))
+        parts.append("\"CompositeFilters\":" + securityhub_json_arr(e1))
+    if v.CompositeOperator.is_some():
+        auto u2 = v.CompositeOperator.unwrap()
+        parts.append("\"CompositeOperator\":" + u2.to_json())
+    return securityhub_json_obj(parts)
+
+# Serialize SoftwareGroupByRule to a compact JSON object (declaration order).
+def software_group_by_rule_to_json(SoftwareGroupByRule v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupByField\":" + v.GroupByField.to_json())
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + software_filters_to_json(u0))
+    return securityhub_json_obj(parts)
+
+# Serialize SoftwareScopes to a compact JSON object (declaration order).
+def software_scopes_to_json(SoftwareScopes v) -> str:
+    list[str] parts = []
+    if v.AwsOrganizations.is_some():
+        auto u0 = v.AwsOrganizations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AwsOrganizations\":" + securityhub_json_arr(e1))
+    return securityhub_json_obj(parts)
+
 # Serialize StandardsSubscriptionRequest to a compact JSON object (declaration order).
 def standards_subscription_request_to_json(StandardsSubscriptionRequest v) -> str:
     list[str] parts = []
@@ -19471,6 +19660,87 @@ struct SecurityHubClient:
         auto b = binding.HttpBinding(method="GET", path_template="/securityControl/definition", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
+    # GetSoftwareResourcesV2  POST /softwarev2/resources
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_software_resources_v2(self, GetSoftwareResourcesV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/softwarev2/resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PackageName\":" + securityhub_json_str(input.PackageName))
+        parts.append("\"PackageType\":" + securityhub_json_str(input.PackageType))
+        if input.PackageVersion.is_some():
+            auto u0 = input.PackageVersion.unwrap()
+            parts.append("\"PackageVersion\":" + securityhub_json_str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + software_filters_to_json(u1))
+        if input.Scopes.is_some():
+            auto u2 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + software_scopes_to_json(u2))
+        if input.SortCriteria.is_some():
+            auto u3 = input.SortCriteria.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"SortCriteria\":" + securityhub_json_arr(e4))
+        if input.NextToken.is_some():
+            auto u5 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u5))
+        if input.MaxResults.is_some():
+            auto u6 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetSoftwareStatisticsV2  POST /softwarev2/statistics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_software_statistics_v2(self, GetSoftwareStatisticsV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/softwarev2/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GroupByRules:
+            e0.append(software_group_by_rule_to_json(x0))
+        parts.append("\"GroupByRules\":" + securityhub_json_arr(e0))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + software_scopes_to_json(u1))
+        if input.SortOrder.is_some():
+            auto u2 = input.SortOrder.unwrap()
+            parts.append("\"SortOrder\":" + u2.to_json())
+        if input.MaxStatisticResults.is_some():
+            auto u3 = input.MaxStatisticResults.unwrap()
+            parts.append("\"MaxStatisticResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
+    # GetSoftwareV2  POST /softwarev2
+    # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_software_v2(self, GetSoftwareV2Request input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/softwarev2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            parts.append("\"Filters\":" + software_filters_to_json(u0))
+        if input.Scopes.is_some():
+            auto u1 = input.Scopes.unwrap()
+            parts.append("\"Scopes\":" + software_scopes_to_json(u1))
+        if input.SortCriteria.is_some():
+            auto u2 = input.SortCriteria.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"SortCriteria\":" + securityhub_json_arr(e3))
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + securityhub_json_str(u4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
+
     # InviteMembers  POST /members/invite
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def invite_members(self, InviteMembersRequest input) -> str:
@@ -20181,6 +20451,32 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         while True:
             auto raw = self.get_resources_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetSoftwareResourcesV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: SoftwareResources).
+    def paginate_get_software_resources_v2(self, GetSoftwareResourcesV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_software_resources_v2(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetSoftwareV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Software).
+    def paginate_get_software_v2(self, GetSoftwareV2Request input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.get_software_v2(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

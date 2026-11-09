@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 162 operations — 162 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   462 structs (233 @derive(Json)), 81 enums, 8 error variants.
+#   464 structs (234 @derive(Json)), 83 enums, 8 error variants.
 #   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -359,6 +359,25 @@ enum InstanceHealthState:
     unused
     draining
     unavailable
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InstanceHealthStatusDetailValue:
+    passed
+    failed
+    insufficient_data
+    initializing
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InstanceHealthStatusValue:
+    ok
+    impaired
+    initializing
+    insufficient_data
+    not_applicable
     Unknown(str value)
 
 @derive(Json)
@@ -2725,6 +2744,7 @@ struct GetInstancePortStatesResult:
 @derive(Json)
 struct GetInstanceRequest:
     str instanceName
+    Optional[bool] includeHealthStatus
 
 # no @derive(Json): member(s) instance: Instance not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2764,6 +2784,7 @@ struct GetInstanceStateResult:
 @derive(Json)
 struct GetInstancesRequest:
     Optional[str] pageToken
+    Optional[bool] includeHealthStatus
 
 # no @derive(Json): member(s) instances: list[Instance] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3119,7 +3140,7 @@ struct InputOrigin:
     Optional[int64] responseTimeout
     Optional[OriginIpAddressTypeEnum] ipAddressType
 
-# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn], ipv6Addresses: list[str], hardware: InstanceHardware, networking: InstanceNetworking not derivable (list/map collections);
+# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn], ipv6Addresses: list[str], hardware: InstanceHardware, networking: InstanceNetworking, instanceStatus: InstanceHealthStatus, systemStatus: InstanceHealthStatus not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Instance:
@@ -3145,6 +3166,8 @@ struct Instance:
     Optional[str] username
     Optional[str] sshKeyName
     Optional[InstanceMetadataOptions] metadataOptions
+    Optional[InstanceHealthStatus] instanceStatus
+    Optional[InstanceHealthStatus] systemStatus
 
 # no @derive(Json): member(s) ipv6Addresses: list[str], hostKeys: list[HostKeyAttributes] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3181,6 +3204,19 @@ struct InstanceHardware:
     Optional[int64] cpuCount
     Optional[list[Disk]] disks
     Optional[float64] ramSizeInGb
+
+# no @derive(Json): member(s) details: list[InstanceHealthStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InstanceHealthStatus:
+    Optional[InstanceHealthStatusValue] status
+    Optional[list[InstanceHealthStatusDetail]] details
+
+@derive(Json)
+struct InstanceHealthStatusDetail:
+    Optional[str] name
+    Optional[InstanceHealthStatusDetailValue] status
+    Optional[DateTime] impairedSince
 
 @derive(Json)
 struct InstanceHealthSummary:

@@ -500,6 +500,7 @@ enum SourceEnvironment:
     LOGICAL_MODEL
     MODELIZE_IT
     AWS_DISCOVERY_COLLECTOR
+    MIGRATION_PLANNING_ARTIFACTS
     Unknown(str value)
 
 @derive(Json)
@@ -751,6 +752,7 @@ struct CreateLaunchConfigurationTemplateRequest:
 # rest-json request for CreateNetworkMigrationDefinitionRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct CreateNetworkMigrationDefinitionRequest:
+    Optional[str] clientToken
     str name
     Optional[str] description
     Optional[list[SourceConfiguration]] sourceConfigurations
@@ -3799,42 +3801,45 @@ struct mgnClient:
         auto host = endpoints.regional_host(mgn_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/network-migration/CreateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + mgn_json_str(u0))
         parts.append("\"name\":" + mgn_json_str(input.name))
         if input.description.is_some():
-            auto u0 = input.description.unwrap()
-            parts.append("\"description\":" + mgn_json_str(u0))
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u1))
         if input.sourceConfigurations.is_some():
-            auto u1 = input.sourceConfigurations.unwrap()
-            list[str] e2 = []
-            for x2 in u1:
-                e2.append(x2.to_json())
-            parts.append("\"sourceConfigurations\":" + mgn_json_arr(e2))
+            auto u2 = input.sourceConfigurations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"sourceConfigurations\":" + mgn_json_arr(e3))
         parts.append("\"targetS3Configuration\":" + input.targetS3Configuration.to_json())
         parts.append("\"targetNetwork\":" + input.targetNetwork.to_json())
         if input.targetDeployment.is_some():
-            auto u3 = input.targetDeployment.unwrap()
-            parts.append("\"targetDeployment\":" + u3.to_json())
+            auto u4 = input.targetDeployment.unwrap()
+            parts.append("\"targetDeployment\":" + u4.to_json())
         if input.vpcProvisioningStrategy.is_some():
-            auto u4 = input.vpcProvisioningStrategy.unwrap()
-            parts.append("\"vpcProvisioningStrategy\":" + u4.to_json())
+            auto u5 = input.vpcProvisioningStrategy.unwrap()
+            parts.append("\"vpcProvisioningStrategy\":" + u5.to_json())
         if input.cidrMappings.is_some():
-            auto u5 = input.cidrMappings.unwrap()
-            list[str] e6 = []
-            for x6 in u5:
-                e6.append(x6.to_json())
-            parts.append("\"cidrMappings\":" + mgn_json_arr(e6))
+            auto u6 = input.cidrMappings.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"cidrMappings\":" + mgn_json_arr(e7))
         if input.tags.is_some():
-            auto u7 = input.tags.unwrap()
-            list[str] m8 = []
-            for k8 in sorted(u7.keys()):
-                m8.append(mgn_json_str(k8) + ":" + mgn_json_str(u7[k8]))
-            parts.append("\"tags\":" + mgn_json_obj(m8))
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(mgn_json_str(k9) + ":" + mgn_json_str(u8[k9]))
+            parts.append("\"tags\":" + mgn_json_obj(m9))
         if input.scopeTags.is_some():
-            auto u9 = input.scopeTags.unwrap()
-            list[str] m10 = []
-            for k10 in sorted(u9.keys()):
-                m10.append(mgn_json_str(k10) + ":" + mgn_json_str(u9[k10]))
-            parts.append("\"scopeTags\":" + mgn_json_obj(m10))
+            auto u10 = input.scopeTags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(mgn_json_str(k11) + ":" + mgn_json_str(u10[k11]))
+            parts.append("\"scopeTags\":" + mgn_json_obj(m11))
         auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 

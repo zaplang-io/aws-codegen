@@ -110,6 +110,7 @@ struct ApplicationSummary:
     Optional[str] Namespace
     Optional[DateTime] CreatedTime
     Optional[DateTime] LastModifiedTime
+    Optional[str] LastModifiedRegion
     Optional[bool] IsService
     Optional[ApplicationType] ApplicationType
 
@@ -325,6 +326,7 @@ struct GetApplicationResponse:
     Optional[list[Publication]] Publications
     Optional[DateTime] CreatedTime
     Optional[DateTime] LastModifiedTime
+    Optional[str] LastModifiedRegion
     Optional[dict[str, str]] Tags
     Optional[list[str]] Permissions
     Optional[bool] IsService
@@ -1102,7 +1104,7 @@ struct AppIntegrationsClient:
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
-    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
@@ -1111,7 +1113,7 @@ struct AppIntegrationsClient:
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
-    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
@@ -1126,7 +1128,7 @@ struct AppIntegrationsClient:
         return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
 
     # UntagResource  DELETE /tags/{resourceArn}
-    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}

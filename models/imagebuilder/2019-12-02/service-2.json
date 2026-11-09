@@ -5875,8 +5875,29 @@
     },
     "ecrConfiguration": {
      "shape": "EcrConfiguration"
+    },
+    "imageScanningTypes": {
+     "shape": "ImageScanningTypeList"
+    },
+    "scanResultCondition": {
+     "shape": "ScanResultCondition"
     }
    }
+  },
+  "ImageScanningType": {
+   "type": "string",
+   "enum": [
+    "TEST_INSTANCE_CVE",
+    "ON_DEMAND_AMI_CVE"
+   ]
+  },
+  "ImageScanningTypeList": {
+   "type": "list",
+   "member": {
+    "shape": "ImageScanningType"
+   },
+   "max": 1,
+   "min": 1
   },
   "ImageSource": {
    "type": "string",
@@ -7742,6 +7763,15 @@
    "type": "integer",
    "min": 1
   },
+  "MaximumSeverityLabel": {
+   "type": "string",
+   "enum": [
+    "INFORMATIONAL",
+    "LOW",
+    "MEDIUM",
+    "HIGH"
+   ]
+  },
   "NonEmptyMaxLengthString": {
    "type": "string",
    "max": 384000,
@@ -8328,6 +8358,20 @@
     },
     "s3KeyPrefix": {
      "shape": "NonEmptyString"
+    }
+   }
+  },
+  "ScanResultCondition": {
+   "type": "structure",
+   "required": [
+    "maximumSeverityLabel"
+   ],
+   "members": {
+    "maximumSeverityLabel": {
+     "shape": "MaximumSeverityLabel"
+    },
+    "fixAvailable": {
+     "shape": "NullableBoolean"
     }
    }
   },

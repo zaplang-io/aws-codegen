@@ -17,7 +17,7 @@
 #
 # Coverage (query): 47 operations — 47 with a generated method,
 #   0 skipped (a member type is not yet serializable (nesting/map)).
-#   149 structs (plain carriers), 21 enums, 19 error variants.
+#   150 structs (plain carriers), 22 enums, 19 error variants.
 #   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (3 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -63,6 +63,13 @@ enum ActionType:
     PlatformUpdate
     Unknown
     Unknown_(str value)
+
+@derive(Json)
+@json(open)
+enum AmiArchitecture:
+    x86_64
+    arm64
+    Unknown(str value)
 
 @derive(Json)
 @json(open)
@@ -463,6 +470,10 @@ struct CustomAmi:
     Optional[str] VirtualizationType
     Optional[str] ImageId
 
+struct DefaultAmi:
+    Optional[str] Architecture
+    Optional[str] ImageId
+
 struct DeleteApplicationMessage:
     str ApplicationName
     Optional[bool] TerminateEnvByForce
@@ -833,6 +844,7 @@ struct PlatformDescription:
     Optional[list[PlatformProgrammingLanguage]] ProgrammingLanguages
     Optional[list[PlatformFramework]] Frameworks
     Optional[list[CustomAmi]] CustomAmiList
+    Optional[list[DefaultAmi]] DefaultAmiList
     Optional[list[str]] SupportedTierList
     Optional[list[str]] SupportedAddonList
     Optional[str] PlatformLifecycleState

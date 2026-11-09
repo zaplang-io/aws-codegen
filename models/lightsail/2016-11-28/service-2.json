@@ -6037,7 +6037,7 @@
      "shape": "IAMAccessKeyId"
     },
     "secretAccessKey": {
-     "shape": "NonEmptyString"
+     "shape": "SensitiveNonEmptyString"
     },
     "status": {
      "shape": "StatusType"
@@ -7554,7 +7554,7 @@
      "shape": "string"
     },
     "password": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "expiresAt": {
      "shape": "IsoDate"
@@ -8290,7 +8290,7 @@
      "shape": "Base64"
     },
     "privateKeyBase64": {
-     "shape": "Base64"
+     "shape": "SensitiveBase64"
     },
     "operation": {
      "shape": "Operation"
@@ -9448,7 +9448,7 @@
      "shape": "Base64"
     },
     "privateKeyBase64": {
-     "shape": "Base64"
+     "shape": "SensitiveBase64"
     },
     "createdAt": {
      "shape": "IsoDate"
@@ -10437,6 +10437,9 @@
    "members": {
     "instanceName": {
      "shape": "ResourceName"
+    },
+    "includeHealthStatus": {
+     "shape": "boolean"
     }
    }
   },
@@ -10510,6 +10513,9 @@
    "members": {
     "pageToken": {
      "shape": "string"
+    },
+    "includeHealthStatus": {
+     "shape": "boolean"
     }
    }
   },
@@ -11369,6 +11375,12 @@
     },
     "metadataOptions": {
      "shape": "InstanceMetadataOptions"
+    },
+    "instanceStatus": {
+     "shape": "InstanceHealthStatus"
+    },
+    "systemStatus": {
+     "shape": "InstanceHealthStatus"
     }
    }
   },
@@ -11388,13 +11400,13 @@
      "shape": "Ipv6AddressList"
     },
     "password": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "passwordData": {
      "shape": "PasswordData"
     },
     "privateKey": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "protocol": {
      "shape": "InstanceAccessProtocol"
@@ -11496,6 +11508,62 @@
     "unused",
     "draining",
     "unavailable"
+   ]
+  },
+  "InstanceHealthStatus": {
+   "type": "structure",
+   "members": {
+    "status": {
+     "shape": "InstanceHealthStatusValue"
+    },
+    "details": {
+     "shape": "InstanceHealthStatusDetailList"
+    }
+   }
+  },
+  "InstanceHealthStatusDetail": {
+   "type": "structure",
+   "members": {
+    "name": {
+     "shape": "InstanceHealthStatusDetailName"
+    },
+    "status": {
+     "shape": "InstanceHealthStatusDetailValue"
+    },
+    "impairedSince": {
+     "shape": "IsoDate"
+    }
+   }
+  },
+  "InstanceHealthStatusDetailList": {
+   "type": "list",
+   "member": {
+    "shape": "InstanceHealthStatusDetail"
+   }
+  },
+  "InstanceHealthStatusDetailName": {
+   "type": "string",
+   "enum": [
+    "reachability"
+   ]
+  },
+  "InstanceHealthStatusDetailValue": {
+   "type": "string",
+   "enum": [
+    "passed",
+    "failed",
+    "insufficient-data",
+    "initializing"
+   ]
+  },
+  "InstanceHealthStatusValue": {
+   "type": "string",
+   "enum": [
+    "ok",
+    "impaired",
+    "initializing",
+    "insufficient-data",
+    "not-applicable"
    ]
   },
   "InstanceHealthSummary": {
@@ -12800,7 +12868,7 @@
    "type": "structure",
    "members": {
     "ciphertext": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "keyPairName": {
      "shape": "ResourceName"
@@ -12843,7 +12911,7 @@
    "type": "structure",
    "members": {
     "masterUserPassword": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "engineVersion": {
      "shape": "string"
@@ -13749,6 +13817,10 @@
      "shape": "OperationList"
     }
    }
+  },
+  "SensitiveBase64": {
+   "type": "string",
+   "sensitive": true
   },
   "SensitiveNonEmptyString": {
    "type": "string",

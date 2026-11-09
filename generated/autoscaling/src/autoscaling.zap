@@ -478,6 +478,7 @@ struct AutoScalingGroup:
 struct AutoScalingGroupNamesType:
     Optional[list[str]] AutoScalingGroupNames
     Optional[bool] IncludeInstances
+    Optional[bool] IncludeManagedResources
     Optional[str] NextToken
     Optional[int64] MaxRecords
     Optional[list[Filter]] Filters
@@ -697,6 +698,7 @@ struct DescribeAdjustmentTypesAnswer:
 
 struct DescribeAutoScalingInstancesType:
     Optional[list[str]] InstanceIds
+    Optional[bool] IncludeManagedResources
     Optional[int64] MaxRecords
     Optional[str] NextToken
 
@@ -751,6 +753,7 @@ struct DescribeNotificationConfigurationsAnswer:
 
 struct DescribeNotificationConfigurationsType:
     Optional[list[str]] AutoScalingGroupNames
+    Optional[bool] IncludeManagedResources
     Optional[str] NextToken
     Optional[int64] MaxRecords
 
@@ -758,6 +761,7 @@ struct DescribePoliciesType:
     Optional[str] AutoScalingGroupName
     Optional[list[str]] PolicyNames
     Optional[list[str]] PolicyTypes
+    Optional[bool] IncludeManagedResources
     Optional[str] NextToken
     Optional[int64] MaxRecords
 
@@ -765,6 +769,7 @@ struct DescribeScalingActivitiesType:
     Optional[list[str]] ActivityIds
     Optional[str] AutoScalingGroupName
     Optional[bool] IncludeDeletedGroups
+    Optional[bool] IncludeManagedResources
     Optional[int64] MaxRecords
     Optional[str] NextToken
     Optional[list[Filter]] Filters
@@ -774,11 +779,13 @@ struct DescribeScheduledActionsType:
     Optional[list[str]] ScheduledActionNames
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
+    Optional[bool] IncludeManagedResources
     Optional[str] NextToken
     Optional[int64] MaxRecords
 
 struct DescribeTagsType:
     Optional[list[Filter]] Filters
+    Optional[bool] IncludeManagedResources
     Optional[str] NextToken
     Optional[int64] MaxRecords
 
@@ -2770,14 +2777,17 @@ struct Auto_ScalingClient:
         if input.IncludeInstances.is_some():
             auto t1 = query.query_bool(input.IncludeInstances.unwrap())
             p = query.query_scalar(p, "IncludeInstances", t1)
+        if input.IncludeManagedResources.is_some():
+            auto t2 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t2)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.MaxRecords.is_some():
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
-        auto qi2 = 1
-        for qe3 in input.Filters.unwrap_or([]):
-            p = filter_to_query(p, "Filters.member." + str(qi2), qe3)
-            qi2 = qi2 + 1
+        auto qi3 = 1
+        for qe4 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # DescribeAutoScalingInstances
@@ -2786,6 +2796,9 @@ struct Auto_ScalingClient:
         auto p = query.query_params("DescribeAutoScalingInstances", "2011-01-01")
         auto t0 = input.InstanceIds.unwrap_or([])
         p = query.query_list(p, "InstanceIds", "member", t0)
+        if input.IncludeManagedResources.is_some():
+            auto t1 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t1)
         if input.MaxRecords.is_some():
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         if input.NextToken.is_some():
@@ -2872,6 +2885,9 @@ struct Auto_ScalingClient:
         auto p = query.query_params("DescribeNotificationConfigurations", "2011-01-01")
         auto t0 = input.AutoScalingGroupNames.unwrap_or([])
         p = query.query_list(p, "AutoScalingGroupNames", "member", t0)
+        if input.IncludeManagedResources.is_some():
+            auto t1 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t1)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.MaxRecords.is_some():
@@ -2889,6 +2905,9 @@ struct Auto_ScalingClient:
         p = query.query_list(p, "PolicyNames", "member", t1)
         auto t2 = input.PolicyTypes.unwrap_or([])
         p = query.query_list(p, "PolicyTypes", "member", t2)
+        if input.IncludeManagedResources.is_some():
+            auto t3 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t3)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.MaxRecords.is_some():
@@ -2907,14 +2926,17 @@ struct Auto_ScalingClient:
         if input.IncludeDeletedGroups.is_some():
             auto t2 = query.query_bool(input.IncludeDeletedGroups.unwrap())
             p = query.query_scalar(p, "IncludeDeletedGroups", t2)
+        if input.IncludeManagedResources.is_some():
+            auto t3 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t3)
         if input.MaxRecords.is_some():
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
-        auto qi3 = 1
-        for qe4 in input.Filters.unwrap_or([]):
-            p = filter_to_query(p, "Filters.member." + str(qi3), qe4)
-            qi3 = qi3 + 1
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # DescribeScalingProcessTypes
@@ -2938,6 +2960,9 @@ struct Auto_ScalingClient:
         if input.EndTime.is_some():
             auto t3 = query.query_timestamp_iso8601(input.EndTime.unwrap())
             p = query.query_scalar(p, "EndTime", t3)
+        if input.IncludeManagedResources.is_some():
+            auto t4 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t4)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.MaxRecords.is_some():
@@ -2952,6 +2977,9 @@ struct Auto_ScalingClient:
         for qe1 in input.Filters.unwrap_or([]):
             p = filter_to_query(p, "Filters.member." + str(qi0), qe1)
             qi0 = qi0 + 1
+        if input.IncludeManagedResources.is_some():
+            auto t2 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t2)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.MaxRecords.is_some():

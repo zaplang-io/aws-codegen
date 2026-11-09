@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 53 operations — 53 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   151 structs (103 @derive(Json)), 40 enums, 2 error variants.
+#   156 structs (108 @derive(Json)), 40 enums, 2 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -66,6 +66,7 @@ enum AzureAccessTier:
 enum AzureBlobAuthenticationType:
     SAS
     NONE
+    OIDC
     Unknown(str value)
 
 @derive(Json)
@@ -378,6 +379,16 @@ struct AzureBlobSasConfiguration:
     str Token
 
 @derive(Json)
+struct AzureFederatedIdentityConfig:
+    Optional[str] AwsIamRole
+    Optional[AzureOidcConfig] AzureOidc
+
+@derive(Json)
+struct AzureOidcConfig:
+    str TenantId
+    str ClientId
+
+@derive(Json)
 struct CancelTaskExecutionRequest:
     str TaskExecutionArn
 
@@ -413,6 +424,7 @@ struct CreateLocationAzureBlobRequest:
     str ContainerUrl
     AzureBlobAuthenticationType AuthenticationType
     Optional[AzureBlobSasConfiguration] SasConfiguration
+    Optional[AzureFederatedIdentityConfig] FederatedIdentity
     Optional[str] BlobType
     Optional[AzureAccessTier] AccessTier
     Optional[str] Subdirectory
@@ -549,6 +561,7 @@ struct CreateLocationObjectStorageRequest:
     str BucketName
     Optional[str] AccessKey
     Optional[str] SecretKey
+    Optional[ObjectStorageFederatedIdentityConfig] FederatedIdentity
     Optional[list[str]] AgentArns
     Optional[list[TagListEntry]] Tags
     Optional[bytes] ServerCertificate
@@ -679,6 +692,7 @@ struct DescribeLocationAzureBlobResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
     Optional[AzureBlobAuthenticationType] AuthenticationType
+    Optional[AzureFederatedIdentityConfig] FederatedIdentity
     Optional[str] BlobType
     Optional[AzureAccessTier] AccessTier
     Optional[list[str]] AgentArns
@@ -813,6 +827,7 @@ struct DescribeLocationObjectStorageResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
     Optional[str] AccessKey
+    Optional[ObjectStorageFederatedIdentityConfig] FederatedIdentity
     Optional[int64] ServerPort
     Optional[ObjectStorageServerProtocol] ServerProtocol
     Optional[list[str]] AgentArns
@@ -978,6 +993,13 @@ struct FsxUpdateProtocolSmb:
     Optional[CustomSecretConfig] CustomSecretConfig
 
 @derive(Json)
+struct GoogleOidcConfig:
+    str ProjectName
+    str ProjectNumber
+    str IdentityPoolName
+    str IdentityProviderName
+
+@derive(Json)
 struct HdfsNameNode:
     str Hostname
     int64 Port
@@ -1087,6 +1109,15 @@ struct ManifestConfig:
 @derive(Json)
 struct NfsMountOptions:
     Optional[NfsVersion] Version
+
+@derive(Json)
+struct ObjectStorageExternalIdentityConfig:
+    Optional[GoogleOidcConfig] GoogleOidc
+
+@derive(Json)
+struct ObjectStorageFederatedIdentityConfig:
+    Optional[str] AwsIamRole
+    Optional[ObjectStorageExternalIdentityConfig] ExternalIdentity
 
 # no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1317,6 +1348,7 @@ struct UpdateLocationAzureBlobRequest:
     Optional[str] Subdirectory
     Optional[AzureBlobAuthenticationType] AuthenticationType
     Optional[AzureBlobSasConfiguration] SasConfiguration
+    Optional[AzureFederatedIdentityConfig] FederatedIdentity
     Optional[str] BlobType
     Optional[AzureAccessTier] AccessTier
     Optional[list[str]] AgentArns
@@ -1439,6 +1471,7 @@ struct UpdateLocationObjectStorageRequest:
     Optional[str] ServerHostname
     Optional[str] AccessKey
     Optional[str] SecretKey
+    Optional[ObjectStorageFederatedIdentityConfig] FederatedIdentity
     Optional[list[str]] AgentArns
     Optional[bytes] ServerCertificate
     Optional[CmkSecretConfig] CmkSecretConfig
@@ -1627,33 +1660,36 @@ def create_location_azure_blob_request_to_json(CreateLocationAzureBlobRequest v)
     if v.SasConfiguration.is_some():
         auto u0 = v.SasConfiguration.unwrap()
         parts.append("\"SasConfiguration\":" + u0.to_json())
+    if v.FederatedIdentity.is_some():
+        auto u1 = v.FederatedIdentity.unwrap()
+        parts.append("\"FederatedIdentity\":" + u1.to_json())
     if v.BlobType.is_some():
-        auto u1 = v.BlobType.unwrap()
-        parts.append("\"BlobType\":" + datasync_json_str(u1))
+        auto u2 = v.BlobType.unwrap()
+        parts.append("\"BlobType\":" + datasync_json_str(u2))
     if v.AccessTier.is_some():
-        auto u2 = v.AccessTier.unwrap()
-        parts.append("\"AccessTier\":" + u2.to_json())
+        auto u3 = v.AccessTier.unwrap()
+        parts.append("\"AccessTier\":" + u3.to_json())
     if v.Subdirectory.is_some():
-        auto u3 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u3))
+        auto u4 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u4))
     if v.AgentArns.is_some():
-        auto u4 = v.AgentArns.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(datasync_json_str(x5))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e5))
+        auto u5 = v.AgentArns.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(datasync_json_str(x6))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
     if v.Tags.is_some():
-        auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e7))
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e8))
     if v.CmkSecretConfig.is_some():
-        auto u8 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u8.to_json())
+        auto u9 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u9.to_json())
     if v.CustomSecretConfig.is_some():
-        auto u9 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u9.to_json())
+        auto u10 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u10.to_json())
     return datasync_json_obj(parts)
 
 # Serialize CreateLocationEfsRequest to a compact JSON object (declaration order).
@@ -1862,27 +1898,30 @@ def create_location_object_storage_request_to_json(CreateLocationObjectStorageRe
     if v.SecretKey.is_some():
         auto u4 = v.SecretKey.unwrap()
         parts.append("\"SecretKey\":" + datasync_json_str(u4))
+    if v.FederatedIdentity.is_some():
+        auto u5 = v.FederatedIdentity.unwrap()
+        parts.append("\"FederatedIdentity\":" + u5.to_json())
     if v.AgentArns.is_some():
-        auto u5 = v.AgentArns.unwrap()
-        list[str] e6 = []
-        for x6 in u5:
-            e6.append(datasync_json_str(x6))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
+        auto u6 = v.AgentArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(datasync_json_str(x7))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e7))
     if v.Tags.is_some():
-        auto u7 = v.Tags.unwrap()
-        list[str] e8 = []
-        for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e8))
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e9))
     if v.ServerCertificate.is_some():
-        auto u9 = v.ServerCertificate.unwrap()
-        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u9)))
+        auto u10 = v.ServerCertificate.unwrap()
+        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u10)))
     if v.CmkSecretConfig.is_some():
-        auto u10 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u10.to_json())
+        auto u11 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u11.to_json())
     if v.CustomSecretConfig.is_some():
-        auto u11 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u11.to_json())
+        auto u12 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u12.to_json())
     return datasync_json_obj(parts)
 
 # Serialize CreateLocationS3Request to a compact JSON object (declaration order).
@@ -2150,24 +2189,27 @@ def update_location_azure_blob_request_to_json(UpdateLocationAzureBlobRequest v)
     if v.SasConfiguration.is_some():
         auto u2 = v.SasConfiguration.unwrap()
         parts.append("\"SasConfiguration\":" + u2.to_json())
+    if v.FederatedIdentity.is_some():
+        auto u3 = v.FederatedIdentity.unwrap()
+        parts.append("\"FederatedIdentity\":" + u3.to_json())
     if v.BlobType.is_some():
-        auto u3 = v.BlobType.unwrap()
-        parts.append("\"BlobType\":" + datasync_json_str(u3))
+        auto u4 = v.BlobType.unwrap()
+        parts.append("\"BlobType\":" + datasync_json_str(u4))
     if v.AccessTier.is_some():
-        auto u4 = v.AccessTier.unwrap()
-        parts.append("\"AccessTier\":" + u4.to_json())
+        auto u5 = v.AccessTier.unwrap()
+        parts.append("\"AccessTier\":" + u5.to_json())
     if v.AgentArns.is_some():
-        auto u5 = v.AgentArns.unwrap()
-        list[str] e6 = []
-        for x6 in u5:
-            e6.append(datasync_json_str(x6))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
+        auto u6 = v.AgentArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(datasync_json_str(x7))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e7))
     if v.CmkSecretConfig.is_some():
-        auto u7 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u7.to_json())
+        auto u8 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u8.to_json())
     if v.CustomSecretConfig.is_some():
-        auto u8 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u8.to_json())
+        auto u9 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u9.to_json())
     return datasync_json_obj(parts)
 
 # Serialize UpdateLocationHdfsRequest to a compact JSON object (declaration order).
@@ -2264,21 +2306,24 @@ def update_location_object_storage_request_to_json(UpdateLocationObjectStorageRe
     if v.SecretKey.is_some():
         auto u5 = v.SecretKey.unwrap()
         parts.append("\"SecretKey\":" + datasync_json_str(u5))
+    if v.FederatedIdentity.is_some():
+        auto u6 = v.FederatedIdentity.unwrap()
+        parts.append("\"FederatedIdentity\":" + u6.to_json())
     if v.AgentArns.is_some():
-        auto u6 = v.AgentArns.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(datasync_json_str(x7))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e7))
+        auto u7 = v.AgentArns.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(datasync_json_str(x8))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e8))
     if v.ServerCertificate.is_some():
-        auto u8 = v.ServerCertificate.unwrap()
-        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u8)))
+        auto u9 = v.ServerCertificate.unwrap()
+        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u9)))
     if v.CmkSecretConfig.is_some():
-        auto u9 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u9.to_json())
+        auto u10 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u10.to_json())
     if v.CustomSecretConfig.is_some():
-        auto u10 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u10.to_json())
+        auto u11 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u11.to_json())
     return datasync_json_obj(parts)
 
 # Serialize UpdateLocationSmbRequest to a compact JSON object (declaration order).

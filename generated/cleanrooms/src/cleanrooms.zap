@@ -81,6 +81,7 @@ enum AllowedAggregateExpressionType:
 enum AnalysisFormat:
     SQL
     PYSPARK_1_0
+    PYSPARK_2_0
     Unknown(str value)
 
 @derive(Json)
@@ -3350,6 +3351,7 @@ struct ProtectedJobS3Output:
 
 @derive(Json)
 struct ProtectedJobS3OutputConfigurationInput:
+    Optional[ResultFormat] resultFormat
     str bucket
     Optional[str] keyPrefix
 

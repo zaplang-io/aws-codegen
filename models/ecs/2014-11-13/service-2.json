@@ -5362,6 +5362,9 @@
     },
     "host": {
      "shape": "HostVolumeProperties"
+    },
+    "logDriverVolumeConfiguration": {
+     "shape": "LogDriverVolumeConfiguration"
     }
    }
   },
@@ -8948,6 +8951,17 @@
     "splunk",
     "awsfirelens"
    ]
+  },
+  "LogDriverVolumeConfiguration": {
+   "type": "structure",
+   "required": [
+    "driver"
+   ],
+   "members": {
+    "driver": {
+     "shape": "LogDriver"
+    }
+   }
   },
   "Long": {
    "type": "long"
