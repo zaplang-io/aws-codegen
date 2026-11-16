@@ -14,10 +14,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 23 with a generated method,
+# Coverage (v0, awsJson only): 26 operations — 26 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   67 structs (44 @derive(Json)), 4 enums, 12 error variants.
-#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   76 structs (52 @derive(Json)), 5 enums, 12 error variants.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -53,6 +53,13 @@ enum FilterNameStringType:
 
 @derive(Json)
 @json(open)
+enum ReplicaRestrictionType:
+    SameOrg
+    NoRestriction
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum SortByType:
     created_date
     last_accessed_date
@@ -73,6 +80,8 @@ enum StatusType:
     InSync
     Failed
     InProgress
+    Pending
+    Detached
     Unknown(str value)
 
 # --- shapes ----------------------------------------------------------------
@@ -82,6 +91,19 @@ struct APIErrorType:
     Optional[str] SecretId
     Optional[str] ErrorCode
     Optional[str] Message
+
+@derive(Json)
+struct AssociateCrossAccountReplicaRequest:
+    str SecretId
+    str CrossAccountReplicaARN
+    Optional[ReplicaRestrictionType] ReplicaRestriction
+    Optional[str] ReplicationRoleARN
+
+@derive(Json)
+struct AssociateCrossAccountReplicaResponse:
+    Optional[str] ARN
+    Optional[str] CrossAccountReplicaARN
+    Optional[StatusType] ReplicationStatus
 
 # no @derive(Json): member(s) SecretIdList: list[str], Filters: list[Filter] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -124,6 +146,7 @@ struct CreateSecretRequest:
     Optional[list[ReplicaRegionType]] AddReplicaRegions
     Optional[bool] ForceOverwriteReplicaSecret
     Optional[str] Type
+    Optional[str] CrossAccountPrimaryARN
 
 # no @derive(Json): member(s) ReplicationStatus: list[ReplicationStatusType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -135,17 +158,32 @@ struct CreateSecretResponse:
     Optional[list[ReplicationStatusType]] ReplicationStatus
 
 @derive(Json)
+struct CrossAccountPrimaryType:
+    Optional[str] PrimarySecretARN
+    Optional[StatusType] ReplicationStatus
+    Optional[str] StatusMessage
+
+@derive(Json)
+struct CrossAccountReplicaEntry:
+    Optional[str] ReplicaSecretARN
+    Optional[str] ReplicationRoleARN
+    Optional[StatusType] ReplicationStatus
+    Optional[str] StatusMessage
+
+@derive(Json)
 struct DecryptionFailure:
     Optional[str] Message
 
 @derive(Json)
 struct DeleteResourcePolicyRequest:
     str SecretId
+    Optional[str] PolicyName
 
 @derive(Json)
 struct DeleteResourcePolicyResponse:
     Optional[str] ARN
     Optional[str] Name
+    Optional[str] PolicyName
 
 @derive(Json)
 struct DeleteSecretRequest:
@@ -163,7 +201,7 @@ struct DeleteSecretResponse:
 struct DescribeSecretRequest:
     str SecretId
 
-# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem], Tags: list[Tag], VersionIdsToStages: dict[str, list[str]], ReplicationStatus: list[ReplicationStatusType] not derivable (list/map collections);
+# no @derive(Json): member(s) ExternalSecretRotationMetadata: list[ExternalSecretRotationMetadataItem], Tags: list[Tag], VersionIdsToStages: dict[str, list[str]], ReplicationStatus: list[ReplicationStatusType], CrossAccountReplicas: list[CrossAccountReplicaEntry] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct DescribeSecretResponse:
@@ -188,6 +226,18 @@ struct DescribeSecretResponse:
     Optional[DateTime] CreatedDate
     Optional[str] PrimaryRegion
     Optional[list[ReplicationStatusType]] ReplicationStatus
+    Optional[CrossAccountPrimaryType] CrossAccountPrimary
+    Optional[list[CrossAccountReplicaEntry]] CrossAccountReplicas
+
+@derive(Json)
+struct DisassociateCrossAccountReplicaRequest:
+    str SecretId
+    str CrossAccountReplicaARN
+
+@derive(Json)
+struct DisassociateCrossAccountReplicaResponse:
+    Optional[str] ARN
+    Optional[str] CrossAccountReplicaARN
 
 @derive(Json)
 struct EncryptionFailure:
@@ -223,12 +273,14 @@ struct GetRandomPasswordResponse:
 @derive(Json)
 struct GetResourcePolicyRequest:
     str SecretId
+    Optional[str] PolicyName
 
 @derive(Json)
 struct GetResourcePolicyResponse:
     Optional[str] ARN
     Optional[str] Name
     Optional[str] ResourcePolicy
+    Optional[str] PolicyName
 
 @derive(Json)
 struct GetSecretValueRequest:
@@ -267,6 +319,19 @@ struct InvalidRequestException:
 @derive(Json)
 struct LimitExceededException:
     Optional[str] Message
+
+@derive(Json)
+struct ListResourcePoliciesRequest:
+    str SecretId
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) ResourcePolicies: list[ResourcePolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListResourcePoliciesResponse:
+    list[ResourcePolicySummary] ResourcePolicies
+    Optional[str] NextToken
 
 @derive(Json)
 struct ListSecretVersionIdsRequest:
@@ -318,12 +383,14 @@ struct PublicPolicyException:
 struct PutResourcePolicyRequest:
     str SecretId
     str ResourcePolicy
+    Optional[str] PolicyName
     Optional[bool] BlockPublicPolicy
 
 @derive(Json)
 struct PutResourcePolicyResponse:
     Optional[str] ARN
     Optional[str] Name
+    Optional[str] PolicyName
 
 # no @derive(Json): member(s) VersionStages: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -394,6 +461,10 @@ struct ResourceExistsException:
 @derive(Json)
 struct ResourceNotFoundException:
     Optional[str] Message
+
+@derive(Json)
+struct ResourcePolicySummary:
+    Optional[str] PolicyName
 
 @derive(Json)
 struct RestoreSecretRequest:
@@ -731,6 +802,9 @@ def create_secret_request_to_json(CreateSecretRequest v) -> str:
     if v.Type.is_some():
         auto u10 = v.Type.unwrap()
         parts.append("\"Type\":" + secretsmanager_json_str(u10))
+    if v.CrossAccountPrimaryARN.is_some():
+        auto u11 = v.CrossAccountPrimaryARN.unwrap()
+        parts.append("\"CrossAccountPrimaryARN\":" + secretsmanager_json_str(u11))
     return secretsmanager_json_obj(parts)
 
 # Serialize Filter to a compact JSON object (declaration order).
@@ -872,6 +946,12 @@ struct Secrets_ManagerClient:
     core.Credentials creds
     str region
 
+    # AssociateCrossAccountReplica
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
+    def associate_cross_account_replica(self, AssociateCrossAccountReplicaRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "AssociateCrossAccountReplica", body)
+
     # BatchGetSecretValue
     # errors: DecryptionFailure, InternalServiceError, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def batch_get_secret_value(self, BatchGetSecretValueRequest input) -> str:
@@ -908,6 +988,12 @@ struct Secrets_ManagerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "DescribeSecret", body)
 
+    # DisassociateCrossAccountReplica
+    # errors: InternalServiceError, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def disassociate_cross_account_replica(self, DisassociateCrossAccountReplicaRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "DisassociateCrossAccountReplica", body)
+
     # GetRandomPassword
     # errors: InternalServiceError, InvalidParameterException, InvalidRequestException
     def get_random_password(self, GetRandomPasswordRequest input) -> str:
@@ -925,6 +1011,12 @@ struct Secrets_ManagerClient:
     def get_secret_value(self, GetSecretValueRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "GetSecretValue", body)
+
+    # ListResourcePolicies
+    # errors: InternalServiceError, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
+    def list_resource_policies(self, ListResourcePoliciesRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ListResourcePolicies", body)
 
     # ListSecretVersionIds
     # errors: InternalServiceError, InvalidNextTokenException, InvalidParameterException, ResourceNotFoundException
@@ -1009,6 +1101,20 @@ struct Secrets_ManagerClient:
     def validate_resource_policy(self, ValidateResourcePolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ValidateResourcePolicy", body)
+
+    # Paginator for ListResourcePolicies — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResourcePolicies).
+    def paginate_list_resource_policies(self, ListResourcePoliciesRequest input):
+        auto host = endpoints.regional_host(secretsmanager_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(secretsmanager_protocol(), self.creds, self.region, "ListResourcePolicies", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListSecrets — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: SecretList).

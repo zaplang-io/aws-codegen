@@ -7614,6 +7614,15 @@
     "SourceObject": {
      "shape": "name"
     },
+    "DefaultMaxProfileObjectCount": {
+     "shape": "minSize0"
+    },
+    "DefaultMaxProfileObjectCountEffectiveAfter": {
+     "shape": "timestamp"
+    },
+    "StoreOnly": {
+     "shape": "boolean"
+    },
     "AllowProfileCreation": {
      "shape": "boolean"
     },

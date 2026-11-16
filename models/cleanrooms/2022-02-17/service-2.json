@@ -3725,7 +3725,8 @@
    "type": "string",
    "enum": [
     "SQL",
-    "PYSPARK_1_0"
+    "PYSPARK_1_0",
+    "PYSPARK_2_0"
    ]
   },
   "AnalysisIdentifier": {
@@ -11830,6 +11831,9 @@
     },
     "code": {
      "shape": "String"
+    },
+    "retry": {
+     "shape": "RetryInfo"
     }
    }
   },
@@ -11990,6 +11994,9 @@
     "bucket"
    ],
    "members": {
+    "resultFormat": {
+     "shape": "ResultFormat"
+    },
     "bucket": {
      "shape": "ProtectedJobS3OutputConfigurationInputBucketString"
     },
@@ -12238,6 +12245,9 @@
     },
     "code": {
      "shape": "String"
+    },
+    "retry": {
+     "shape": "RetryInfo"
     }
    }
   },
@@ -12596,6 +12606,14 @@
     "CSV",
     "PARQUET"
    ]
+  },
+  "RetryInfo": {
+   "type": "structure",
+   "members": {
+    "retryable": {
+     "shape": "Boolean"
+    }
+   }
   },
   "RoleArn": {
    "type": "string",

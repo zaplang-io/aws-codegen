@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 59 operations — 57 with a generated method,
 #   2 skipped (input has a non-string-keyed map or free-form document member).
-#   292 structs (162 @derive(Json)), 44 enums, 20 error variants.
+#   296 structs (164 @derive(Json)), 45 enums, 20 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -87,6 +87,13 @@ enum ComparisonOperator:
     LT
     GE
     GT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ConnectedAccountChain:
+    BASE
+    SOLANA
     Unknown(str value)
 
 @derive(Json)
@@ -565,6 +572,7 @@ enum ParameterExceptionField:
     PRICE_AMOUNT
     PAYMENT_NETWORK
     PRE_PARSE_TEXT_TRANSFORMATION
+    CHALLENGE_JAVASCRIPT_SDK_INJECTION_CONFIG
     Unknown(str value)
 
 @derive(Json)
@@ -856,11 +864,12 @@ struct AssociateWebACLResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) RequestBody: dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig] not derivable (list/map collections);
+# no @derive(Json): member(s) RequestBody: dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig], ChallengeJavascriptSdkInjection: dict[AssociatedResourceType, ChallengeJavascriptSdkInjectionConfig] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AssociationConfig:
     Optional[dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig]] RequestBody
+    Optional[dict[AssociatedResourceType, ChallengeJavascriptSdkInjectionConfig]] ChallengeJavascriptSdkInjection
 
 # no @derive(Json): member(s) CustomResponse: CustomResponse not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -915,6 +924,11 @@ struct ChallengeConfig:
     Optional[ImmunityTimeProperty] ImmunityTimeProperty
 
 @derive(Json)
+struct ChallengeJavascriptSdkInjectionConfig:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
 struct ChallengeResponse:
     Optional[int64] ResponseCode
     Optional[int64] SolveTimestamp
@@ -949,6 +963,25 @@ struct ClientSideActionConfig:
 struct Condition:
     Optional[ActionCondition] ActionCondition
     Optional[LabelNameCondition] LabelNameCondition
+
+# no @derive(Json): member(s) Prices: list[ConnectedAccountPrice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ConnectedAccountChainConfig:
+    ConnectedAccountChain Chain
+    list[ConnectedAccountPrice] Prices
+
+# no @derive(Json): member(s) PaymentNetworks: list[ConnectedAccountChainConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ConnectedAccountConfig:
+    str ConnectedAccountArn
+    list[ConnectedAccountChainConfig] PaymentNetworks
+
+@derive(Json)
+struct ConnectedAccountPrice:
+    str Amount
+    str Currency
 
 # no @derive(Json): member(s) IncludedCookies: list[str], ExcludedCookies: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1977,11 +2010,12 @@ struct MobileSdkRelease:
     Optional[str] ReleaseNotes
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) CryptoConfig: CryptoConfig not derivable (list/map collections);
+# no @derive(Json): member(s) CryptoConfig: CryptoConfig, ConnectedAccountConfigs: list[ConnectedAccountConfig] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct MonetizationConfig:
     Optional[CryptoConfig] CryptoConfig
+    Optional[list[ConnectedAccountConfig]] ConnectedAccountConfigs
     Optional[CurrencyMode] CurrencyMode
 
 # no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
@@ -3089,6 +3123,26 @@ def client_side_action_config_to_json(ClientSideActionConfig v) -> str:
     parts.append("\"Challenge\":" + client_side_action_to_json(v.Challenge))
     return wafv2_json_obj(parts)
 
+# Serialize ConnectedAccountChainConfig to a compact JSON object (declaration order).
+def connected_account_chain_config_to_json(ConnectedAccountChainConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Chain\":" + v.Chain.to_json())
+    list[str] e0 = []
+    for x0 in v.Prices:
+        e0.append(x0.to_json())
+    parts.append("\"Prices\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize ConnectedAccountConfig to a compact JSON object (declaration order).
+def connected_account_config_to_json(ConnectedAccountConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectedAccountArn\":" + wafv2_json_str(v.ConnectedAccountArn))
+    list[str] e0 = []
+    for x0 in v.PaymentNetworks:
+        e0.append(connected_account_chain_config_to_json(x0))
+    parts.append("\"PaymentNetworks\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
 # Serialize CookieMatchPattern to a compact JSON object (declaration order).
 def cookie_match_pattern_to_json(CookieMatchPattern v) -> str:
     list[str] parts = []
@@ -3568,9 +3622,15 @@ def monetization_config_to_json(MonetizationConfig v) -> str:
     if v.CryptoConfig.is_some():
         auto u0 = v.CryptoConfig.unwrap()
         parts.append("\"CryptoConfig\":" + crypto_config_to_json(u0))
+    if v.ConnectedAccountConfigs.is_some():
+        auto u1 = v.ConnectedAccountConfigs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connected_account_config_to_json(x2))
+        parts.append("\"ConnectedAccountConfigs\":" + wafv2_json_arr(e2))
     if v.CurrencyMode.is_some():
-        auto u1 = v.CurrencyMode.unwrap()
-        parts.append("\"CurrencyMode\":" + u1.to_json())
+        auto u3 = v.CurrencyMode.unwrap()
+        parts.append("\"CurrencyMode\":" + u3.to_json())
     return wafv2_json_obj(parts)
 
 # Serialize MonetizationFilter to a compact JSON object (declaration order).

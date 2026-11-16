@@ -14,10 +14,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 70 operations — 70 with a generated method,
+# Coverage (v0, awsJson only): 75 operations — 75 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   215 structs (152 @derive(Json)), 15 enums, 6 error variants.
-#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   226 structs (161 @derive(Json)), 15 enums, 6 error variants.
+#   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -435,6 +435,22 @@ struct CreatePresignedNotebookUrlResponse:
     str AuthToken
     int64 AuthTokenExpirationTime
 
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateSystemTableConfigurationInput:
+    Optional[str] ClientRequestToken
+    str TableName
+    Optional[str] KmsKeyArn
+    Optional[list[Tag]] Tags
+
+@derive(Json)
+struct CreateSystemTableConfigurationOutput:
+    Optional[str] TableName
+    Optional[str] KmsKeyArn
+    Optional[DateTime] CreatedAt
+    Optional[DateTime] LastModifiedAt
+
 # no @derive(Json): member(s) Configuration: WorkGroupConfiguration, Tags: list[Tag] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -530,6 +546,15 @@ struct DeletePreparedStatementInput:
 
 @derive(Json)
 struct DeletePreparedStatementOutput:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct DeleteSystemTableConfigurationInput:
+    str TableName
+
+@derive(Json)
+struct DeleteSystemTableConfigurationOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -765,6 +790,17 @@ struct GetSessionStatusResponse:
     Optional[SessionStatus] Status
 
 @derive(Json)
+struct GetSystemTableConfigurationInput:
+    str TableName
+
+@derive(Json)
+struct GetSystemTableConfigurationOutput:
+    Optional[str] TableName
+    Optional[str] KmsKeyArn
+    Optional[DateTime] CreatedAt
+    Optional[DateTime] LastModifiedAt
+
+@derive(Json)
 struct GetTableMetadataInput:
     str CatalogName
     str DatabaseName
@@ -985,6 +1021,18 @@ struct ListSessionsRequest:
 struct ListSessionsResponse:
     Optional[str] NextToken
     Optional[list[SessionSummary]] Sessions
+
+@derive(Json)
+struct ListSystemTableStatusesInput:
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+# no @derive(Json): member(s) Items: list[SystemTableStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListSystemTableStatusesOutput:
+    list[SystemTableStatus] Items
+    Optional[str] NextToken
 
 @derive(Json)
 struct ListTableMetadataInput:
@@ -1366,6 +1414,11 @@ struct StopQueryExecutionOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+@derive(Json)
+struct SystemTableStatus:
+    str TableName
+    bool Enabled
+
 # no @derive(Json): member(s) Columns: list[Column], PartitionKeys: list[Column], Parameters: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1510,6 +1563,18 @@ struct UpdatePreparedStatementOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+@derive(Json)
+struct UpdateSystemTableConfigurationInput:
+    str TableName
+    Optional[str] KmsKeyArn
+
+@derive(Json)
+struct UpdateSystemTableConfigurationOutput:
+    Optional[str] TableName
+    Optional[str] KmsKeyArn
+    Optional[DateTime] CreatedAt
+    Optional[DateTime] LastModifiedAt
+
 # no @derive(Json): member(s) ConfigurationUpdates: WorkGroupConfigurationUpdates not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1535,7 +1600,7 @@ struct WorkGroup:
     Optional[DateTime] CreationTime
     Optional[str] IdentityCenterApplicationArn
 
-# no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration not derivable (list/map collections);
+# no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration, SystemTableStatuses: list[SystemTableStatus] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct WorkGroupConfiguration:
@@ -1554,6 +1619,7 @@ struct WorkGroupConfiguration:
     Optional[bool] EnableMinimumEncryptionConfiguration
     Optional[IdentityCenterConfiguration] IdentityCenterConfiguration
     Optional[QueryResultsS3AccessGrantsConfiguration] QueryResultsS3AccessGrantsConfiguration
+    Optional[list[SystemTableStatus]] SystemTableStatuses
 
 # no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1786,6 +1852,24 @@ def create_data_catalog_input_to_json(CreateDataCatalogInput v) -> str:
         for x4 in u3:
             e4.append(x4.to_json())
         parts.append("\"Tags\":" + athena_json_arr(e4))
+    return athena_json_obj(parts)
+
+# Serialize CreateSystemTableConfigurationInput to a compact JSON object (declaration order).
+def create_system_table_configuration_input_to_json(CreateSystemTableConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + athena_json_str(u0))
+    parts.append("\"TableName\":" + athena_json_str(v.TableName))
+    if v.KmsKeyArn.is_some():
+        auto u1 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + athena_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + athena_json_arr(e3))
     return athena_json_obj(parts)
 
 # Serialize CreateWorkGroupInput to a compact JSON object (declaration order).
@@ -2025,6 +2109,12 @@ def work_group_configuration_to_json(WorkGroupConfiguration v) -> str:
     if v.QueryResultsS3AccessGrantsConfiguration.is_some():
         auto u14 = v.QueryResultsS3AccessGrantsConfiguration.unwrap()
         parts.append("\"QueryResultsS3AccessGrantsConfiguration\":" + u14.to_json())
+    if v.SystemTableStatuses.is_some():
+        auto u15 = v.SystemTableStatuses.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"SystemTableStatuses\":" + athena_json_arr(e16))
     return athena_json_obj(parts)
 
 # Serialize WorkGroupConfigurationUpdates to a compact JSON object (declaration order).
@@ -2145,6 +2235,12 @@ struct AthenaClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CreatePresignedNotebookUrl", body)
 
+    # CreateSystemTableConfiguration
+    # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
+    def create_system_table_configuration(self, CreateSystemTableConfigurationInput input) -> str:
+        auto body = create_system_table_configuration_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CreateSystemTableConfiguration", body)
+
     # CreateWorkGroup
     # errors: InternalServerException, InvalidRequestException
     def create_work_group(self, CreateWorkGroupInput input) -> str:
@@ -2180,6 +2276,12 @@ struct AthenaClient:
     def delete_prepared_statement(self, DeletePreparedStatementInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "DeletePreparedStatement", body)
+
+    # DeleteSystemTableConfiguration
+    # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
+    def delete_system_table_configuration(self, DeleteSystemTableConfigurationInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "DeleteSystemTableConfiguration", body)
 
     # DeleteWorkGroup
     # errors: InternalServerException, InvalidRequestException
@@ -2295,6 +2397,12 @@ struct AthenaClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "GetSessionStatus", body)
 
+    # GetSystemTableConfiguration
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
+    def get_system_table_configuration(self, GetSystemTableConfigurationInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "GetSystemTableConfiguration", body)
+
     # GetTableMetadata
     # errors: InternalServerException, InvalidRequestException, MetadataException
     def get_table_metadata(self, GetTableMetadataInput input) -> str:
@@ -2390,6 +2498,12 @@ struct AthenaClient:
     def list_sessions(self, ListSessionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "ListSessions", body)
+
+    # ListSystemTableStatuses
+    # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
+    def list_system_table_statuses(self, ListSystemTableStatusesInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "ListSystemTableStatuses", body)
 
     # ListTableMetadata
     # errors: InternalServerException, InvalidRequestException, MetadataException
@@ -2499,6 +2613,12 @@ struct AthenaClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UpdatePreparedStatement", body)
 
+    # UpdateSystemTableConfiguration
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
+    def update_system_table_configuration(self, UpdateSystemTableConfigurationInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UpdateSystemTableConfiguration", body)
+
     # UpdateWorkGroup
     # errors: InternalServerException, InvalidRequestException
     def update_work_group(self, UpdateWorkGroupInput input) -> str:
@@ -2568,6 +2688,20 @@ struct AthenaClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "ListQueryExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSystemTableStatuses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Items).
+    def paginate_list_system_table_statuses(self, ListSystemTableStatusesInput input):
+        auto host = endpoints.regional_host(athena_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "ListSystemTableStatuses", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

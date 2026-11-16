@@ -4,8 +4,9 @@
   "apiVersion": "2014-10-06",
   "endpointPrefix": "codedeploy",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceAbbreviation": "CodeDeploy",
@@ -14,6 +15,7 @@
   "signatureVersion": "v4",
   "targetPrefix": "CodeDeploy_20141006",
   "uid": "codedeploy-2014-10-06",
+  "xmlNamespace": "http://codedeploy.amazonaws.com/doc/2014-10-06/",
   "auth": [
    "aws.auth#sigv4"
   ]

@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 24 operations — 24 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   78 structs (55 @derive(Json)), 7 enums, 12 error variants.
+#   78 structs (54 @derive(Json)), 9 enums, 12 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -44,11 +44,25 @@ def lambda__service() -> str:
 
 @derive(Json)
 @json(open)
+enum Architecture:
+    ARM_64
+    X86_64
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum BuildState:
     PENDING
     IN_PROGRESS
     SUCCESSFUL
     FAILED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum Chipset:
+    GRAVITON
+    INTEL
     Unknown(str value)
 
 @derive(Json)
@@ -63,6 +77,7 @@ enum HookState:
 enum ManagedMicrovmImageVersionStatus:
     AVAILABLE
     DEPRECATED
+    RECALLED
     Unknown(str value)
 
 @derive(Json)
@@ -132,7 +147,7 @@ struct ConflictException:
 
 @derive(Json)
 struct CpuConfiguration:
-    str architecture
+    Architecture architecture
 
 # rest-json request for CreateMicrovmAuthTokenRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -239,8 +254,8 @@ struct GetMicrovmImageBuildOutput:
     str imageVersion
     str buildId
     BuildState buildState
-    str architecture
-    str chipset
+    Architecture architecture
+    Chipset chipset
     str chipsetGeneration
     Optional[str] stateReason
     DateTime createdAt
@@ -378,7 +393,9 @@ struct ListMicrovmImageBuildsInput:
     Optional[str] nextToken
     str imageIdentifier
     str imageVersion
+    # wire string of the Architecture enum (querystring binding)
     Optional[str] architecture
+    # wire string of the Chipset enum (querystring binding)
     Optional[str] chipset
     Optional[str] chipsetGeneration
 
@@ -459,11 +476,14 @@ struct ManagedMicrovmImageSummary:
     DateTime createdAt
     Optional[DateTime] updatedAt
 
-@derive(Json)
+# no @derive(Json): member(s) supportedCpuConfigurations: list[CpuConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedMicrovmImageVersion:
     str imageArn
     str imageVersion
     Optional[ManagedMicrovmImageVersionStatus] status
+    Optional[list[CpuConfiguration]] supportedCpuConfigurations
     DateTime createdAt
     Optional[DateTime] updatedAt
 
@@ -484,8 +504,8 @@ struct MicrovmImageBuildSummary:
     str imageVersion
     str buildId
     BuildState buildState
-    str architecture
-    str chipset
+    Architecture architecture
+    Chipset chipset
     str chipsetGeneration
     Optional[str] stateReason
     DateTime createdAt

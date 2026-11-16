@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 35 operations — 35 with a generated method,
+# Coverage (rest-json): 36 operations — 36 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   112 structs (69 @derive(Json)), 14 enums, 28 error variants.
+#   118 structs (65 @derive(Json)), 16 enums, 28 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -57,6 +57,14 @@ enum PermissionStatus:
     UNATTACHABLE
     DELETING
     DELETED
+    DEPRECATED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum PermissionTemplateParameterType:
+    STRING
+    STRING_LIST
     Unknown(str value)
 
 @derive(Json)
@@ -162,6 +170,13 @@ enum ResourceStatus:
     PENDING
     Unknown(str value)
 
+@derive(Json)
+@json(open)
+enum UpdatePermissionStatus:
+    ATTACHABLE
+    DEPRECATED
+    Unknown(str value)
+
 # --- shapes ----------------------------------------------------------------
 
 # rest-json request for AcceptResourceShareInvitationRequest: members bind to the URI/query/headers or the
@@ -182,6 +197,7 @@ struct AcceptResourceShareInvitationResponse:
 struct AssociateResourceSharePermissionRequest:
     str resourceShareArn
     str permissionArn
+    Optional[list[PermissionTemplateParameterInput]] permissionTemplateParameters
     Optional[bool] replace
     Optional[str] clientToken
     Optional[int64] permissionVersion
@@ -207,7 +223,9 @@ struct AssociateResourceShareResponse:
     Optional[list[ResourceShareAssociation]] resourceShareAssociations
     Optional[str] clientToken
 
-@derive(Json)
+# no @derive(Json): member(s) permissionTemplateParameters: list[PermissionTemplateParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatedPermission:
     Optional[str] arn
     Optional[str] permissionVersion
@@ -217,6 +235,7 @@ struct AssociatedPermission:
     Optional[PermissionFeatureSet] featureSet
     Optional[DateTime] lastUpdatedTime
     Optional[str] resourceShareArn
+    Optional[list[PermissionTemplateParameter]] permissionTemplateParameters
 
 @derive(Json)
 struct AssociatedSource:
@@ -234,6 +253,7 @@ struct CreatePermissionRequest:
     str name
     str resourceType
     str policyTemplate
+    Optional[list[PermissionTemplateParameterDeclaration]] permissionTemplateParameters
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
@@ -249,6 +269,7 @@ struct CreatePermissionResponse:
 struct CreatePermissionVersionRequest:
     str permissionArn
     str policyTemplate
+    Optional[list[PermissionTemplateParameterDeclaration]] permissionTemplateParameters
     Optional[str] clientToken
 
 # no @derive(Json): member(s) permission: ResourceSharePermissionDetail not derivable (list/map collections);
@@ -269,6 +290,7 @@ struct CreateResourceShareRequest:
     Optional[str] clientToken
     Optional[list[str]] permissionArns
     Optional[list[str]] sources
+    Optional[list[PermissionArnAndTemplateParameters]] permissionTemplateParameters
     Optional[ResourceShareConfiguration] resourceShareConfiguration
 
 # no @derive(Json): member(s) resourceShare: ResourceShare not derivable (list/map collections);
@@ -357,6 +379,7 @@ struct EnableSharingWithAwsOrganizationResponse:
 struct GetPermissionRequest:
     str permissionArn
     Optional[int64] permissionVersion
+    Optional[list[PermissionTemplateParameterInput]] permissionTemplateParameters
 
 # no @derive(Json): member(s) permission: ResourceSharePermissionDetail not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -488,6 +511,8 @@ struct ListPermissionAssociationsRequest:
     Optional[str] resourceType
     Optional[PermissionFeatureSet] featureSet
     Optional[bool] defaultVersion
+    Optional[ResourceOwner] resourceOwner
+    Optional[str] resourceShareArn
     Optional[str] nextToken
     Optional[int64] maxResults
 
@@ -516,9 +541,11 @@ struct ListPermissionVersionsResponse:
 # body (see the client method). A parameter carrier, not a JSON document.
 struct ListPermissionsRequest:
     Optional[str] resourceType
+    Optional[ResourceOwner] resourceOwner
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[PermissionTypeFilter] permissionType
+    Optional[PermissionStatus] permissionStatus
 
 # no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -644,9 +671,38 @@ struct OperationNotPermittedException:
 struct PermissionAlreadyExistsException:
     str message
 
+# no @derive(Json): member(s) permissionTemplateParameters: list[PermissionTemplateParameterInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct PermissionArnAndTemplateParameters:
+    Optional[str] permissionArn
+    Optional[list[PermissionTemplateParameterInput]] permissionTemplateParameters
+
 @derive(Json)
 struct PermissionLimitExceededException:
     str message
+
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct PermissionTemplateParameter:
+    Optional[str] name
+    Optional[PermissionTemplateParameterType] type
+    Optional[str] description
+    Optional[list[str]] values
+
+@derive(Json)
+struct PermissionTemplateParameterDeclaration:
+    Optional[str] name
+    Optional[PermissionTemplateParameterType] type
+    Optional[str] description
+
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct PermissionTemplateParameterInput:
+    Optional[str] name
+    Optional[list[str]] values
 
 @derive(Json)
 struct PermissionVersionsLimitExceededException:
@@ -702,20 +758,26 @@ struct ReplacePermissionAssociationsRequest:
     str fromPermissionArn
     Optional[int64] fromPermissionVersion
     str toPermissionArn
+    Optional[list[PermissionTemplateParameterInput]] permissionTemplateParameters
     Optional[str] clientToken
 
-@derive(Json)
+# no @derive(Json): member(s) replacePermissionAssociationsWork: ReplacePermissionAssociationsWork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplacePermissionAssociationsResponse:
     Optional[ReplacePermissionAssociationsWork] replacePermissionAssociationsWork
     Optional[str] clientToken
 
-@derive(Json)
+# no @derive(Json): member(s) permissionTemplateParameters: list[PermissionTemplateParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplacePermissionAssociationsWork:
     Optional[str] id
     Optional[str] fromPermissionArn
     Optional[str] fromPermissionVersion
     Optional[str] toPermissionArn
     Optional[str] toPermissionVersion
+    Optional[list[PermissionTemplateParameter]] permissionTemplateParameters
     Optional[ReplacePermissionAssociationsWorkStatus] status
     Optional[str] statusMessage
     Optional[DateTime] creationTime
@@ -803,7 +865,7 @@ struct ResourceShareInvitationExpiredException:
 struct ResourceShareLimitExceededException:
     str message
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# no @derive(Json): member(s) permissionTemplateParameters: list[PermissionTemplateParameterDeclaration], tags: list[Tag] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ResourceSharePermissionDetail:
@@ -813,6 +875,7 @@ struct ResourceSharePermissionDetail:
     Optional[str] name
     Optional[str] resourceType
     Optional[str] permission
+    Optional[list[PermissionTemplateParameterDeclaration]] permissionTemplateParameters
     Optional[DateTime] creationTime
     Optional[DateTime] lastUpdatedTime
     Optional[bool] isResourceTypeDefault
@@ -820,8 +883,9 @@ struct ResourceSharePermissionDetail:
     Optional[PermissionFeatureSet] featureSet
     Optional[PermissionStatus] status
     Optional[list[Tag]] tags
+    Optional[ResourceOwner] resourceOwner
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# no @derive(Json): member(s) permissionTemplateParameters: list[PermissionTemplateParameter], tags: list[Tag] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ResourceSharePermissionSummary:
@@ -836,7 +900,9 @@ struct ResourceSharePermissionSummary:
     Optional[bool] isResourceTypeDefault
     Optional[PermissionType] permissionType
     Optional[PermissionFeatureSet] featureSet
+    Optional[list[PermissionTemplateParameter]] permissionTemplateParameters
     Optional[list[Tag]] tags
+    Optional[ResourceOwner] resourceOwner
 
 @derive(Json)
 struct ServerInternalException:
@@ -919,6 +985,18 @@ struct UntagResourceRequest:
 struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
+
+# rest-json request for UpdatePermissionRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdatePermissionRequest:
+    str permissionArn
+    UpdatePermissionStatus status
+    Optional[str] clientToken
+
+@derive(Json)
+struct UpdatePermissionResponse:
+    Optional[str] clientToken
+    Optional[UpdatePermissionStatus] permissionStatus
 
 # rest-json request for UpdateResourceShareRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1119,33 +1197,11 @@ struct AcceptResourceShareInvitationDocument:
     Optional[str] clientToken
 
 @derive(Json)
-struct AssociateResourceSharePermissionDocument:
-    # document members of AssociateResourceSharePermission
-    str resourceShareArn
-    str permissionArn
-    Optional[bool] replace
-    Optional[str] clientToken
-    Optional[int64] permissionVersion
-
-@derive(Json)
-struct CreatePermissionVersionDocument:
-    # document members of CreatePermissionVersion
-    str permissionArn
-    str policyTemplate
-    Optional[str] clientToken
-
-@derive(Json)
 struct DisassociateResourceSharePermissionDocument:
     # document members of DisassociateResourceSharePermission
     str resourceShareArn
     str permissionArn
     Optional[str] clientToken
-
-@derive(Json)
-struct GetPermissionDocument:
-    # document members of GetPermission
-    str permissionArn
-    Optional[int64] permissionVersion
 
 @derive(Json)
 struct ListPendingInvitationResourcesDocument:
@@ -1164,6 +1220,8 @@ struct ListPermissionAssociationsDocument:
     Optional[str] resourceType
     Optional[PermissionFeatureSet] featureSet
     Optional[bool] defaultVersion
+    Optional[ResourceOwner] resourceOwner
+    Optional[str] resourceShareArn
     Optional[str] nextToken
     Optional[int64] maxResults
 
@@ -1178,9 +1236,11 @@ struct ListPermissionVersionsDocument:
 struct ListPermissionsDocument:
     # document members of ListPermissions
     Optional[str] resourceType
+    Optional[ResourceOwner] resourceOwner
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[PermissionTypeFilter] permissionType
+    Optional[PermissionStatus] permissionStatus
 
 @derive(Json)
 struct ListResourceSharePermissionsDocument:
@@ -1210,18 +1270,17 @@ struct RejectResourceShareInvitationDocument:
     Optional[str] clientToken
 
 @derive(Json)
-struct ReplacePermissionAssociationsDocument:
-    # document members of ReplacePermissionAssociations
-    str fromPermissionArn
-    Optional[int64] fromPermissionVersion
-    str toPermissionArn
-    Optional[str] clientToken
-
-@derive(Json)
 struct SetDefaultPermissionVersionDocument:
     # document members of SetDefaultPermissionVersion
     str permissionArn
     int64 permissionVersion
+    Optional[str] clientToken
+
+@derive(Json)
+struct UpdatePermissionDocument:
+    # document members of UpdatePermission
+    str permissionArn
+    UpdatePermissionStatus status
     Optional[str] clientToken
 
 @derive(Json)
@@ -1261,6 +1320,34 @@ def ram_json_arr(list[str] parts) -> str:
 
 # Explicit JSON serializers for document bodies with collection/nested
 # members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize PermissionArnAndTemplateParameters to a compact JSON object (declaration order).
+def permission_arn_and_template_parameters_to_json(PermissionArnAndTemplateParameters v) -> str:
+    list[str] parts = []
+    if v.permissionArn.is_some():
+        auto u0 = v.permissionArn.unwrap()
+        parts.append("\"permissionArn\":" + ram_json_str(u0))
+    if v.permissionTemplateParameters.is_some():
+        auto u1 = v.permissionTemplateParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(permission_template_parameter_input_to_json(x2))
+        parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e2))
+    return ram_json_obj(parts)
+
+# Serialize PermissionTemplateParameterInput to a compact JSON object (declaration order).
+def permission_template_parameter_input_to_json(PermissionTemplateParameterInput v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + ram_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ram_json_str(x2))
+        parts.append("\"values\":" + ram_json_arr(e2))
+    return ram_json_obj(parts)
 
 # Serialize TagFilter to a compact JSON object (declaration order).
 def tag_filter_to_json(TagFilter v) -> str:
@@ -1326,8 +1413,25 @@ struct RAMClient:
     def associate_resource_share_permission(self, AssociateResourceSharePermissionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/associateresourcesharepermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = AssociateResourceSharePermissionDocument(resourceShareArn=input.resourceShareArn, permissionArn=input.permissionArn, replace=input.replace, clientToken=input.clientToken, permissionVersion=input.permissionVersion)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        parts.append("\"resourceShareArn\":" + ram_json_str(input.resourceShareArn))
+        parts.append("\"permissionArn\":" + ram_json_str(input.permissionArn))
+        if input.permissionTemplateParameters.is_some():
+            auto u0 = input.permissionTemplateParameters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(permission_template_parameter_input_to_json(x1))
+            parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e1))
+        if input.replace.is_some():
+            auto u2 = input.replace.unwrap()
+            parts.append("\"replace\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u3))
+        if input.permissionVersion.is_some():
+            auto u4 = input.permissionVersion.unwrap()
+            parts.append("\"permissionVersion\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # CreatePermission  POST /createpermission
@@ -1339,25 +1443,42 @@ struct RAMClient:
         parts.append("\"name\":" + ram_json_str(input.name))
         parts.append("\"resourceType\":" + ram_json_str(input.resourceType))
         parts.append("\"policyTemplate\":" + ram_json_str(input.policyTemplate))
+        if input.permissionTemplateParameters.is_some():
+            auto u0 = input.permissionTemplateParameters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e1))
         if input.clientToken.is_some():
-            auto u0 = input.clientToken.unwrap()
-            parts.append("\"clientToken\":" + ram_json_str(u0))
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u2))
         if input.tags.is_some():
-            auto u1 = input.tags.unwrap()
-            list[str] e2 = []
-            for x2 in u1:
-                e2.append(x2.to_json())
-            parts.append("\"tags\":" + ram_json_arr(e2))
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + ram_json_arr(e4))
         auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # CreatePermissionVersion  POST /createpermissionversion
-    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidPolicyException, MalformedArnException, MalformedPolicyTemplateException, PermissionVersionsLimitExceededException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidPolicyException, MalformedArnException, MalformedPolicyTemplateException, OperationNotPermittedException, PermissionVersionsLimitExceededException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def create_permission_version(self, CreatePermissionVersionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/createpermissionversion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = CreatePermissionVersionDocument(permissionArn=input.permissionArn, policyTemplate=input.policyTemplate, clientToken=input.clientToken)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        parts.append("\"permissionArn\":" + ram_json_str(input.permissionArn))
+        parts.append("\"policyTemplate\":" + ram_json_str(input.policyTemplate))
+        if input.permissionTemplateParameters.is_some():
+            auto u0 = input.permissionTemplateParameters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u2))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # CreateResourceShare  POST /createresourceshare
@@ -1403,9 +1524,15 @@ struct RAMClient:
             for x11 in u10:
                 e11.append(ram_json_str(x11))
             parts.append("\"sources\":" + ram_json_arr(e11))
+        if input.permissionTemplateParameters.is_some():
+            auto u12 = input.permissionTemplateParameters.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(permission_arn_and_template_parameters_to_json(x13))
+            parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e13))
         if input.resourceShareConfiguration.is_some():
-            auto u12 = input.resourceShareConfiguration.unwrap()
-            parts.append("\"resourceShareConfiguration\":" + u12.to_json())
+            auto u14 = input.resourceShareConfiguration.unwrap()
+            parts.append("\"resourceShareConfiguration\":" + u14.to_json())
         auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
@@ -1495,8 +1622,18 @@ struct RAMClient:
     def get_permission(self, GetPermissionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/getpermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = GetPermissionDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        parts.append("\"permissionArn\":" + ram_json_str(input.permissionArn))
+        if input.permissionVersion.is_some():
+            auto u0 = input.permissionVersion.unwrap()
+            parts.append("\"permissionVersion\":" + str(u0))
+        if input.permissionTemplateParameters.is_some():
+            auto u1 = input.permissionTemplateParameters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(permission_template_parameter_input_to_json(x2))
+            parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # GetResourcePolicies  POST /getresourcepolicies
@@ -1633,7 +1770,7 @@ struct RAMClient:
     def list_permission_associations(self, ListPermissionAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/listpermissionassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = ListPermissionAssociationsDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion, associationStatus=input.associationStatus, resourceType=input.resourceType, featureSet=input.featureSet, defaultVersion=input.defaultVersion, nextToken=input.nextToken, maxResults=input.maxResults)
+        auto doc = ListPermissionAssociationsDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion, associationStatus=input.associationStatus, resourceType=input.resourceType, featureSet=input.featureSet, defaultVersion=input.defaultVersion, resourceOwner=input.resourceOwner, resourceShareArn=input.resourceShareArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
@@ -1651,7 +1788,7 @@ struct RAMClient:
     def list_permissions(self, ListPermissionsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/listpermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = ListPermissionsDocument(resourceType=input.resourceType, nextToken=input.nextToken, maxResults=input.maxResults, permissionType=input.permissionType)
+        auto doc = ListPermissionsDocument(resourceType=input.resourceType, resourceOwner=input.resourceOwner, nextToken=input.nextToken, maxResults=input.maxResults, permissionType=input.permissionType, permissionStatus=input.permissionStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
@@ -1830,8 +1967,22 @@ struct RAMClient:
     def replace_permission_associations(self, ReplacePermissionAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/replacepermissionassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = ReplacePermissionAssociationsDocument(fromPermissionArn=input.fromPermissionArn, fromPermissionVersion=input.fromPermissionVersion, toPermissionArn=input.toPermissionArn, clientToken=input.clientToken)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        parts.append("\"fromPermissionArn\":" + ram_json_str(input.fromPermissionArn))
+        if input.fromPermissionVersion.is_some():
+            auto u0 = input.fromPermissionVersion.unwrap()
+            parts.append("\"fromPermissionVersion\":" + str(u0))
+        parts.append("\"toPermissionArn\":" + ram_json_str(input.toPermissionArn))
+        if input.permissionTemplateParameters.is_some():
+            auto u1 = input.permissionTemplateParameters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(permission_template_parameter_input_to_json(x2))
+            parts.append("\"permissionTemplateParameters\":" + ram_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u3))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # SetDefaultPermissionVersion  POST /setdefaultpermissionversion
@@ -1879,6 +2030,15 @@ struct RAMClient:
             auto u2 = input.resourceArn.unwrap()
             parts.append("\"resourceArn\":" + ram_json_str(u2))
         auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # UpdatePermission  POST /updatepermission
+    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, PermissionLimitExceededException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def update_permission(self, UpdatePermissionRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updatepermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdatePermissionDocument(permissionArn=input.permissionArn, status=input.status, clientToken=input.clientToken)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # UpdateResourceShare  POST /updateresourceshare

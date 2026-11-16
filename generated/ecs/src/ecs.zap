@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 88 operations — 88 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   442 structs (230 @derive(Json)), 104 enums, 31 error variants.
+#   445 structs (233 @derive(Json)), 105 enums, 31 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   9 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -65,6 +65,8 @@ enum AcceleratorName:
     a10g
     h100
     t4g
+    l40s
+    l4
     Unknown(str value)
 
 @derive(Json)
@@ -563,6 +565,14 @@ enum IpcMode:
     host
     task
     none
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum IsolationMode:
+    SHARED
+    ISOLATED_SANDBOX
+    CONFIDENTIAL_SANDBOX
     Unknown(str value)
 
 @derive(Json)
@@ -1686,6 +1696,7 @@ struct DaemonTaskDefinitionSummary:
 struct DaemonVolume:
     Optional[str] name
     Optional[HostVolumeProperties] host
+    Optional[LogDriverVolumeConfiguration] logDriverVolumeConfiguration
 
 @derive(Json)
 struct DeleteAccountSettingRequest:
@@ -2698,6 +2709,7 @@ struct InstanceLaunchTemplate:
     Optional[InstanceRequirementsRequest] instanceRequirements
     Optional[bool] fipsEnabled
     Optional[CapacityReservationRequest] capacityReservations
+    Optional[bool] nitroEnclavesEnabled
 
 # no @derive(Json): member(s) networkConfiguration: ManagedInstancesNetworkConfiguration, instanceRequirements: InstanceRequirementsRequest not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3060,6 +3072,10 @@ struct LogConfiguration:
     LogDriver logDriver
     Optional[dict[str, str]] options
     Optional[list[Secret]] secretOptions
+
+@derive(Json)
+struct LogDriverVolumeConfiguration:
+    LogDriver driver
 
 @derive(Json)
 struct ManagedAgent:
@@ -3448,6 +3464,7 @@ struct RegisterTaskDefinitionRequest:
     Optional[EphemeralStorage] ephemeralStorage
     Optional[RuntimePlatform] runtimePlatform
     Optional[bool] enableFaultInjection
+    Optional[TrustedExecutionConfiguration] trustedExecutionConfiguration
 
 # no @derive(Json): member(s) taskDefinition: TaskDefinition, tags: list[Tag] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -4000,6 +4017,7 @@ struct Task:
     Optional[int64] version
     Optional[EphemeralStorage] ephemeralStorage
     Optional[TaskEphemeralStorage] fargateEphemeralStorage
+    Optional[TrustedExecutionSummary] trustedExecutionSummary
 
 # no @derive(Json): member(s) containerDefinitions: list[ContainerDefinition], volumes: list[Volume], requiresAttributes: list[Attribute], placementConstraints: list[TaskDefinitionPlacementConstraint], compatibilities: list[Compatibility], requiresCompatibilities: list[Compatibility], inferenceAccelerators: list[InferenceAccelerator], proxyConfiguration: ProxyConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -4031,6 +4049,7 @@ struct TaskDefinition:
     Optional[str] registeredBy
     Optional[EphemeralStorage] ephemeralStorage
     Optional[bool] enableFaultInjection
+    Optional[TrustedExecutionConfiguration] trustedExecutionConfiguration
 
 @derive(Json)
 struct TaskDefinitionPlacementConstraint:
@@ -4138,6 +4157,16 @@ struct Tmpfs:
 struct TotalLocalStorageGBRequest:
     Optional[float64] min
     Optional[float64] max
+
+@derive(Json)
+struct TrustedExecutionConfiguration:
+    IsolationMode isolationMode
+    Optional[str] attestationPolicy
+
+@derive(Json)
+struct TrustedExecutionSummary:
+    IsolationMode isolationMode
+    Optional[str] attestationPolicyStatus
 
 @derive(Json)
 struct Ulimit:
@@ -6029,6 +6058,9 @@ def instance_launch_template_to_json(InstanceLaunchTemplate v) -> str:
     if v.capacityReservations.is_some():
         auto u7 = v.capacityReservations.unwrap()
         parts.append("\"capacityReservations\":" + u7.to_json())
+    if v.nitroEnclavesEnabled.is_some():
+        auto u8 = v.nitroEnclavesEnabled.unwrap()
+        parts.append("\"nitroEnclavesEnabled\":" + json.dumps(JsonValue.Bool(u8)))
     return ecs_json_obj(parts)
 
 # Serialize InstanceLaunchTemplateUpdate to a compact JSON object (declaration order).
@@ -6606,6 +6638,9 @@ def register_task_definition_request_to_json(RegisterTaskDefinitionRequest v) ->
     if v.enableFaultInjection.is_some():
         auto u21 = v.enableFaultInjection.unwrap()
         parts.append("\"enableFaultInjection\":" + json.dumps(JsonValue.Bool(u21)))
+    if v.trustedExecutionConfiguration.is_some():
+        auto u22 = v.trustedExecutionConfiguration.unwrap()
+        parts.append("\"trustedExecutionConfiguration\":" + u22.to_json())
     return ecs_json_obj(parts)
 
 # Serialize Resource to a compact JSON object (declaration order).

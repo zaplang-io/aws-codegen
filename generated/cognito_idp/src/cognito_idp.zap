@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 132 operations — 132 with a generated method,
+# Coverage (v0, awsJson only): 140 operations — 140 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   406 structs (286 @derive(Json)), 54 enums, 59 error variants.
+#   427 structs (304 @derive(Json)), 58 enums, 59 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -165,6 +165,13 @@ enum ChallengeNameType:
 enum ChallengeResponse:
     Success
     Failure
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ClientTypeType:
+    REGULAR
+    DCR
     Unknown(str value)
 
 @derive(Json)
@@ -385,6 +392,13 @@ enum ReplicaStatusType:
 
 @derive(Json)
 @json(open)
+enum RevokeAssociatedSessionsType:
+    NONE
+    LINKED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum RiskDecisionType:
     NoRisk
     AccountTakeover
@@ -405,6 +419,13 @@ enum SecurityPolicyType:
     TLS_V1
     TLS_V1_2_2021
     TLS_V1_3_2025
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SessionTypeType:
+    TOKEN
+    SSO
     Unknown(str value)
 
 @derive(Json)
@@ -457,6 +478,13 @@ enum UserPoolTierType:
     LITE
     ESSENTIALS
     PLUS
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum UserSessionTrackingType:
+    ENABLED
+    DISABLED
     Unknown(str value)
 
 @derive(Json)
@@ -792,6 +820,19 @@ struct AdminListUserAuthEventsResponse:
     Optional[str] NextToken
 
 @derive(Json)
+struct AdminListUserSessionsRequest:
+    str UserPoolId
+    str Username
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) Sessions: list[SessionDescriptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AdminListUserSessionsResponse:
+    Optional[list[SessionDescriptionType]] Sessions
+    Optional[str] NextToken
+
+@derive(Json)
 struct AdminRemoveUserFromGroupRequest:
     str UserPoolId
     str Username
@@ -832,6 +873,18 @@ struct AdminRespondToAuthChallengeResponse:
     Optional[dict[str, str]] ChallengeParameters
     Optional[AuthenticationResultType] AuthenticationResult
     Optional[list[ChallengeNameType]] AvailableChallenges
+
+@derive(Json)
+struct AdminRevokeUserSessionRequest:
+    str UserPoolId
+    str Username
+    str SessionId
+    Optional[RevokeAssociatedSessionsType] RevokeAssociatedSessions
+
+@derive(Json)
+struct AdminRevokeUserSessionResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 @derive(Json)
 struct AdminSetUserMFAPreferenceRequest:
@@ -1006,6 +1059,10 @@ struct ClientAuthenticationResultType:
     Optional[str] AccessToken
     Optional[int64] ExpiresIn
     Optional[str] TokenType
+
+@derive(Json)
+struct ClientSSOSessionConfigType:
+    int64 MaxValidityMinutes
 
 @derive(Json)
 struct ClientSecretDescriptorType:
@@ -1263,7 +1320,7 @@ struct CreateUserPoolReplicaRequest:
 struct CreateUserPoolReplicaResponse:
     Optional[UserPoolReplicaType] UserPoolReplica
 
-# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], Schema: list[SchemaAttributeType], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
+# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], Schema: list[SchemaAttributeType], DcrConfiguration: DcrConfigurationType, AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CreateUserPoolRequest:
@@ -1288,6 +1345,7 @@ struct CreateUserPoolRequest:
     Optional[AdminCreateUserConfigType] AdminCreateUserConfig
     Optional[list[SchemaAttributeType]] Schema
     Optional[UserPoolAddOnsType] UserPoolAddOns
+    Optional[DcrConfigurationType] DcrConfiguration
     Optional[UsernameConfigurationType] UsernameConfiguration
     Optional[AccountRecoverySettingType] AccountRecoverySetting
     Optional[UserPoolTierType] UserPoolTier
@@ -1315,6 +1373,16 @@ struct CustomEmailLambdaVersionConfigType:
 struct CustomSMSLambdaVersionConfigType:
     str LambdaVersion
     str LambdaArn
+
+# no @derive(Json): member(s) AuthenticatedGrantTypes: list[OAuthFlowType], OpenDcrGrantTypes: list[OAuthFlowType], AllowedScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DcrConfigurationType:
+    Optional[StatusType] EnableStatus
+    Optional[bool] OpenDcrEnabled
+    Optional[list[OAuthFlowType]] AuthenticatedGrantTypes
+    Optional[list[OAuthFlowType]] OpenDcrGrantTypes
+    Optional[list[str]] AllowedScopes
 
 @derive(Json)
 struct DeleteGroupRequest:
@@ -1797,6 +1865,17 @@ struct GetUserAuthFactorsResponse:
     Optional[list[AuthFactorType]] ConfiguredUserAuthFactors
 
 @derive(Json)
+struct GetUserPoolClientSessionConfigurationRequest:
+    str UserPoolId
+    str ClientId
+
+@derive(Json)
+struct GetUserPoolClientSessionConfigurationResponse:
+    Optional[str] UserPoolId
+    Optional[str] ClientId
+    Optional[ClientSSOSessionConfigType] SSOSession
+
+@derive(Json)
 struct GetUserPoolMfaConfigRequest:
     str UserPoolId
 
@@ -1807,6 +1886,16 @@ struct GetUserPoolMfaConfigResponse:
     Optional[EmailMfaConfigType] EmailMfaConfiguration
     Optional[UserPoolMfaType] MfaConfiguration
     Optional[WebAuthnConfigurationType] WebAuthnConfiguration
+
+@derive(Json)
+struct GetUserPoolSessionConfigurationRequest:
+    str UserPoolId
+
+@derive(Json)
+struct GetUserPoolSessionConfigurationResponse:
+    Optional[str] UserPoolId
+    Optional[UserSessionTrackingType] UserSessionTracking
+    Optional[UserPoolTokenSessionConfigType] TokenSession
 
 @derive(Json)
 struct GetUserRequest:
@@ -2084,6 +2173,7 @@ struct ListUserPoolClientsRequest:
     str UserPoolId
     Optional[int64] MaxResults
     Optional[str] NextToken
+    Optional[ClientTypeType] ClientType
 
 # no @derive(Json): member(s) UserPoolClients: list[UserPoolClientDescription] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2114,6 +2204,18 @@ struct ListUserPoolsRequest:
 # (zaplang-io/zap#424).
 struct ListUserPoolsResponse:
     Optional[list[UserPoolDescriptionType]] UserPools
+    Optional[str] NextToken
+
+@derive(Json)
+struct ListUserSessionsRequest:
+    str AccessToken
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) Sessions: list[SessionDescriptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListUserSessionsResponse:
+    Optional[list[SessionDescriptionType]] Sessions
     Optional[str] NextToken
 
 @derive(Json)
@@ -2325,6 +2427,7 @@ struct ResourceServerType:
     Optional[str] Identifier
     Optional[str] Name
     Optional[list[ResourceServerScopeType]] Scopes
+    Optional[str] ManagedBy
 
 # no @derive(Json): member(s) ChallengeResponses: dict[str, str], ClientMetadata: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2353,9 +2456,21 @@ struct RevokeTokenRequest:
     str Token
     str ClientId
     Optional[str] ClientSecret
+    Optional[RevokeAssociatedSessionsType] RevokeAssociatedSessions
 
 @derive(Json)
 struct RevokeTokenResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct RevokeUserSessionRequest:
+    str AccessToken
+    str SessionId
+    Optional[RevokeAssociatedSessionsType] RevokeAssociatedSessions
+
+@derive(Json)
+struct RevokeUserSessionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -2407,6 +2522,24 @@ struct ScopeDoesNotExistException:
 @derive(Json)
 struct ServiceQuotaExceededException:
     Optional[str] message
+
+@derive(Json)
+struct SessionDescriptionType:
+    Optional[str] SessionId
+    Optional[SessionTypeType] SessionType
+    Optional[str] ClientId
+    Optional[DateTime] CreateDate
+    Optional[DateTime] LastActiveDate
+    Optional[str] DeviceType
+    Optional[str] LastIPAddress
+    Optional[SessionLocationType] LastLocation
+    Optional[str] OriginSessionId
+    Optional[bool] IsCurrentSession
+
+@derive(Json)
+struct SessionLocationType:
+    Optional[str] City
+    Optional[str] Country
 
 # no @derive(Json): member(s) LogConfigurations: list[LogConfigurationType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2462,6 +2595,18 @@ struct SetUserMFAPreferenceResponse:
     Optional[str] reserved
 
 @derive(Json)
+struct SetUserPoolClientSessionConfigurationRequest:
+    str UserPoolId
+    str ClientId
+    ClientSSOSessionConfigType SSOSession
+
+@derive(Json)
+struct SetUserPoolClientSessionConfigurationResponse:
+    Optional[str] UserPoolId
+    Optional[str] ClientId
+    Optional[ClientSSOSessionConfigType] SSOSession
+
+@derive(Json)
 struct SetUserPoolMfaConfigRequest:
     str UserPoolId
     Optional[SmsMfaConfigType] SmsMfaConfiguration
@@ -2477,6 +2622,18 @@ struct SetUserPoolMfaConfigResponse:
     Optional[EmailMfaConfigType] EmailMfaConfiguration
     Optional[UserPoolMfaType] MfaConfiguration
     Optional[WebAuthnConfigurationType] WebAuthnConfiguration
+
+@derive(Json)
+struct SetUserPoolSessionConfigurationRequest:
+    str UserPoolId
+    UserSessionTrackingType UserSessionTracking
+    UserPoolTokenSessionConfigType TokenSession
+
+@derive(Json)
+struct SetUserPoolSessionConfigurationResponse:
+    Optional[str] UserPoolId
+    Optional[UserSessionTrackingType] UserSessionTracking
+    Optional[UserPoolTokenSessionConfigType] TokenSession
 
 # no @derive(Json): member(s) MFAOptions: list[MFAOptionType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2861,7 +3018,7 @@ struct UpdateUserPoolReplicaRequest:
 struct UpdateUserPoolReplicaResponse:
     Optional[UserPoolReplicaType] UserPoolReplica
 
-# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
+# no @derive(Json): member(s) Policies: UserPoolPolicyType, AutoVerifiedAttributes: list[VerifiedAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], DcrConfiguration: DcrConfigurationType, AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct UpdateUserPoolRequest:
@@ -2883,6 +3040,7 @@ struct UpdateUserPoolRequest:
     Optional[dict[str, str]] UserPoolTags
     Optional[AdminCreateUserConfigType] AdminCreateUserConfig
     Optional[UserPoolAddOnsType] UserPoolAddOns
+    Optional[DcrConfigurationType] DcrConfiguration
     Optional[AccountRecoverySettingType] AccountRecoverySetting
     Optional[str] PoolName
     Optional[UserPoolTierType] UserPoolTier
@@ -2984,6 +3142,7 @@ struct UserPoolClientType:
     Optional[bool] EnablePropagateAdditionalUserContextData
     Optional[int64] AuthSessionValidity
     Optional[RefreshTokenRotationType] RefreshTokenRotation
+    Optional[ClientTypeType] ClientType
 
 # no @derive(Json): member(s) ReplicaRegions: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3015,7 +3174,11 @@ struct UserPoolReplicaType:
 struct UserPoolTaggingException:
     Optional[str] message
 
-# no @derive(Json): member(s) Policies: UserPoolPolicyType, SchemaAttributes: list[SchemaAttributeType], AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
+@derive(Json)
+struct UserPoolTokenSessionConfigType:
+    int64 MaxPerUser
+
+# no @derive(Json): member(s) Policies: UserPoolPolicyType, SchemaAttributes: list[SchemaAttributeType], AutoVerifiedAttributes: list[VerifiedAttributeType], AliasAttributes: list[AliasAttributeType], UsernameAttributes: list[UsernameAttributeType], UserAttributeUpdateSettings: UserAttributeUpdateSettingsType, UserPoolTags: dict[str, str], DcrConfiguration: DcrConfigurationType, AccountRecoverySetting: AccountRecoverySettingType, AcrConfiguration: dict[str, AcrLevelConfigType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct UserPoolType:
@@ -3049,6 +3212,7 @@ struct UserPoolType:
     Optional[str] CustomDomain
     Optional[AdminCreateUserConfigType] AdminCreateUserConfig
     Optional[UserPoolAddOnsType] UserPoolAddOns
+    Optional[DcrConfigurationType] DcrConfiguration
     Optional[UsernameConfigurationType] UsernameConfiguration
     Optional[str] Arn
     Optional[AccountRecoverySettingType] AccountRecoverySetting
@@ -4049,27 +4213,59 @@ def create_user_pool_request_to_json(CreateUserPoolRequest v) -> str:
     if v.UserPoolAddOns.is_some():
         auto u24 = v.UserPoolAddOns.unwrap()
         parts.append("\"UserPoolAddOns\":" + u24.to_json())
+    if v.DcrConfiguration.is_some():
+        auto u25 = v.DcrConfiguration.unwrap()
+        parts.append("\"DcrConfiguration\":" + dcr_configuration_type_to_json(u25))
     if v.UsernameConfiguration.is_some():
-        auto u25 = v.UsernameConfiguration.unwrap()
-        parts.append("\"UsernameConfiguration\":" + u25.to_json())
+        auto u26 = v.UsernameConfiguration.unwrap()
+        parts.append("\"UsernameConfiguration\":" + u26.to_json())
     if v.AccountRecoverySetting.is_some():
-        auto u26 = v.AccountRecoverySetting.unwrap()
-        parts.append("\"AccountRecoverySetting\":" + account_recovery_setting_type_to_json(u26))
+        auto u27 = v.AccountRecoverySetting.unwrap()
+        parts.append("\"AccountRecoverySetting\":" + account_recovery_setting_type_to_json(u27))
     if v.UserPoolTier.is_some():
-        auto u27 = v.UserPoolTier.unwrap()
-        parts.append("\"UserPoolTier\":" + u27.to_json())
+        auto u28 = v.UserPoolTier.unwrap()
+        parts.append("\"UserPoolTier\":" + u28.to_json())
     if v.KeyConfiguration.is_some():
-        auto u28 = v.KeyConfiguration.unwrap()
-        parts.append("\"KeyConfiguration\":" + u28.to_json())
+        auto u29 = v.KeyConfiguration.unwrap()
+        parts.append("\"KeyConfiguration\":" + u29.to_json())
     if v.IssuerConfiguration.is_some():
-        auto u29 = v.IssuerConfiguration.unwrap()
-        parts.append("\"IssuerConfiguration\":" + u29.to_json())
+        auto u30 = v.IssuerConfiguration.unwrap()
+        parts.append("\"IssuerConfiguration\":" + u30.to_json())
     if v.AcrConfiguration.is_some():
-        auto u30 = v.AcrConfiguration.unwrap()
-        list[str] m31 = []
-        for k31 in sorted(u30.keys()):
-            m31.append(cognito_idp_json_str(k31) + ":" + u30[k31].to_json())
-        parts.append("\"AcrConfiguration\":" + cognito_idp_json_obj(m31))
+        auto u31 = v.AcrConfiguration.unwrap()
+        list[str] m32 = []
+        for k32 in sorted(u31.keys()):
+            m32.append(cognito_idp_json_str(k32) + ":" + u31[k32].to_json())
+        parts.append("\"AcrConfiguration\":" + cognito_idp_json_obj(m32))
+    return cognito_idp_json_obj(parts)
+
+# Serialize DcrConfigurationType to a compact JSON object (declaration order).
+def dcr_configuration_type_to_json(DcrConfigurationType v) -> str:
+    list[str] parts = []
+    if v.EnableStatus.is_some():
+        auto u0 = v.EnableStatus.unwrap()
+        parts.append("\"EnableStatus\":" + u0.to_json())
+    if v.OpenDcrEnabled.is_some():
+        auto u1 = v.OpenDcrEnabled.unwrap()
+        parts.append("\"OpenDcrEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.AuthenticatedGrantTypes.is_some():
+        auto u2 = v.AuthenticatedGrantTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AuthenticatedGrantTypes\":" + cognito_idp_json_arr(e3))
+    if v.OpenDcrGrantTypes.is_some():
+        auto u4 = v.OpenDcrGrantTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"OpenDcrGrantTypes\":" + cognito_idp_json_arr(e5))
+    if v.AllowedScopes.is_some():
+        auto u6 = v.AllowedScopes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(cognito_idp_json_str(x7))
+        parts.append("\"AllowedScopes\":" + cognito_idp_json_arr(e7))
     return cognito_idp_json_obj(parts)
 
 # Serialize DeleteUserAttributesRequest to a compact JSON object (declaration order).
@@ -4661,27 +4857,30 @@ def update_user_pool_request_to_json(UpdateUserPoolRequest v) -> str:
     if v.UserPoolAddOns.is_some():
         auto u18 = v.UserPoolAddOns.unwrap()
         parts.append("\"UserPoolAddOns\":" + u18.to_json())
+    if v.DcrConfiguration.is_some():
+        auto u19 = v.DcrConfiguration.unwrap()
+        parts.append("\"DcrConfiguration\":" + dcr_configuration_type_to_json(u19))
     if v.AccountRecoverySetting.is_some():
-        auto u19 = v.AccountRecoverySetting.unwrap()
-        parts.append("\"AccountRecoverySetting\":" + account_recovery_setting_type_to_json(u19))
+        auto u20 = v.AccountRecoverySetting.unwrap()
+        parts.append("\"AccountRecoverySetting\":" + account_recovery_setting_type_to_json(u20))
     if v.PoolName.is_some():
-        auto u20 = v.PoolName.unwrap()
-        parts.append("\"PoolName\":" + cognito_idp_json_str(u20))
+        auto u21 = v.PoolName.unwrap()
+        parts.append("\"PoolName\":" + cognito_idp_json_str(u21))
     if v.UserPoolTier.is_some():
-        auto u21 = v.UserPoolTier.unwrap()
-        parts.append("\"UserPoolTier\":" + u21.to_json())
+        auto u22 = v.UserPoolTier.unwrap()
+        parts.append("\"UserPoolTier\":" + u22.to_json())
     if v.KeyConfiguration.is_some():
-        auto u22 = v.KeyConfiguration.unwrap()
-        parts.append("\"KeyConfiguration\":" + u22.to_json())
+        auto u23 = v.KeyConfiguration.unwrap()
+        parts.append("\"KeyConfiguration\":" + u23.to_json())
     if v.IssuerConfiguration.is_some():
-        auto u23 = v.IssuerConfiguration.unwrap()
-        parts.append("\"IssuerConfiguration\":" + u23.to_json())
+        auto u24 = v.IssuerConfiguration.unwrap()
+        parts.append("\"IssuerConfiguration\":" + u24.to_json())
     if v.AcrConfiguration.is_some():
-        auto u24 = v.AcrConfiguration.unwrap()
-        list[str] m25 = []
-        for k25 in sorted(u24.keys()):
-            m25.append(cognito_idp_json_str(k25) + ":" + u24[k25].to_json())
-        parts.append("\"AcrConfiguration\":" + cognito_idp_json_obj(m25))
+        auto u25 = v.AcrConfiguration.unwrap()
+        list[str] m26 = []
+        for k26 in sorted(u25.keys()):
+            m26.append(cognito_idp_json_str(k26) + ":" + u25[k26].to_json())
+        parts.append("\"AcrConfiguration\":" + cognito_idp_json_obj(m26))
     return cognito_idp_json_obj(parts)
 
 # Serialize UserAttributeUpdateSettingsType to a compact JSON object (declaration order).
@@ -4831,6 +5030,12 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminListUserAuthEvents", body)
 
+    # AdminListUserSessions
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
+    def admin_list_user_sessions(self, AdminListUserSessionsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminListUserSessions", body)
+
     # AdminRemoveUserFromGroup
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
     def admin_remove_user_from_group(self, AdminRemoveUserFromGroupRequest input) -> str:
@@ -4848,6 +5053,12 @@ struct Cognito_Identity_ProviderClient:
     def admin_respond_to_auth_challenge(self, AdminRespondToAuthChallengeRequest input) -> str:
         auto body = admin_respond_to_auth_challenge_request_to_json(input)
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminRespondToAuthChallenge", body)
+
+    # AdminRevokeUserSession
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException, UserNotFoundException
+    def admin_revoke_user_session(self, AdminRevokeUserSessionRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "AdminRevokeUserSession", body)
 
     # AdminSetUserMFAPreference
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, UserNotConfirmedException, UserNotFoundException
@@ -5221,11 +5432,23 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetUserAuthFactors", body)
 
+    # GetUserPoolClientSessionConfiguration
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def get_user_pool_client_session_configuration(self, GetUserPoolClientSessionConfigurationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetUserPoolClientSessionConfiguration", body)
+
     # GetUserPoolMfaConfig
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
     def get_user_pool_mfa_config(self, GetUserPoolMfaConfigRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetUserPoolMfaConfig", body)
+
+    # GetUserPoolSessionConfiguration
+    # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def get_user_pool_session_configuration(self, GetUserPoolSessionConfigurationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "GetUserPoolSessionConfiguration", body)
 
     # GlobalSignOut
     # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException
@@ -5305,6 +5528,12 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ListUserPools", body)
 
+    # ListUserSessions
+    # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
+    def list_user_sessions(self, ListUserSessionsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "ListUserSessions", body)
+
     # ListUsers
     # errors: InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
     def list_users(self, ListUsersRequest input) -> str:
@@ -5341,6 +5570,12 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "RevokeToken", body)
 
+    # RevokeUserSession
+    # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, TooManyRequestsException, UserNotConfirmedException, UserNotFoundException
+    def revoke_user_session(self, RevokeUserSessionRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "RevokeUserSession", body)
+
     # SetLogDeliveryConfiguration
     # errors: FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, NotAuthorizedException, ResourceNotFoundException, TooManyRequestsException
     def set_log_delivery_configuration(self, SetLogDeliveryConfigurationRequest input) -> str:
@@ -5365,11 +5600,23 @@ struct Cognito_Identity_ProviderClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetUserMFAPreference", body)
 
+    # SetUserPoolClientSessionConfiguration
+    # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def set_user_pool_client_session_configuration(self, SetUserPoolClientSessionConfigurationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetUserPoolClientSessionConfiguration", body)
+
     # SetUserPoolMfaConfig
     # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, InvalidSmsRoleAccessPolicyException, InvalidSmsRoleTrustRelationshipException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
     def set_user_pool_mfa_config(self, SetUserPoolMfaConfigRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetUserPoolMfaConfig", body)
+
+    # SetUserPoolSessionConfiguration
+    # errors: ConcurrentModificationException, FeatureUnavailableInTierException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, ResourceNotFoundException, TooManyRequestsException
+    def set_user_pool_session_configuration(self, SetUserPoolSessionConfigurationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(cognito_idp_protocol(), self.creds, self.region, "SetUserPoolSessionConfiguration", body)
 
     # SetUserSettings
     # errors: ForbiddenException, InternalErrorException, InvalidParameterException, NotAuthorizedException, OperationNotEnabledException, PasswordResetRequiredException, ResourceNotFoundException, UserNotConfirmedException, UserNotFoundException

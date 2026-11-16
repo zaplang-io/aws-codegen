@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 102 operations — 102 with a generated method,
-#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   484 structs (294 @derive(Json)), 80 enums, 5 error variants.
-#   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (rest-json): 103 operations — 102 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
+#   576 structs (344 @derive(Json)), 101 enums, 5 error variants.
+#   17 paginators generated (1 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -44,6 +44,14 @@ def guardduty_service() -> str:
 
 @derive(Json)
 @json(open)
+enum ActionPriority:
+    IMMEDIATE
+    SHORT_TERM
+    STRATEGIC
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum AdminStatus:
     ENABLED
     DISABLE_IN_PROGRESS
@@ -51,9 +59,43 @@ enum AdminStatus:
 
 @derive(Json)
 @json(open)
+enum AnalysisType:
+    REPUTATION
+    THREAT_ASSESSMENT
+    RDS_THREAT_ASSESSMENT
+    KUBERNETES_POLICY_VIOLATION
+    S3_EXPOSURE
+    S3_ACTOR_CONTEXT
+    S3_PEN_TEST
+    PROCESS_LINEAGE
+    TREND
+    BASELINE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum AssociationMode:
     LIVE
     DRY_RUN
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum AttackPhaseName:
+    Reconnaissance
+    Resource_Development
+    Initial_Access
+    Execution
+    Persistence
+    Privilege_Escalation
+    Defense_Evasion
+    Credential_Access
+    Discovery
+    Lateral_Movement
+    Collection
+    Command_and_Control
+    Exfiltration
+    Impact
     Unknown(str value)
 
 @derive(Json)
@@ -110,6 +152,14 @@ enum ContentPolicyFilterType:
     SEXUAL
     VIOLENCE
     MISCONDUCT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum CorrelationReason:
+    HIGH_SEVERITY
+    SAME_RESOURCE
+    SAME_BEHAVIOR
     Unknown(str value)
 
 @derive(Json)
@@ -184,6 +234,16 @@ enum DataSource:
 enum DataSourceStatus:
     ENABLED
     DISABLED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DefenseTactic:
+    Isolate
+    Evict
+    Restore
+    Harden
+    Detect
     Unknown(str value)
 
 @derive(Json)
@@ -264,6 +324,26 @@ enum DetectorStatus:
 
 @derive(Json)
 @json(open)
+enum Disposition:
+    Isolated
+    Blocked
+    Deleted
+    Access_Revoked
+    Logged
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DistributionDimension:
+    SEVERITY
+    TYPE
+    RESOURCE
+    ATTACK_VECTOR
+    ARCHIVE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum EbsSnapshotPreservation:
     NO_RETENTION
     RETENTION_WITH_FINDING
@@ -307,6 +387,37 @@ enum FeatureStatus:
 enum Feedback:
     USEFUL
     NOT_USEFUL
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FetchCriterionCondition:
+    EQUALS
+    NOT_EQUALS
+    GREATER_THAN
+    GREATER_THAN_OR_EQUAL
+    LESS_THAN
+    LESS_THAN_OR_EQUAL
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FetchType:
+    FINDINGS
+    DETECTOR
+    REPUTATION
+    FINDING_TYPE_DOCUMENTATION
+    CLOUD_TRAIL_RAW_EVENTS
+    RUNTIME_SIGNALS
+    MEMBER_ACCOUNTS
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FetchVerdict:
+    THREAT
+    BENIGN
+    NEUTRAL
     Unknown(str value)
 
 @derive(Json)
@@ -437,6 +548,60 @@ enum IndicatorType:
 
 @derive(Json)
 @json(open)
+enum InvestigationDetectorFeature:
+    CLOUD_TRAIL
+    DNS_LOGS
+    FLOW_LOGS
+    S3_DATA_EVENTS
+    EKS_AUDIT_LOGS
+    EBS_MALWARE_PROTECTION
+    RDS_LOGIN_EVENTS
+    EKS_RUNTIME_MONITORING
+    EKS_ADDON_MANAGEMENT
+    LAMBDA_NETWORK_LOGS
+    RUNTIME_MONITORING
+    ECS_FARGATE_AGENT_MANAGEMENT
+    EC2_AGENT_MANAGEMENT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InvestigationFilterCriterionKey:
+    STATUS
+    RISK_LEVEL
+    CONFIDENCE
+    FINDING_ID
+    INVESTIGATION_TYPE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InvestigationIndicatorType:
+    IP
+    DOMAIN
+    FILE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InvestigationResourceType:
+    EC2_INSTANCE
+    EBS_VOLUME
+    S3_BUCKET
+    IAM_ROLE
+    IAM_USER
+    IAM_ACCESS_KEY
+    LAMBDA_FUNCTION
+    EKS_CLUSTER
+    ECS_CLUSTER
+    KUBERNETES_WORKLOAD
+    RDS_INSTANCE
+    RDS_DB_USER
+    EC2_SECURITY_GROUP
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum InvestigationSortField:
     START_TIME
     END_TIME
@@ -451,6 +616,14 @@ enum InvestigationStatus:
     RUNNING
     COMPLETED
     FAILED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InvestigationType:
+    FINDING
+    ACCOUNT
+    ORGANIZATION
     Unknown(str value)
 
 @derive(Json)
@@ -573,6 +746,25 @@ enum NetworkDirection:
 
 @derive(Json)
 @json(open)
+enum ObservationType:
+    FINDING_DETAIL
+    RESOURCE
+    NETWORK_ACTIVITY
+    RDS_LOGIN_ACTIVITY
+    S3_ACTIVITY
+    KUBERNETES_ACTIVITY
+    MALWARE_SCAN
+    RELATED_FINDINGS
+    DETECTION_COVERAGE
+    ACCOUNT_OVERVIEW
+    RECOMMENDATION
+    RUNTIME_SIGNALS
+    DISTRIBUTION
+    REPRESENTATIVE_RESOURCE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum OrderBy:
     ASC
     DESC
@@ -654,6 +846,26 @@ enum PublishingStatus:
     PUBLISHING
     UNABLE_TO_PUBLISH_FIX_DESTINATION_PROPERTY
     STOPPED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RecommendationCategory:
+    ENABLE_PROTECTION
+    FURTHER_INVESTIGATION
+    SUPPRESSION_RULE
+    HARDENING
+    MONITORING
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RecordType:
+    OBSERVATION
+    ANALYSIS
+    UPDATE
+    FETCH
+    METADATA
     Unknown(str value)
 
 @derive(Json)
@@ -747,6 +959,22 @@ enum SignalType:
 
 @derive(Json)
 @json(open)
+enum SummaryFormat:
+    STRING
+    STRUCTURED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ThreatConfidence:
+    VERY_HIGH
+    HIGH
+    MEDIUM
+    LOW
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum ThreatEntitySetFormat:
     TXT
     STIX
@@ -789,6 +1017,14 @@ enum ThreatIntelSetStatus:
     ERROR
     DELETE_PENDING
     DELETED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum TimeGranularity:
+    DAY
+    WEEK
+    MONTH
     Unknown(str value)
 
 @derive(Json)
@@ -910,6 +1146,20 @@ struct Account:
     Optional[str] Name
 
 @derive(Json)
+struct AccountAffectedResource:
+    Optional[str] Identifier
+    Optional[InvestigationResourceType] Type
+    Optional[int64] FindingCount
+
+# no @derive(Json): member(s) FindingsSummary: FindingsSummary, TacticCoverage: list[TacticCoverage], AffectedResources: list[AccountAffectedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AccountAnalysis:
+    Optional[FindingsSummary] FindingsSummary
+    Optional[list[TacticCoverage]] TacticCoverage
+    Optional[list[AccountAffectedResource]] AffectedResources
+
+@derive(Json)
 struct AccountDetail:
     str AccountId
     str Email
@@ -926,11 +1176,30 @@ struct AccountFreeTrialInfo:
 struct AccountLevelPermissions:
     Optional[BlockPublicAccess] BlockPublicAccess
 
+# no @derive(Json): member(s) AccountRankings: list[MemberAccountRanking] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AccountOverview:
+    Optional[str] AccountId
+    Optional[str] AccountStatus
+    Optional[str] DetectorId
+    Optional[str] Region
+    Optional[str] DelegatedAdminAccountId
+    Optional[int64] TotalMemberAccounts
+    Optional[int64] TotalFindings
+    Optional[int64] AffectedAccountCount
+    Optional[list[MemberAccountRanking]] AccountRankings
+
 @derive(Json)
 struct AccountStatistics:
     Optional[str] AccountId
     Optional[DateTime] LastGeneratedAt
     Optional[int64] TotalFindings
+
+@derive(Json)
+struct AccountSummary:
+    Optional[str] AccountId
+    Optional[int64] FindingCount
 
 # no @derive(Json): member(s) AwsApiCallAction: AwsApiCallAction, PortProbeAction: PortProbeAction, KubernetesApiCallAction: KubernetesApiCallAction, RdsLoginAttemptAction: RdsLoginAttemptAction not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -951,6 +1220,11 @@ struct Action:
 struct Activity:
     str Type
     Optional[ApiCall] Api
+
+@derive(Json)
+struct ActivityWindow:
+    Optional[DateTime] FirstSeenAt
+    Optional[DateTime] LastSeenAt
 
 @derive(Json)
 struct Actor:
@@ -988,8 +1262,26 @@ struct Administrator:
     Optional[str] InvitedAt
 
 @derive(Json)
+struct AffectedResource:
+    Optional[str] Identifier
+    Optional[InvestigationResourceType] Type
+    Optional[str] Arn
+
+@derive(Json)
 struct AgentDetails:
     Optional[str] Version
+
+# no @derive(Json): member(s) Processes: list[Process], AccountAnalysis: InvestigationAccountAnalysis, Indicators: list[InvestigationIndicator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AnalysisRecord:
+    AnalysisType AnalysisType
+    Optional[InvestigationThreatAssessment] ThreatAssessment
+    Optional[KubernetesPolicyViolation] KubernetesPolicyViolation
+    Optional[S3Analysis] S3Analysis
+    Optional[list[Process]] Processes
+    Optional[InvestigationAccountAnalysis] AccountAnalysis
+    Optional[list[InvestigationIndicator]] Indicators
 
 # no @derive(Json): member(s) Profiles: dict[str, dict[str, list[AnomalyObject]]], Unusual: AnomalyUnusual not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1018,6 +1310,13 @@ struct ApiCall:
     Optional[str] Service
     Optional[str] Error
     Optional[str] UserAgent
+
+@derive(Json)
+struct ArchiveDistribution:
+    Optional[int64] ArchivedCount
+    Optional[int64] UnarchivedCount
+    Optional[float64] ArchivedPercentage
+    Optional[float64] UnarchivedPercentage
 
 # rest-json request for ArchiveFindingsRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1051,6 +1350,23 @@ struct AssociationSummary:
     DateTime UpdatedAt
     Optional[DateTime] ExpiresAt
 
+# no @derive(Json): member(s) Findings: list[FindingReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Attack:
+    Optional[ThreatReference] Tactic
+    Optional[ThreatReference] Technique
+    Optional[list[FindingReference]] Findings
+    Optional[str] Version
+
+# no @derive(Json): member(s) Attacks: list[Attack] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AttackPhase:
+    Optional[AttackPhaseName] Phase
+    Optional[str] Description
+    Optional[list[Attack]] Attacks
+
 @derive(Json)
 struct AutonomousSystem:
     str Name
@@ -1080,6 +1396,14 @@ struct AwsApiCallAction:
 struct BadRequestException:
     Optional[str] Message
     Optional[str] Type
+
+# no @derive(Json): member(s) BaselineFindings: list[FindingTypeClassification], AnomalousFindings: list[FindingTypeClassification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Baseline:
+    Optional[int64] TotalFindings
+    Optional[list[FindingTypeClassification]] BaselineFindings
+    Optional[list[FindingTypeClassification]] AnomalousFindings
 
 @derive(Json)
 struct BedrockGuardrail:
@@ -1197,6 +1521,40 @@ struct ContentPolicyFilter:
 struct ContinuousScanDetails:
     Optional[DateTime] StartTime
     DateTime EndTime
+
+# no @derive(Json): member(s) CorrelationReasons: list[CorrelationReason], FindingIds: list[str], SharedResources: list[SharedResource], SharedBehaviors: list[SharedBehavior] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CorrelatedFinding:
+    Optional[str] FindingType
+    Optional[int64] Count
+    Optional[float64] SeverityMax
+    Optional[list[CorrelationReason]] CorrelationReasons
+    Optional[list[str]] FindingIds
+    Optional[list[SharedResource]] SharedResources
+    Optional[list[SharedBehavior]] SharedBehaviors
+
+# no @derive(Json): member(s) Actions: list[CountermeasureAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Countermeasure:
+    Optional[DefenseTactic] DefenseTactic
+    Optional[list[CountermeasureAction]] Actions
+    Optional[str] Description
+
+# no @derive(Json): member(s) Mitigates: list[str], CliCommands: list[str], AffectedResources: list[AffectedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CountermeasureAction:
+    Optional[str] Title
+    Optional[str] Description
+    Optional[ActionPriority] Priority
+    Optional[str] DefenseTechnique
+    Optional[list[str]] Mitigates
+    Optional[list[str]] CliCommands
+    Optional[int64] DispositionId
+    Optional[Disposition] Disposition
+    Optional[list[AffectedResource]] AffectedResources
 
 @derive(Json)
 struct Country:
@@ -1726,6 +2084,15 @@ struct Detection:
     Optional[Anomaly] Anomaly
     Optional[Sequence] Sequence
 
+# no @derive(Json): member(s) ProtectionPlans: list[ProtectionPlan], FoundationalDataSources: list[InvestigationDetectorFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DetectionCoverage:
+    Optional[list[ProtectionPlan]] ProtectionPlans
+    Optional[list[InvestigationDetectorFeature]] FoundationalDataSources
+    Optional[str] CoverageGaps
+    Optional[str] KeyObservation
+
 @derive(Json)
 struct DetectionRuleEc2Requirements:
     Optional[str] MinAgentVersion
@@ -1851,6 +2218,25 @@ struct DisassociateMembersRequest:
 # (zaplang-io/zap#424).
 struct DisassociateMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
+
+# no @derive(Json): member(s) FindingTypes: list[TypeDistribution], TopFindingTypes: list[FindingTypeCount], Resources: list[ResourceDistribution], AttackVectors: list[TacticCoverage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Distribution:
+    DistributionDimension Dimension
+    Optional[int64] TotalFindings
+    Optional[SeverityBreakdown] SeverityBreakdown
+    Optional[list[TypeDistribution]] FindingTypes
+    Optional[list[FindingTypeCount]] TopFindingTypes
+    Optional[list[ResourceDistribution]] Resources
+    Optional[list[TacticCoverage]] AttackVectors
+    Optional[ArchiveDistribution] Archive
+
+@derive(Json)
+struct DnsContext:
+    Optional[str] DomainSuffix
+    Optional[str] OtherDomains
+    Optional[str] ResolverHistory
 
 @derive(Json)
 struct DnsRequestAction:
@@ -2020,6 +2406,13 @@ struct EnableOrganizationAdminAccountResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+@derive(Json)
+struct Enrichment:
+    Optional[str] CountryName
+    Optional[str] AsnOrg
+    Optional[str] ThreatListName
+    Optional[str] ThreatName
+
 # no @derive(Json): member(s) ThreatIntelligenceDetails: list[ThreatIntelligenceDetail] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -2032,6 +2425,50 @@ struct Evidence:
 struct FargateDetails:
     Optional[list[str]] Issues
     Optional[ManagementType] ManagementType
+
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FetchCriterion:
+    str Field
+    FetchCriterionCondition Condition
+    Optional[list[str]] Values
+
+# no @derive(Json): member(s) Criteria: list[FetchCriterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FetchQuery:
+    Optional[list[FetchCriterion]] Criteria
+    Optional[FetchTimeWindow] TimeWindow
+    Optional[int64] RowLimit
+    Optional[str] AccountId
+    Optional[str] Indicator
+    Optional[InvestigationIndicatorType] IndicatorType
+    Optional[str] FindingType
+    Optional[str] FindingId
+
+# no @derive(Json): member(s) Query: FetchQuery, Result: FetchResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FetchRecord:
+    FetchType FetchType
+    Optional[FetchQuery] Query
+    Optional[FetchResult] Result
+
+# no @derive(Json): member(s) ItemIds: list[str], Features: list[InvestigationDetectorFeatureConfiguration], Documentation: FindingTypeDocumentation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FetchResult:
+    Optional[list[str]] ItemIds
+    Optional[int64] TotalCount
+    Optional[list[InvestigationDetectorFeatureConfiguration]] Features
+    Optional[FetchVerdict] Verdict
+    Optional[FindingTypeDocumentation] Documentation
+
+@derive(Json)
+struct FetchTimeWindow:
+    Optional[DateTime] StartedAt
+    Optional[int64] DurationInMinutes
 
 @derive(Json)
 struct FilterCondition:
@@ -2078,6 +2515,20 @@ struct Finding:
 struct FindingCriteria:
     Optional[dict[str, Condition]] Criterion
 
+@derive(Json)
+struct FindingDetail:
+    Optional[str] FindingId
+    Optional[str] FindingType
+    Optional[str] Severity
+    Optional[str] AccountId
+    Optional[str] Region
+    Optional[ActivityWindow] ActivityWindow
+
+@derive(Json)
+struct FindingReference:
+    Optional[str] FindingType
+    Optional[str] Uid
+
 # no @derive(Json): member(s) CountBySeverity: dict[str, int64], GroupedByAccount: list[AccountStatistics], GroupedByDate: list[DateStatistics], GroupedByFindingType: list[FindingTypeStatistics], GroupedByResource: list[ResourceStatistics], GroupedBySeverity: list[SeverityStatistics] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -2090,10 +2541,43 @@ struct FindingStatistics:
     Optional[list[SeverityStatistics]] GroupedBySeverity
 
 @derive(Json)
+struct FindingTypeClassification:
+    Optional[str] FindingType
+    Optional[str] Classification
+    Optional[int64] Count
+    Optional[float64] Percentage
+    Optional[str] Description
+
+@derive(Json)
+struct FindingTypeCount:
+    Optional[str] FindingType
+    Optional[int64] Count
+
+# no @derive(Json): member(s) LearnMoreLinks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FindingTypeDocumentation:
+    Optional[str] Description
+    Optional[str] Severity
+    Optional[str] Feature
+    Optional[str] FullDescription
+    Optional[str] Remediation
+    Optional[list[str]] LearnMoreLinks
+
+@derive(Json)
 struct FindingTypeStatistics:
     Optional[str] FindingType
     Optional[DateTime] LastGeneratedAt
     Optional[int64] TotalFindings
+
+# no @derive(Json): member(s) TopFindingTypes: list[FindingTypeCount], ByTimeWindow: list[TimeWindowGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FindingsSummary:
+    Optional[int64] TotalFindings
+    Optional[SeverityBreakdown] SeverityBreakdown
+    Optional[list[FindingTypeCount]] TopFindingTypes
+    Optional[list[TimeWindowGroup]] ByTimeWindow
 
 @derive(Json)
 struct FlowLogsConfigurationResult:
@@ -2256,8 +2740,12 @@ struct GetIPSetResponse:
 struct GetInvestigationRequest:
     str DetectorId
     str InvestigationId
+    # wire string of the SummaryFormat enum (querystring binding)
+    Optional[str] SummaryFormat
 
-@derive(Json)
+# no @derive(Json): member(s) Investigation: Investigation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInvestigationResponse:
     Investigation Investigation
 
@@ -2532,7 +3020,9 @@ struct InternalServerErrorException:
     Optional[str] Message
     Optional[str] Type
 
-@derive(Json)
+# no @derive(Json): member(s) SummaryData: InvestigationSummaryData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Investigation:
     str InvestigationId
     InvestigationStatus Status
@@ -2544,14 +3034,147 @@ struct Investigation:
     Optional[str] Risk
     Optional[Confidence] Confidence
     Optional[str] Summary
+    Optional[InvestigationSummaryData] SummaryData
+    Optional[InvestigationScope] Scope
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
     Optional[str] Error
+
+# no @derive(Json): member(s) Trend: Trend, Baseline: Baseline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvestigationAccountAnalysis:
+    Optional[Trend] Trend
+    Optional[Baseline] Baseline
+
+@derive(Json)
+struct InvestigationActor:
+    Optional[str] AccessKeyId
+    Optional[str] PrincipalId
+    Optional[str] UserName
+    Optional[str] UserType
+    Optional[str] UserAgent
+
+@derive(Json)
+struct InvestigationDetectorFeatureConfiguration:
+    Optional[InvestigationDetectorFeature] Name
+    Optional[FeatureStatus] Status
+    Optional[DateTime] UpdatedAt
+
+@derive(Json)
+struct InvestigationEc2Instance:
+    Optional[str] InstanceId
+    Optional[str] InstanceType
+    Optional[str] InstanceState
+    Optional[str] AvailabilityZone
+    Optional[str] PrivateIpAddress
+    Optional[str] PublicIp
+    Optional[str] VpcId
+    Optional[str] SubnetId
+    Optional[str] ImageId
+    Optional[DateTime] LaunchedAt
+
+@derive(Json)
+struct InvestigationEcsCluster:
+    Optional[str] Name
+    Optional[str] Arn
+    Optional[str] Status
+
+@derive(Json)
+struct InvestigationEksCluster:
+    Optional[str] Name
+    Optional[str] Arn
+    Optional[str] Status
+    Optional[str] VpcId
+
+# no @derive(Json): member(s) Equals: list[str], NotEquals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvestigationFilterCondition:
+    Optional[list[str]] Equals
+    Optional[list[str]] NotEquals
+
+# no @derive(Json): member(s) Criterion: dict[InvestigationFilterCriterionKey, InvestigationFilterCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvestigationFilterCriteria:
+    Optional[dict[InvestigationFilterCriterionKey, InvestigationFilterCondition]] Criterion
+
+@derive(Json)
+struct InvestigationIndicator:
+    str Value
+    Optional[InvestigationIndicatorType] Type
+
+@derive(Json)
+struct InvestigationKubernetesWorkload:
+    Optional[str] WorkloadType
+    Optional[str] WorkloadName
+    Optional[str] Containers
+    Optional[str] Volumes
+    Optional[str] SecurityContext
+
+# no @derive(Json): member(s) Threats: list[MalwareThreat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvestigationMalwareScan:
+    Optional[str] ScanId
+    Optional[MalwareProtectionScanType] ScanType
+    Optional[ScanCategory] ScanCategory
+    Optional[str] TriggerFindingId
+    Optional[str] EngineSources
+    Optional[DateTime] ScanStartedAt
+    Optional[DateTime] ScanCompletedAt
+    Optional[int64] FilesScanned
+    Optional[float64] GigabytesScanned
+    Optional[int64] VolumesScanned
+    Optional[int64] InfectedFileCount
+    Optional[str] ResourceType
+    Optional[str] ResourceIdentifier
+    Optional[str] HighestSeverity
+    Optional[str] HighestSeverityThreatName
+    Optional[int64] UniqueThreatCount
+    Optional[int64] TotalInfectedItems
+    Optional[list[MalwareThreat]] Threats
 
 @derive(Json)
 struct InvestigationMetadata:
     str Version
     Product Product
+
+# no @derive(Json): member(s) SupportingData: SupportingData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvestigationRecord:
+    str RecordId
+    RecordType Type
+    str Title
+    Optional[str] Narrative
+    DateTime CreatedAt
+    Optional[SupportingData] SupportingData
+
+@derive(Json)
+struct InvestigationResource:
+    str Uid
+    Optional[str] Name
+    InvestigationResourceType ResourceType
+    Optional[InvestigationResourceData] Data
+
+@derive(Json)
+struct InvestigationResourceData:
+    Optional[InvestigationEc2Instance] Ec2Instance
+    Optional[LambdaFunction] LambdaFunction
+    Optional[RdsDbInstance] RdsDbInstance
+    Optional[RdsDbUser] RdsDbUser
+    Optional[InvestigationEksCluster] EksCluster
+    Optional[InvestigationEcsCluster] EcsCluster
+
+@derive(Json)
+struct InvestigationScope:
+    Optional[InvestigationType] InvestigationType
+    Optional[str] FindingId
+    Optional[str] AccountId
+    Optional[str] AdminAccountId
+    Optional[QueryTimeWindow] QueryTimeWindow
 
 @derive(Json)
 struct InvestigationSortCriteria:
@@ -2566,9 +3189,35 @@ struct InvestigationSummary:
     Optional[RiskLevel] RiskLevel
     Optional[Confidence] Confidence
     Optional[str] Title
+    Optional[InvestigationType] InvestigationType
+    Optional[str] FindingId
     Optional[str] AccountId
+    Optional[str] AdminAccountId
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
+
+# no @derive(Json): member(s) ThreatAssessment: ThreatAssessment, Countermeasures: list[Countermeasure], AccountAnalysis: AccountAnalysis, OrganizationAnalysis: OrganizationAnalysis, KeyObservations: KeyObservations, Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvestigationSummaryData:
+    Optional[str] FindingType
+    Optional[ThreatAssessment] ThreatAssessment
+    Optional[list[Countermeasure]] Countermeasures
+    Optional[AccountAnalysis] AccountAnalysis
+    Optional[OrganizationAnalysis] OrganizationAnalysis
+    Optional[KeyObservations] KeyObservations
+    Optional[list[Recommendation]] Recommendations
+
+@derive(Json)
+struct InvestigationThreatAssessment:
+    Optional[Reputation] Reputation
+    Optional[ThreatConfidence] ThreatConfidence
+    Optional[str] Classification
+    Optional[str] Assessment
+    Optional[str] AuthenticationContext
+    Optional[str] RdsControlPlaneActivity
+    Optional[str] IpAccountActivity
+    Optional[str] CredentialCompromise
 
 @derive(Json)
 struct Invitation:
@@ -2602,6 +3251,44 @@ struct ItemDetails:
 struct ItemPath:
     Optional[str] NestedItemPath
     Optional[str] Hash
+
+# no @derive(Json): member(s) Observations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct KeyObservations:
+    Optional[str] Title
+    Optional[str] Narrative
+    Optional[list[str]] Observations
+
+@derive(Json)
+struct KubernetesActivity:
+    Optional[KubernetesApiCall] ApiCall
+    Optional[KubernetesAnomaly] Anomaly
+    Optional[InvestigationKubernetesWorkload] Workload
+    Optional[Enrichment] Enrichment
+
+@derive(Json)
+struct KubernetesAnomaly:
+    Optional[str] UnusualBehavior
+    Optional[str] BaselineContext
+    Optional[str] AnomalyScore
+    Optional[str] TrainingPeriod
+
+@derive(Json)
+struct KubernetesApiCall:
+    Optional[str] ClusterName
+    Optional[str] Username
+    Optional[str] UserGroups
+    Optional[str] UserId
+    Optional[str] Verb
+    Optional[str] ResourceType
+    Optional[str] ResourceName
+    Optional[str] Namespace
+    Optional[str] RequestUri
+    Optional[int64] StatusCode
+    Optional[str] SourceIps
+    Optional[str] UserAgent
+    Optional[int64] EventCount
 
 # no @derive(Json): member(s) SourceIps: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2652,6 +3339,15 @@ struct KubernetesPermissionCheckedDetails:
     Optional[str] Resource
     Optional[str] Namespace
     Optional[bool] Allowed
+
+@derive(Json)
+struct KubernetesPolicyViolation:
+    Optional[str] ViolationType
+    Optional[str] AffectedResource
+    Optional[str] Subject
+    Optional[str] GrantedAccess
+    Optional[str] ExposureVector
+    Optional[str] MisconfigurationImpact
 
 @derive(Json)
 struct KubernetesRoleBindingDetails:
@@ -2713,6 +3409,17 @@ struct LambdaDetails:
     Optional[str] Role
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
+
+@derive(Json)
+struct LambdaFunction:
+    Optional[str] FunctionName
+    Optional[str] FunctionArn
+    Optional[str] FunctionVersion
+    Optional[str] Role
+    Optional[str] Description
+    Optional[str] RevisionId
+    Optional[DateTime] UpdatedAt
+    Optional[str] VpcConfigurationSummary
 
 @derive(Json)
 struct LineageObject:
@@ -2844,10 +3551,29 @@ struct ListIPSetsResponse:
     list[str] IpSetIds
     Optional[str] NextToken
 
+# rest-json request for ListInvestigationRecordsRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct ListInvestigationRecordsRequest:
+    str DetectorId
+    str InvestigationId
+    Optional[list[RecordType]] RecordTypes
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) Records: list[InvestigationRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListInvestigationRecordsResponse:
+    str InvestigationId
+    InvestigationStatus Status
+    list[InvestigationRecord] Records
+    Optional[str] NextToken
+
 # rest-json request for ListInvestigationsRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct ListInvestigationsRequest:
     str DetectorId
+    Optional[InvestigationFilterCriteria] FilterCriteria
     Optional[InvestigationSortCriteria] SortCriteria
     Optional[int64] MaxResults
     Optional[str] NextToken
@@ -3080,6 +3806,13 @@ struct MalwareScanDetails:
     Optional[int64] UniqueThreatCount
 
 @derive(Json)
+struct MalwareThreat:
+    Optional[str] Name
+    Optional[str] Severity
+    Optional[int64] InfectedFileCount
+    Optional[str] SampleFiles
+
+@derive(Json)
 struct Master:
     Optional[str] AccountId
     Optional[str] InvitationId
@@ -3096,6 +3829,14 @@ struct Member:
     Optional[str] InvitedAt
     str UpdatedAt
     Optional[str] AdministratorId
+
+@derive(Json)
+struct MemberAccountRanking:
+    Optional[int64] Rank
+    Optional[str] AccountId
+    Optional[int64] FindingCount
+    Optional[RiskLevel] RiskLevel
+    Optional[str] RiskRationale
 
 @derive(Json)
 struct MemberAdditionalConfiguration:
@@ -3136,8 +3877,37 @@ struct MemberFeaturesConfigurationResult:
     Optional[str] ManagedBy
 
 @derive(Json)
+struct MetadataRecord:
+    Optional[int64] TotalTimeMilliseconds
+
+@derive(Json)
 struct ModelDetail:
     Optional[str] ModelId
+
+@derive(Json)
+struct NetworkActivity:
+    Optional[str] Protocol
+    Optional[str] Direction
+    Optional[str] Method
+    Optional[str] Blocked
+    Optional[str] Platform
+    Optional[NetworkPorts] Ports
+    Optional[NetworkTraffic] Traffic
+    Optional[NetworkAnomaly] Anomaly
+    Optional[DnsContext] Dns
+    Optional[NetworkCounts] Counts
+    Optional[Enrichment] Enrichment
+
+@derive(Json)
+struct NetworkAnomaly:
+    Optional[str] BaselineBytes
+    Optional[str] Deviation
+    Optional[int64] ProfileAgeDays
+    Optional[str] RemoteService
+    Optional[str] RemoteRegion
+    Optional[str] Duration
+    Optional[str] ResetRatio
+    Optional[int64] TargetHostCount
 
 @derive(Json)
 struct NetworkConnection:
@@ -3153,6 +3923,13 @@ struct NetworkConnectionAction:
     Optional[str] LocalNetworkInterface
     Optional[RemoteIpDetails] RemoteIpDetails
     Optional[RemotePortDetails] RemotePortDetails
+
+@derive(Json)
+struct NetworkCounts:
+    Optional[int64] RequestCount
+    Optional[int64] TotalAttempts
+    Optional[int64] SuspiciousAttempts
+    Optional[int64] ResetAttempts
 
 @derive(Json)
 struct NetworkEndpoint:
@@ -3186,12 +3963,56 @@ struct NetworkInterface:
     Optional[str] SubnetId
     Optional[str] VpcId
 
+@derive(Json)
+struct NetworkPorts:
+    Optional[str] TargetPort
+    Optional[str] RemotePort
+    Optional[str] ResolverPort
+    Optional[str] Ports
+    Optional[str] PortsUsed
+    Optional[int64] PortCount
+
+@derive(Json)
+struct NetworkTraffic:
+    Optional[int64] BytesSent
+    Optional[int64] BytesReceived
+
+# no @derive(Json): member(s) MalwareScan: InvestigationMalwareScan, RelatedFindings: RelatedFindings, DetectionCoverage: DetectionCoverage, AccountOverview: AccountOverview, Recommendations: list[Recommendation], RuntimeSignals: RuntimeSignals, Distribution: Distribution, RepresentativeResources: list[RepresentativeFinding], Indicators: list[InvestigationIndicator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ObservationRecord:
+    ObservationType ObservationType
+    Optional[FindingDetail] FindingDetail
+    Optional[InvestigationResource] Resource
+    Optional[NetworkActivity] NetworkActivity
+    Optional[RdsLoginActivity] RdsLoginActivity
+    Optional[S3Activity] S3Activity
+    Optional[KubernetesActivity] KubernetesActivity
+    Optional[InvestigationMalwareScan] MalwareScan
+    Optional[RelatedFindings] RelatedFindings
+    Optional[DetectionCoverage] DetectionCoverage
+    Optional[AccountOverview] AccountOverview
+    Optional[list[Recommendation]] Recommendations
+    Optional[RuntimeSignals] RuntimeSignals
+    Optional[Distribution] Distribution
+    Optional[list[RepresentativeFinding]] RepresentativeResources
+    Optional[list[InvestigationIndicator]] Indicators
+
 # no @derive(Json): member(s) Text: list[str], Number: list[int64] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Observations:
     Optional[list[str]] Text
     Optional[list[int64]] Number
+
+# no @derive(Json): member(s) SharedResources: list[SharedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ObservedFindingType:
+    Optional[str] FindingType
+    Optional[int64] Count
+    Optional[float64] SeverityMax
+    Optional[list[SharedResource]] SharedResources
 
 @derive(Json)
 struct Organization:
@@ -3209,6 +4030,13 @@ struct OrganizationAdditionalConfiguration:
 struct OrganizationAdditionalConfigurationResult:
     Optional[OrgFeatureAdditionalConfiguration] Name
     Optional[OrgFeatureStatus] AutoEnable
+
+# no @derive(Json): member(s) FindingsSummary: OrganizationFindingsSummary, AccountBreakdown: list[AccountSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct OrganizationAnalysis:
+    Optional[OrganizationFindingsSummary] FindingsSummary
+    Optional[list[AccountSummary]] AccountBreakdown
 
 @derive(Json)
 struct OrganizationDataSourceConfigurations:
@@ -3265,6 +4093,17 @@ struct OrganizationFeatureStatistics:
 struct OrganizationFeatureStatisticsAdditionalConfiguration:
     Optional[OrgFeatureAdditionalConfiguration] Name
     Optional[int64] EnabledAccountsCount
+
+# no @derive(Json): member(s) TopFindingTypes: list[FindingTypeCount], ByTimeWindow: list[TimeWindowGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct OrganizationFindingsSummary:
+    Optional[int64] TotalFindings
+    Optional[SeverityBreakdown] SeverityBreakdown
+    Optional[list[FindingTypeCount]] TopFindingTypes
+    Optional[list[TimeWindowGroup]] ByTimeWindow
+    Optional[int64] TotalAccountCount
+    Optional[int64] AffectedAccountCount
 
 @derive(Json)
 struct OrganizationKubernetesAuditLogsConfiguration:
@@ -3343,6 +4182,16 @@ struct PrivateIpAddressDetails:
     Optional[str] PrivateDnsName
     Optional[str] PrivateIpAddress
 
+# no @derive(Json): member(s) Findings: list[FindingReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Process:
+    str Uuid
+    Optional[str] Name
+    Optional[str] Path
+    Optional[str] ParentUuid
+    Optional[list[FindingReference]] Findings
+
 # no @derive(Json): member(s) Lineage: list[LineageObject] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -3372,6 +4221,11 @@ struct ProductCode:
     Optional[str] ProductType
 
 @derive(Json)
+struct ProtectionPlan:
+    Optional[InvestigationDetectorFeature] Name
+    Optional[FeatureStatus] Status
+
+@derive(Json)
 struct PublicAccess:
     Optional[PermissionConfiguration] PermissionConfiguration
     Optional[str] EffectivePermission
@@ -3382,6 +4236,20 @@ struct PublicAccessConfiguration:
     Optional[PublicAccessStatus] PublicPolicyAccess
     Optional[PublicAclIgnoreBehavior] PublicAclIgnoreBehavior
     Optional[PublicBucketRestrictBehavior] PublicBucketRestrictBehavior
+
+@derive(Json)
+struct QueryTimeWindow:
+    Optional[DateTime] StartTime
+    Optional[DateTime] EndTime
+
+@derive(Json)
+struct RdsDbInstance:
+    Optional[str] DbInstanceIdentifier
+    Optional[str] DbClusterIdentifier
+    Optional[str] DbInstanceArn
+    Optional[str] DbiResourceId
+    Optional[str] Engine
+    Optional[str] EngineVersion
 
 # no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3394,6 +4262,14 @@ struct RdsDbInstanceDetails:
     Optional[str] DbInstanceArn
     Optional[str] DbiResourceId
     Optional[list[Tag]] Tags
+
+@derive(Json)
+struct RdsDbUser:
+    Optional[str] User
+    Optional[str] Application
+    Optional[str] Database
+    Optional[str] AuthMethod
+    Optional[str] Ssl
 
 @derive(Json)
 struct RdsDbUserDetails:
@@ -3415,12 +4291,31 @@ struct RdsLimitlessDbDetails:
     Optional[str] DbClusterIdentifier
     Optional[list[Tag]] Tags
 
+@derive(Json)
+struct RdsLoginActivity:
+    Optional[str] Outcome
+    Optional[str] Rate
+    Optional[str] AnomalyContext
+    Optional[int64] LoginCount
+    Optional[ActivityWindow] ActivityWindow
+    Optional[Enrichment] Enrichment
+
 # no @derive(Json): member(s) LoginAttributes: list[LoginAttribute] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct RdsLoginAttemptAction:
     Optional[RemoteIpDetails] RemoteIpDetails
     Optional[list[LoginAttribute]] LoginAttributes
+
+# no @derive(Json): member(s) CliCommands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Recommendation:
+    Optional[str] Title
+    Optional[str] Rationale
+    Optional[RecommendationCategory] Category
+    Optional[ActionPriority] Priority
+    Optional[list[str]] CliCommands
 
 @derive(Json)
 struct RecoveryPoint:
@@ -3432,6 +4327,13 @@ struct RecoveryPointDetails:
     Optional[str] RecoveryPointArn
     Optional[str] BackupVaultName
     Optional[ScanConfigurationContinuousScanDetails] ContinuousScanDetails
+
+# no @derive(Json): member(s) Correlated: list[CorrelatedFinding], Observed: list[ObservedFindingType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RelatedFindings:
+    Optional[list[CorrelatedFinding]] Correlated
+    Optional[list[ObservedFindingType]] Observed
 
 @derive(Json)
 struct RemoteAccountDetails:
@@ -3452,6 +4354,21 @@ struct RemoteIpDetails:
 struct RemotePortDetails:
     Optional[int64] Port
     Optional[str] PortName
+
+@derive(Json)
+struct RepresentativeFinding:
+    Optional[str] ResourceType
+    Optional[str] Identifier
+    Optional[str] FindingId
+    Optional[int64] FindingCount
+    Optional[RiskLevel] RiskLevel
+    Optional[str] RiskRationale
+
+@derive(Json)
+struct Reputation:
+    Optional[str] FindingTimeDisposition
+    Optional[str] CurrentDisposition
+    Optional[str] ReputationComparison
 
 # no @derive(Json): member(s) S3BucketDetails: list[S3BucketDetail], InstanceDetails: InstanceDetails, EksClusterDetails: EksClusterDetails, KubernetesDetails: KubernetesDetails, EbsVolumeDetails: EbsVolumeDetails, EcsClusterDetails: EcsClusterDetails, ContainerDetails: Container, LambdaDetails: LambdaDetails, RdsDbInstanceDetails: RdsDbInstanceDetails, RdsLimitlessDbDetails: RdsLimitlessDbDetails, BedrockGuardrailDetails: BedrockGuardrailDetails, ModelDetails: list[ModelDetail] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3501,6 +4418,12 @@ struct ResourceData:
 @derive(Json)
 struct ResourceDetails:
     Optional[str] InstanceArn
+
+@derive(Json)
+struct ResourceDistribution:
+    Optional[str] ResourceType
+    Optional[str] Identifier
+    Optional[int64] Count
 
 @derive(Json)
 struct ResourceNotFoundException:
@@ -3606,6 +4529,41 @@ struct RuntimeContext:
 struct RuntimeDetails:
     Optional[ProcessDetails] Process
     Optional[RuntimeContext] Context
+
+# no @derive(Json): member(s) SignalGroups: list[SignalGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RuntimeSignals:
+    Optional[list[SignalGroup]] SignalGroups
+    Optional[str] KeyObservation
+
+@derive(Json)
+struct S3Activity:
+    Optional[str] Api
+    Optional[str] AffectedBucket
+    Optional[str] OtherS3Activity
+    Optional[str] NonS3Activity
+    Optional[str] SessionAssessment
+    Optional[int64] EventCount
+    Optional[InvestigationActor] Actor
+    Optional[str] SourceIp
+    Optional[Enrichment] Enrichment
+    Optional[ActivityWindow] ActivityWindow
+
+@derive(Json)
+struct S3Analysis:
+    Optional[str] FindingSubtype
+    Optional[str] EffectivePermission
+    Optional[str] BlockPublicAccessSettings
+    Optional[str] Exposure
+    Optional[str] UserAgent
+    Optional[str] UserAgentClassification
+    Optional[str] SourceIp
+    Optional[str] IpReputation
+    Optional[str] ActorAssessment
+    Optional[str] S3ApiActivity
+    Optional[str] SourceContext
+    Optional[str] AuthorizationAssessment
 
 # no @derive(Json): member(s) S3ObjectUids: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3852,10 +4810,28 @@ struct Session:
     Optional[str] Issuer
 
 @derive(Json)
+struct SeverityBreakdown:
+    Optional[int64] Critical
+    Optional[int64] High
+    Optional[int64] Medium
+    Optional[int64] Low
+    Optional[int64] Info
+
+@derive(Json)
 struct SeverityStatistics:
     Optional[DateTime] LastGeneratedAt
     Optional[float64] Severity
     Optional[int64] TotalFindings
+
+@derive(Json)
+struct SharedBehavior:
+    Optional[str] Path
+    Optional[str] Value
+
+@derive(Json)
+struct SharedResource:
+    Optional[str] ResourceType
+    Optional[str] Identifier
 
 # no @derive(Json): member(s) ResourceUids: list[str], ActorIds: list[str], EndpointIds: list[str], SignalIndicators: list[Indicator], Activities: list[Activity] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3876,6 +4852,12 @@ struct Signal:
     Optional[list[str]] EndpointIds
     Optional[list[Indicator]] SignalIndicators
     Optional[list[Activity]] Activities
+
+@derive(Json)
+struct SignalGroup:
+    Optional[str] FindingType
+    Optional[float64] Severity
+    Optional[int64] Count
 
 @derive(Json)
 struct SortCriteria:
@@ -3923,6 +4905,24 @@ struct StopMonitoringMembersRequest:
 struct StopMonitoringMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
+# no @derive(Json): member(s) Fetch: FetchRecord, Analysis: AnalysisRecord, Observation: ObservationRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct SupportingData:
+    Optional[FetchRecord] Fetch
+    Optional[AnalysisRecord] Analysis
+    Optional[ObservationRecord] Observation
+    Optional[MetadataRecord] Metadata
+
+# no @derive(Json): member(s) FindingTypes: list[str], Techniques: list[TechniqueCoverage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct TacticCoverage:
+    Optional[AttackPhaseName] Phase
+    Optional[int64] FindingCount
+    Optional[list[str]] FindingTypes
+    Optional[list[TechniqueCoverage]] Techniques
+
 @derive(Json)
 struct Tag:
     Optional[str] Key
@@ -3939,6 +4939,14 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+# no @derive(Json): member(s) FindingTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct TechniqueCoverage:
+    Optional[ThreatReference] Technique
+    Optional[int64] FindingCount
+    Optional[list[str]] FindingTypes
+
 # no @derive(Json): member(s) ItemPaths: list[ItemPath], ItemDetails: list[ItemDetails] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -3949,6 +4957,13 @@ struct Threat:
     Optional[int64] Count
     Optional[str] Hash
     Optional[list[ItemDetails]] ItemDetails
+
+# no @derive(Json): member(s) AttackProgression: list[AttackPhase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ThreatAssessment:
+    Optional[list[AttackPhase]] AttackProgression
+    Optional[str] ThreatActorProfile
 
 # no @derive(Json): member(s) ThreatNames: list[ScanThreatName] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3968,19 +4983,47 @@ struct ThreatIntelligenceDetail:
     Optional[str] ThreatFileSha256
 
 @derive(Json)
+struct ThreatReference:
+    Optional[str] Name
+    Optional[str] Uid
+
+@derive(Json)
 struct ThreatsDetectedItemCount:
     Optional[int64] Files
+
+@derive(Json)
+struct TimeWindowGroup:
+    Optional[DateTime] StartTime
+    Optional[DateTime] EndTime
+    Optional[int64] FindingCount
 
 @derive(Json)
 struct Total:
     Optional[str] Amount
     Optional[str] Unit
 
+# no @derive(Json): member(s) ByTimeWindow: list[TimeWindowGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Trend:
+    Optional[TimeGranularity] Granularity
+    Optional[DateTime] StartedAt
+    Optional[DateTime] EndedAt
+    Optional[int64] TotalFindings
+    Optional[list[TimeWindowGroup]] ByTimeWindow
+
 @derive(Json)
 struct TriggerDetails:
     Optional[str] GuardDutyFindingId
     Optional[str] Description
     Optional[TriggerType] TriggerType
+
+@derive(Json)
+struct TypeDistribution:
+    Optional[str] FindingType
+    Optional[int64] Count
+    Optional[float64] Percentage
+    Optional[str] DominantSeverity
 
 # rest-json request for UnarchiveFindingsRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -4358,6 +5401,15 @@ def guardduty_error_name(GuardDutyErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
+# Operations skipped in v0 (a member type is not yet bindable/serializable —
+# a non-string/enum/int URI/query/header, a collection or non-derivable
+# document member, or an unsupported httpPayload):
+#   ListInvestigations (document member `FilterCriteria: InvestigationFilterCriteria` is not serializable)
+
+# Paginated operations (paginators-1.json) not surfaced — their operation is
+# skipped above, or the continuation token is not a simple string field:
+#   ListInvestigations (operation not generated)
+
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4388,13 +5440,6 @@ struct DisableOrganizationAdminAccountDocument:
 struct EnableOrganizationAdminAccountDocument:
     # document members of EnableOrganizationAdminAccount
     str AdminAccountId
-
-@derive(Json)
-struct ListInvestigationsDocument:
-    # document members of ListInvestigations
-    Optional[InvestigationSortCriteria] SortCriteria
-    Optional[int64] MaxResults
-    Optional[str] NextToken
 
 @derive(Json)
 struct SendObjectMalwareScanDocument:
@@ -5501,7 +6546,10 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["InvestigationId"] = input.InvestigationId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/investigation/{InvestigationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        dict[str, str] query = {}
+        if input.SummaryFormat.is_some():
+            query["summaryFormat"] = input.SummaryFormat.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/investigation/{InvestigationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetInvitationsCount  GET /invitation/count
@@ -5809,15 +6857,28 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/ipset", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
-    # ListInvestigations  POST /detector/{DetectorId}/investigation/list
-    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
-    def list_investigations(self, ListInvestigationsRequest input) -> str:
+    # ListInvestigationRecords  POST /detector/{DetectorId}/investigation/records
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException, ResourceNotFoundException
+    def list_investigation_records(self, ListInvestigationRecordsRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = ListInvestigationsDocument(SortCriteria=input.SortCriteria, MaxResults=input.MaxResults, NextToken=input.NextToken)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation/records", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"investigationId\":" + guardduty_json_str(input.InvestigationId))
+        if input.RecordTypes.is_some():
+            auto u0 = input.RecordTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"recordTypes\":" + guardduty_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + guardduty_json_str(u3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # ListInvitations  GET /invitation
@@ -6413,12 +7474,12 @@ struct GuardDutyClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
-    # Paginator for ListInvestigations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until it is absent (result key: Investigations).
-    def paginate_list_investigations(self, ListInvestigationsRequest input):
+    # Paginator for ListInvestigationRecords — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Records).
+    def paginate_list_investigation_records(self, ListInvestigationRecordsRequest input):
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         while True:
-            auto raw = self.list_investigations(input)
+            auto raw = self.list_investigation_records(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 152 operations — 152 with a generated method,
+# Coverage (v0, awsJson only): 154 operations — 154 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   621 structs (356 @derive(Json)), 93 enums, 140 error variants.
+#   629 structs (362 @derive(Json)), 95 enums, 140 error variants.
 #   52 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -195,6 +195,8 @@ enum CalendarState:
 enum CloudConnectorFilterKey:
     SubscriptionId
     TenantId
+    ProjectId
+    OrganizationId
     Unknown(str value)
 
 @derive(Json)
@@ -283,6 +285,13 @@ enum ComplianceUploadType:
 enum ConnectionStatus:
     connected
     notconnected
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DHMCPermissionModel:
+    SERVICE_MANAGED
+    SELF_MANAGED
     Unknown(str value)
 
 @derive(Json)
@@ -865,6 +874,13 @@ enum PlatformType:
 
 @derive(Json)
 @json(open)
+enum Provider:
+    Azure
+    GCP
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum RebootOption:
     RebootIfNeeded
     NoReboot
@@ -949,6 +965,7 @@ enum SourceType:
     AWS__IoT__Thing
     AWS__SSM__ManagedInstance
     Microsoft_Compute_virtualMachines
+    compute_googleapis_com_Instance
     Unknown(str value)
 
 @derive(Json)
@@ -977,6 +994,8 @@ enum StopType:
 enum ValidationFindingCode:
     TargetInaccessible
     TargetUnusable
+    TargetMissingPermissions
+    TargetApiDisabled
     TargetStateWarning
     AwsRoleAssumptionFailed
     WebIdentityTokenFailed
@@ -991,6 +1010,8 @@ enum ValidationFindingCode:
 enum ValidationFindingScopeType:
     azure_tenant
     azure_subscription
+    gcp_organization
+    gcp_project
     Unknown(str value)
 
 @derive(Json)
@@ -1307,6 +1328,7 @@ struct AutomationExecution:
     Optional[str] AssociationId
     Optional[str] ChangeRequestName
     Optional[dict[str, list[str]]] Variables
+    Optional[TargetsSummary] TargetsSummary
 
 # no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1434,11 +1456,12 @@ struct CancelMaintenanceWindowExecutionRequest:
 struct CancelMaintenanceWindowExecutionResult:
     Optional[str] WindowExecutionId
 
-# no @derive(Json): member(s) AzureConfiguration: AzureConfiguration not derivable (list/map collections);
+# no @derive(Json): member(s) AzureConfiguration: AzureConfiguration, GcpConfiguration: GcpConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CloudConnectorConfiguration:
     Optional[AzureConfiguration] AzureConfiguration
+    Optional[GcpConfiguration] GcpConfiguration
 
 # no @derive(Json): member(s) FilterValues: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1455,6 +1478,8 @@ struct CloudConnectorSummary:
     Optional[str] RoleArn
     Optional[DateTime] CreatedAt
     Optional[DateTime] UpdatedAt
+    Optional[Provider] Provider
+    Optional[str] ConfigConnectorArn
 
 @derive(Json)
 struct CloudWatchOutputConfig:
@@ -1693,7 +1718,7 @@ struct CreateCloudConnectorRequest:
     str RoleArn
     Optional[str] Description
     CloudConnectorConfiguration Configuration
-    str ConfigConnectorArn
+    Optional[str] ConfigConnectorArn
     Optional[list[Tag]] Tags
 
 @derive(Json)
@@ -1958,6 +1983,16 @@ struct DeleteResourcePolicyRequest:
 
 @derive(Json)
 struct DeleteResourcePolicyResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct DeregisterDefaultHostManagementConfigurationRequest:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct DeregisterDefaultHostManagementConfigurationResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -2726,6 +2761,26 @@ struct FailureDetails:
 @derive(Json)
 struct FeatureNotAvailableException:
     Optional[str] Message
+
+# no @derive(Json): member(s) Targets: GcpConfigurationTargets not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GcpConfiguration:
+    Optional[str] OrganizationId
+    str WorkloadIdentityPoolProvider
+    str ServiceAccountEmail
+    Optional[GcpConfigurationTargets] Targets
+
+# no @derive(Json): member(s) Projects: list[GcpProject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GcpConfigurationTargets:
+    Optional[list[GcpProject]] Projects
+
+@derive(Json)
+struct GcpProject:
+    str ProjectId
+    Optional[str] ProjectDisplayName
 
 @derive(Json)
 struct GetAccessTokenRequest:
@@ -4744,6 +4799,16 @@ struct PutResourcePolicyResponse:
     Optional[str] PolicyHash
 
 @derive(Json)
+struct RegisterDefaultHostManagementConfigurationRequest:
+    DHMCPermissionModel PermissionModel
+    Optional[str] RoleArn
+    Optional[bool] Overwrite
+
+@derive(Json)
+struct RegisterDefaultHostManagementConfigurationResult:
+    Optional[str] RoleArn
+
+@derive(Json)
 struct RegisterDefaultPatchBaselineRequest:
     str BaselineId
 
@@ -5301,6 +5366,14 @@ struct TargetNotConnected:
 struct TargetPreview:
     Optional[int64] Count
     Optional[str] TargetType
+
+@derive(Json)
+struct TargetsSummary:
+    Optional[int64] TotalCount
+    Optional[int64] StartedCount
+    Optional[int64] CompletedCount
+    Optional[int64] SuccessfulCount
+    Optional[int64] FailedCount
 
 @derive(Json)
 struct TerminateSessionRequest:
@@ -6647,6 +6720,9 @@ def cloud_connector_configuration_to_json(CloudConnectorConfiguration v) -> str:
     if v.AzureConfiguration.is_some():
         auto u0 = v.AzureConfiguration.unwrap()
         parts.append("\"AzureConfiguration\":" + azure_configuration_to_json(u0))
+    if v.GcpConfiguration.is_some():
+        auto u1 = v.GcpConfiguration.unwrap()
+        parts.append("\"GcpConfiguration\":" + gcp_configuration_to_json(u1))
     return ssm_json_obj(parts)
 
 # Serialize CloudConnectorFilter to a compact JSON object (declaration order).
@@ -6944,13 +7020,15 @@ def create_cloud_connector_request_to_json(CreateCloudConnectorRequest v) -> str
         auto u0 = v.Description.unwrap()
         parts.append("\"Description\":" + ssm_json_str(u0))
     parts.append("\"Configuration\":" + cloud_connector_configuration_to_json(v.Configuration))
-    parts.append("\"ConfigConnectorArn\":" + ssm_json_str(v.ConfigConnectorArn))
+    if v.ConfigConnectorArn.is_some():
+        auto u1 = v.ConfigConnectorArn.unwrap()
+        parts.append("\"ConfigConnectorArn\":" + ssm_json_str(u1))
     if v.Tags.is_some():
-        auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + ssm_json_arr(e2))
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e3))
     return ssm_json_obj(parts)
 
 # Serialize CreateDocumentRequest to a compact JSON object (declaration order).
@@ -7685,6 +7763,30 @@ def execution_inputs_to_json(ExecutionInputs v) -> str:
     if v.Automation.is_some():
         auto u0 = v.Automation.unwrap()
         parts.append("\"Automation\":" + automation_execution_inputs_to_json(u0))
+    return ssm_json_obj(parts)
+
+# Serialize GcpConfiguration to a compact JSON object (declaration order).
+def gcp_configuration_to_json(GcpConfiguration v) -> str:
+    list[str] parts = []
+    if v.OrganizationId.is_some():
+        auto u0 = v.OrganizationId.unwrap()
+        parts.append("\"OrganizationId\":" + ssm_json_str(u0))
+    parts.append("\"WorkloadIdentityPoolProvider\":" + ssm_json_str(v.WorkloadIdentityPoolProvider))
+    parts.append("\"ServiceAccountEmail\":" + ssm_json_str(v.ServiceAccountEmail))
+    if v.Targets.is_some():
+        auto u1 = v.Targets.unwrap()
+        parts.append("\"Targets\":" + gcp_configuration_targets_to_json(u1))
+    return ssm_json_obj(parts)
+
+# Serialize GcpConfigurationTargets to a compact JSON object (declaration order).
+def gcp_configuration_targets_to_json(GcpConfigurationTargets v) -> str:
+    list[str] parts = []
+    if v.Projects.is_some():
+        auto u0 = v.Projects.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Projects\":" + ssm_json_arr(e1))
     return ssm_json_obj(parts)
 
 # Serialize GetCalendarStateRequest to a compact JSON object (declaration order).
@@ -9695,6 +9797,12 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
 
+    # DeregisterDefaultHostManagementConfiguration
+    # errors: InternalServerError
+    def deregister_default_host_management_configuration(self) -> str:
+        auto body = "{}"
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeregisterDefaultHostManagementConfiguration", body)
+
     # DeregisterManagedInstance
     # errors: InternalServerError, InvalidInstanceId
     def deregister_managed_instance(self, DeregisterManagedInstanceRequest input) -> str:
@@ -10241,6 +10349,12 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "PutResourcePolicy", body)
 
+    # RegisterDefaultHostManagementConfiguration
+    # errors: InternalServerError
+    def register_default_host_management_configuration(self, RegisterDefaultHostManagementConfigurationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "RegisterDefaultHostManagementConfiguration", body)
+
     # RegisterDefaultPatchBaseline
     # errors: DoesNotExistException, InternalServerError, InvalidResourceId
     def register_default_patch_baseline(self, RegisterDefaultPatchBaselineRequest input) -> str:
@@ -10362,7 +10476,7 @@ struct SSMClient:
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateAssociationStatus", body)
 
     # UpdateCloudConnector
-    # errors: ConflictException, InternalServerError, ResourceNotFoundException
+    # errors: ConflictException, InternalServerError, ResourceNotFoundException, ServiceQuotaExceededException
     def update_cloud_connector(self, UpdateCloudConnectorRequest input) -> str:
         auto body = update_cloud_connector_request_to_json(input)
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateCloudConnector", body)

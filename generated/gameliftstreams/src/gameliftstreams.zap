@@ -497,6 +497,9 @@ struct GetStreamSessionOutput:
     Optional[ExportFilesMetadata] ExportFilesMetadata
     Optional[str] RoleArn
     Optional[DisplayConfiguration] DisplayConfiguration
+    Optional[DateTime] ApplicationStartedAt
+    Optional[DateTime] StreamingStartedAt
+    Optional[DateTime] StreamingEndedAt
 
 # rest-json request for GetStreamUrlInput: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -756,6 +759,9 @@ struct StartStreamSessionOutput:
     Optional[ExportFilesMetadata] ExportFilesMetadata
     Optional[str] RoleArn
     Optional[DisplayConfiguration] DisplayConfiguration
+    Optional[DateTime] ApplicationStartedAt
+    Optional[DateTime] StreamingStartedAt
+    Optional[DateTime] StreamingEndedAt
 
 @derive(Json)
 struct StreamGroupSummary:

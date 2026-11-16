@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Cloud Map (serviceId ServiceDiscovery, API 2017-03-14)
-# Protocol: awsJson 1.1 (targetPrefix Route53AutoNaming_v20170314)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service servicediscovery, service shape Route53AutoNaming_v20170314)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 30 operations — 30 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   110 structs (70 @derive(Json)), 15 enums, 15 error variants.
-#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 30 operations — 30 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   110 structs (plain carriers), 15 enums, 15 error variants.
+#   0 paginators generated (4 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 
-# The ServiceDiscovery awsJson protocol: version 1.1, API id "Route53AutoNaming_v20170314".
-def servicediscovery_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("Route53AutoNaming_v20170314", "servicediscovery")
+# The ServiceDiscovery smithy-rpc-v2-cbor protocol: SigV4 service "servicediscovery" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/Route53AutoNaming_v20170314/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def servicediscovery_service() -> str:
+    return "servicediscovery"
 
 # --- enums -----------------------------------------------------------------
 
@@ -167,22 +171,15 @@ enum ServiceType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateHttpNamespaceRequest:
     str Name
     Optional[str] CreatorRequestId
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateHttpNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePrivateDnsNamespaceRequest:
     str Name
     Optional[str] CreatorRequestId
@@ -191,13 +188,9 @@ struct CreatePrivateDnsNamespaceRequest:
     Optional[list[Tag]] Tags
     Optional[PrivateDnsNamespaceProperties] Properties
 
-@derive(Json)
 struct CreatePrivateDnsNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePublicDnsNamespaceRequest:
     str Name
     Optional[str] CreatorRequestId
@@ -205,13 +198,9 @@ struct CreatePublicDnsNamespaceRequest:
     Optional[list[Tag]] Tags
     Optional[PublicDnsNamespaceProperties] Properties
 
-@derive(Json)
 struct CreatePublicDnsNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) DnsConfig: DnsConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateServiceRequest:
     str Name
     Optional[str] NamespaceId
@@ -223,462 +212,327 @@ struct CreateServiceRequest:
     Optional[list[Tag]] Tags
     Optional[str] Type
 
-# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateServiceResponse:
     Optional[Service] Service
 
-@derive(Json)
 struct CustomHealthNotFound:
     Optional[str] Message
 
-@derive(Json)
 struct DeleteNamespaceRequest:
     str Id
 
-@derive(Json)
 struct DeleteNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Attributes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteServiceAttributesRequest:
     str ServiceId
     list[str] Attributes
 
-@derive(Json)
 struct DeleteServiceAttributesResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteServiceRequest:
     str Id
 
-@derive(Json)
 struct DeleteServiceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeregisterInstanceRequest:
     str ServiceId
     str InstanceId
 
-@derive(Json)
 struct DeregisterInstanceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) QueryParameters: dict[str, str], OptionalParameters: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DiscoverInstancesRequest:
     str NamespaceName
     str ServiceName
     Optional[int64] MaxResults
     Optional[dict[str, str]] QueryParameters
     Optional[dict[str, str]] OptionalParameters
-    Optional[HealthStatusFilter] HealthStatus
+    Optional[str] HealthStatus
     Optional[str] OwnerAccount
 
-# no @derive(Json): member(s) Instances: list[HttpInstanceSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DiscoverInstancesResponse:
     Optional[list[HttpInstanceSummary]] Instances
     Optional[int64] InstancesRevision
 
-@derive(Json)
 struct DiscoverInstancesRevisionRequest:
     str NamespaceName
     str ServiceName
     Optional[str] OwnerAccount
 
-@derive(Json)
 struct DiscoverInstancesRevisionResponse:
     Optional[int64] InstancesRevision
 
-# no @derive(Json): member(s) DnsRecords: list[DnsRecord] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DnsConfig:
     Optional[str] NamespaceId
-    Optional[RoutingPolicy] RoutingPolicy
+    Optional[str] RoutingPolicy
     list[DnsRecord] DnsRecords
 
-# no @derive(Json): member(s) DnsRecords: list[DnsRecord] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DnsConfigChange:
     list[DnsRecord] DnsRecords
 
-@derive(Json)
 struct DnsProperties:
     Optional[str] HostedZoneId
     Optional[SOA] SOA
 
-@derive(Json)
 struct DnsRecord:
-    RecordType Type
+    str Type
     int64 TTL
 
-@derive(Json)
 struct DuplicateRequest:
     Optional[str] Message
     Optional[str] DuplicateOperationId
 
-@derive(Json)
 struct GetInstanceRequest:
     str ServiceId
     str InstanceId
 
-# no @derive(Json): member(s) Instance: Instance not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetInstanceResponse:
     Optional[str] ResourceOwner
     Optional[Instance] Instance
 
-# no @derive(Json): member(s) Instances: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetInstancesHealthStatusRequest:
     str ServiceId
     Optional[list[str]] Instances
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Status: dict[str, HealthStatus] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetInstancesHealthStatusResponse:
-    Optional[dict[str, HealthStatus]] Status
+    Optional[dict[str, str]] Status
     Optional[str] NextToken
 
-@derive(Json)
 struct GetNamespaceRequest:
     str Id
 
-@derive(Json)
 struct GetNamespaceResponse:
     Optional[Namespace] Namespace
 
-@derive(Json)
 struct GetOperationRequest:
     str OperationId
     Optional[str] OwnerAccount
 
-# no @derive(Json): member(s) Operation: Operation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetOperationResponse:
     Optional[Operation] Operation
 
-@derive(Json)
 struct GetServiceAttributesRequest:
     str ServiceId
 
-# no @derive(Json): member(s) ServiceAttributes: ServiceAttributes not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetServiceAttributesResponse:
     Optional[ServiceAttributes] ServiceAttributes
 
-@derive(Json)
 struct GetServiceRequest:
     str Id
 
-# no @derive(Json): member(s) Service: Service not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetServiceResponse:
     Optional[Service] Service
 
-@derive(Json)
 struct HealthCheckConfig:
-    HealthCheckType Type
+    str Type
     Optional[str] ResourcePath
     Optional[int64] FailureThreshold
 
-@derive(Json)
 struct HealthCheckCustomConfig:
     Optional[int64] FailureThreshold
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HttpInstanceSummary:
     Optional[str] InstanceId
     Optional[str] NamespaceName
     Optional[str] ServiceName
-    Optional[HealthStatus] HealthStatus
+    Optional[str] HealthStatus
     Optional[dict[str, str]] Attributes
 
-@derive(Json)
 struct HttpNamespaceChange:
     str Description
 
-@derive(Json)
 struct HttpProperties:
     Optional[str] HttpName
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Instance:
     str Id
     Optional[str] CreatorRequestId
     Optional[dict[str, str]] Attributes
     Optional[str] CreatedByAccount
 
-@derive(Json)
 struct InstanceNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InstanceSummary:
     Optional[str] Id
     Optional[dict[str, str]] Attributes
     Optional[str] CreatedByAccount
 
-@derive(Json)
 struct InvalidInput:
     Optional[str] Message
 
-@derive(Json)
 struct ListInstancesRequest:
     str ServiceId
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Instances: list[InstanceSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListInstancesResponse:
     Optional[str] ResourceOwner
     Optional[list[InstanceSummary]] Instances
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[NamespaceFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListNamespacesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[NamespaceFilter]] Filters
 
-# no @derive(Json): member(s) Namespaces: list[NamespaceSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListNamespacesResponse:
     Optional[list[NamespaceSummary]] Namespaces
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[OperationFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOperationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[OperationFilter]] Filters
 
-# no @derive(Json): member(s) Operations: list[OperationSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOperationsResponse:
     Optional[list[OperationSummary]] Operations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ServiceFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListServicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[ServiceFilter]] Filters
 
-# no @derive(Json): member(s) Services: list[ServiceSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListServicesResponse:
     Optional[list[ServiceSummary]] Services
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct Namespace:
     Optional[str] Id
     Optional[str] Arn
     Optional[str] ResourceOwner
     Optional[str] Name
-    Optional[NamespaceType] Type
+    Optional[str] Type
     Optional[str] Description
     Optional[int64] ServiceCount
     Optional[NamespaceProperties] Properties
     Optional[DateTime] CreateDate
     Optional[str] CreatorRequestId
 
-@derive(Json)
 struct NamespaceAlreadyExists:
     Optional[str] Message
     Optional[str] CreatorRequestId
     Optional[str] NamespaceId
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NamespaceFilter:
-    NamespaceFilterName Name
+    str Name
     list[str] Values
-    Optional[FilterCondition] Condition
+    Optional[str] Condition
 
-@derive(Json)
 struct NamespaceNotFound:
     Optional[str] Message
 
-@derive(Json)
 struct NamespaceProperties:
     Optional[DnsProperties] DnsProperties
     Optional[HttpProperties] HttpProperties
 
-@derive(Json)
 struct NamespaceSummary:
     Optional[str] Id
     Optional[str] Arn
     Optional[str] ResourceOwner
     Optional[str] Name
-    Optional[NamespaceType] Type
+    Optional[str] Type
     Optional[str] Description
     Optional[int64] ServiceCount
     Optional[NamespaceProperties] Properties
     Optional[DateTime] CreateDate
 
-# no @derive(Json): member(s) Targets: dict[OperationTargetType, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Operation:
     Optional[str] Id
     Optional[str] OwnerAccount
-    Optional[OperationType] Type
-    Optional[OperationStatus] Status
+    Optional[str] Type
+    Optional[str] Status
     Optional[str] ErrorMessage
     Optional[str] ErrorCode
     Optional[DateTime] CreateDate
     Optional[DateTime] UpdateDate
-    Optional[dict[OperationTargetType, str]] Targets
+    Optional[dict[str, str]] Targets
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct OperationFilter:
-    OperationFilterName Name
+    str Name
     list[str] Values
-    Optional[FilterCondition] Condition
+    Optional[str] Condition
 
-@derive(Json)
 struct OperationNotFound:
     Optional[str] Message
 
-@derive(Json)
 struct OperationSummary:
     Optional[str] Id
-    Optional[OperationStatus] Status
+    Optional[str] Status
 
-@derive(Json)
 struct PrivateDnsNamespaceChange:
     Optional[str] Description
     Optional[PrivateDnsNamespacePropertiesChange] Properties
 
-@derive(Json)
 struct PrivateDnsNamespaceProperties:
     PrivateDnsPropertiesMutable DnsProperties
 
-@derive(Json)
 struct PrivateDnsNamespacePropertiesChange:
     PrivateDnsPropertiesMutableChange DnsProperties
 
-@derive(Json)
 struct PrivateDnsPropertiesMutable:
     SOA SOA
 
-@derive(Json)
 struct PrivateDnsPropertiesMutableChange:
     SOAChange SOA
 
-@derive(Json)
 struct PublicDnsNamespaceChange:
     Optional[str] Description
     Optional[PublicDnsNamespacePropertiesChange] Properties
 
-@derive(Json)
 struct PublicDnsNamespaceProperties:
     PublicDnsPropertiesMutable DnsProperties
 
-@derive(Json)
 struct PublicDnsNamespacePropertiesChange:
     PublicDnsPropertiesMutableChange DnsProperties
 
-@derive(Json)
 struct PublicDnsPropertiesMutable:
     SOA SOA
 
-@derive(Json)
 struct PublicDnsPropertiesMutableChange:
     SOAChange SOA
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RegisterInstanceRequest:
     str ServiceId
     str InstanceId
     Optional[str] CreatorRequestId
     dict[str, str] Attributes
 
-@derive(Json)
 struct RegisterInstanceResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct RequestLimitExceeded:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceInUse:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceLimitExceeded:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceNotFoundException:
     Optional[str] Message
 
-@derive(Json)
 struct SOA:
     int64 TTL
 
-@derive(Json)
 struct SOAChange:
     int64 TTL
 
-# no @derive(Json): member(s) DnsConfig: DnsConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Service:
     Optional[str] Id
     Optional[str] Arn
@@ -688,61 +542,46 @@ struct Service:
     Optional[str] Description
     Optional[int64] InstanceCount
     Optional[DnsConfig] DnsConfig
-    Optional[ServiceType] Type
+    Optional[str] Type
     Optional[HealthCheckConfig] HealthCheckConfig
     Optional[HealthCheckCustomConfig] HealthCheckCustomConfig
     Optional[DateTime] CreateDate
     Optional[str] CreatorRequestId
     Optional[str] CreatedByAccount
 
-@derive(Json)
 struct ServiceAlreadyExists:
     Optional[str] Message
     Optional[str] CreatorRequestId
     Optional[str] ServiceId
     Optional[str] ServiceArn
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServiceAttributes:
     Optional[str] ServiceArn
     Optional[str] ResourceOwner
     Optional[dict[str, str]] Attributes
 
-@derive(Json)
 struct ServiceAttributesLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) DnsConfig: DnsConfigChange not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServiceChange:
     Optional[str] Description
     Optional[DnsConfigChange] DnsConfig
     Optional[HealthCheckConfig] HealthCheckConfig
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServiceFilter:
-    ServiceFilterName Name
+    str Name
     list[str] Values
-    Optional[FilterCondition] Condition
+    Optional[str] Condition
 
-@derive(Json)
 struct ServiceNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) DnsConfig: DnsConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServiceSummary:
     Optional[str] Id
     Optional[str] Arn
     Optional[str] ResourceOwner
     Optional[str] Name
-    Optional[ServiceType] Type
+    Optional[str] Type
     Optional[str] Description
     Optional[int64] InstanceCount
     Optional[DnsConfig] DnsConfig
@@ -751,96 +590,71 @@ struct ServiceSummary:
     Optional[DateTime] CreateDate
     Optional[str] CreatedByAccount
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TooManyTagsException:
     Optional[str] Message
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateHttpNamespaceRequest:
     str Id
     Optional[str] UpdaterRequestId
     HttpNamespaceChange Namespace
 
-@derive(Json)
 struct UpdateHttpNamespaceResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct UpdateInstanceCustomHealthStatusRequest:
     str ServiceId
     str InstanceId
-    CustomHealthStatus Status
+    str Status
 
-@derive(Json)
 struct UpdatePrivateDnsNamespaceRequest:
     str Id
     Optional[str] UpdaterRequestId
     PrivateDnsNamespaceChange Namespace
 
-@derive(Json)
 struct UpdatePrivateDnsNamespaceResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct UpdatePublicDnsNamespaceRequest:
     str Id
     Optional[str] UpdaterRequestId
     PublicDnsNamespaceChange Namespace
 
-@derive(Json)
 struct UpdatePublicDnsNamespaceResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateServiceAttributesRequest:
     str ServiceId
     dict[str, str] Attributes
 
-@derive(Json)
 struct UpdateServiceAttributesResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Service: ServiceChange not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateServiceRequest:
     str Id
     ServiceChange Service
 
-@derive(Json)
 struct UpdateServiceResponse:
     Optional[str] OperationId
 
@@ -851,7 +665,7 @@ struct UpdateServiceResponse:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -953,364 +767,774 @@ def servicediscovery_error_name(ServiceDiscoveryErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def servicediscovery_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListInstances
+#   ListNamespaces
+#   ListOperations
+#   ListServices
 
-def servicediscovery_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def servicediscovery_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize CreateHttpNamespaceRequest to a compact JSON object (declaration order).
-def create_http_namespace_request_to_json(CreateHttpNamespaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+# Serialize CreateHttpNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def create_http_namespace_request_to_cbor(CreateHttpNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.CreatorRequestId.is_some():
         auto u0 = v.CreatorRequestId.unwrap()
-        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+        keys.append("CreatorRequestId")
+        vals.append(cbor.cbor_text(u0))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicediscovery_json_str(u1))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + servicediscovery_json_arr(e3))
-    return servicediscovery_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreatePrivateDnsNamespaceRequest to a compact JSON object (declaration order).
-def create_private_dns_namespace_request_to_json(CreatePrivateDnsNamespaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+# Serialize CreatePrivateDnsNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def create_private_dns_namespace_request_to_cbor(CreatePrivateDnsNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.CreatorRequestId.is_some():
         auto u0 = v.CreatorRequestId.unwrap()
-        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+        keys.append("CreatorRequestId")
+        vals.append(cbor.cbor_text(u0))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicediscovery_json_str(u1))
-    parts.append("\"Vpc\":" + servicediscovery_json_str(v.Vpc))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("Vpc")
+    vals.append(cbor.cbor_text(v.Vpc))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + servicediscovery_json_arr(e3))
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
     if v.Properties.is_some():
         auto u4 = v.Properties.unwrap()
-        parts.append("\"Properties\":" + u4.to_json())
-    return servicediscovery_json_obj(parts)
+        keys.append("Properties")
+        vals.append(private_dns_namespace_properties_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreatePublicDnsNamespaceRequest to a compact JSON object (declaration order).
-def create_public_dns_namespace_request_to_json(CreatePublicDnsNamespaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+# Serialize CreatePublicDnsNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def create_public_dns_namespace_request_to_cbor(CreatePublicDnsNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.CreatorRequestId.is_some():
         auto u0 = v.CreatorRequestId.unwrap()
-        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
+        keys.append("CreatorRequestId")
+        vals.append(cbor.cbor_text(u0))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicediscovery_json_str(u1))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + servicediscovery_json_arr(e3))
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
     if v.Properties.is_some():
         auto u4 = v.Properties.unwrap()
-        parts.append("\"Properties\":" + u4.to_json())
-    return servicediscovery_json_obj(parts)
+        keys.append("Properties")
+        vals.append(public_dns_namespace_properties_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateServiceRequest to a compact JSON object (declaration order).
-def create_service_request_to_json(CreateServiceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + servicediscovery_json_str(v.Name))
+# Serialize CreateServiceRequest to a CBOR map (member wire name -> value, model order).
+def create_service_request_to_cbor(CreateServiceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.NamespaceId.is_some():
         auto u0 = v.NamespaceId.unwrap()
-        parts.append("\"NamespaceId\":" + servicediscovery_json_str(u0))
+        keys.append("NamespaceId")
+        vals.append(cbor.cbor_text(u0))
     if v.CreatorRequestId.is_some():
         auto u1 = v.CreatorRequestId.unwrap()
-        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u1))
+        keys.append("CreatorRequestId")
+        vals.append(cbor.cbor_text(u1))
     if v.Description.is_some():
         auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicediscovery_json_str(u2))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
     if v.DnsConfig.is_some():
         auto u3 = v.DnsConfig.unwrap()
-        parts.append("\"DnsConfig\":" + dns_config_to_json(u3))
+        keys.append("DnsConfig")
+        vals.append(dns_config_to_cbor(u3))
     if v.HealthCheckConfig.is_some():
         auto u4 = v.HealthCheckConfig.unwrap()
-        parts.append("\"HealthCheckConfig\":" + u4.to_json())
+        keys.append("HealthCheckConfig")
+        vals.append(health_check_config_to_cbor(u4))
     if v.HealthCheckCustomConfig.is_some():
         auto u5 = v.HealthCheckCustomConfig.unwrap()
-        parts.append("\"HealthCheckCustomConfig\":" + u5.to_json())
+        keys.append("HealthCheckCustomConfig")
+        vals.append(health_check_custom_config_to_cbor(u5))
     if v.Tags.is_some():
         auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + servicediscovery_json_arr(e7))
+            e7.append(tag_to_cbor(x7))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e7))
     if v.Type.is_some():
         auto u8 = v.Type.unwrap()
-        parts.append("\"Type\":" + servicediscovery_json_str(u8))
-    return servicediscovery_json_obj(parts)
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u8))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DeleteServiceAttributesRequest to a compact JSON object (declaration order).
-def delete_service_attributes_request_to_json(DeleteServiceAttributesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
-    list[str] e0 = []
+# Serialize DeleteNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def delete_namespace_request_to_cbor(DeleteNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteServiceAttributesRequest to a CBOR map (member wire name -> value, model order).
+def delete_service_attributes_request_to_cbor(DeleteServiceAttributesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Attributes:
-        e0.append(servicediscovery_json_str(x0))
-    parts.append("\"Attributes\":" + servicediscovery_json_arr(e0))
-    return servicediscovery_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Attributes")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DiscoverInstancesRequest to a compact JSON object (declaration order).
-def discover_instances_request_to_json(DiscoverInstancesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"NamespaceName\":" + servicediscovery_json_str(v.NamespaceName))
-    parts.append("\"ServiceName\":" + servicediscovery_json_str(v.ServiceName))
+# Serialize DeleteServiceRequest to a CBOR map (member wire name -> value, model order).
+def delete_service_request_to_cbor(DeleteServiceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeregisterInstanceRequest to a CBOR map (member wire name -> value, model order).
+def deregister_instance_request_to_cbor(DeregisterInstanceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    keys.append("InstanceId")
+    vals.append(cbor.cbor_text(v.InstanceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DiscoverInstancesRequest to a CBOR map (member wire name -> value, model order).
+def discover_instances_request_to_cbor(DiscoverInstancesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("NamespaceName")
+    vals.append(cbor.cbor_text(v.NamespaceName))
+    keys.append("ServiceName")
+    vals.append(cbor.cbor_text(v.ServiceName))
     if v.MaxResults.is_some():
         auto u0 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u0))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
     if v.QueryParameters.is_some():
         auto u1 = v.QueryParameters.unwrap()
-        list[str] m2 = []
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
         for k2 in sorted(u1.keys()):
-            m2.append(servicediscovery_json_str(k2) + ":" + servicediscovery_json_str(u1[k2]))
-        parts.append("\"QueryParameters\":" + servicediscovery_json_obj(m2))
+            mk2.append(k2)
+            mv2.append(cbor.cbor_text(u1[k2]))
+        keys.append("QueryParameters")
+        vals.append(cbor.cbor_map(mk2, mv2))
     if v.OptionalParameters.is_some():
         auto u3 = v.OptionalParameters.unwrap()
-        list[str] m4 = []
+        list[str] mk4 = []
+        list[cbor.CborValue] mv4 = []
         for k4 in sorted(u3.keys()):
-            m4.append(servicediscovery_json_str(k4) + ":" + servicediscovery_json_str(u3[k4]))
-        parts.append("\"OptionalParameters\":" + servicediscovery_json_obj(m4))
+            mk4.append(k4)
+            mv4.append(cbor.cbor_text(u3[k4]))
+        keys.append("OptionalParameters")
+        vals.append(cbor.cbor_map(mk4, mv4))
     if v.HealthStatus.is_some():
         auto u5 = v.HealthStatus.unwrap()
-        parts.append("\"HealthStatus\":" + u5.to_json())
+        keys.append("HealthStatus")
+        vals.append(cbor.cbor_text(u5))
     if v.OwnerAccount.is_some():
         auto u6 = v.OwnerAccount.unwrap()
-        parts.append("\"OwnerAccount\":" + servicediscovery_json_str(u6))
-    return servicediscovery_json_obj(parts)
+        keys.append("OwnerAccount")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DnsConfig to a compact JSON object (declaration order).
-def dns_config_to_json(DnsConfig v) -> str:
-    list[str] parts = []
+# Serialize DiscoverInstancesRevisionRequest to a CBOR map (member wire name -> value, model order).
+def discover_instances_revision_request_to_cbor(DiscoverInstancesRevisionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("NamespaceName")
+    vals.append(cbor.cbor_text(v.NamespaceName))
+    keys.append("ServiceName")
+    vals.append(cbor.cbor_text(v.ServiceName))
+    if v.OwnerAccount.is_some():
+        auto u0 = v.OwnerAccount.unwrap()
+        keys.append("OwnerAccount")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DnsConfig to a CBOR map (member wire name -> value, model order).
+def dns_config_to_cbor(DnsConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NamespaceId.is_some():
         auto u0 = v.NamespaceId.unwrap()
-        parts.append("\"NamespaceId\":" + servicediscovery_json_str(u0))
+        keys.append("NamespaceId")
+        vals.append(cbor.cbor_text(u0))
     if v.RoutingPolicy.is_some():
         auto u1 = v.RoutingPolicy.unwrap()
-        parts.append("\"RoutingPolicy\":" + u1.to_json())
-    list[str] e2 = []
+        keys.append("RoutingPolicy")
+        vals.append(cbor.cbor_text(u1))
+    list[cbor.CborValue] e2 = []
     for x2 in v.DnsRecords:
-        e2.append(x2.to_json())
-    parts.append("\"DnsRecords\":" + servicediscovery_json_arr(e2))
-    return servicediscovery_json_obj(parts)
+        e2.append(dns_record_to_cbor(x2))
+    keys.append("DnsRecords")
+    vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DnsConfigChange to a compact JSON object (declaration order).
-def dns_config_change_to_json(DnsConfigChange v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize DnsConfigChange to a CBOR map (member wire name -> value, model order).
+def dns_config_change_to_cbor(DnsConfigChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.DnsRecords:
-        e0.append(x0.to_json())
-    parts.append("\"DnsRecords\":" + servicediscovery_json_arr(e0))
-    return servicediscovery_json_obj(parts)
+        e0.append(dns_record_to_cbor(x0))
+    keys.append("DnsRecords")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GetInstancesHealthStatusRequest to a compact JSON object (declaration order).
-def get_instances_health_status_request_to_json(GetInstancesHealthStatusRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
+# Serialize DnsRecord to a CBOR map (member wire name -> value, model order).
+def dns_record_to_cbor(DnsRecord v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    keys.append("TTL")
+    vals.append(cbor.cbor_int(v.TTL))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetInstanceRequest to a CBOR map (member wire name -> value, model order).
+def get_instance_request_to_cbor(GetInstanceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    keys.append("InstanceId")
+    vals.append(cbor.cbor_text(v.InstanceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetInstancesHealthStatusRequest to a CBOR map (member wire name -> value, model order).
+def get_instances_health_status_request_to_cbor(GetInstancesHealthStatusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
     if v.Instances.is_some():
         auto u0 = v.Instances.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(servicediscovery_json_str(x1))
-        parts.append("\"Instances\":" + servicediscovery_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Instances")
+        vals.append(cbor.cbor_list(e1))
     if v.MaxResults.is_some():
         auto u2 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u2))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
     if v.NextToken.is_some():
         auto u3 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + servicediscovery_json_str(u3))
-    return servicediscovery_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListNamespacesRequest to a compact JSON object (declaration order).
-def list_namespaces_request_to_json(ListNamespacesRequest v) -> str:
-    list[str] parts = []
+# Serialize GetNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def get_namespace_request_to_cbor(GetNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetOperationRequest to a CBOR map (member wire name -> value, model order).
+def get_operation_request_to_cbor(GetOperationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("OperationId")
+    vals.append(cbor.cbor_text(v.OperationId))
+    if v.OwnerAccount.is_some():
+        auto u0 = v.OwnerAccount.unwrap()
+        keys.append("OwnerAccount")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetServiceAttributesRequest to a CBOR map (member wire name -> value, model order).
+def get_service_attributes_request_to_cbor(GetServiceAttributesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetServiceRequest to a CBOR map (member wire name -> value, model order).
+def get_service_request_to_cbor(GetServiceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HealthCheckConfig to a CBOR map (member wire name -> value, model order).
+def health_check_config_to_cbor(HealthCheckConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    if v.ResourcePath.is_some():
+        auto u0 = v.ResourcePath.unwrap()
+        keys.append("ResourcePath")
+        vals.append(cbor.cbor_text(u0))
+    if v.FailureThreshold.is_some():
+        auto u1 = v.FailureThreshold.unwrap()
+        keys.append("FailureThreshold")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HealthCheckCustomConfig to a CBOR map (member wire name -> value, model order).
+def health_check_custom_config_to_cbor(HealthCheckCustomConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FailureThreshold.is_some():
+        auto u0 = v.FailureThreshold.unwrap()
+        keys.append("FailureThreshold")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HttpNamespaceChange to a CBOR map (member wire name -> value, model order).
+def http_namespace_change_to_cbor(HttpNamespaceChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Description")
+    vals.append(cbor.cbor_text(v.Description))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListInstancesRequest to a CBOR map (member wire name -> value, model order).
+def list_instances_request_to_cbor(ListInstancesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
     if v.NextToken.is_some():
         auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + servicediscovery_json_str(u0))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
         auto u1 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u1))
-    if v.Filters.is_some():
-        auto u2 = v.Filters.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(namespace_filter_to_json(x3))
-        parts.append("\"Filters\":" + servicediscovery_json_arr(e3))
-    return servicediscovery_json_obj(parts)
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListOperationsRequest to a compact JSON object (declaration order).
-def list_operations_request_to_json(ListOperationsRequest v) -> str:
-    list[str] parts = []
+# Serialize ListNamespacesRequest to a CBOR map (member wire name -> value, model order).
+def list_namespaces_request_to_cbor(ListNamespacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NextToken.is_some():
         auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + servicediscovery_json_str(u0))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
         auto u1 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u1))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
     if v.Filters.is_some():
         auto u2 = v.Filters.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(operation_filter_to_json(x3))
-        parts.append("\"Filters\":" + servicediscovery_json_arr(e3))
-    return servicediscovery_json_obj(parts)
+            e3.append(namespace_filter_to_cbor(x3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListServicesRequest to a compact JSON object (declaration order).
-def list_services_request_to_json(ListServicesRequest v) -> str:
-    list[str] parts = []
+# Serialize ListOperationsRequest to a CBOR map (member wire name -> value, model order).
+def list_operations_request_to_cbor(ListOperationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NextToken.is_some():
         auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + servicediscovery_json_str(u0))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
         auto u1 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u1))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
     if v.Filters.is_some():
         auto u2 = v.Filters.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(service_filter_to_json(x3))
-        parts.append("\"Filters\":" + servicediscovery_json_arr(e3))
-    return servicediscovery_json_obj(parts)
+            e3.append(operation_filter_to_cbor(x3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize NamespaceFilter to a compact JSON object (declaration order).
-def namespace_filter_to_json(NamespaceFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    list[str] e0 = []
+# Serialize ListServicesRequest to a CBOR map (member wire name -> value, model order).
+def list_services_request_to_cbor(ListServicesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(service_filter_to_cbor(x3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NamespaceFilter to a CBOR map (member wire name -> value, model order).
+def namespace_filter_to_cbor(NamespaceFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Values:
-        e0.append(servicediscovery_json_str(x0))
-    parts.append("\"Values\":" + servicediscovery_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
     if v.Condition.is_some():
         auto u1 = v.Condition.unwrap()
-        parts.append("\"Condition\":" + u1.to_json())
-    return servicediscovery_json_obj(parts)
+        keys.append("Condition")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize OperationFilter to a compact JSON object (declaration order).
-def operation_filter_to_json(OperationFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    list[str] e0 = []
+# Serialize OperationFilter to a CBOR map (member wire name -> value, model order).
+def operation_filter_to_cbor(OperationFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Values:
-        e0.append(servicediscovery_json_str(x0))
-    parts.append("\"Values\":" + servicediscovery_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
     if v.Condition.is_some():
         auto u1 = v.Condition.unwrap()
-        parts.append("\"Condition\":" + u1.to_json())
-    return servicediscovery_json_obj(parts)
+        keys.append("Condition")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RegisterInstanceRequest to a compact JSON object (declaration order).
-def register_instance_request_to_json(RegisterInstanceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
-    parts.append("\"InstanceId\":" + servicediscovery_json_str(v.InstanceId))
-    if v.CreatorRequestId.is_some():
-        auto u0 = v.CreatorRequestId.unwrap()
-        parts.append("\"CreatorRequestId\":" + servicediscovery_json_str(u0))
-    list[str] m1 = []
-    for k1 in sorted(v.Attributes.keys()):
-        m1.append(servicediscovery_json_str(k1) + ":" + servicediscovery_json_str(v.Attributes[k1]))
-    parts.append("\"Attributes\":" + servicediscovery_json_obj(m1))
-    return servicediscovery_json_obj(parts)
-
-# Serialize ServiceChange to a compact JSON object (declaration order).
-def service_change_to_json(ServiceChange v) -> str:
-    list[str] parts = []
+# Serialize PrivateDnsNamespaceChange to a CBOR map (member wire name -> value, model order).
+def private_dns_namespace_change_to_cbor(PrivateDnsNamespaceChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicediscovery_json_str(u0))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        keys.append("Properties")
+        vals.append(private_dns_namespace_properties_change_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PrivateDnsNamespaceProperties to a CBOR map (member wire name -> value, model order).
+def private_dns_namespace_properties_to_cbor(PrivateDnsNamespaceProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DnsProperties")
+    vals.append(private_dns_properties_mutable_to_cbor(v.DnsProperties))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PrivateDnsNamespacePropertiesChange to a CBOR map (member wire name -> value, model order).
+def private_dns_namespace_properties_change_to_cbor(PrivateDnsNamespacePropertiesChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DnsProperties")
+    vals.append(private_dns_properties_mutable_change_to_cbor(v.DnsProperties))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PrivateDnsPropertiesMutable to a CBOR map (member wire name -> value, model order).
+def private_dns_properties_mutable_to_cbor(PrivateDnsPropertiesMutable v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SOA")
+    vals.append(soa_to_cbor(v.SOA))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PrivateDnsPropertiesMutableChange to a CBOR map (member wire name -> value, model order).
+def private_dns_properties_mutable_change_to_cbor(PrivateDnsPropertiesMutableChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SOA")
+    vals.append(soa_change_to_cbor(v.SOA))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PublicDnsNamespaceChange to a CBOR map (member wire name -> value, model order).
+def public_dns_namespace_change_to_cbor(PublicDnsNamespaceChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        keys.append("Properties")
+        vals.append(public_dns_namespace_properties_change_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PublicDnsNamespaceProperties to a CBOR map (member wire name -> value, model order).
+def public_dns_namespace_properties_to_cbor(PublicDnsNamespaceProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DnsProperties")
+    vals.append(public_dns_properties_mutable_to_cbor(v.DnsProperties))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PublicDnsNamespacePropertiesChange to a CBOR map (member wire name -> value, model order).
+def public_dns_namespace_properties_change_to_cbor(PublicDnsNamespacePropertiesChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DnsProperties")
+    vals.append(public_dns_properties_mutable_change_to_cbor(v.DnsProperties))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PublicDnsPropertiesMutable to a CBOR map (member wire name -> value, model order).
+def public_dns_properties_mutable_to_cbor(PublicDnsPropertiesMutable v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SOA")
+    vals.append(soa_to_cbor(v.SOA))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PublicDnsPropertiesMutableChange to a CBOR map (member wire name -> value, model order).
+def public_dns_properties_mutable_change_to_cbor(PublicDnsPropertiesMutableChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SOA")
+    vals.append(soa_change_to_cbor(v.SOA))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RegisterInstanceRequest to a CBOR map (member wire name -> value, model order).
+def register_instance_request_to_cbor(RegisterInstanceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    keys.append("InstanceId")
+    vals.append(cbor.cbor_text(v.InstanceId))
+    if v.CreatorRequestId.is_some():
+        auto u0 = v.CreatorRequestId.unwrap()
+        keys.append("CreatorRequestId")
+        vals.append(cbor.cbor_text(u0))
+    list[str] mk1 = []
+    list[cbor.CborValue] mv1 = []
+    for k1 in sorted(v.Attributes.keys()):
+        mk1.append(k1)
+        mv1.append(cbor.cbor_text(v.Attributes[k1]))
+    keys.append("Attributes")
+    vals.append(cbor.cbor_map(mk1, mv1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SOA to a CBOR map (member wire name -> value, model order).
+def soa_to_cbor(SOA v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TTL")
+    vals.append(cbor.cbor_int(v.TTL))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SOAChange to a CBOR map (member wire name -> value, model order).
+def soa_change_to_cbor(SOAChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TTL")
+    vals.append(cbor.cbor_int(v.TTL))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ServiceChange to a CBOR map (member wire name -> value, model order).
+def service_change_to_cbor(ServiceChange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
     if v.DnsConfig.is_some():
         auto u1 = v.DnsConfig.unwrap()
-        parts.append("\"DnsConfig\":" + dns_config_change_to_json(u1))
+        keys.append("DnsConfig")
+        vals.append(dns_config_change_to_cbor(u1))
     if v.HealthCheckConfig.is_some():
         auto u2 = v.HealthCheckConfig.unwrap()
-        parts.append("\"HealthCheckConfig\":" + u2.to_json())
-    return servicediscovery_json_obj(parts)
+        keys.append("HealthCheckConfig")
+        vals.append(health_check_config_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ServiceFilter to a compact JSON object (declaration order).
-def service_filter_to_json(ServiceFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    list[str] e0 = []
+# Serialize ServiceFilter to a CBOR map (member wire name -> value, model order).
+def service_filter_to_cbor(ServiceFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Values:
-        e0.append(servicediscovery_json_str(x0))
-    parts.append("\"Values\":" + servicediscovery_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
     if v.Condition.is_some():
         auto u1 = v.Condition.unwrap()
-        parts.append("\"Condition\":" + u1.to_json())
-    return servicediscovery_json_obj(parts)
+        keys.append("Condition")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceARN\":" + servicediscovery_json_str(v.ResourceARN))
-    list[str] e0 = []
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + servicediscovery_json_arr(e0))
-    return servicediscovery_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceARN\":" + servicediscovery_json_str(v.ResourceARN))
-    list[str] e0 = []
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(servicediscovery_json_str(x0))
-    parts.append("\"TagKeys\":" + servicediscovery_json_arr(e0))
-    return servicediscovery_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateServiceAttributesRequest to a compact JSON object (declaration order).
-def update_service_attributes_request_to_json(UpdateServiceAttributesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ServiceId\":" + servicediscovery_json_str(v.ServiceId))
-    list[str] m0 = []
+# Serialize UpdateHttpNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def update_http_namespace_request_to_cbor(UpdateHttpNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.UpdaterRequestId.is_some():
+        auto u0 = v.UpdaterRequestId.unwrap()
+        keys.append("UpdaterRequestId")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Namespace")
+    vals.append(http_namespace_change_to_cbor(v.Namespace))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateInstanceCustomHealthStatusRequest to a CBOR map (member wire name -> value, model order).
+def update_instance_custom_health_status_request_to_cbor(UpdateInstanceCustomHealthStatusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    keys.append("InstanceId")
+    vals.append(cbor.cbor_text(v.InstanceId))
+    keys.append("Status")
+    vals.append(cbor.cbor_text(v.Status))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdatePrivateDnsNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def update_private_dns_namespace_request_to_cbor(UpdatePrivateDnsNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.UpdaterRequestId.is_some():
+        auto u0 = v.UpdaterRequestId.unwrap()
+        keys.append("UpdaterRequestId")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Namespace")
+    vals.append(private_dns_namespace_change_to_cbor(v.Namespace))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdatePublicDnsNamespaceRequest to a CBOR map (member wire name -> value, model order).
+def update_public_dns_namespace_request_to_cbor(UpdatePublicDnsNamespaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.UpdaterRequestId.is_some():
+        auto u0 = v.UpdaterRequestId.unwrap()
+        keys.append("UpdaterRequestId")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Namespace")
+    vals.append(public_dns_namespace_change_to_cbor(v.Namespace))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateServiceAttributesRequest to a CBOR map (member wire name -> value, model order).
+def update_service_attributes_request_to_cbor(UpdateServiceAttributesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceId")
+    vals.append(cbor.cbor_text(v.ServiceId))
+    list[str] mk0 = []
+    list[cbor.CborValue] mv0 = []
     for k0 in sorted(v.Attributes.keys()):
-        m0.append(servicediscovery_json_str(k0) + ":" + servicediscovery_json_str(v.Attributes[k0]))
-    parts.append("\"Attributes\":" + servicediscovery_json_obj(m0))
-    return servicediscovery_json_obj(parts)
+        mk0.append(k0)
+        mv0.append(cbor.cbor_text(v.Attributes[k0]))
+    keys.append("Attributes")
+    vals.append(cbor.cbor_map(mk0, mv0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateServiceRequest to a compact JSON object (declaration order).
-def update_service_request_to_json(UpdateServiceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Id\":" + servicediscovery_json_str(v.Id))
-    parts.append("\"Service\":" + service_change_to_json(v.Service))
-    return servicediscovery_json_obj(parts)
+# Serialize UpdateServiceRequest to a CBOR map (member wire name -> value, model order).
+def update_service_request_to_cbor(UpdateServiceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    keys.append("Service")
+    vals.append(service_change_to_cbor(v.Service))
+    return cbor.cbor_map(keys, vals)
 
 # A bound ServiceDiscovery client: credentials + region, threaded into every operation.
 struct ServiceDiscoveryClient:
@@ -1319,239 +1543,273 @@ struct ServiceDiscoveryClient:
 
     # CreateHttpNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceAlreadyExists, ResourceLimitExceeded, TooManyTagsException
-    def create_http_namespace(self, CreateHttpNamespaceRequest input) -> str:
-        auto body = create_http_namespace_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreateHttpNamespace", body)
+    def create_http_namespace(self, CreateHttpNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_http_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "CreateHttpNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePrivateDnsNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceAlreadyExists, ResourceLimitExceeded, TooManyTagsException
-    def create_private_dns_namespace(self, CreatePrivateDnsNamespaceRequest input) -> str:
-        auto body = create_private_dns_namespace_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreatePrivateDnsNamespace", body)
+    def create_private_dns_namespace(self, CreatePrivateDnsNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_private_dns_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "CreatePrivateDnsNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePublicDnsNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceAlreadyExists, ResourceLimitExceeded, TooManyTagsException
-    def create_public_dns_namespace(self, CreatePublicDnsNamespaceRequest input) -> str:
-        auto body = create_public_dns_namespace_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreatePublicDnsNamespace", body)
+    def create_public_dns_namespace(self, CreatePublicDnsNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_public_dns_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "CreatePublicDnsNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateService
     # errors: InvalidInput, NamespaceNotFound, ResourceLimitExceeded, ServiceAlreadyExists, TooManyTagsException
-    def create_service(self, CreateServiceRequest input) -> str:
-        auto body = create_service_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "CreateService", body)
+    def create_service(self, CreateServiceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_service_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "CreateService", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceNotFound, ResourceInUse
-    def delete_namespace(self, DeleteNamespaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeleteNamespace", body)
+    def delete_namespace(self, DeleteNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "DeleteNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteService
     # errors: InvalidInput, ResourceInUse, ServiceNotFound
-    def delete_service(self, DeleteServiceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeleteService", body)
+    def delete_service(self, DeleteServiceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_service_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "DeleteService", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteServiceAttributes
     # errors: InvalidInput, ServiceNotFound
-    def delete_service_attributes(self, DeleteServiceAttributesRequest input) -> str:
-        auto body = delete_service_attributes_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeleteServiceAttributes", body)
+    def delete_service_attributes(self, DeleteServiceAttributesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_service_attributes_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "DeleteServiceAttributes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeregisterInstance
     # errors: DuplicateRequest, InstanceNotFound, InvalidInput, ResourceInUse, ServiceNotFound
-    def deregister_instance(self, DeregisterInstanceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DeregisterInstance", body)
+    def deregister_instance(self, DeregisterInstanceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(deregister_instance_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "DeregisterInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DiscoverInstances
     # errors: InvalidInput, NamespaceNotFound, RequestLimitExceeded, ServiceNotFound
-    def discover_instances(self, DiscoverInstancesRequest input) -> str:
-        auto body = discover_instances_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DiscoverInstances", body)
+    def discover_instances(self, DiscoverInstancesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(discover_instances_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "DiscoverInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DiscoverInstancesRevision
     # errors: InvalidInput, NamespaceNotFound, RequestLimitExceeded, ServiceNotFound
-    def discover_instances_revision(self, DiscoverInstancesRevisionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "DiscoverInstancesRevision", body)
+    def discover_instances_revision(self, DiscoverInstancesRevisionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(discover_instances_revision_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "DiscoverInstancesRevision", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetInstance
     # errors: InstanceNotFound, InvalidInput, ServiceNotFound
-    def get_instance(self, GetInstanceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetInstance", body)
+    def get_instance(self, GetInstanceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_instance_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "GetInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetInstancesHealthStatus
     # errors: InstanceNotFound, InvalidInput, ServiceNotFound
-    def get_instances_health_status(self, GetInstancesHealthStatusRequest input) -> str:
-        auto body = get_instances_health_status_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetInstancesHealthStatus", body)
+    def get_instances_health_status(self, GetInstancesHealthStatusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_instances_health_status_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "GetInstancesHealthStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetNamespace
     # errors: InvalidInput, NamespaceNotFound
-    def get_namespace(self, GetNamespaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetNamespace", body)
+    def get_namespace(self, GetNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "GetNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetOperation
     # errors: InvalidInput, OperationNotFound
-    def get_operation(self, GetOperationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetOperation", body)
+    def get_operation(self, GetOperationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_operation_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "GetOperation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetService
     # errors: InvalidInput, ServiceNotFound
-    def get_service(self, GetServiceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetService", body)
+    def get_service(self, GetServiceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_service_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "GetService", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetServiceAttributes
     # errors: InvalidInput, ServiceNotFound
-    def get_service_attributes(self, GetServiceAttributesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "GetServiceAttributes", body)
+    def get_service_attributes(self, GetServiceAttributesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_service_attributes_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "GetServiceAttributes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListInstances
     # errors: InvalidInput, ServiceNotFound
-    def list_instances(self, ListInstancesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListInstances", body)
+    def list_instances(self, ListInstancesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_instances_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "ListInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListNamespaces
     # errors: InvalidInput
-    def list_namespaces(self, ListNamespacesRequest input) -> str:
-        auto body = list_namespaces_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListNamespaces", body)
+    def list_namespaces(self, ListNamespacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_namespaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "ListNamespaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListOperations
     # errors: InvalidInput
-    def list_operations(self, ListOperationsRequest input) -> str:
-        auto body = list_operations_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListOperations", body)
+    def list_operations(self, ListOperationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_operations_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "ListOperations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListServices
     # errors: InvalidInput
-    def list_services(self, ListServicesRequest input) -> str:
-        auto body = list_services_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListServices", body)
+    def list_services(self, ListServicesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_services_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "ListServices", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: InvalidInput, ResourceNotFoundException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterInstance
     # errors: DuplicateRequest, InvalidInput, ResourceInUse, ResourceLimitExceeded, ServiceNotFound
-    def register_instance(self, RegisterInstanceRequest input) -> str:
-        auto body = register_instance_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "RegisterInstance", body)
+    def register_instance(self, RegisterInstanceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(register_instance_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "RegisterInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: InvalidInput, ResourceNotFoundException, TooManyTagsException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: InvalidInput, ResourceNotFoundException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateHttpNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceNotFound, ResourceInUse
-    def update_http_namespace(self, UpdateHttpNamespaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdateHttpNamespace", body)
+    def update_http_namespace(self, UpdateHttpNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_http_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UpdateHttpNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateInstanceCustomHealthStatus
     # errors: CustomHealthNotFound, InstanceNotFound, InvalidInput, ServiceNotFound
-    def update_instance_custom_health_status(self, UpdateInstanceCustomHealthStatusRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdateInstanceCustomHealthStatus", body)
+    def update_instance_custom_health_status(self, UpdateInstanceCustomHealthStatusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_instance_custom_health_status_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UpdateInstanceCustomHealthStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdatePrivateDnsNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceNotFound, ResourceInUse
-    def update_private_dns_namespace(self, UpdatePrivateDnsNamespaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdatePrivateDnsNamespace", body)
+    def update_private_dns_namespace(self, UpdatePrivateDnsNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_private_dns_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UpdatePrivateDnsNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdatePublicDnsNamespace
     # errors: DuplicateRequest, InvalidInput, NamespaceNotFound, ResourceInUse
-    def update_public_dns_namespace(self, UpdatePublicDnsNamespaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdatePublicDnsNamespace", body)
+    def update_public_dns_namespace(self, UpdatePublicDnsNamespaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_public_dns_namespace_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UpdatePublicDnsNamespace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateService
     # errors: DuplicateRequest, InvalidInput, ServiceNotFound
-    def update_service(self, UpdateServiceRequest input) -> str:
-        auto body = update_service_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdateService", body)
+    def update_service(self, UpdateServiceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_service_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UpdateService", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateServiceAttributes
     # errors: InvalidInput, ServiceAttributesLimitExceededException, ServiceNotFound
-    def update_service_attributes(self, UpdateServiceAttributesRequest input) -> str:
-        auto body = update_service_attributes_request_to_json(input)
-        return awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "UpdateServiceAttributes", body)
-
-    # Paginator for ListInstances — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Instances).
-    def paginate_list_instances(self, ListInstancesRequest input):
-        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListInstances", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListNamespaces — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Namespaces).
-    def paginate_list_namespaces(self, ListNamespacesRequest input):
-        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
-        while True:
-            auto body = list_namespaces_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListNamespaces", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListOperations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Operations).
-    def paginate_list_operations(self, ListOperationsRequest input):
-        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
-        while True:
-            auto body = list_operations_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListOperations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListServices — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Services).
-    def paginate_list_services(self, ListServicesRequest input):
-        auto host = endpoints.regional_host(servicediscovery_protocol().service, self.region)
-        while True:
-            auto body = list_services_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(servicediscovery_protocol(), self.creds, self.region, "ListServices", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_service_attributes(self, UpdateServiceAttributesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_service_attributes_request_to_cbor(input))
+        auto host = endpoints.regional_host(servicediscovery_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicediscovery_service(), self.region, host, "Route53AutoNaming_v20170314", "UpdateServiceAttributes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a ServiceDiscoveryClient bound to credentials + region.
 def servicediscovery_client(core.Credentials creds, str region) -> ServiceDiscoveryClient:

@@ -14,10 +14,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 409 operations — 408 with a generated method,
+# Coverage (v0, awsJson only): 417 operations — 416 with a generated method,
 #   1 skipped (input has a non-string-keyed map or free-form document member).
-#   1580 structs (1036 @derive(Json)), 349 enums, 4 error variants.
-#   90 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1609 structs (1050 @derive(Json)), 355 enums, 4 error variants.
+#   94 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   13 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -1165,9 +1165,32 @@ enum ClusterNodeRecovery:
 
 @derive(Json)
 @json(open)
+enum ClusterOnDrainTimeout:
+    Force
+    Skip
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ClusterOperationStatus:
+    InProgress
+    Superseded
+    Done
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ClusterOperationType:
+    Scaling
+    DeepHealthCheck
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum ClusterPatchingStrategy:
     WhenIdle
     WhenAllIdle
+    DrainFirst
     Unknown(str value)
 
 @derive(Json)
@@ -1470,6 +1493,32 @@ enum ExecutionStatus:
     Failed
     Stopping
     Stopped
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ExtensionHealthIssueCode:
+    InvalidConfiguration
+    ConfigurationConflict
+    AccessDenied
+    ResourceNotFound
+    DependencyUnreachable
+    ExtensionUnhealthy
+    InternalFailure
+    Other
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ExtensionStatus:
+    Creating
+    Active
+    CreateFailed
+    Updating
+    Deleting
+    DeleteFailed
+    Degraded
+    UpdateFailed
     Unknown(str value)
 
 @derive(Json)
@@ -2813,6 +2862,13 @@ enum PipelineExecutionStatus:
     Failed
     Succeeded
     CompletedWithFailures
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum PipelineManagedBy:
+    AWS
+    CUSTOMER
     Unknown(str value)
 
 @derive(Json)
@@ -4925,6 +4981,12 @@ struct AcceleratorPartitionConfig:
     MIGProfileType Type
     int64 Count
 
+# no @derive(Json): member(s) AcceleratorPartitionTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AcceleratorPartitionLayout:
+    Optional[list[str]] AcceleratorPartitionTypes
+
 @derive(Json)
 struct ActionSource:
     str SourceUri
@@ -5065,6 +5127,13 @@ struct AlgorithmValidationProfile:
 struct AlgorithmValidationSpecification:
     str ValidationRole
     list[AlgorithmValidationProfile] ValidationProfiles
+
+# no @derive(Json): member(s) Add: list[str], Remove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AliasOperations:
+    Optional[list[str]] Add
+    Optional[list[str]] Remove
 
 @derive(Json)
 struct AmazonQSettings:
@@ -5875,6 +5944,8 @@ struct ClusterAutoPatchConfig:
     ClusterPatchingStrategy PatchingStrategy
     Optional[ClusterPatchSchedule] PatchSchedule
     Optional[DeploymentConfiguration] DeploymentConfig
+    Optional[int64] IdleWaitWindowInSeconds
+    Optional[ClusterDrainPolicy] DrainPolicy
 
 # no @derive(Json): member(s) DeploymentConfig: DeploymentConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -5884,6 +5955,8 @@ struct ClusterAutoPatchConfigDetails:
     Optional[ClusterPatchScheduleDetails] CurrentPatchSchedule
     Optional[ClusterPatchScheduleDetails] DesiredPatchSchedule
     Optional[DeploymentConfiguration] DeploymentConfig
+    Optional[int64] IdleWaitWindowInSeconds
+    Optional[ClusterDrainPolicy] DrainPolicy
 
 @derive(Json)
 struct ClusterAutoScalingConfig:
@@ -5901,6 +5974,11 @@ struct ClusterAutoScalingConfigOutput:
 struct ClusterCapacityRequirements:
     Optional[ClusterSpotOptions] Spot
     Optional[ClusterOnDemandOptions] OnDemand
+
+@derive(Json)
+struct ClusterDrainPolicy:
+    Optional[int64] DrainTimeoutInSeconds
+    Optional[ClusterOnDrainTimeout] OnDrainTimeout
 
 @derive(Json)
 struct ClusterEbsVolumeConfig:
@@ -5922,6 +6000,7 @@ struct ClusterEventDetail:
     Optional[EventDetails] EventDetails
     Optional[str] Description
     Optional[ClusterEventLevel] EventLevel
+    Optional[str] OperationId
 
 @derive(Json)
 struct ClusterEventSummary:
@@ -5934,6 +6013,7 @@ struct ClusterEventSummary:
     DateTime EventTime
     Optional[str] Description
     Optional[ClusterEventLevel] EventLevel
+    Optional[str] OperationId
 
 @derive(Json)
 struct ClusterFsxLustreConfig:
@@ -6142,6 +6222,27 @@ struct ClusterNodeSummary:
 struct ClusterOnDemandOptions:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
+
+@derive(Json)
+struct ClusterOperationScalingConfiguration:
+    Optional[int64] CurrentCount
+    Optional[int64] TargetCount
+    Optional[int64] MinCount
+
+@derive(Json)
+struct ClusterOperationScalingDetails:
+    Optional[str] InstanceGroupName
+    Optional[ClusterOperationStatus] Status
+    Optional[ClusterOperationScalingConfiguration] Original
+    Optional[ClusterOperationScalingConfiguration] Desired
+
+@derive(Json)
+struct ClusterOperationSummary:
+    Optional[str] OperationId
+    Optional[str] ClusterArn
+    Optional[ClusterOperationType] Type
+    Optional[ClusterOperationStatus] Status
+    Optional[DateTime] CreationTime
 
 @derive(Json)
 struct ClusterOrchestrator:
@@ -6605,6 +6706,21 @@ struct CreateAutoMLJobV2Request:
 @derive(Json)
 struct CreateAutoMLJobV2Response:
     str AutoMLJobArn
+
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateClusterExtensionRequest:
+    str ClusterArn
+    str ExtensionName
+    Optional[str] ExtensionVersion
+    Optional[str] ConfigurationValues
+    Optional[list[Tag]] Tags
+    Optional[str] ClientToken
+
+@derive(Json)
+struct CreateClusterExtensionResponse:
+    str ExtensionArn
 
 # no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupSpecification], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupSpecification], VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -7357,7 +7473,7 @@ struct CreatePartnerAppRequest:
 struct CreatePartnerAppResponse:
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# no @derive(Json): member(s) Tags: list[Tag], PipelineVersionAliases: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CreatePipelineRequest:
@@ -7370,6 +7486,7 @@ struct CreatePipelineRequest:
     str RoleArn
     Optional[list[Tag]] Tags
     Optional[ParallelismConfiguration] ParallelismConfiguration
+    Optional[list[str]] PipelineVersionAliases
 
 @derive(Json)
 struct CreatePipelineResponse:
@@ -7884,6 +8001,15 @@ struct DeleteAssociationRequest:
 struct DeleteAssociationResponse:
     Optional[str] SourceArn
     Optional[str] DestinationArn
+
+@derive(Json)
+struct DeleteClusterExtensionRequest:
+    str ClusterArn
+    str ExtensionArn
+
+@derive(Json)
+struct DeleteClusterExtensionResponse:
+    str ExtensionArn
 
 @derive(Json)
 struct DeleteClusterRequest:
@@ -8501,6 +8627,19 @@ struct DescribeClusterEventResponse:
     Optional[ClusterEventDetail] EventDetails
 
 @derive(Json)
+struct DescribeClusterExtensionRequest:
+    str ClusterArn
+    str ExtensionArn
+
+# no @derive(Json): member(s) Health: ExtensionHealth not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DescribeClusterExtensionResponse:
+    ExtensionDetails ExtensionDetails
+    Optional[ExtensionNodeSummary] NodeSummary
+    Optional[ExtensionHealth] Health
+
+@derive(Json)
 struct DescribeClusterNodeRequest:
     str ClusterName
     Optional[str] NodeId
@@ -8511,6 +8650,23 @@ struct DescribeClusterNodeRequest:
 # (zaplang-io/zap#424).
 struct DescribeClusterNodeResponse:
     ClusterNodeDetails NodeDetails
+
+@derive(Json)
+struct DescribeClusterOperationRequest:
+    str ClusterName
+    str OperationId
+
+# no @derive(Json): member(s) ScalingDetails: list[ClusterOperationScalingDetails], DeepHealthCheckDetails: list[InstanceGroupHealthCheckConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DescribeClusterOperationResponse:
+    Optional[str] OperationId
+    Optional[str] ClusterArn
+    Optional[ClusterOperationType] Type
+    Optional[ClusterOperationStatus] Status
+    Optional[DateTime] CreationTime
+    Optional[list[ClusterOperationScalingDetails]] ScalingDetails
+    Optional[list[InstanceGroupHealthCheckConfiguration]] DeepHealthCheckDetails
 
 @derive(Json)
 struct DescribeClusterRequest:
@@ -8936,6 +9092,8 @@ struct DescribeHubContentResponse:
     Optional[str] FailureReason
     DateTime CreationTime
     Optional[DateTime] LastModifiedTime
+    Optional[UserContext] CreatedBy
+    Optional[UserContext] LastModifiedBy
 
 @derive(Json)
 struct DescribeHubRequest:
@@ -8955,6 +9113,8 @@ struct DescribeHubResponse:
     Optional[str] FailureReason
     DateTime CreationTime
     DateTime LastModifiedTime
+    Optional[UserContext] CreatedBy
+    Optional[UserContext] LastModifiedBy
 
 @derive(Json)
 struct DescribeHumanTaskUiRequest:
@@ -9542,7 +9702,7 @@ struct DescribePipelineDefinitionForExecutionResponse:
 struct DescribePipelineExecutionRequest:
     str PipelineExecutionArn
 
-# no @derive(Json): member(s) SelectiveExecutionConfig: SelectiveExecutionConfig not derivable (list/map collections);
+# no @derive(Json): member(s) SelectiveExecutionConfig: SelectiveExecutionConfig, PipelineVersionAliases: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct DescribePipelineExecutionResponse:
@@ -9561,13 +9721,18 @@ struct DescribePipelineExecutionResponse:
     Optional[SelectiveExecutionConfig] SelectiveExecutionConfig
     Optional[int64] PipelineVersionId
     Optional[MLflowConfiguration] MLflowConfig
+    Optional[list[str]] PipelineVersionAliases
+    Optional[str] RoleArn
 
 @derive(Json)
 struct DescribePipelineRequest:
     str PipelineName
     Optional[int64] PipelineVersionId
+    Optional[str] PipelineVersionAlias
 
-@derive(Json)
+# no @derive(Json): member(s) PipelineVersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipelineResponse:
     Optional[str] PipelineArn
     Optional[str] PipelineName
@@ -9584,6 +9749,7 @@ struct DescribePipelineResponse:
     Optional[ParallelismConfiguration] ParallelismConfiguration
     Optional[str] PipelineVersionDisplayName
     Optional[str] PipelineVersionDescription
+    Optional[list[str]] PipelineVersionAliases
 
 @derive(Json)
 struct DescribeProcessingJobRequest:
@@ -10434,6 +10600,46 @@ struct ExtendTrainingPlanResponse:
     list[TrainingPlanExtension] TrainingPlanExtensions
 
 @derive(Json)
+struct ExtensionDetails:
+    str ClusterArn
+    str ExtensionArn
+    str ExtensionName
+    str ExtensionVersion
+    ExtensionStatus Status
+    Optional[str] ConfigurationValues
+    Optional[DateTime] CreationTime
+    Optional[DateTime] LastModifiedTime
+
+# no @derive(Json): member(s) Issues: list[ExtensionHealthIssue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ExtensionHealth:
+    list[ExtensionHealthIssue] Issues
+
+@derive(Json)
+struct ExtensionHealthIssue:
+    ExtensionHealthIssueCode Code
+    str Message
+    int64 NodeCount
+
+@derive(Json)
+struct ExtensionNodeSummary:
+    int64 TotalCount
+    int64 ActiveCount
+
+@derive(Json)
+struct ExtensionSummary:
+    str ExtensionArn
+    str ExtensionName
+    str ExtensionVersion
+    ExtensionStatus Status
+    Optional[DateTime] CreationTime
+
+@derive(Json)
+struct ExtensionVersionSummary:
+    str ExtensionVersion
+
+@derive(Json)
 struct FSxLustreConfig:
     int64 SizeInGiB
     int64 PerUnitStorageThroughput
@@ -10698,6 +10904,8 @@ struct HubContent:
     Optional[str] FailureReason
     DateTime CreationTime
     Optional[DateTime] LastModifiedTime
+    Optional[UserContext] CreatedBy
+    Optional[UserContext] LastModifiedBy
     Optional[list[Tag]] Tags
 
 @derive(Json)
@@ -10722,6 +10930,11 @@ struct HubContentInfo:
     HubContentStatus HubContentStatus
     DateTime CreationTime
     Optional[DateTime] OriginalCreationTime
+
+@derive(Json)
+struct HubContentStepMetadata:
+    Optional[str] HubArn
+    Optional[str] HubContentArn
 
 # no @derive(Json): member(s) HubSearchKeywords: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -11047,6 +11260,7 @@ struct InferenceComponentComputeResourceRequirements:
     Optional[float64] NumberOfAcceleratorDevicesRequired
     int64 MinMemoryRequiredInMb
     Optional[int64] MaxMemoryRequiredInMb
+    Optional[str] AcceleratorPartitionType
 
 # no @derive(Json): member(s) Environment: dict[str, str], ContainerMetricsConfig: ContainerMetricsConfig not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -11798,6 +12012,7 @@ struct ListClusterEventsRequest:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
     Optional[ClusterEventResourceType] ResourceType
+    Optional[str] OperationId
     Optional[int64] MaxResults
     Optional[str] NextToken
 
@@ -11807,6 +12022,34 @@ struct ListClusterEventsRequest:
 struct ListClusterEventsResponse:
     Optional[str] NextToken
     Optional[list[ClusterEventSummary]] Events
+
+@derive(Json)
+struct ListClusterExtensionVersionsRequest:
+    str ExtensionName
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) ExtensionVersions: list[ExtensionVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListClusterExtensionVersionsResponse:
+    list[ExtensionVersionSummary] ExtensionVersions
+    Optional[str] NextToken
+
+@derive(Json)
+struct ListClusterExtensionsRequest:
+    str ClusterArn
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+    Optional[DateTime] CreationTimeAfter
+    Optional[DateTime] CreationTimeBefore
+
+# no @derive(Json): member(s) Extensions: list[ExtensionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListClusterExtensionsResponse:
+    list[ExtensionSummary] Extensions
+    Optional[str] NextToken
 
 @derive(Json)
 struct ListClusterNodesRequest:
@@ -11826,6 +12069,25 @@ struct ListClusterNodesRequest:
 struct ListClusterNodesResponse:
     Optional[str] NextToken
     list[ClusterNodeSummary] ClusterNodeSummaries
+
+@derive(Json)
+struct ListClusterOperationsRequest:
+    str ClusterName
+    Optional[ClusterOperationStatus] Status
+    Optional[ClusterOperationType] Type
+    Optional[DateTime] CreationTimeAfter
+    Optional[DateTime] CreationTimeBefore
+    Optional[str] SortBy
+    Optional[SortOrder] SortOrder
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) ClusterOperationSummaries: list[ClusterOperationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListClusterOperationsResponse:
+    Optional[str] NextToken
+    Optional[list[ClusterOperationSummary]] ClusterOperationSummaries
 
 @derive(Json)
 struct ListClusterSchedulerConfigsRequest:
@@ -12829,6 +13091,7 @@ struct ListPipelineExecutionsRequest:
     Optional[SortOrder] SortOrder
     Optional[str] NextToken
     Optional[int64] MaxResults
+    Optional[str] PipelineVersionAlias
 
 # no @derive(Json): member(s) PipelineExecutionSummaries: list[PipelineExecutionSummary] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -12875,6 +13138,7 @@ struct ListPipelinesRequest:
     Optional[SortOrder] SortOrder
     Optional[str] NextToken
     Optional[int64] MaxResults
+    Optional[PipelineManagedBy] ManagedBy
 
 # no @derive(Json): member(s) PipelineSummaries: list[PipelineSummary] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -14236,7 +14500,7 @@ struct PendingDeploymentSummary:
     Optional[DateTime] StartTime
     Optional[list[PendingProductionVariantSummary]] ShadowProductionVariants
 
-# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus] not derivable (list/map collections);
+# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], AcceleratorPartitionLayouts: list[AcceleratorPartitionLayout] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct PendingProductionVariantSummary:
@@ -14254,6 +14518,7 @@ struct PendingProductionVariantSummary:
     Optional[ProductionVariantServerlessConfig] DesiredServerlessConfig
     Optional[ProductionVariantManagedInstanceScaling] ManagedInstanceScaling
     Optional[ProductionVariantRoutingConfig] RoutingConfig
+    Optional[list[AcceleratorPartitionLayout]] AcceleratorPartitionLayouts
 
 @derive(Json)
 struct Phase:
@@ -14354,8 +14619,11 @@ struct PipelineExecutionStepMetadata:
     Optional[AthenaStepMetadata] Athena
     Optional[CleanupStepMetadata] Cleanup
     Optional[ForEachStepMetadata] ForEach
+    Optional[HubContentStepMetadata] HubContent
 
-@derive(Json)
+# no @derive(Json): member(s) PipelineVersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionSummary:
     Optional[str] PipelineExecutionArn
     Optional[DateTime] StartTime
@@ -14363,6 +14631,7 @@ struct PipelineExecutionSummary:
     Optional[str] PipelineExecutionDescription
     Optional[str] PipelineExecutionDisplayName
     Optional[str] PipelineExecutionFailureReason
+    Optional[list[str]] PipelineVersionAliases
 
 @derive(Json)
 struct PipelineExperimentConfig:
@@ -14380,7 +14649,9 @@ struct PipelineSummary:
     Optional[DateTime] LastModifiedTime
     Optional[DateTime] LastExecutionTime
 
-@derive(Json)
+# no @derive(Json): member(s) PipelineVersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineVersion:
     Optional[str] PipelineArn
     Optional[int64] PipelineVersionId
@@ -14393,8 +14664,11 @@ struct PipelineVersion:
     Optional[str] LastExecutedPipelineExecutionArn
     Optional[str] LastExecutedPipelineExecutionDisplayName
     Optional[PipelineExecutionStatus] LastExecutedPipelineExecutionStatus
+    Optional[list[str]] PipelineVersionAliases
 
-@derive(Json)
+# no @derive(Json): member(s) PipelineVersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineVersionSummary:
     Optional[str] PipelineArn
     Optional[int64] PipelineVersionId
@@ -14402,6 +14676,7 @@ struct PipelineVersionSummary:
     Optional[str] PipelineVersionDescription
     Optional[str] PipelineVersionDisplayName
     Optional[str] LastExecutionPipelineExecutionArn
+    Optional[list[str]] PipelineVersionAliases
 
 @derive(Json)
 struct PlacementSpecification:
@@ -14536,7 +14811,7 @@ struct ProcessingS3Output:
 struct ProcessingStoppingCondition:
     int64 MaxRuntimeInSeconds
 
-# no @derive(Json): member(s) InstancePools: list[InstancePool] not derivable (list/map collections);
+# no @derive(Json): member(s) InstancePools: list[InstancePool], AcceleratorPartitionLayouts: list[AcceleratorPartitionLayout] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ProductionVariant:
@@ -14558,6 +14833,7 @@ struct ProductionVariant:
     Optional[ProductionVariantRoutingConfig] RoutingConfig
     Optional[ProductionVariantInferenceAmiVersion] InferenceAmiVersion
     Optional[ProductionVariantCapacityReservationConfig] CapacityReservationConfig
+    Optional[list[AcceleratorPartitionLayout]] AcceleratorPartitionLayouts
 
 @derive(Json)
 struct ProductionVariantCapacityReservationConfig:
@@ -14615,7 +14891,7 @@ struct ProductionVariantStatus:
     Optional[str] StatusMessage
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], CapacityReservationConfig: ProductionVariantCapacityReservationSummary not derivable (list/map collections);
+# no @derive(Json): member(s) DeployedImages: list[DeployedImage], InstancePools: list[InstancePoolSummary], VariantStatus: list[ProductionVariantStatus], CapacityReservationConfig: ProductionVariantCapacityReservationSummary, AcceleratorPartitionLayouts: list[AcceleratorPartitionLayout] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ProductionVariantSummary:
@@ -14632,6 +14908,7 @@ struct ProductionVariantSummary:
     Optional[ProductionVariantManagedInstanceScaling] ManagedInstanceScaling
     Optional[ProductionVariantRoutingConfig] RoutingConfig
     Optional[ProductionVariantCapacityReservationSummary] CapacityReservationConfig
+    Optional[list[AcceleratorPartitionLayout]] AcceleratorPartitionLayouts
 
 # no @derive(Json): member(s) ProfilingParameters: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -15177,7 +15454,7 @@ struct SearchExpression:
     Optional[list[SearchExpression]] SubExpressions
     Optional[BooleanOperator] Operator
 
-# no @derive(Json): member(s) TrainingJob: TrainingJob, Experiment: Experiment, Trial: Trial, TrialComponent: TrialComponent, Endpoint: Endpoint, ModelPackage: ModelPackage, ModelPackageGroup: ModelPackageGroup, Pipeline: Pipeline, PipelineExecution: PipelineExecution, FeatureGroup: FeatureGroup, FeatureMetadata: FeatureMetadata, Project: Project, HyperParameterTuningJob: HyperParameterTuningJobSearchEntity, ModelCard: ModelCard, Model: ModelDashboardModel, Job: Job, HubContent: HubContent not derivable (list/map collections);
+# no @derive(Json): member(s) TrainingJob: TrainingJob, Experiment: Experiment, Trial: Trial, TrialComponent: TrialComponent, Endpoint: Endpoint, ModelPackage: ModelPackage, ModelPackageGroup: ModelPackageGroup, Pipeline: Pipeline, PipelineExecution: PipelineExecution, PipelineVersion: PipelineVersion, FeatureGroup: FeatureGroup, FeatureMetadata: FeatureMetadata, Project: Project, HyperParameterTuningJob: HyperParameterTuningJobSearchEntity, ModelCard: ModelCard, Model: ModelDashboardModel, Job: Job, HubContent: HubContent not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct SearchRecord:
@@ -15493,6 +15770,8 @@ struct StartPipelineExecutionRequest:
     Optional[SelectiveExecutionConfig] SelectiveExecutionConfig
     Optional[int64] PipelineVersionId
     Optional[str] MlflowExperimentName
+    Optional[str] PipelineVersionAlias
+    Optional[str] RoleArn
 
 @derive(Json)
 struct StartPipelineExecutionResponse:
@@ -16350,6 +16629,18 @@ struct UpdateArtifactRequest:
 struct UpdateArtifactResponse:
     Optional[str] ArtifactArn
 
+@derive(Json)
+struct UpdateClusterExtensionRequest:
+    str ClusterArn
+    str ExtensionArn
+    Optional[str] ExtensionVersion
+    Optional[str] ConfigurationValues
+    Optional[str] ClientToken
+
+@derive(Json)
+struct UpdateClusterExtensionResponse:
+    str ExtensionArn
+
 # no @derive(Json): member(s) InstanceGroups: list[ClusterInstanceGroupSpecification], RestrictedInstanceGroups: list[ClusterRestrictedInstanceGroupSpecification], InstanceGroupsToDelete: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -16804,7 +17095,9 @@ struct UpdatePipelineExecutionRequest:
 struct UpdatePipelineExecutionResponse:
     Optional[str] PipelineExecutionArn
 
-@derive(Json)
+# no @derive(Json): member(s) PipelineVersionAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipelineRequest:
     str PipelineName
     Optional[str] PipelineDisplayName
@@ -16813,18 +17106,22 @@ struct UpdatePipelineRequest:
     Optional[str] PipelineDescription
     Optional[str] RoleArn
     Optional[ParallelismConfiguration] ParallelismConfiguration
+    Optional[list[str]] PipelineVersionAliases
 
 @derive(Json)
 struct UpdatePipelineResponse:
     Optional[str] PipelineArn
     Optional[int64] PipelineVersionId
 
-@derive(Json)
+# no @derive(Json): member(s) PipelineVersionAliasOperations: AliasOperations not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipelineVersionRequest:
     str PipelineArn
     int64 PipelineVersionId
     Optional[str] PipelineVersionDisplayName
     Optional[str] PipelineVersionDescription
+    Optional[AliasOperations] PipelineVersionAliasOperations
 
 @derive(Json)
 struct UpdatePipelineVersionResponse:
@@ -17268,6 +17565,17 @@ def ai_recommendation_performance_target_to_json(AIRecommendationPerformanceTarg
     parts.append("\"Constraints\":" + api_sagemaker_json_arr(e0))
     return api_sagemaker_json_obj(parts)
 
+# Serialize AcceleratorPartitionLayout to a compact JSON object (declaration order).
+def accelerator_partition_layout_to_json(AcceleratorPartitionLayout v) -> str:
+    list[str] parts = []
+    if v.AcceleratorPartitionTypes.is_some():
+        auto u0 = v.AcceleratorPartitionTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"AcceleratorPartitionTypes\":" + api_sagemaker_json_arr(e1))
+    return api_sagemaker_json_obj(parts)
+
 # Serialize AddClusterNodeSpecification to a compact JSON object (declaration order).
 def add_cluster_node_specification_to_json(AddClusterNodeSpecification v) -> str:
     list[str] parts = []
@@ -17388,6 +17696,23 @@ def algorithm_validation_specification_to_json(AlgorithmValidationSpecification 
     for x0 in v.ValidationProfiles:
         e0.append(algorithm_validation_profile_to_json(x0))
     parts.append("\"ValidationProfiles\":" + api_sagemaker_json_arr(e0))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize AliasOperations to a compact JSON object (declaration order).
+def alias_operations_to_json(AliasOperations v) -> str:
+    list[str] parts = []
+    if v.Add.is_some():
+        auto u0 = v.Add.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_sagemaker_json_str(x1))
+        parts.append("\"Add\":" + api_sagemaker_json_arr(e1))
+    if v.Remove.is_some():
+        auto u2 = v.Remove.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(api_sagemaker_json_str(x3))
+        parts.append("\"Remove\":" + api_sagemaker_json_arr(e3))
     return api_sagemaker_json_obj(parts)
 
 # Serialize AppSpecification to a compact JSON object (declaration order).
@@ -17831,6 +18156,12 @@ def cluster_auto_patch_config_to_json(ClusterAutoPatchConfig v) -> str:
     if v.DeploymentConfig.is_some():
         auto u1 = v.DeploymentConfig.unwrap()
         parts.append("\"DeploymentConfig\":" + deployment_configuration_to_json(u1))
+    if v.IdleWaitWindowInSeconds.is_some():
+        auto u2 = v.IdleWaitWindowInSeconds.unwrap()
+        parts.append("\"IdleWaitWindowInSeconds\":" + str(u2))
+    if v.DrainPolicy.is_some():
+        auto u3 = v.DrainPolicy.unwrap()
+        parts.append("\"DrainPolicy\":" + u3.to_json())
     return api_sagemaker_json_obj(parts)
 
 # Serialize ClusterInstanceGroupSpecification to a compact JSON object (declaration order).
@@ -18344,6 +18675,28 @@ def create_auto_ml_job_request_to_json(CreateAutoMLJobRequest v) -> str:
     if v.ModelDeployConfig.is_some():
         auto u7 = v.ModelDeployConfig.unwrap()
         parts.append("\"ModelDeployConfig\":" + u7.to_json())
+    return api_sagemaker_json_obj(parts)
+
+# Serialize CreateClusterExtensionRequest to a compact JSON object (declaration order).
+def create_cluster_extension_request_to_json(CreateClusterExtensionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterArn\":" + api_sagemaker_json_str(v.ClusterArn))
+    parts.append("\"ExtensionName\":" + api_sagemaker_json_str(v.ExtensionName))
+    if v.ExtensionVersion.is_some():
+        auto u0 = v.ExtensionVersion.unwrap()
+        parts.append("\"ExtensionVersion\":" + api_sagemaker_json_str(u0))
+    if v.ConfigurationValues.is_some():
+        auto u1 = v.ConfigurationValues.unwrap()
+        parts.append("\"ConfigurationValues\":" + api_sagemaker_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + api_sagemaker_json_arr(e3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + api_sagemaker_json_str(u4))
     return api_sagemaker_json_obj(parts)
 
 # Serialize CreateClusterRequest to a compact JSON object (declaration order).
@@ -19542,6 +19895,12 @@ def create_pipeline_request_to_json(CreatePipelineRequest v) -> str:
     if v.ParallelismConfiguration.is_some():
         auto u6 = v.ParallelismConfiguration.unwrap()
         parts.append("\"ParallelismConfiguration\":" + u6.to_json())
+    if v.PipelineVersionAliases.is_some():
+        auto u7 = v.PipelineVersionAliases.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(api_sagemaker_json_str(x8))
+        parts.append("\"PipelineVersionAliases\":" + api_sagemaker_json_arr(e8))
     return api_sagemaker_json_obj(parts)
 
 # Serialize CreateProcessingJobRequest to a compact JSON object (declaration order).
@@ -21514,6 +21873,12 @@ def production_variant_to_json(ProductionVariant v) -> str:
     if v.CapacityReservationConfig.is_some():
         auto u17 = v.CapacityReservationConfig.unwrap()
         parts.append("\"CapacityReservationConfig\":" + u17.to_json())
+    if v.AcceleratorPartitionLayouts.is_some():
+        auto u18 = v.AcceleratorPartitionLayouts.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(accelerator_partition_layout_to_json(x19))
+        parts.append("\"AcceleratorPartitionLayouts\":" + api_sagemaker_json_arr(e19))
     return api_sagemaker_json_obj(parts)
 
 # Serialize ProfilerConfig to a compact JSON object (declaration order).
@@ -22193,6 +22558,12 @@ def start_pipeline_execution_request_to_json(StartPipelineExecutionRequest v) ->
     if v.MlflowExperimentName.is_some():
         auto u7 = v.MlflowExperimentName.unwrap()
         parts.append("\"MlflowExperimentName\":" + api_sagemaker_json_str(u7))
+    if v.PipelineVersionAlias.is_some():
+        auto u8 = v.PipelineVersionAlias.unwrap()
+        parts.append("\"PipelineVersionAlias\":" + api_sagemaker_json_str(u8))
+    if v.RoleArn.is_some():
+        auto u9 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + api_sagemaker_json_str(u9))
     return api_sagemaker_json_obj(parts)
 
 # Serialize StopInferenceExperimentRequest to a compact JSON object (declaration order).
@@ -22995,6 +23366,52 @@ def update_partner_app_request_to_json(UpdatePartnerAppRequest v) -> str:
         parts.append("\"Tags\":" + api_sagemaker_json_arr(e10))
     return api_sagemaker_json_obj(parts)
 
+# Serialize UpdatePipelineRequest to a compact JSON object (declaration order).
+def update_pipeline_request_to_json(UpdatePipelineRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PipelineName\":" + api_sagemaker_json_str(v.PipelineName))
+    if v.PipelineDisplayName.is_some():
+        auto u0 = v.PipelineDisplayName.unwrap()
+        parts.append("\"PipelineDisplayName\":" + api_sagemaker_json_str(u0))
+    if v.PipelineDefinition.is_some():
+        auto u1 = v.PipelineDefinition.unwrap()
+        parts.append("\"PipelineDefinition\":" + api_sagemaker_json_str(u1))
+    if v.PipelineDefinitionS3Location.is_some():
+        auto u2 = v.PipelineDefinitionS3Location.unwrap()
+        parts.append("\"PipelineDefinitionS3Location\":" + u2.to_json())
+    if v.PipelineDescription.is_some():
+        auto u3 = v.PipelineDescription.unwrap()
+        parts.append("\"PipelineDescription\":" + api_sagemaker_json_str(u3))
+    if v.RoleArn.is_some():
+        auto u4 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + api_sagemaker_json_str(u4))
+    if v.ParallelismConfiguration.is_some():
+        auto u5 = v.ParallelismConfiguration.unwrap()
+        parts.append("\"ParallelismConfiguration\":" + u5.to_json())
+    if v.PipelineVersionAliases.is_some():
+        auto u6 = v.PipelineVersionAliases.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(api_sagemaker_json_str(x7))
+        parts.append("\"PipelineVersionAliases\":" + api_sagemaker_json_arr(e7))
+    return api_sagemaker_json_obj(parts)
+
+# Serialize UpdatePipelineVersionRequest to a compact JSON object (declaration order).
+def update_pipeline_version_request_to_json(UpdatePipelineVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PipelineArn\":" + api_sagemaker_json_str(v.PipelineArn))
+    parts.append("\"PipelineVersionId\":" + str(v.PipelineVersionId))
+    if v.PipelineVersionDisplayName.is_some():
+        auto u0 = v.PipelineVersionDisplayName.unwrap()
+        parts.append("\"PipelineVersionDisplayName\":" + api_sagemaker_json_str(u0))
+    if v.PipelineVersionDescription.is_some():
+        auto u1 = v.PipelineVersionDescription.unwrap()
+        parts.append("\"PipelineVersionDescription\":" + api_sagemaker_json_str(u1))
+    if v.PipelineVersionAliasOperations.is_some():
+        auto u2 = v.PipelineVersionAliasOperations.unwrap()
+        parts.append("\"PipelineVersionAliasOperations\":" + alias_operations_to_json(u2))
+    return api_sagemaker_json_obj(parts)
+
 # Serialize UpdateProjectInput to a compact JSON object (declaration order).
 def update_project_input_to_json(UpdateProjectInput v) -> str:
     list[str] parts = []
@@ -23383,6 +23800,12 @@ struct SageMakerClient:
     def create_cluster(self, CreateClusterRequest input) -> str:
         auto body = create_cluster_request_to_json(input)
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateCluster", body)
+
+    # CreateClusterExtension
+    # errors: ConflictException, ResourceInUse, ResourceNotFound
+    def create_cluster_extension(self, CreateClusterExtensionRequest input) -> str:
+        auto body = create_cluster_extension_request_to_json(input)
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "CreateClusterExtension", body)
 
     # CreateClusterSchedulerConfig
     # errors: ConflictException, ResourceLimitExceeded
@@ -23812,6 +24235,12 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteCluster", body)
 
+    # DeleteClusterExtension
+    # errors: ConflictException, ResourceInUse, ResourceNotFound
+    def delete_cluster_extension(self, DeleteClusterExtensionRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DeleteClusterExtension", body)
+
     # DeleteClusterSchedulerConfig
     # errors: ResourceNotFound
     def delete_cluster_scheduler_config(self, DeleteClusterSchedulerConfigRequest input) -> str:
@@ -24195,11 +24624,23 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DescribeClusterEvent", body)
 
+    # DescribeClusterExtension
+    # errors: ResourceNotFound
+    def describe_cluster_extension(self, DescribeClusterExtensionRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DescribeClusterExtension", body)
+
     # DescribeClusterNode
     # errors: ResourceNotFound
     def describe_cluster_node(self, DescribeClusterNodeRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DescribeClusterNode", body)
+
+    # DescribeClusterOperation
+    # errors: ResourceNotFound
+    def describe_cluster_operation(self, DescribeClusterOperationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "DescribeClusterOperation", body)
 
     # DescribeClusterSchedulerConfig
     # errors: ResourceNotFound
@@ -24709,11 +25150,28 @@ struct SageMakerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterEvents", body)
 
+    # ListClusterExtensionVersions
+    def list_cluster_extension_versions(self, ListClusterExtensionVersionsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterExtensionVersions", body)
+
+    # ListClusterExtensions
+    # errors: ResourceNotFound
+    def list_cluster_extensions(self, ListClusterExtensionsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterExtensions", body)
+
     # ListClusterNodes
     # errors: ResourceNotFound
     def list_cluster_nodes(self, ListClusterNodesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterNodes", body)
+
+    # ListClusterOperations
+    # errors: ResourceNotFound
+    def list_cluster_operations(self, ListClusterOperationsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterOperations", body)
 
     # ListClusterSchedulerConfigs
     def list_cluster_scheduler_configs(self, ListClusterSchedulerConfigsRequest input) -> str:
@@ -25360,6 +25818,12 @@ struct SageMakerClient:
         auto body = update_cluster_request_to_json(input)
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateCluster", body)
 
+    # UpdateClusterExtension
+    # errors: ConflictException, ResourceNotFound
+    def update_cluster_extension(self, UpdateClusterExtensionRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdateClusterExtension", body)
+
     # UpdateClusterSchedulerConfig
     # errors: ConflictException, ResourceLimitExceeded, ResourceNotFound
     def update_cluster_scheduler_config(self, UpdateClusterSchedulerConfigRequest input) -> str:
@@ -25542,7 +26006,7 @@ struct SageMakerClient:
     # UpdatePipeline
     # errors: ConflictException, ResourceNotFound
     def update_pipeline(self, UpdatePipelineRequest input) -> str:
-        auto body = input.to_json()
+        auto body = update_pipeline_request_to_json(input)
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdatePipeline", body)
 
     # UpdatePipelineExecution
@@ -25554,7 +26018,7 @@ struct SageMakerClient:
     # UpdatePipelineVersion
     # errors: ConflictException, ResourceNotFound
     def update_pipeline_version(self, UpdatePipelineVersionRequest input) -> str:
-        auto body = input.to_json()
+        auto body = update_pipeline_version_request_to_json(input)
         return awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "UpdatePipelineVersion", body)
 
     # UpdateProject
@@ -25815,6 +26279,34 @@ struct SageMakerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListClusterExtensionVersions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ExtensionVersions).
+    def paginate_list_cluster_extension_versions(self, ListClusterExtensionVersionsRequest input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterExtensionVersions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListClusterExtensions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Extensions).
+    def paginate_list_cluster_extensions(self, ListClusterExtensionsRequest input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterExtensions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListClusterNodes — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ClusterNodeSummaries).
     def paginate_list_cluster_nodes(self, ListClusterNodesRequest input):
@@ -25822,6 +26314,20 @@ struct SageMakerClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterNodes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListClusterOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ClusterOperationSummaries).
+    def paginate_list_cluster_operations(self, ListClusterOperationsRequest input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListClusterOperations", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -26613,6 +27119,20 @@ struct SageMakerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListProjects — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ProjectSummaryList).
+    def paginate_list_projects(self, ListProjectsInput input):
+        auto host = endpoints.regional_host(api_sagemaker_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(api_sagemaker_protocol(), self.creds, self.region, "ListProjects", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListResourceCatalogs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceCatalogs).
     def paginate_list_resource_catalogs(self, ListResourceCatalogsRequest input):
@@ -26973,7 +27493,7 @@ struct SageMakerClient:
             delay=60,
             max_attempts=60,
             acceptors=[
-                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFound"),
                 waiters.acceptor_path(waiters.state_failure(), "ImageStatus", "DELETE_FAILED"),
                 waiters.acceptor_error(waiters.state_failure(), "ValidationException")
             ],
@@ -27024,7 +27544,7 @@ struct SageMakerClient:
             delay=60,
             max_attempts=60,
             acceptors=[
-                waiters.acceptor_error(waiters.state_success(), "ResourceNotFoundException"),
+                waiters.acceptor_error(waiters.state_success(), "ResourceNotFound"),
                 waiters.acceptor_path(waiters.state_failure(), "ImageVersionStatus", "DELETE_FAILED"),
                 waiters.acceptor_error(waiters.state_failure(), "ValidationException")
             ],

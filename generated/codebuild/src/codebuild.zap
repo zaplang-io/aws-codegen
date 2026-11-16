@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS CodeBuild (serviceId CodeBuild, API 2016-10-06)
-# Protocol: awsJson 1.1 (targetPrefix CodeBuild_20161006)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service codebuild, service shape CodeBuild_20161006)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 59 operations — 59 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   196 structs (103 @derive(Json)), 49 enums, 6 error variants.
-#   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 59 operations — 59 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   196 structs (plain carriers), 49 enums, 6 error variants.
+#   0 paginators generated (15 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 
-# The CodeBuild awsJson protocol: version 1.1, API id "CodeBuild_20161006".
-def codebuild_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("CodeBuild_20161006", "codebuild")
+# The CodeBuild smithy-rpc-v2-cbor protocol: SigV4 service "codebuild" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/CodeBuild_20161006/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def codebuild_service() -> str:
+    return "codebuild"
 
 # --- enums -----------------------------------------------------------------
 
@@ -499,152 +503,89 @@ enum WebhookStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AccountLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AccountSuspendedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AutoRetryConfig:
     Optional[int64] autoRetryLimit
     Optional[int64] autoRetryNumber
     Optional[str] nextAutoRetry
     Optional[str] previousAutoRetry
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDeleteBuildsInput:
     list[str] ids
 
-# no @derive(Json): member(s) buildsDeleted: list[str], buildsNotDeleted: list[BuildNotDeleted] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDeleteBuildsOutput:
     Optional[list[str]] buildsDeleted
     Optional[list[BuildNotDeleted]] buildsNotDeleted
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetBuildBatchesInput:
     list[str] ids
 
-# no @derive(Json): member(s) buildBatches: list[BuildBatch], buildBatchesNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetBuildBatchesOutput:
     Optional[list[BuildBatch]] buildBatches
     Optional[list[str]] buildBatchesNotFound
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetBuildsInput:
     list[str] ids
 
-# no @derive(Json): member(s) builds: list[Build], buildsNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetBuildsOutput:
     Optional[list[Build]] builds
     Optional[list[str]] buildsNotFound
 
-# no @derive(Json): member(s) commandExecutionIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetCommandExecutionsInput:
     str sandboxId
     list[str] commandExecutionIds
 
-# no @derive(Json): member(s) commandExecutions: list[CommandExecution], commandExecutionsNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetCommandExecutionsOutput:
     Optional[list[CommandExecution]] commandExecutions
     Optional[list[str]] commandExecutionsNotFound
 
-# no @derive(Json): member(s) names: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetFleetsInput:
     list[str] names
 
-# no @derive(Json): member(s) fleets: list[Fleet], fleetsNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetFleetsOutput:
     Optional[list[Fleet]] fleets
     Optional[list[str]] fleetsNotFound
 
-# no @derive(Json): member(s) names: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetProjectsInput:
     list[str] names
 
-# no @derive(Json): member(s) projects: list[Project], projectsNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetProjectsOutput:
     Optional[list[Project]] projects
     Optional[list[str]] projectsNotFound
 
-# no @derive(Json): member(s) reportGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetReportGroupsInput:
     list[str] reportGroupArns
 
-# no @derive(Json): member(s) reportGroups: list[ReportGroup], reportGroupsNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetReportGroupsOutput:
     Optional[list[ReportGroup]] reportGroups
     Optional[list[str]] reportGroupsNotFound
 
-# no @derive(Json): member(s) reportArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetReportsInput:
     list[str] reportArns
 
-# no @derive(Json): member(s) reports: list[Report], reportsNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetReportsOutput:
     Optional[list[Report]] reports
     Optional[list[str]] reportsNotFound
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetSandboxesInput:
     list[str] ids
 
-# no @derive(Json): member(s) sandboxes: list[Sandbox], sandboxesNotFound: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetSandboxesOutput:
     Optional[list[Sandbox]] sandboxes
     Optional[list[str]] sandboxesNotFound
 
-# no @derive(Json): member(s) computeTypesAllowed: list[str], fleetsAllowed: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchRestrictions:
     Optional[int64] maximumBuildsAllowed
     Optional[list[str]] computeTypesAllowed
     Optional[list[str]] fleetsAllowed
 
-# no @derive(Json): member(s) phases: list[BuildPhase], secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[BuildArtifacts], cache: ProjectCache, environment: ProjectEnvironment, vpcConfig: VpcConfig, exportedEnvironmentVariables: list[ExportedEnvironmentVariable], reportArns: list[str], fileSystemLocations: list[ProjectFileSystemLocation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Build:
     Optional[str] id
     Optional[str] arn
@@ -652,7 +593,7 @@ struct Build:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
     Optional[str] currentPhase
-    Optional[StatusType] buildStatus
+    Optional[str] buildStatus
     Optional[str] sourceVersion
     Optional[str] resolvedSourceVersion
     Optional[str] projectName
@@ -680,7 +621,6 @@ struct Build:
     Optional[str] buildBatchArn
     Optional[AutoRetryConfig] autoRetryConfig
 
-@derive(Json)
 struct BuildArtifacts:
     Optional[str] location
     Optional[str] sha256sum
@@ -688,18 +628,15 @@ struct BuildArtifacts:
     Optional[bool] overrideArtifactName
     Optional[bool] encryptionDisabled
     Optional[str] artifactIdentifier
-    Optional[BucketOwnerAccess] bucketOwnerAccess
+    Optional[str] bucketOwnerAccess
 
-# no @derive(Json): member(s) phases: list[BuildBatchPhase], secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[BuildArtifacts], cache: ProjectCache, environment: ProjectEnvironment, vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig, buildGroups: list[BuildGroup], reportArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BuildBatch:
     Optional[str] id
     Optional[str] arn
     Optional[DateTime] startTime
     Optional[DateTime] endTime
     Optional[str] currentPhase
-    Optional[StatusType] buildBatchStatus
+    Optional[str] buildBatchStatus
     Optional[str] sourceVersion
     Optional[str] resolvedSourceVersion
     Optional[str] projectName
@@ -726,24 +663,17 @@ struct BuildBatch:
     Optional[bool] debugSessionEnabled
     Optional[list[str]] reportArns
 
-@derive(Json)
 struct BuildBatchFilter:
-    Optional[StatusType] status
+    Optional[str] status
 
-# no @derive(Json): member(s) contexts: list[PhaseContext] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BuildBatchPhase:
-    Optional[BuildBatchPhaseType] phaseType
-    Optional[StatusType] phaseStatus
+    Optional[str] phaseType
+    Optional[str] phaseStatus
     Optional[DateTime] startTime
     Optional[DateTime] endTime
     Optional[int64] durationInSeconds
     Optional[list[PhaseContext]] contexts
 
-# no @derive(Json): member(s) dependsOn: list[str], currentBuildSummary: BuildSummary, priorBuildSummaryList: list[BuildSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BuildGroup:
     Optional[str] identifier
     Optional[list[str]] dependsOn
@@ -751,44 +681,34 @@ struct BuildGroup:
     Optional[BuildSummary] currentBuildSummary
     Optional[list[BuildSummary]] priorBuildSummaryList
 
-@derive(Json)
 struct BuildNotDeleted:
     Optional[str] id
     Optional[str] statusCode
 
-# no @derive(Json): member(s) contexts: list[PhaseContext] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BuildPhase:
-    Optional[BuildPhaseType] phaseType
-    Optional[StatusType] phaseStatus
+    Optional[str] phaseType
+    Optional[str] phaseStatus
     Optional[DateTime] startTime
     Optional[DateTime] endTime
     Optional[int64] durationInSeconds
     Optional[list[PhaseContext]] contexts
 
-@derive(Json)
 struct BuildStatusConfig:
     Optional[str] context
     Optional[str] targetUrl
 
-# no @derive(Json): member(s) secondaryArtifacts: list[ResolvedArtifact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BuildSummary:
     Optional[str] arn
     Optional[DateTime] requestedOn
-    Optional[StatusType] buildStatus
+    Optional[str] buildStatus
     Optional[ResolvedArtifact] primaryArtifact
     Optional[list[ResolvedArtifact]] secondaryArtifacts
 
-@derive(Json)
 struct CloudWatchLogsConfig:
-    LogsConfigStatusType status
+    str status
     Optional[str] groupName
     Optional[str] streamName
 
-@derive(Json)
 struct CodeCoverage:
     Optional[str] id
     Optional[str] reportARN
@@ -801,7 +721,6 @@ struct CodeCoverage:
     Optional[int64] branchesMissed
     Optional[DateTime] expired
 
-@derive(Json)
 struct CodeCoverageReportSummary:
     Optional[float64] lineCoveragePercentage
     Optional[int64] linesCovered
@@ -810,7 +729,6 @@ struct CodeCoverageReportSummary:
     Optional[int64] branchesCovered
     Optional[int64] branchesMissed
 
-@derive(Json)
 struct CommandExecution:
     Optional[str] id
     Optional[str] sandboxId
@@ -826,40 +744,30 @@ struct CommandExecution:
     Optional[LogsLocation] logs
     Optional[str] sandboxArn
 
-@derive(Json)
 struct ComputeConfiguration:
     Optional[int64] vCpu
     Optional[int64] memory
     Optional[int64] disk
-    Optional[MachineType] machineType
+    Optional[str] machineType
     Optional[str] instanceType
 
-# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationInput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateFleetInput:
     str name
     int64 baseCapacity
-    EnvironmentType environmentType
-    ComputeType computeType
+    str environmentType
+    str computeType
     Optional[ComputeConfiguration] computeConfiguration
     Optional[ScalingConfigurationInput] scalingConfiguration
-    Optional[FleetOverflowBehavior] overflowBehavior
+    Optional[str] overflowBehavior
     Optional[VpcConfig] vpcConfig
     Optional[ProxyConfiguration] proxyConfiguration
     Optional[str] imageId
     Optional[str] fleetServiceRole
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) fleet: Fleet not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateFleetOutput:
     Optional[Fleet] fleet
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProjectInput:
     str name
     Optional[str] description
@@ -884,205 +792,145 @@ struct CreateProjectInput:
     Optional[int64] concurrentBuildLimit
     Optional[int64] autoRetryLimit
 
-# no @derive(Json): member(s) project: Project not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProjectOutput:
     Optional[Project] project
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateReportGroupInput:
     str name
-    ReportType type
+    str type
     ReportExportConfig exportConfig
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) reportGroup: ReportGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateReportGroupOutput:
     Optional[ReportGroup] reportGroup
 
-# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWebhookInput:
     str projectName
     Optional[str] branchFilter
     Optional[list[list[WebhookFilter]]] filterGroups
-    Optional[WebhookBuildType] buildType
+    Optional[str] buildType
     Optional[bool] manualCreation
     Optional[ScopeConfiguration] scopeConfiguration
     Optional[PullRequestBuildPolicy] pullRequestBuildPolicy
 
-# no @derive(Json): member(s) webhook: Webhook not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWebhookOutput:
     Optional[Webhook] webhook
 
-@derive(Json)
 struct DebugSession:
     Optional[bool] sessionEnabled
     Optional[str] sessionTarget
 
-@derive(Json)
 struct DeleteBuildBatchInput:
     str id
 
-# no @derive(Json): member(s) buildsDeleted: list[str], buildsNotDeleted: list[BuildNotDeleted] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteBuildBatchOutput:
     Optional[str] statusCode
     Optional[list[str]] buildsDeleted
     Optional[list[BuildNotDeleted]] buildsNotDeleted
 
-@derive(Json)
 struct DeleteFleetInput:
     str arn
 
-@derive(Json)
 struct DeleteFleetOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteProjectInput:
     str name
 
-@derive(Json)
 struct DeleteProjectOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteReportGroupInput:
     str arn
     Optional[bool] deleteReports
 
-@derive(Json)
 struct DeleteReportGroupOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteReportInput:
     str arn
 
-@derive(Json)
 struct DeleteReportOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteResourcePolicyInput:
     str resourceArn
 
-@derive(Json)
 struct DeleteResourcePolicyOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteSourceCredentialsInput:
     str arn
 
-@derive(Json)
 struct DeleteSourceCredentialsOutput:
     Optional[str] arn
 
-@derive(Json)
 struct DeleteWebhookInput:
     str projectName
 
-@derive(Json)
 struct DeleteWebhookOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeCodeCoveragesInput:
     str reportArn
     Optional[str] nextToken
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
-    Optional[ReportCodeCoverageSortByType] sortBy
+    Optional[str] sortOrder
+    Optional[str] sortBy
     Optional[float64] minLineCoveragePercentage
     Optional[float64] maxLineCoveragePercentage
 
-# no @derive(Json): member(s) codeCoverages: list[CodeCoverage] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeCodeCoveragesOutput:
     Optional[str] nextToken
     Optional[list[CodeCoverage]] codeCoverages
 
-@derive(Json)
 struct DescribeTestCasesInput:
     str reportArn
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[TestCaseFilter] filter
 
-# no @derive(Json): member(s) testCases: list[TestCase] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTestCasesOutput:
     Optional[str] nextToken
     Optional[list[TestCase]] testCases
 
-# no @derive(Json): member(s) securityGroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DockerServer:
-    ComputeType computeType
+    str computeType
     Optional[list[str]] securityGroupIds
     Optional[DockerServerStatus] status
 
-@derive(Json)
 struct DockerServerStatus:
     Optional[str] status
     Optional[str] message
 
-# no @derive(Json): member(s) versions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EnvironmentImage:
     Optional[str] name
     Optional[str] description
     Optional[list[str]] versions
 
-# no @derive(Json): member(s) images: list[EnvironmentImage] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EnvironmentLanguage:
-    Optional[LanguageType] language
+    Optional[str] language
     Optional[list[EnvironmentImage]] images
 
-# no @derive(Json): member(s) languages: list[EnvironmentLanguage] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EnvironmentPlatform:
-    Optional[PlatformType] platform
+    Optional[str] platform
     Optional[list[EnvironmentLanguage]] languages
 
-@derive(Json)
 struct EnvironmentVariable:
     str name
     str value
-    Optional[EnvironmentVariableType] type
+    Optional[str] type
 
-@derive(Json)
 struct ExportedEnvironmentVariable:
     Optional[str] name
     Optional[str] value
 
-# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationOutput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Fleet:
     Optional[str] arn
     Optional[str] name
@@ -1091,303 +939,221 @@ struct Fleet:
     Optional[DateTime] lastModified
     Optional[FleetStatus] status
     Optional[int64] baseCapacity
-    Optional[EnvironmentType] environmentType
-    Optional[ComputeType] computeType
+    Optional[str] environmentType
+    Optional[str] computeType
     Optional[ComputeConfiguration] computeConfiguration
     Optional[ScalingConfigurationOutput] scalingConfiguration
-    Optional[FleetOverflowBehavior] overflowBehavior
+    Optional[str] overflowBehavior
     Optional[VpcConfig] vpcConfig
     Optional[ProxyConfiguration] proxyConfiguration
     Optional[str] imageId
     Optional[str] fleetServiceRole
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) entities: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FleetProxyRule:
-    FleetProxyRuleType type
-    FleetProxyRuleEffectType effect
+    str type
+    str effect
     list[str] entities
 
-@derive(Json)
 struct FleetStatus:
-    Optional[FleetStatusCode] statusCode
-    Optional[FleetContextCode] context
+    Optional[str] statusCode
+    Optional[str] context
     Optional[str] message
 
-@derive(Json)
 struct GetReportGroupTrendInput:
     str reportGroupArn
     Optional[int64] numOfReports
-    ReportGroupTrendFieldType trendField
+    str trendField
 
-# no @derive(Json): member(s) rawData: list[ReportWithRawData] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetReportGroupTrendOutput:
     Optional[ReportGroupTrendStats] stats
     Optional[list[ReportWithRawData]] rawData
 
-@derive(Json)
 struct GetResourcePolicyInput:
     str resourceArn
 
-@derive(Json)
 struct GetResourcePolicyOutput:
     Optional[str] policy
 
-@derive(Json)
 struct GitSubmodulesConfig:
     bool fetchSubmodules
 
-@derive(Json)
 struct ImportSourceCredentialsInput:
     Optional[str] username
     str token
-    ServerType serverType
-    AuthType authType
+    str serverType
+    str authType
     Optional[bool] shouldOverwrite
 
-@derive(Json)
 struct ImportSourceCredentialsOutput:
     Optional[str] arn
 
-@derive(Json)
 struct InvalidInputException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidateProjectCacheInput:
     str projectName
 
-@derive(Json)
 struct InvalidateProjectCacheOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ListBuildBatchesForProjectInput:
     Optional[str] projectName
     Optional[BuildBatchFilter] filter
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListBuildBatchesForProjectOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
 
-@derive(Json)
 struct ListBuildBatchesInput:
     Optional[BuildBatchFilter] filter
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListBuildBatchesOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
 
-@derive(Json)
 struct ListBuildsForProjectInput:
     str projectName
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListBuildsForProjectOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
 
-@derive(Json)
 struct ListBuildsInput:
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListBuildsOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
 
-@derive(Json)
 struct ListCommandExecutionsForSandboxInput:
     str sandboxId
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) commandExecutions: list[CommandExecution] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListCommandExecutionsForSandboxOutput:
     Optional[list[CommandExecution]] commandExecutions
     Optional[str] nextToken
 
-@derive(Json)
 struct ListCuratedEnvironmentImagesInput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) platforms: list[EnvironmentPlatform] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListCuratedEnvironmentImagesOutput:
     Optional[list[EnvironmentPlatform]] platforms
 
-@derive(Json)
 struct ListFleetsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
-    Optional[FleetSortByType] sortBy
+    Optional[str] sortOrder
+    Optional[str] sortBy
 
-# no @derive(Json): member(s) fleets: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFleetsOutput:
     Optional[str] nextToken
     Optional[list[str]] fleets
 
-@derive(Json)
 struct ListProjectsInput:
-    Optional[ProjectSortByType] sortBy
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortBy
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) projects: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProjectsOutput:
     Optional[str] nextToken
     Optional[list[str]] projects
 
-@derive(Json)
 struct ListReportGroupsInput:
-    Optional[SortOrderType] sortOrder
-    Optional[ReportGroupSortByType] sortBy
+    Optional[str] sortOrder
+    Optional[str] sortBy
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) reportGroups: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListReportGroupsOutput:
     Optional[str] nextToken
     Optional[list[str]] reportGroups
 
-@derive(Json)
 struct ListReportsForReportGroupInput:
     str reportGroupArn
     Optional[str] nextToken
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[int64] maxResults
     Optional[ReportFilter] filter
 
-# no @derive(Json): member(s) reports: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListReportsForReportGroupOutput:
     Optional[str] nextToken
     Optional[list[str]] reports
 
-@derive(Json)
 struct ListReportsInput:
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[ReportFilter] filter
 
-# no @derive(Json): member(s) reports: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListReportsOutput:
     Optional[str] nextToken
     Optional[list[str]] reports
 
-@derive(Json)
 struct ListSandboxesForProjectInput:
     str projectName
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSandboxesForProjectOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
 
-@derive(Json)
 struct ListSandboxesInput:
     Optional[int64] maxResults
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSandboxesOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
 
-@derive(Json)
 struct ListSharedProjectsInput:
-    Optional[SharedResourceSortByType] sortBy
-    Optional[SortOrderType] sortOrder
+    Optional[str] sortBy
+    Optional[str] sortOrder
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) projects: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSharedProjectsOutput:
     Optional[str] nextToken
     Optional[list[str]] projects
 
-@derive(Json)
 struct ListSharedReportGroupsInput:
-    Optional[SortOrderType] sortOrder
-    Optional[SharedResourceSortByType] sortBy
+    Optional[str] sortOrder
+    Optional[str] sortBy
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) reportGroups: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSharedReportGroupsOutput:
     Optional[str] nextToken
     Optional[list[str]] reportGroups
 
-@derive(Json)
 struct ListSourceCredentialsInput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) sourceCredentialsInfos: list[SourceCredentialsInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSourceCredentialsOutput:
     Optional[list[SourceCredentialsInfo]] sourceCredentialsInfos
 
-@derive(Json)
 struct LogsConfig:
     Optional[CloudWatchLogsConfig] cloudWatchLogs
     Optional[S3LogsConfig] s3Logs
 
-@derive(Json)
 struct LogsLocation:
     Optional[str] groupName
     Optional[str] streamName
@@ -1398,24 +1164,18 @@ struct LogsLocation:
     Optional[CloudWatchLogsConfig] cloudWatchLogs
     Optional[S3LogsConfig] s3Logs
 
-@derive(Json)
 struct NetworkInterface:
     Optional[str] subnetId
     Optional[str] networkInterfaceId
 
-@derive(Json)
 struct OAuthProviderException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct PhaseContext:
     Optional[str] statusCode
     Optional[str] message
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], webhook: Webhook, vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Project:
     Optional[str] name
     Optional[str] arn
@@ -1442,66 +1202,54 @@ struct Project:
     Optional[list[ProjectFileSystemLocation]] fileSystemLocations
     Optional[ProjectBuildBatchConfig] buildBatchConfig
     Optional[int64] concurrentBuildLimit
-    Optional[ProjectVisibilityType] projectVisibility
+    Optional[str] projectVisibility
     Optional[str] publicProjectAlias
     Optional[str] resourceAccessRole
     Optional[int64] autoRetryLimit
 
-@derive(Json)
 struct ProjectArtifacts:
-    ArtifactsType type
+    str type
     Optional[str] location
     Optional[str] path
-    Optional[ArtifactNamespace] namespaceType
+    Optional[str] namespaceType
     Optional[str] name
-    Optional[ArtifactPackaging] packaging
+    Optional[str] packaging
     Optional[bool] overrideArtifactName
     Optional[bool] encryptionDisabled
     Optional[str] artifactIdentifier
-    Optional[BucketOwnerAccess] bucketOwnerAccess
+    Optional[str] bucketOwnerAccess
 
-@derive(Json)
 struct ProjectBadge:
     Optional[bool] badgeEnabled
     Optional[str] badgeRequestUrl
 
-# no @derive(Json): member(s) restrictions: BatchRestrictions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProjectBuildBatchConfig:
     Optional[str] serviceRole
     Optional[bool] combineArtifacts
     Optional[BatchRestrictions] restrictions
     Optional[int64] timeoutInMins
-    Optional[BatchReportModeType] batchReportMode
+    Optional[str] batchReportMode
 
-# no @derive(Json): member(s) modes: list[CacheMode] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProjectCache:
-    CacheType type
+    str type
     Optional[str] location
-    Optional[list[CacheMode]] modes
+    Optional[list[str]] modes
     Optional[str] cacheNamespace
 
-# no @derive(Json): member(s) environmentVariables: list[EnvironmentVariable], dockerServer: DockerServer not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProjectEnvironment:
-    EnvironmentType type
+    str type
     str image
-    ComputeType computeType
+    str computeType
     Optional[ComputeConfiguration] computeConfiguration
     Optional[ProjectFleet] fleet
     Optional[list[EnvironmentVariable]] environmentVariables
     Optional[bool] privilegedMode
     Optional[str] certificate
     Optional[RegistryCredential] registryCredential
-    Optional[ImagePullCredentialsType] imagePullCredentialsType
+    Optional[str] imagePullCredentialsType
     Optional[DockerServer] dockerServer
-    Optional[HostKernel] hostKernel
+    Optional[str] hostKernel
 
-@derive(Json)
 struct ProjectFileSystemLocation:
     Optional[str] type
     Optional[str] location
@@ -1509,13 +1257,11 @@ struct ProjectFileSystemLocation:
     Optional[str] identifier
     Optional[str] mountOptions
 
-@derive(Json)
 struct ProjectFleet:
     Optional[str] fleetArn
 
-@derive(Json)
 struct ProjectSource:
-    SourceType type
+    str type
     Optional[str] location
     Optional[int64] gitCloneDepth
     Optional[GitSubmodulesConfig] gitSubmodulesConfig
@@ -1526,49 +1272,36 @@ struct ProjectSource:
     Optional[bool] insecureSsl
     Optional[str] sourceIdentifier
 
-@derive(Json)
 struct ProjectSourceVersion:
     str sourceIdentifier
     str sourceVersion
 
-# no @derive(Json): member(s) orderedProxyRules: list[FleetProxyRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProxyConfiguration:
-    Optional[FleetProxyRuleBehavior] defaultBehavior
+    Optional[str] defaultBehavior
     Optional[list[FleetProxyRule]] orderedProxyRules
 
-# no @derive(Json): member(s) approverRoles: list[PullRequestBuildApproverRole] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PullRequestBuildPolicy:
-    PullRequestBuildCommentApproval requiresCommentApproval
-    Optional[list[PullRequestBuildApproverRole]] approverRoles
+    str requiresCommentApproval
+    Optional[list[str]] approverRoles
 
-@derive(Json)
 struct PutResourcePolicyInput:
     str policy
     str resourceArn
 
-@derive(Json)
 struct PutResourcePolicyOutput:
     Optional[str] resourceArn
 
-@derive(Json)
 struct RegistryCredential:
     str credential
     str credentialProvider
 
-# no @derive(Json): member(s) testSummary: TestReportSummary not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Report:
     Optional[str] arn
-    Optional[ReportType] type
+    Optional[str] type
     Optional[str] name
     Optional[str] reportGroupArn
     Optional[str] executionId
-    Optional[ReportStatusType] status
+    Optional[str] status
     Optional[DateTime] created
     Optional[DateTime] expired
     Optional[ReportExportConfig] exportConfig
@@ -1576,103 +1309,79 @@ struct Report:
     Optional[TestReportSummary] testSummary
     Optional[CodeCoverageReportSummary] codeCoverageSummary
 
-@derive(Json)
 struct ReportExportConfig:
-    Optional[ReportExportConfigType] exportConfigType
+    Optional[str] exportConfigType
     Optional[S3ReportExportConfig] s3Destination
 
-@derive(Json)
 struct ReportFilter:
-    Optional[ReportStatusType] status
+    Optional[str] status
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ReportGroup:
     Optional[str] arn
     Optional[str] name
-    Optional[ReportType] type
+    Optional[str] type
     Optional[ReportExportConfig] exportConfig
     Optional[DateTime] created
     Optional[DateTime] lastModified
     Optional[list[Tag]] tags
-    Optional[ReportGroupStatusType] status
+    Optional[str] status
 
-@derive(Json)
 struct ReportGroupTrendStats:
     Optional[str] average
     Optional[str] max
     Optional[str] min
 
-@derive(Json)
 struct ReportWithRawData:
     Optional[str] reportArn
     Optional[str] data
 
-@derive(Json)
 struct ResolvedArtifact:
-    Optional[ArtifactsType] type
+    Optional[str] type
     Optional[str] location
     Optional[str] identifier
 
-@derive(Json)
 struct ResourceAlreadyExistsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ResourceNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RetryBuildBatchInput:
     Optional[str] id
     Optional[str] idempotencyToken
-    Optional[RetryBuildBatchType] retryType
+    Optional[str] retryType
 
-# no @derive(Json): member(s) buildBatch: BuildBatch not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RetryBuildBatchOutput:
     Optional[BuildBatch] buildBatch
 
-@derive(Json)
 struct RetryBuildInput:
     Optional[str] id
     Optional[str] idempotencyToken
 
-# no @derive(Json): member(s) build: Build not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RetryBuildOutput:
     Optional[Build] build
 
-@derive(Json)
 struct S3LogsConfig:
-    LogsConfigStatusType status
+    str status
     Optional[str] location
     Optional[bool] encryptionDisabled
-    Optional[BucketOwnerAccess] bucketOwnerAccess
+    Optional[str] bucketOwnerAccess
 
-@derive(Json)
 struct S3ReportExportConfig:
     Optional[str] bucket
     Optional[str] bucketOwner
     Optional[str] path
-    Optional[ReportPackagingType] packaging
+    Optional[str] packaging
     Optional[str] encryptionKey
     Optional[bool] encryptionDisabled
 
-@derive(Json)
 struct SSMSession:
     Optional[str] sessionId
     Optional[str] tokenValue
     Optional[str] streamUrl
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], environment: ProjectEnvironment, fileSystemLocations: list[ProjectFileSystemLocation], vpcConfig: VpcConfig, currentSession: SandboxSession not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Sandbox:
     Optional[str] id
     Optional[str] arn
@@ -1695,9 +1404,6 @@ struct Sandbox:
     Optional[str] serviceRole
     Optional[SandboxSession] currentSession
 
-# no @derive(Json): member(s) phases: list[SandboxSessionPhase] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SandboxSession:
     Optional[str] id
     Optional[str] status
@@ -1709,56 +1415,41 @@ struct SandboxSession:
     Optional[LogsLocation] logs
     Optional[NetworkInterface] networkInterface
 
-# no @derive(Json): member(s) contexts: list[PhaseContext] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SandboxSessionPhase:
     Optional[str] phaseType
-    Optional[StatusType] phaseStatus
+    Optional[str] phaseStatus
     Optional[DateTime] startTime
     Optional[DateTime] endTime
     Optional[int64] durationInSeconds
     Optional[list[PhaseContext]] contexts
 
-# no @derive(Json): member(s) targetTrackingScalingConfigs: list[TargetTrackingScalingConfiguration] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ScalingConfigurationInput:
     Optional[str] scalingType
     Optional[list[TargetTrackingScalingConfiguration]] targetTrackingScalingConfigs
     Optional[int64] maxCapacity
 
-# no @derive(Json): member(s) targetTrackingScalingConfigs: list[TargetTrackingScalingConfiguration] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ScalingConfigurationOutput:
     Optional[str] scalingType
     Optional[list[TargetTrackingScalingConfiguration]] targetTrackingScalingConfigs
     Optional[int64] maxCapacity
     Optional[int64] desiredCapacity
 
-@derive(Json)
 struct ScopeConfiguration:
     str name
     Optional[str] domain
-    # wire name "scope" differs from field; derive rename is a #346 follow-up
-    WebhookScopeType scope_
+    # wire name "scope" differs from field (handled by the method)
+    str scope_
 
-@derive(Json)
 struct SourceAuth:
-    SourceAuthType type
+    str type
     Optional[str] resource
 
-@derive(Json)
 struct SourceCredentialsInfo:
     Optional[str] arn
-    Optional[ServerType] serverType
-    Optional[AuthType] authType
+    Optional[str] serverType
+    Optional[str] authType
     Optional[str] resource
 
-# no @derive(Json): member(s) secondarySourcesOverride: list[ProjectSource], secondarySourcesVersionOverride: list[ProjectSourceVersion], secondaryArtifactsOverride: list[ProjectArtifacts], environmentVariablesOverride: list[EnvironmentVariable], cacheOverride: ProjectCache, buildBatchConfigOverride: ProjectBuildBatchConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartBuildBatchInput:
     str projectName
     Optional[list[ProjectSource]] secondarySourcesOverride
@@ -1767,7 +1458,7 @@ struct StartBuildBatchInput:
     Optional[ProjectArtifacts] artifactsOverride
     Optional[list[ProjectArtifacts]] secondaryArtifactsOverride
     Optional[list[EnvironmentVariable]] environmentVariablesOverride
-    Optional[SourceType] sourceTypeOverride
+    Optional[str] sourceTypeOverride
     Optional[str] sourceLocationOverride
     Optional[SourceAuth] sourceAuthOverride
     Optional[int64] gitCloneDepthOverride
@@ -1775,9 +1466,9 @@ struct StartBuildBatchInput:
     Optional[str] buildspecOverride
     Optional[bool] insecureSslOverride
     Optional[bool] reportBuildBatchStatusOverride
-    Optional[EnvironmentType] environmentTypeOverride
+    Optional[str] environmentTypeOverride
     Optional[str] imageOverride
-    Optional[ComputeType] computeTypeOverride
+    Optional[str] computeTypeOverride
     Optional[str] certificateOverride
     Optional[ProjectCache] cacheOverride
     Optional[str] serviceRoleOverride
@@ -1788,19 +1479,13 @@ struct StartBuildBatchInput:
     Optional[str] idempotencyToken
     Optional[LogsConfig] logsConfigOverride
     Optional[RegistryCredential] registryCredentialOverride
-    Optional[ImagePullCredentialsType] imagePullCredentialsTypeOverride
+    Optional[str] imagePullCredentialsTypeOverride
     Optional[ProjectBuildBatchConfig] buildBatchConfigOverride
     Optional[bool] debugSessionEnabled
 
-# no @derive(Json): member(s) buildBatch: BuildBatch not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartBuildBatchOutput:
     Optional[BuildBatch] buildBatch
 
-# no @derive(Json): member(s) secondarySourcesOverride: list[ProjectSource], secondarySourcesVersionOverride: list[ProjectSourceVersion], secondaryArtifactsOverride: list[ProjectArtifacts], environmentVariablesOverride: list[EnvironmentVariable], cacheOverride: ProjectCache not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartBuildInput:
     str projectName
     Optional[list[ProjectSource]] secondarySourcesOverride
@@ -1809,7 +1494,7 @@ struct StartBuildInput:
     Optional[ProjectArtifacts] artifactsOverride
     Optional[list[ProjectArtifacts]] secondaryArtifactsOverride
     Optional[list[EnvironmentVariable]] environmentVariablesOverride
-    Optional[SourceType] sourceTypeOverride
+    Optional[str] sourceTypeOverride
     Optional[str] sourceLocationOverride
     Optional[SourceAuth] sourceAuthOverride
     Optional[int64] gitCloneDepthOverride
@@ -1818,9 +1503,9 @@ struct StartBuildInput:
     Optional[bool] insecureSslOverride
     Optional[bool] reportBuildStatusOverride
     Optional[BuildStatusConfig] buildStatusConfigOverride
-    Optional[EnvironmentType] environmentTypeOverride
+    Optional[str] environmentTypeOverride
     Optional[str] imageOverride
-    Optional[ComputeType] computeTypeOverride
+    Optional[str] computeTypeOverride
     Optional[str] certificateOverride
     Optional[ProjectCache] cacheOverride
     Optional[str] serviceRoleOverride
@@ -1831,88 +1516,62 @@ struct StartBuildInput:
     Optional[str] idempotencyToken
     Optional[LogsConfig] logsConfigOverride
     Optional[RegistryCredential] registryCredentialOverride
-    Optional[ImagePullCredentialsType] imagePullCredentialsTypeOverride
+    Optional[str] imagePullCredentialsTypeOverride
     Optional[bool] debugSessionEnabled
     Optional[ProjectFleet] fleetOverride
     Optional[int64] autoRetryLimitOverride
-    Optional[HostKernel] hostKernelOverride
+    Optional[str] hostKernelOverride
 
-# no @derive(Json): member(s) build: Build not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartBuildOutput:
     Optional[Build] build
 
-@derive(Json)
 struct StartCommandExecutionInput:
     str sandboxId
     str command
     Optional[str] type
 
-@derive(Json)
 struct StartCommandExecutionOutput:
     Optional[CommandExecution] commandExecution
 
-@derive(Json)
 struct StartSandboxConnectionInput:
     str sandboxId
 
-@derive(Json)
 struct StartSandboxConnectionOutput:
     Optional[SSMSession] ssmSession
 
-@derive(Json)
 struct StartSandboxInput:
     Optional[str] projectName
     Optional[str] idempotencyToken
 
-# no @derive(Json): member(s) sandbox: Sandbox not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartSandboxOutput:
     Optional[Sandbox] sandbox
 
-@derive(Json)
 struct StopBuildBatchInput:
     str id
 
-# no @derive(Json): member(s) buildBatch: BuildBatch not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StopBuildBatchOutput:
     Optional[BuildBatch] buildBatch
 
-@derive(Json)
 struct StopBuildInput:
     str id
 
-# no @derive(Json): member(s) build: Build not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StopBuildOutput:
     Optional[Build] build
 
-@derive(Json)
 struct StopSandboxInput:
     str id
 
-# no @derive(Json): member(s) sandbox: Sandbox not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StopSandboxOutput:
     Optional[Sandbox] sandbox
 
-@derive(Json)
 struct Tag:
     Optional[str] key
     Optional[str] value
 
-@derive(Json)
 struct TargetTrackingScalingConfiguration:
     Optional[str] metricType
     Optional[float64] targetValue
 
-@derive(Json)
 struct TestCase:
     Optional[str] reportArn
     Optional[str] testRawDataPath
@@ -1924,45 +1583,32 @@ struct TestCase:
     Optional[DateTime] expired
     Optional[str] testSuiteName
 
-@derive(Json)
 struct TestCaseFilter:
     Optional[str] status
     Optional[str] keyword
 
-# no @derive(Json): member(s) statusCounts: dict[str, int64] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TestReportSummary:
     int64 total
     dict[str, int64] statusCounts
     int64 durationInNanoSeconds
 
-# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationInput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFleetInput:
     str arn
     Optional[int64] baseCapacity
-    Optional[EnvironmentType] environmentType
-    Optional[ComputeType] computeType
+    Optional[str] environmentType
+    Optional[str] computeType
     Optional[ComputeConfiguration] computeConfiguration
     Optional[ScalingConfigurationInput] scalingConfiguration
-    Optional[FleetOverflowBehavior] overflowBehavior
+    Optional[str] overflowBehavior
     Optional[VpcConfig] vpcConfig
     Optional[ProxyConfiguration] proxyConfiguration
     Optional[str] imageId
     Optional[str] fleetServiceRole
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) fleet: Fleet not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFleetOutput:
     Optional[Fleet] fleet
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProjectInput:
     str name
     Optional[str] description
@@ -1987,83 +1633,59 @@ struct UpdateProjectInput:
     Optional[int64] concurrentBuildLimit
     Optional[int64] autoRetryLimit
 
-# no @derive(Json): member(s) project: Project not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProjectOutput:
     Optional[Project] project
 
-@derive(Json)
 struct UpdateProjectVisibilityInput:
     str projectArn
-    ProjectVisibilityType projectVisibility
+    str projectVisibility
     Optional[str] resourceAccessRole
 
-@derive(Json)
 struct UpdateProjectVisibilityOutput:
     Optional[str] projectArn
     Optional[str] publicProjectAlias
-    Optional[ProjectVisibilityType] projectVisibility
+    Optional[str] projectVisibility
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateReportGroupInput:
     str arn
     Optional[ReportExportConfig] exportConfig
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) reportGroup: ReportGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateReportGroupOutput:
     Optional[ReportGroup] reportGroup
 
-# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateWebhookInput:
     str projectName
     Optional[str] branchFilter
     Optional[bool] rotateSecret
     Optional[list[list[WebhookFilter]]] filterGroups
-    Optional[WebhookBuildType] buildType
+    Optional[str] buildType
     Optional[PullRequestBuildPolicy] pullRequestBuildPolicy
 
-# no @derive(Json): member(s) webhook: Webhook not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateWebhookOutput:
     Optional[Webhook] webhook
 
-# no @derive(Json): member(s) subnets: list[str], securityGroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VpcConfig:
     Optional[str] vpcId
     Optional[list[str]] subnets
     Optional[list[str]] securityGroupIds
 
-# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Webhook:
     Optional[str] url
     Optional[str] payloadUrl
     Optional[str] secret
     Optional[str] branchFilter
     Optional[list[list[WebhookFilter]]] filterGroups
-    Optional[WebhookBuildType] buildType
+    Optional[str] buildType
     Optional[bool] manualCreation
     Optional[DateTime] lastModifiedSecret
     Optional[ScopeConfiguration] scopeConfiguration
-    Optional[WebhookStatus] status
+    Optional[str] status
     Optional[str] statusMessage
     Optional[PullRequestBuildPolicy] pullRequestBuildPolicy
 
-@derive(Json)
 struct WebhookFilter:
-    WebhookFilterType type
+    str type
     str pattern
     Optional[bool] excludeMatchedPattern
 
@@ -2074,7 +1696,7 @@ struct WebhookFilter:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2131,851 +1753,2077 @@ def codebuild_error_name(CodeBuildErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def codebuild_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   DescribeCodeCoverages
+#   DescribeTestCases
+#   ListBuildBatches
+#   ListBuildBatchesForProject
+#   ListBuilds
+#   ListBuildsForProject
+#   ListCommandExecutionsForSandbox
+#   ListProjects
+#   ListReportGroups
+#   ListReports
+#   ListReportsForReportGroup
+#   ListSandboxes
+#   ListSandboxesForProject
+#   ListSharedProjects
+#   ListSharedReportGroups
 
-def codebuild_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def codebuild_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize BatchDeleteBuildsInput to a compact JSON object (declaration order).
-def batch_delete_builds_input_to_json(BatchDeleteBuildsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDeleteBuildsInput to a CBOR map (member wire name -> value, model order).
+def batch_delete_builds_input_to_cbor(BatchDeleteBuildsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ids:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"ids\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ids")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetBuildBatchesInput to a compact JSON object (declaration order).
-def batch_get_build_batches_input_to_json(BatchGetBuildBatchesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetBuildBatchesInput to a CBOR map (member wire name -> value, model order).
+def batch_get_build_batches_input_to_cbor(BatchGetBuildBatchesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ids:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"ids\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ids")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetBuildsInput to a compact JSON object (declaration order).
-def batch_get_builds_input_to_json(BatchGetBuildsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetBuildsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_builds_input_to_cbor(BatchGetBuildsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ids:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"ids\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ids")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetCommandExecutionsInput to a compact JSON object (declaration order).
-def batch_get_command_executions_input_to_json(BatchGetCommandExecutionsInput v) -> str:
-    list[str] parts = []
-    parts.append("\"sandboxId\":" + codebuild_json_str(v.sandboxId))
-    list[str] e0 = []
+# Serialize BatchGetCommandExecutionsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_command_executions_input_to_cbor(BatchGetCommandExecutionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("sandboxId")
+    vals.append(cbor.cbor_text(v.sandboxId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.commandExecutionIds:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"commandExecutionIds\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("commandExecutionIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetFleetsInput to a compact JSON object (declaration order).
-def batch_get_fleets_input_to_json(BatchGetFleetsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetFleetsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_fleets_input_to_cbor(BatchGetFleetsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.names:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"names\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("names")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetProjectsInput to a compact JSON object (declaration order).
-def batch_get_projects_input_to_json(BatchGetProjectsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetProjectsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_projects_input_to_cbor(BatchGetProjectsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.names:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"names\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("names")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetReportGroupsInput to a compact JSON object (declaration order).
-def batch_get_report_groups_input_to_json(BatchGetReportGroupsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetReportGroupsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_report_groups_input_to_cbor(BatchGetReportGroupsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.reportGroupArns:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"reportGroupArns\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("reportGroupArns")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetReportsInput to a compact JSON object (declaration order).
-def batch_get_reports_input_to_json(BatchGetReportsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetReportsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_reports_input_to_cbor(BatchGetReportsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.reportArns:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"reportArns\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("reportArns")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetSandboxesInput to a compact JSON object (declaration order).
-def batch_get_sandboxes_input_to_json(BatchGetSandboxesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetSandboxesInput to a CBOR map (member wire name -> value, model order).
+def batch_get_sandboxes_input_to_cbor(BatchGetSandboxesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ids:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"ids\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ids")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchRestrictions to a compact JSON object (declaration order).
-def batch_restrictions_to_json(BatchRestrictions v) -> str:
-    list[str] parts = []
+# Serialize BatchRestrictions to a CBOR map (member wire name -> value, model order).
+def batch_restrictions_to_cbor(BatchRestrictions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.maximumBuildsAllowed.is_some():
         auto u0 = v.maximumBuildsAllowed.unwrap()
-        parts.append("\"maximumBuildsAllowed\":" + str(u0))
+        keys.append("maximumBuildsAllowed")
+        vals.append(cbor.cbor_int(u0))
     if v.computeTypesAllowed.is_some():
         auto u1 = v.computeTypesAllowed.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(codebuild_json_str(x2))
-        parts.append("\"computeTypesAllowed\":" + codebuild_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("computeTypesAllowed")
+        vals.append(cbor.cbor_list(e2))
     if v.fleetsAllowed.is_some():
         auto u3 = v.fleetsAllowed.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(codebuild_json_str(x4))
-        parts.append("\"fleetsAllowed\":" + codebuild_json_arr(e4))
-    return codebuild_json_obj(parts)
+            e4.append(cbor.cbor_text(x4))
+        keys.append("fleetsAllowed")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateFleetInput to a compact JSON object (declaration order).
-def create_fleet_input_to_json(CreateFleetInput v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codebuild_json_str(v.name))
-    parts.append("\"baseCapacity\":" + str(v.baseCapacity))
-    parts.append("\"environmentType\":" + v.environmentType.to_json())
-    parts.append("\"computeType\":" + v.computeType.to_json())
+# Serialize BuildBatchFilter to a CBOR map (member wire name -> value, model order).
+def build_batch_filter_to_cbor(BuildBatchFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.status.is_some():
+        auto u0 = v.status.unwrap()
+        keys.append("status")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize BuildStatusConfig to a CBOR map (member wire name -> value, model order).
+def build_status_config_to_cbor(BuildStatusConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.context.is_some():
+        auto u0 = v.context.unwrap()
+        keys.append("context")
+        vals.append(cbor.cbor_text(u0))
+    if v.targetUrl.is_some():
+        auto u1 = v.targetUrl.unwrap()
+        keys.append("targetUrl")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CloudWatchLogsConfig to a CBOR map (member wire name -> value, model order).
+def cloud_watch_logs_config_to_cbor(CloudWatchLogsConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("status")
+    vals.append(cbor.cbor_text(v.status))
+    if v.groupName.is_some():
+        auto u0 = v.groupName.unwrap()
+        keys.append("groupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.streamName.is_some():
+        auto u1 = v.streamName.unwrap()
+        keys.append("streamName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ComputeConfiguration to a CBOR map (member wire name -> value, model order).
+def compute_configuration_to_cbor(ComputeConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.vCpu.is_some():
+        auto u0 = v.vCpu.unwrap()
+        keys.append("vCpu")
+        vals.append(cbor.cbor_int(u0))
+    if v.memory.is_some():
+        auto u1 = v.memory.unwrap()
+        keys.append("memory")
+        vals.append(cbor.cbor_int(u1))
+    if v.disk.is_some():
+        auto u2 = v.disk.unwrap()
+        keys.append("disk")
+        vals.append(cbor.cbor_int(u2))
+    if v.machineType.is_some():
+        auto u3 = v.machineType.unwrap()
+        keys.append("machineType")
+        vals.append(cbor.cbor_text(u3))
+    if v.instanceType.is_some():
+        auto u4 = v.instanceType.unwrap()
+        keys.append("instanceType")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateFleetInput to a CBOR map (member wire name -> value, model order).
+def create_fleet_input_to_cbor(CreateFleetInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("baseCapacity")
+    vals.append(cbor.cbor_int(v.baseCapacity))
+    keys.append("environmentType")
+    vals.append(cbor.cbor_text(v.environmentType))
+    keys.append("computeType")
+    vals.append(cbor.cbor_text(v.computeType))
     if v.computeConfiguration.is_some():
         auto u0 = v.computeConfiguration.unwrap()
-        parts.append("\"computeConfiguration\":" + u0.to_json())
+        keys.append("computeConfiguration")
+        vals.append(compute_configuration_to_cbor(u0))
     if v.scalingConfiguration.is_some():
         auto u1 = v.scalingConfiguration.unwrap()
-        parts.append("\"scalingConfiguration\":" + scaling_configuration_input_to_json(u1))
+        keys.append("scalingConfiguration")
+        vals.append(scaling_configuration_input_to_cbor(u1))
     if v.overflowBehavior.is_some():
         auto u2 = v.overflowBehavior.unwrap()
-        parts.append("\"overflowBehavior\":" + u2.to_json())
+        keys.append("overflowBehavior")
+        vals.append(cbor.cbor_text(u2))
     if v.vpcConfig.is_some():
         auto u3 = v.vpcConfig.unwrap()
-        parts.append("\"vpcConfig\":" + vpc_config_to_json(u3))
+        keys.append("vpcConfig")
+        vals.append(vpc_config_to_cbor(u3))
     if v.proxyConfiguration.is_some():
         auto u4 = v.proxyConfiguration.unwrap()
-        parts.append("\"proxyConfiguration\":" + proxy_configuration_to_json(u4))
+        keys.append("proxyConfiguration")
+        vals.append(proxy_configuration_to_cbor(u4))
     if v.imageId.is_some():
         auto u5 = v.imageId.unwrap()
-        parts.append("\"imageId\":" + codebuild_json_str(u5))
+        keys.append("imageId")
+        vals.append(cbor.cbor_text(u5))
     if v.fleetServiceRole.is_some():
         auto u6 = v.fleetServiceRole.unwrap()
-        parts.append("\"fleetServiceRole\":" + codebuild_json_str(u6))
+        keys.append("fleetServiceRole")
+        vals.append(cbor.cbor_text(u6))
     if v.tags.is_some():
         auto u7 = v.tags.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"tags\":" + codebuild_json_arr(e8))
-    return codebuild_json_obj(parts)
+            e8.append(tag_to_cbor(x8))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e8))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProjectInput to a compact JSON object (declaration order).
-def create_project_input_to_json(CreateProjectInput v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codebuild_json_str(v.name))
+# Serialize CreateProjectInput to a CBOR map (member wire name -> value, model order).
+def create_project_input_to_cbor(CreateProjectInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
     if v.description.is_some():
         auto u0 = v.description.unwrap()
-        parts.append("\"description\":" + codebuild_json_str(u0))
-    parts.append("\"source\":" + v.source.to_json())
+        keys.append("description")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("source")
+    vals.append(project_source_to_cbor(v.source))
     if v.secondarySources.is_some():
         auto u1 = v.secondarySources.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"secondarySources\":" + codebuild_json_arr(e2))
+            e2.append(project_source_to_cbor(x2))
+        keys.append("secondarySources")
+        vals.append(cbor.cbor_list(e2))
     if v.sourceVersion.is_some():
         auto u3 = v.sourceVersion.unwrap()
-        parts.append("\"sourceVersion\":" + codebuild_json_str(u3))
+        keys.append("sourceVersion")
+        vals.append(cbor.cbor_text(u3))
     if v.secondarySourceVersions.is_some():
         auto u4 = v.secondarySourceVersions.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"secondarySourceVersions\":" + codebuild_json_arr(e5))
-    parts.append("\"artifacts\":" + v.artifacts.to_json())
+            e5.append(project_source_version_to_cbor(x5))
+        keys.append("secondarySourceVersions")
+        vals.append(cbor.cbor_list(e5))
+    keys.append("artifacts")
+    vals.append(project_artifacts_to_cbor(v.artifacts))
     if v.secondaryArtifacts.is_some():
         auto u6 = v.secondaryArtifacts.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"secondaryArtifacts\":" + codebuild_json_arr(e7))
+            e7.append(project_artifacts_to_cbor(x7))
+        keys.append("secondaryArtifacts")
+        vals.append(cbor.cbor_list(e7))
     if v.cache.is_some():
         auto u8 = v.cache.unwrap()
-        parts.append("\"cache\":" + project_cache_to_json(u8))
-    parts.append("\"environment\":" + project_environment_to_json(v.environment))
-    parts.append("\"serviceRole\":" + codebuild_json_str(v.serviceRole))
+        keys.append("cache")
+        vals.append(project_cache_to_cbor(u8))
+    keys.append("environment")
+    vals.append(project_environment_to_cbor(v.environment))
+    keys.append("serviceRole")
+    vals.append(cbor.cbor_text(v.serviceRole))
     if v.timeoutInMinutes.is_some():
         auto u9 = v.timeoutInMinutes.unwrap()
-        parts.append("\"timeoutInMinutes\":" + str(u9))
+        keys.append("timeoutInMinutes")
+        vals.append(cbor.cbor_int(u9))
     if v.queuedTimeoutInMinutes.is_some():
         auto u10 = v.queuedTimeoutInMinutes.unwrap()
-        parts.append("\"queuedTimeoutInMinutes\":" + str(u10))
+        keys.append("queuedTimeoutInMinutes")
+        vals.append(cbor.cbor_int(u10))
     if v.encryptionKey.is_some():
         auto u11 = v.encryptionKey.unwrap()
-        parts.append("\"encryptionKey\":" + codebuild_json_str(u11))
+        keys.append("encryptionKey")
+        vals.append(cbor.cbor_text(u11))
     if v.tags.is_some():
         auto u12 = v.tags.unwrap()
-        list[str] e13 = []
+        list[cbor.CborValue] e13 = []
         for x13 in u12:
-            e13.append(x13.to_json())
-        parts.append("\"tags\":" + codebuild_json_arr(e13))
+            e13.append(tag_to_cbor(x13))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e13))
     if v.vpcConfig.is_some():
         auto u14 = v.vpcConfig.unwrap()
-        parts.append("\"vpcConfig\":" + vpc_config_to_json(u14))
+        keys.append("vpcConfig")
+        vals.append(vpc_config_to_cbor(u14))
     if v.badgeEnabled.is_some():
         auto u15 = v.badgeEnabled.unwrap()
-        parts.append("\"badgeEnabled\":" + json.dumps(JsonValue.Bool(u15)))
+        keys.append("badgeEnabled")
+        vals.append(cbor.cbor_bool(u15))
     if v.logsConfig.is_some():
         auto u16 = v.logsConfig.unwrap()
-        parts.append("\"logsConfig\":" + u16.to_json())
+        keys.append("logsConfig")
+        vals.append(logs_config_to_cbor(u16))
     if v.fileSystemLocations.is_some():
         auto u17 = v.fileSystemLocations.unwrap()
-        list[str] e18 = []
+        list[cbor.CborValue] e18 = []
         for x18 in u17:
-            e18.append(x18.to_json())
-        parts.append("\"fileSystemLocations\":" + codebuild_json_arr(e18))
+            e18.append(project_file_system_location_to_cbor(x18))
+        keys.append("fileSystemLocations")
+        vals.append(cbor.cbor_list(e18))
     if v.buildBatchConfig.is_some():
         auto u19 = v.buildBatchConfig.unwrap()
-        parts.append("\"buildBatchConfig\":" + project_build_batch_config_to_json(u19))
+        keys.append("buildBatchConfig")
+        vals.append(project_build_batch_config_to_cbor(u19))
     if v.concurrentBuildLimit.is_some():
         auto u20 = v.concurrentBuildLimit.unwrap()
-        parts.append("\"concurrentBuildLimit\":" + str(u20))
+        keys.append("concurrentBuildLimit")
+        vals.append(cbor.cbor_int(u20))
     if v.autoRetryLimit.is_some():
         auto u21 = v.autoRetryLimit.unwrap()
-        parts.append("\"autoRetryLimit\":" + str(u21))
-    return codebuild_json_obj(parts)
+        keys.append("autoRetryLimit")
+        vals.append(cbor.cbor_int(u21))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateReportGroupInput to a compact JSON object (declaration order).
-def create_report_group_input_to_json(CreateReportGroupInput v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codebuild_json_str(v.name))
-    parts.append("\"type\":" + v.type.to_json())
-    parts.append("\"exportConfig\":" + v.exportConfig.to_json())
+# Serialize CreateReportGroupInput to a CBOR map (member wire name -> value, model order).
+def create_report_group_input_to_cbor(CreateReportGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    keys.append("exportConfig")
+    vals.append(report_export_config_to_cbor(v.exportConfig))
     if v.tags.is_some():
         auto u0 = v.tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"tags\":" + codebuild_json_arr(e1))
-    return codebuild_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateWebhookInput to a compact JSON object (declaration order).
-def create_webhook_input_to_json(CreateWebhookInput v) -> str:
-    list[str] parts = []
-    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+# Serialize CreateWebhookInput to a CBOR map (member wire name -> value, model order).
+def create_webhook_input_to_cbor(CreateWebhookInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
     if v.branchFilter.is_some():
         auto u0 = v.branchFilter.unwrap()
-        parts.append("\"branchFilter\":" + codebuild_json_str(u0))
+        keys.append("branchFilter")
+        vals.append(cbor.cbor_text(u0))
     if v.filterGroups.is_some():
         auto u1 = v.filterGroups.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            list[str] e3 = []
+            list[cbor.CborValue] e3 = []
             for x3 in x2:
-                e3.append(x3.to_json())
-            e2.append(codebuild_json_arr(e3))
-        parts.append("\"filterGroups\":" + codebuild_json_arr(e2))
+                e3.append(webhook_filter_to_cbor(x3))
+            e2.append(cbor.cbor_list(e3))
+        keys.append("filterGroups")
+        vals.append(cbor.cbor_list(e2))
     if v.buildType.is_some():
         auto u4 = v.buildType.unwrap()
-        parts.append("\"buildType\":" + u4.to_json())
+        keys.append("buildType")
+        vals.append(cbor.cbor_text(u4))
     if v.manualCreation.is_some():
         auto u5 = v.manualCreation.unwrap()
-        parts.append("\"manualCreation\":" + json.dumps(JsonValue.Bool(u5)))
+        keys.append("manualCreation")
+        vals.append(cbor.cbor_bool(u5))
     if v.scopeConfiguration.is_some():
         auto u6 = v.scopeConfiguration.unwrap()
-        parts.append("\"scopeConfiguration\":" + u6.to_json())
+        keys.append("scopeConfiguration")
+        vals.append(scope_configuration_to_cbor(u6))
     if v.pullRequestBuildPolicy.is_some():
         auto u7 = v.pullRequestBuildPolicy.unwrap()
-        parts.append("\"pullRequestBuildPolicy\":" + pull_request_build_policy_to_json(u7))
-    return codebuild_json_obj(parts)
+        keys.append("pullRequestBuildPolicy")
+        vals.append(pull_request_build_policy_to_cbor(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DockerServer to a compact JSON object (declaration order).
-def docker_server_to_json(DockerServer v) -> str:
-    list[str] parts = []
-    parts.append("\"computeType\":" + v.computeType.to_json())
+# Serialize DeleteBuildBatchInput to a CBOR map (member wire name -> value, model order).
+def delete_build_batch_input_to_cbor(DeleteBuildBatchInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("id")
+    vals.append(cbor.cbor_text(v.id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteFleetInput to a CBOR map (member wire name -> value, model order).
+def delete_fleet_input_to_cbor(DeleteFleetInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("arn")
+    vals.append(cbor.cbor_text(v.arn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProjectInput to a CBOR map (member wire name -> value, model order).
+def delete_project_input_to_cbor(DeleteProjectInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteReportGroupInput to a CBOR map (member wire name -> value, model order).
+def delete_report_group_input_to_cbor(DeleteReportGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("arn")
+    vals.append(cbor.cbor_text(v.arn))
+    if v.deleteReports.is_some():
+        auto u0 = v.deleteReports.unwrap()
+        keys.append("deleteReports")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteReportInput to a CBOR map (member wire name -> value, model order).
+def delete_report_input_to_cbor(DeleteReportInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("arn")
+    vals.append(cbor.cbor_text(v.arn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteResourcePolicyInput to a CBOR map (member wire name -> value, model order).
+def delete_resource_policy_input_to_cbor(DeleteResourcePolicyInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteSourceCredentialsInput to a CBOR map (member wire name -> value, model order).
+def delete_source_credentials_input_to_cbor(DeleteSourceCredentialsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("arn")
+    vals.append(cbor.cbor_text(v.arn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteWebhookInput to a CBOR map (member wire name -> value, model order).
+def delete_webhook_input_to_cbor(DeleteWebhookInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeCodeCoveragesInput to a CBOR map (member wire name -> value, model order).
+def describe_code_coverages_input_to_cbor(DescribeCodeCoveragesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("reportArn")
+    vals.append(cbor.cbor_text(v.reportArn))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.sortOrder.is_some():
+        auto u2 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u2))
+    if v.sortBy.is_some():
+        auto u3 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u3))
+    if v.minLineCoveragePercentage.is_some():
+        auto u4 = v.minLineCoveragePercentage.unwrap()
+        keys.append("minLineCoveragePercentage")
+        vals.append(cbor.cbor_double(u4))
+    if v.maxLineCoveragePercentage.is_some():
+        auto u5 = v.maxLineCoveragePercentage.unwrap()
+        keys.append("maxLineCoveragePercentage")
+        vals.append(cbor.cbor_double(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTestCasesInput to a CBOR map (member wire name -> value, model order).
+def describe_test_cases_input_to_cbor(DescribeTestCasesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("reportArn")
+    vals.append(cbor.cbor_text(v.reportArn))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.filter.is_some():
+        auto u2 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(test_case_filter_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DockerServer to a CBOR map (member wire name -> value, model order).
+def docker_server_to_cbor(DockerServer v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("computeType")
+    vals.append(cbor.cbor_text(v.computeType))
     if v.securityGroupIds.is_some():
         auto u0 = v.securityGroupIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codebuild_json_str(x1))
-        parts.append("\"securityGroupIds\":" + codebuild_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("securityGroupIds")
+        vals.append(cbor.cbor_list(e1))
     if v.status.is_some():
         auto u2 = v.status.unwrap()
-        parts.append("\"status\":" + u2.to_json())
-    return codebuild_json_obj(parts)
+        keys.append("status")
+        vals.append(docker_server_status_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize FleetProxyRule to a compact JSON object (declaration order).
-def fleet_proxy_rule_to_json(FleetProxyRule v) -> str:
-    list[str] parts = []
-    parts.append("\"type\":" + v.type.to_json())
-    parts.append("\"effect\":" + v.effect.to_json())
-    list[str] e0 = []
+# Serialize DockerServerStatus to a CBOR map (member wire name -> value, model order).
+def docker_server_status_to_cbor(DockerServerStatus v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.status.is_some():
+        auto u0 = v.status.unwrap()
+        keys.append("status")
+        vals.append(cbor.cbor_text(u0))
+    if v.message.is_some():
+        auto u1 = v.message.unwrap()
+        keys.append("message")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnvironmentVariable to a CBOR map (member wire name -> value, model order).
+def environment_variable_to_cbor(EnvironmentVariable v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("value")
+    vals.append(cbor.cbor_text(v.value))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FleetProxyRule to a CBOR map (member wire name -> value, model order).
+def fleet_proxy_rule_to_cbor(FleetProxyRule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    keys.append("effect")
+    vals.append(cbor.cbor_text(v.effect))
+    list[cbor.CborValue] e0 = []
     for x0 in v.entities:
-        e0.append(codebuild_json_str(x0))
-    parts.append("\"entities\":" + codebuild_json_arr(e0))
-    return codebuild_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("entities")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ProjectBuildBatchConfig to a compact JSON object (declaration order).
-def project_build_batch_config_to_json(ProjectBuildBatchConfig v) -> str:
-    list[str] parts = []
-    if v.serviceRole.is_some():
-        auto u0 = v.serviceRole.unwrap()
-        parts.append("\"serviceRole\":" + codebuild_json_str(u0))
-    if v.combineArtifacts.is_some():
-        auto u1 = v.combineArtifacts.unwrap()
-        parts.append("\"combineArtifacts\":" + json.dumps(JsonValue.Bool(u1)))
-    if v.restrictions.is_some():
-        auto u2 = v.restrictions.unwrap()
-        parts.append("\"restrictions\":" + batch_restrictions_to_json(u2))
-    if v.timeoutInMins.is_some():
-        auto u3 = v.timeoutInMins.unwrap()
-        parts.append("\"timeoutInMins\":" + str(u3))
-    if v.batchReportMode.is_some():
-        auto u4 = v.batchReportMode.unwrap()
-        parts.append("\"batchReportMode\":" + u4.to_json())
-    return codebuild_json_obj(parts)
+# Serialize GetReportGroupTrendInput to a CBOR map (member wire name -> value, model order).
+def get_report_group_trend_input_to_cbor(GetReportGroupTrendInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("reportGroupArn")
+    vals.append(cbor.cbor_text(v.reportGroupArn))
+    if v.numOfReports.is_some():
+        auto u0 = v.numOfReports.unwrap()
+        keys.append("numOfReports")
+        vals.append(cbor.cbor_int(u0))
+    keys.append("trendField")
+    vals.append(cbor.cbor_text(v.trendField))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ProjectCache to a compact JSON object (declaration order).
-def project_cache_to_json(ProjectCache v) -> str:
-    list[str] parts = []
-    parts.append("\"type\":" + v.type.to_json())
+# Serialize GetResourcePolicyInput to a CBOR map (member wire name -> value, model order).
+def get_resource_policy_input_to_cbor(GetResourcePolicyInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GitSubmodulesConfig to a CBOR map (member wire name -> value, model order).
+def git_submodules_config_to_cbor(GitSubmodulesConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("fetchSubmodules")
+    vals.append(cbor.cbor_bool(v.fetchSubmodules))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImportSourceCredentialsInput to a CBOR map (member wire name -> value, model order).
+def import_source_credentials_input_to_cbor(ImportSourceCredentialsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.username.is_some():
+        auto u0 = v.username.unwrap()
+        keys.append("username")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("token")
+    vals.append(cbor.cbor_text(v.token))
+    keys.append("serverType")
+    vals.append(cbor.cbor_text(v.serverType))
+    keys.append("authType")
+    vals.append(cbor.cbor_text(v.authType))
+    if v.shouldOverwrite.is_some():
+        auto u1 = v.shouldOverwrite.unwrap()
+        keys.append("shouldOverwrite")
+        vals.append(cbor.cbor_bool(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize InvalidateProjectCacheInput to a CBOR map (member wire name -> value, model order).
+def invalidate_project_cache_input_to_cbor(InvalidateProjectCacheInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListBuildBatchesForProjectInput to a CBOR map (member wire name -> value, model order).
+def list_build_batches_for_project_input_to_cbor(ListBuildBatchesForProjectInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.projectName.is_some():
+        auto u0 = v.projectName.unwrap()
+        keys.append("projectName")
+        vals.append(cbor.cbor_text(u0))
+    if v.filter.is_some():
+        auto u1 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(build_batch_filter_to_cbor(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.sortOrder.is_some():
+        auto u3 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListBuildBatchesInput to a CBOR map (member wire name -> value, model order).
+def list_build_batches_input_to_cbor(ListBuildBatchesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(build_batch_filter_to_cbor(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.sortOrder.is_some():
+        auto u2 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListBuildsForProjectInput to a CBOR map (member wire name -> value, model order).
+def list_builds_for_project_input_to_cbor(ListBuildsForProjectInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
+    if v.sortOrder.is_some():
+        auto u0 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListBuildsInput to a CBOR map (member wire name -> value, model order).
+def list_builds_input_to_cbor(ListBuildsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.sortOrder.is_some():
+        auto u0 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListCommandExecutionsForSandboxInput to a CBOR map (member wire name -> value, model order).
+def list_command_executions_for_sandbox_input_to_cbor(ListCommandExecutionsForSandboxInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("sandboxId")
+    vals.append(cbor.cbor_text(v.sandboxId))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListCuratedEnvironmentImagesInput to a CBOR map (member wire name -> value, model order).
+def list_curated_environment_images_input_to_cbor(ListCuratedEnvironmentImagesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFleetsInput to a CBOR map (member wire name -> value, model order).
+def list_fleets_input_to_cbor(ListFleetsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.sortOrder.is_some():
+        auto u2 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u2))
+    if v.sortBy.is_some():
+        auto u3 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListProjectsInput to a CBOR map (member wire name -> value, model order).
+def list_projects_input_to_cbor(ListProjectsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.sortBy.is_some():
+        auto u0 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListReportGroupsInput to a CBOR map (member wire name -> value, model order).
+def list_report_groups_input_to_cbor(ListReportGroupsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.sortOrder.is_some():
+        auto u0 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u0))
+    if v.sortBy.is_some():
+        auto u1 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListReportsForReportGroupInput to a CBOR map (member wire name -> value, model order).
+def list_reports_for_report_group_input_to_cbor(ListReportsForReportGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("reportGroupArn")
+    vals.append(cbor.cbor_text(v.reportGroupArn))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.filter.is_some():
+        auto u3 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(report_filter_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListReportsInput to a CBOR map (member wire name -> value, model order).
+def list_reports_input_to_cbor(ListReportsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.sortOrder.is_some():
+        auto u0 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.filter.is_some():
+        auto u3 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(report_filter_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSandboxesForProjectInput to a CBOR map (member wire name -> value, model order).
+def list_sandboxes_for_project_input_to_cbor(ListSandboxesForProjectInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSandboxesInput to a CBOR map (member wire name -> value, model order).
+def list_sandboxes_input_to_cbor(ListSandboxesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSharedProjectsInput to a CBOR map (member wire name -> value, model order).
+def list_shared_projects_input_to_cbor(ListSharedProjectsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.sortBy.is_some():
+        auto u0 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSharedReportGroupsInput to a CBOR map (member wire name -> value, model order).
+def list_shared_report_groups_input_to_cbor(ListSharedReportGroupsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.sortOrder.is_some():
+        auto u0 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u0))
+    if v.sortBy.is_some():
+        auto u1 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSourceCredentialsInput to a CBOR map (member wire name -> value, model order).
+def list_source_credentials_input_to_cbor(ListSourceCredentialsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LogsConfig to a CBOR map (member wire name -> value, model order).
+def logs_config_to_cbor(LogsConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.cloudWatchLogs.is_some():
+        auto u0 = v.cloudWatchLogs.unwrap()
+        keys.append("cloudWatchLogs")
+        vals.append(cloud_watch_logs_config_to_cbor(u0))
+    if v.s3Logs.is_some():
+        auto u1 = v.s3Logs.unwrap()
+        keys.append("s3Logs")
+        vals.append(s3_logs_config_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProjectArtifacts to a CBOR map (member wire name -> value, model order).
+def project_artifacts_to_cbor(ProjectArtifacts v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
     if v.location.is_some():
         auto u0 = v.location.unwrap()
-        parts.append("\"location\":" + codebuild_json_str(u0))
+        keys.append("location")
+        vals.append(cbor.cbor_text(u0))
+    if v.path.is_some():
+        auto u1 = v.path.unwrap()
+        keys.append("path")
+        vals.append(cbor.cbor_text(u1))
+    if v.namespaceType.is_some():
+        auto u2 = v.namespaceType.unwrap()
+        keys.append("namespaceType")
+        vals.append(cbor.cbor_text(u2))
+    if v.name.is_some():
+        auto u3 = v.name.unwrap()
+        keys.append("name")
+        vals.append(cbor.cbor_text(u3))
+    if v.packaging.is_some():
+        auto u4 = v.packaging.unwrap()
+        keys.append("packaging")
+        vals.append(cbor.cbor_text(u4))
+    if v.overrideArtifactName.is_some():
+        auto u5 = v.overrideArtifactName.unwrap()
+        keys.append("overrideArtifactName")
+        vals.append(cbor.cbor_bool(u5))
+    if v.encryptionDisabled.is_some():
+        auto u6 = v.encryptionDisabled.unwrap()
+        keys.append("encryptionDisabled")
+        vals.append(cbor.cbor_bool(u6))
+    if v.artifactIdentifier.is_some():
+        auto u7 = v.artifactIdentifier.unwrap()
+        keys.append("artifactIdentifier")
+        vals.append(cbor.cbor_text(u7))
+    if v.bucketOwnerAccess.is_some():
+        auto u8 = v.bucketOwnerAccess.unwrap()
+        keys.append("bucketOwnerAccess")
+        vals.append(cbor.cbor_text(u8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProjectBuildBatchConfig to a CBOR map (member wire name -> value, model order).
+def project_build_batch_config_to_cbor(ProjectBuildBatchConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.serviceRole.is_some():
+        auto u0 = v.serviceRole.unwrap()
+        keys.append("serviceRole")
+        vals.append(cbor.cbor_text(u0))
+    if v.combineArtifacts.is_some():
+        auto u1 = v.combineArtifacts.unwrap()
+        keys.append("combineArtifacts")
+        vals.append(cbor.cbor_bool(u1))
+    if v.restrictions.is_some():
+        auto u2 = v.restrictions.unwrap()
+        keys.append("restrictions")
+        vals.append(batch_restrictions_to_cbor(u2))
+    if v.timeoutInMins.is_some():
+        auto u3 = v.timeoutInMins.unwrap()
+        keys.append("timeoutInMins")
+        vals.append(cbor.cbor_int(u3))
+    if v.batchReportMode.is_some():
+        auto u4 = v.batchReportMode.unwrap()
+        keys.append("batchReportMode")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProjectCache to a CBOR map (member wire name -> value, model order).
+def project_cache_to_cbor(ProjectCache v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    if v.location.is_some():
+        auto u0 = v.location.unwrap()
+        keys.append("location")
+        vals.append(cbor.cbor_text(u0))
     if v.modes.is_some():
         auto u1 = v.modes.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"modes\":" + codebuild_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("modes")
+        vals.append(cbor.cbor_list(e2))
     if v.cacheNamespace.is_some():
         auto u3 = v.cacheNamespace.unwrap()
-        parts.append("\"cacheNamespace\":" + codebuild_json_str(u3))
-    return codebuild_json_obj(parts)
+        keys.append("cacheNamespace")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ProjectEnvironment to a compact JSON object (declaration order).
-def project_environment_to_json(ProjectEnvironment v) -> str:
-    list[str] parts = []
-    parts.append("\"type\":" + v.type.to_json())
-    parts.append("\"image\":" + codebuild_json_str(v.image))
-    parts.append("\"computeType\":" + v.computeType.to_json())
+# Serialize ProjectEnvironment to a CBOR map (member wire name -> value, model order).
+def project_environment_to_cbor(ProjectEnvironment v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    keys.append("image")
+    vals.append(cbor.cbor_text(v.image))
+    keys.append("computeType")
+    vals.append(cbor.cbor_text(v.computeType))
     if v.computeConfiguration.is_some():
         auto u0 = v.computeConfiguration.unwrap()
-        parts.append("\"computeConfiguration\":" + u0.to_json())
+        keys.append("computeConfiguration")
+        vals.append(compute_configuration_to_cbor(u0))
     if v.fleet.is_some():
         auto u1 = v.fleet.unwrap()
-        parts.append("\"fleet\":" + u1.to_json())
+        keys.append("fleet")
+        vals.append(project_fleet_to_cbor(u1))
     if v.environmentVariables.is_some():
         auto u2 = v.environmentVariables.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"environmentVariables\":" + codebuild_json_arr(e3))
+            e3.append(environment_variable_to_cbor(x3))
+        keys.append("environmentVariables")
+        vals.append(cbor.cbor_list(e3))
     if v.privilegedMode.is_some():
         auto u4 = v.privilegedMode.unwrap()
-        parts.append("\"privilegedMode\":" + json.dumps(JsonValue.Bool(u4)))
+        keys.append("privilegedMode")
+        vals.append(cbor.cbor_bool(u4))
     if v.certificate.is_some():
         auto u5 = v.certificate.unwrap()
-        parts.append("\"certificate\":" + codebuild_json_str(u5))
+        keys.append("certificate")
+        vals.append(cbor.cbor_text(u5))
     if v.registryCredential.is_some():
         auto u6 = v.registryCredential.unwrap()
-        parts.append("\"registryCredential\":" + u6.to_json())
+        keys.append("registryCredential")
+        vals.append(registry_credential_to_cbor(u6))
     if v.imagePullCredentialsType.is_some():
         auto u7 = v.imagePullCredentialsType.unwrap()
-        parts.append("\"imagePullCredentialsType\":" + u7.to_json())
+        keys.append("imagePullCredentialsType")
+        vals.append(cbor.cbor_text(u7))
     if v.dockerServer.is_some():
         auto u8 = v.dockerServer.unwrap()
-        parts.append("\"dockerServer\":" + docker_server_to_json(u8))
+        keys.append("dockerServer")
+        vals.append(docker_server_to_cbor(u8))
     if v.hostKernel.is_some():
         auto u9 = v.hostKernel.unwrap()
-        parts.append("\"hostKernel\":" + u9.to_json())
-    return codebuild_json_obj(parts)
+        keys.append("hostKernel")
+        vals.append(cbor.cbor_text(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ProxyConfiguration to a compact JSON object (declaration order).
-def proxy_configuration_to_json(ProxyConfiguration v) -> str:
-    list[str] parts = []
+# Serialize ProjectFileSystemLocation to a CBOR map (member wire name -> value, model order).
+def project_file_system_location_to_cbor(ProjectFileSystemLocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    if v.location.is_some():
+        auto u1 = v.location.unwrap()
+        keys.append("location")
+        vals.append(cbor.cbor_text(u1))
+    if v.mountPoint.is_some():
+        auto u2 = v.mountPoint.unwrap()
+        keys.append("mountPoint")
+        vals.append(cbor.cbor_text(u2))
+    if v.identifier.is_some():
+        auto u3 = v.identifier.unwrap()
+        keys.append("identifier")
+        vals.append(cbor.cbor_text(u3))
+    if v.mountOptions.is_some():
+        auto u4 = v.mountOptions.unwrap()
+        keys.append("mountOptions")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProjectFleet to a CBOR map (member wire name -> value, model order).
+def project_fleet_to_cbor(ProjectFleet v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.fleetArn.is_some():
+        auto u0 = v.fleetArn.unwrap()
+        keys.append("fleetArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProjectSource to a CBOR map (member wire name -> value, model order).
+def project_source_to_cbor(ProjectSource v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    if v.location.is_some():
+        auto u0 = v.location.unwrap()
+        keys.append("location")
+        vals.append(cbor.cbor_text(u0))
+    if v.gitCloneDepth.is_some():
+        auto u1 = v.gitCloneDepth.unwrap()
+        keys.append("gitCloneDepth")
+        vals.append(cbor.cbor_int(u1))
+    if v.gitSubmodulesConfig.is_some():
+        auto u2 = v.gitSubmodulesConfig.unwrap()
+        keys.append("gitSubmodulesConfig")
+        vals.append(git_submodules_config_to_cbor(u2))
+    if v.buildspec.is_some():
+        auto u3 = v.buildspec.unwrap()
+        keys.append("buildspec")
+        vals.append(cbor.cbor_text(u3))
+    if v.auth.is_some():
+        auto u4 = v.auth.unwrap()
+        keys.append("auth")
+        vals.append(source_auth_to_cbor(u4))
+    if v.reportBuildStatus.is_some():
+        auto u5 = v.reportBuildStatus.unwrap()
+        keys.append("reportBuildStatus")
+        vals.append(cbor.cbor_bool(u5))
+    if v.buildStatusConfig.is_some():
+        auto u6 = v.buildStatusConfig.unwrap()
+        keys.append("buildStatusConfig")
+        vals.append(build_status_config_to_cbor(u6))
+    if v.insecureSsl.is_some():
+        auto u7 = v.insecureSsl.unwrap()
+        keys.append("insecureSsl")
+        vals.append(cbor.cbor_bool(u7))
+    if v.sourceIdentifier.is_some():
+        auto u8 = v.sourceIdentifier.unwrap()
+        keys.append("sourceIdentifier")
+        vals.append(cbor.cbor_text(u8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProjectSourceVersion to a CBOR map (member wire name -> value, model order).
+def project_source_version_to_cbor(ProjectSourceVersion v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("sourceIdentifier")
+    vals.append(cbor.cbor_text(v.sourceIdentifier))
+    keys.append("sourceVersion")
+    vals.append(cbor.cbor_text(v.sourceVersion))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProxyConfiguration to a CBOR map (member wire name -> value, model order).
+def proxy_configuration_to_cbor(ProxyConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.defaultBehavior.is_some():
         auto u0 = v.defaultBehavior.unwrap()
-        parts.append("\"defaultBehavior\":" + u0.to_json())
+        keys.append("defaultBehavior")
+        vals.append(cbor.cbor_text(u0))
     if v.orderedProxyRules.is_some():
         auto u1 = v.orderedProxyRules.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(fleet_proxy_rule_to_json(x2))
-        parts.append("\"orderedProxyRules\":" + codebuild_json_arr(e2))
-    return codebuild_json_obj(parts)
+            e2.append(fleet_proxy_rule_to_cbor(x2))
+        keys.append("orderedProxyRules")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PullRequestBuildPolicy to a compact JSON object (declaration order).
-def pull_request_build_policy_to_json(PullRequestBuildPolicy v) -> str:
-    list[str] parts = []
-    parts.append("\"requiresCommentApproval\":" + v.requiresCommentApproval.to_json())
+# Serialize PullRequestBuildPolicy to a CBOR map (member wire name -> value, model order).
+def pull_request_build_policy_to_cbor(PullRequestBuildPolicy v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("requiresCommentApproval")
+    vals.append(cbor.cbor_text(v.requiresCommentApproval))
     if v.approverRoles.is_some():
         auto u0 = v.approverRoles.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"approverRoles\":" + codebuild_json_arr(e1))
-    return codebuild_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("approverRoles")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ScalingConfigurationInput to a compact JSON object (declaration order).
-def scaling_configuration_input_to_json(ScalingConfigurationInput v) -> str:
-    list[str] parts = []
+# Serialize PutResourcePolicyInput to a CBOR map (member wire name -> value, model order).
+def put_resource_policy_input_to_cbor(PutResourcePolicyInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("policy")
+    vals.append(cbor.cbor_text(v.policy))
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RegistryCredential to a CBOR map (member wire name -> value, model order).
+def registry_credential_to_cbor(RegistryCredential v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("credential")
+    vals.append(cbor.cbor_text(v.credential))
+    keys.append("credentialProvider")
+    vals.append(cbor.cbor_text(v.credentialProvider))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReportExportConfig to a CBOR map (member wire name -> value, model order).
+def report_export_config_to_cbor(ReportExportConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.exportConfigType.is_some():
+        auto u0 = v.exportConfigType.unwrap()
+        keys.append("exportConfigType")
+        vals.append(cbor.cbor_text(u0))
+    if v.s3Destination.is_some():
+        auto u1 = v.s3Destination.unwrap()
+        keys.append("s3Destination")
+        vals.append(s3_report_export_config_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReportFilter to a CBOR map (member wire name -> value, model order).
+def report_filter_to_cbor(ReportFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.status.is_some():
+        auto u0 = v.status.unwrap()
+        keys.append("status")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RetryBuildBatchInput to a CBOR map (member wire name -> value, model order).
+def retry_build_batch_input_to_cbor(RetryBuildBatchInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        keys.append("id")
+        vals.append(cbor.cbor_text(u0))
+    if v.idempotencyToken.is_some():
+        auto u1 = v.idempotencyToken.unwrap()
+        keys.append("idempotencyToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.retryType.is_some():
+        auto u2 = v.retryType.unwrap()
+        keys.append("retryType")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RetryBuildInput to a CBOR map (member wire name -> value, model order).
+def retry_build_input_to_cbor(RetryBuildInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        keys.append("id")
+        vals.append(cbor.cbor_text(u0))
+    if v.idempotencyToken.is_some():
+        auto u1 = v.idempotencyToken.unwrap()
+        keys.append("idempotencyToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize S3LogsConfig to a CBOR map (member wire name -> value, model order).
+def s3_logs_config_to_cbor(S3LogsConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("status")
+    vals.append(cbor.cbor_text(v.status))
+    if v.location.is_some():
+        auto u0 = v.location.unwrap()
+        keys.append("location")
+        vals.append(cbor.cbor_text(u0))
+    if v.encryptionDisabled.is_some():
+        auto u1 = v.encryptionDisabled.unwrap()
+        keys.append("encryptionDisabled")
+        vals.append(cbor.cbor_bool(u1))
+    if v.bucketOwnerAccess.is_some():
+        auto u2 = v.bucketOwnerAccess.unwrap()
+        keys.append("bucketOwnerAccess")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize S3ReportExportConfig to a CBOR map (member wire name -> value, model order).
+def s3_report_export_config_to_cbor(S3ReportExportConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.bucket.is_some():
+        auto u0 = v.bucket.unwrap()
+        keys.append("bucket")
+        vals.append(cbor.cbor_text(u0))
+    if v.bucketOwner.is_some():
+        auto u1 = v.bucketOwner.unwrap()
+        keys.append("bucketOwner")
+        vals.append(cbor.cbor_text(u1))
+    if v.path.is_some():
+        auto u2 = v.path.unwrap()
+        keys.append("path")
+        vals.append(cbor.cbor_text(u2))
+    if v.packaging.is_some():
+        auto u3 = v.packaging.unwrap()
+        keys.append("packaging")
+        vals.append(cbor.cbor_text(u3))
+    if v.encryptionKey.is_some():
+        auto u4 = v.encryptionKey.unwrap()
+        keys.append("encryptionKey")
+        vals.append(cbor.cbor_text(u4))
+    if v.encryptionDisabled.is_some():
+        auto u5 = v.encryptionDisabled.unwrap()
+        keys.append("encryptionDisabled")
+        vals.append(cbor.cbor_bool(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ScalingConfigurationInput to a CBOR map (member wire name -> value, model order).
+def scaling_configuration_input_to_cbor(ScalingConfigurationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.scalingType.is_some():
         auto u0 = v.scalingType.unwrap()
-        parts.append("\"scalingType\":" + codebuild_json_str(u0))
+        keys.append("scalingType")
+        vals.append(cbor.cbor_text(u0))
     if v.targetTrackingScalingConfigs.is_some():
         auto u1 = v.targetTrackingScalingConfigs.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"targetTrackingScalingConfigs\":" + codebuild_json_arr(e2))
+            e2.append(target_tracking_scaling_configuration_to_cbor(x2))
+        keys.append("targetTrackingScalingConfigs")
+        vals.append(cbor.cbor_list(e2))
     if v.maxCapacity.is_some():
         auto u3 = v.maxCapacity.unwrap()
-        parts.append("\"maxCapacity\":" + str(u3))
-    return codebuild_json_obj(parts)
+        keys.append("maxCapacity")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartBuildBatchInput to a compact JSON object (declaration order).
-def start_build_batch_input_to_json(StartBuildBatchInput v) -> str:
-    list[str] parts = []
-    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+# Serialize ScopeConfiguration to a CBOR map (member wire name -> value, model order).
+def scope_configuration_to_cbor(ScopeConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    if v.domain.is_some():
+        auto u0 = v.domain.unwrap()
+        keys.append("domain")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("scope")
+    vals.append(cbor.cbor_text(v.scope_))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SourceAuth to a CBOR map (member wire name -> value, model order).
+def source_auth_to_cbor(SourceAuth v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    if v.resource.is_some():
+        auto u0 = v.resource.unwrap()
+        keys.append("resource")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartBuildBatchInput to a CBOR map (member wire name -> value, model order).
+def start_build_batch_input_to_cbor(StartBuildBatchInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
     if v.secondarySourcesOverride.is_some():
         auto u0 = v.secondarySourcesOverride.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"secondarySourcesOverride\":" + codebuild_json_arr(e1))
+            e1.append(project_source_to_cbor(x1))
+        keys.append("secondarySourcesOverride")
+        vals.append(cbor.cbor_list(e1))
     if v.secondarySourcesVersionOverride.is_some():
         auto u2 = v.secondarySourcesVersionOverride.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"secondarySourcesVersionOverride\":" + codebuild_json_arr(e3))
+            e3.append(project_source_version_to_cbor(x3))
+        keys.append("secondarySourcesVersionOverride")
+        vals.append(cbor.cbor_list(e3))
     if v.sourceVersion.is_some():
         auto u4 = v.sourceVersion.unwrap()
-        parts.append("\"sourceVersion\":" + codebuild_json_str(u4))
+        keys.append("sourceVersion")
+        vals.append(cbor.cbor_text(u4))
     if v.artifactsOverride.is_some():
         auto u5 = v.artifactsOverride.unwrap()
-        parts.append("\"artifactsOverride\":" + u5.to_json())
+        keys.append("artifactsOverride")
+        vals.append(project_artifacts_to_cbor(u5))
     if v.secondaryArtifactsOverride.is_some():
         auto u6 = v.secondaryArtifactsOverride.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"secondaryArtifactsOverride\":" + codebuild_json_arr(e7))
+            e7.append(project_artifacts_to_cbor(x7))
+        keys.append("secondaryArtifactsOverride")
+        vals.append(cbor.cbor_list(e7))
     if v.environmentVariablesOverride.is_some():
         auto u8 = v.environmentVariablesOverride.unwrap()
-        list[str] e9 = []
+        list[cbor.CborValue] e9 = []
         for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"environmentVariablesOverride\":" + codebuild_json_arr(e9))
+            e9.append(environment_variable_to_cbor(x9))
+        keys.append("environmentVariablesOverride")
+        vals.append(cbor.cbor_list(e9))
     if v.sourceTypeOverride.is_some():
         auto u10 = v.sourceTypeOverride.unwrap()
-        parts.append("\"sourceTypeOverride\":" + u10.to_json())
+        keys.append("sourceTypeOverride")
+        vals.append(cbor.cbor_text(u10))
     if v.sourceLocationOverride.is_some():
         auto u11 = v.sourceLocationOverride.unwrap()
-        parts.append("\"sourceLocationOverride\":" + codebuild_json_str(u11))
+        keys.append("sourceLocationOverride")
+        vals.append(cbor.cbor_text(u11))
     if v.sourceAuthOverride.is_some():
         auto u12 = v.sourceAuthOverride.unwrap()
-        parts.append("\"sourceAuthOverride\":" + u12.to_json())
+        keys.append("sourceAuthOverride")
+        vals.append(source_auth_to_cbor(u12))
     if v.gitCloneDepthOverride.is_some():
         auto u13 = v.gitCloneDepthOverride.unwrap()
-        parts.append("\"gitCloneDepthOverride\":" + str(u13))
+        keys.append("gitCloneDepthOverride")
+        vals.append(cbor.cbor_int(u13))
     if v.gitSubmodulesConfigOverride.is_some():
         auto u14 = v.gitSubmodulesConfigOverride.unwrap()
-        parts.append("\"gitSubmodulesConfigOverride\":" + u14.to_json())
+        keys.append("gitSubmodulesConfigOverride")
+        vals.append(git_submodules_config_to_cbor(u14))
     if v.buildspecOverride.is_some():
         auto u15 = v.buildspecOverride.unwrap()
-        parts.append("\"buildspecOverride\":" + codebuild_json_str(u15))
+        keys.append("buildspecOverride")
+        vals.append(cbor.cbor_text(u15))
     if v.insecureSslOverride.is_some():
         auto u16 = v.insecureSslOverride.unwrap()
-        parts.append("\"insecureSslOverride\":" + json.dumps(JsonValue.Bool(u16)))
+        keys.append("insecureSslOverride")
+        vals.append(cbor.cbor_bool(u16))
     if v.reportBuildBatchStatusOverride.is_some():
         auto u17 = v.reportBuildBatchStatusOverride.unwrap()
-        parts.append("\"reportBuildBatchStatusOverride\":" + json.dumps(JsonValue.Bool(u17)))
+        keys.append("reportBuildBatchStatusOverride")
+        vals.append(cbor.cbor_bool(u17))
     if v.environmentTypeOverride.is_some():
         auto u18 = v.environmentTypeOverride.unwrap()
-        parts.append("\"environmentTypeOverride\":" + u18.to_json())
+        keys.append("environmentTypeOverride")
+        vals.append(cbor.cbor_text(u18))
     if v.imageOverride.is_some():
         auto u19 = v.imageOverride.unwrap()
-        parts.append("\"imageOverride\":" + codebuild_json_str(u19))
+        keys.append("imageOverride")
+        vals.append(cbor.cbor_text(u19))
     if v.computeTypeOverride.is_some():
         auto u20 = v.computeTypeOverride.unwrap()
-        parts.append("\"computeTypeOverride\":" + u20.to_json())
+        keys.append("computeTypeOverride")
+        vals.append(cbor.cbor_text(u20))
     if v.certificateOverride.is_some():
         auto u21 = v.certificateOverride.unwrap()
-        parts.append("\"certificateOverride\":" + codebuild_json_str(u21))
+        keys.append("certificateOverride")
+        vals.append(cbor.cbor_text(u21))
     if v.cacheOverride.is_some():
         auto u22 = v.cacheOverride.unwrap()
-        parts.append("\"cacheOverride\":" + project_cache_to_json(u22))
+        keys.append("cacheOverride")
+        vals.append(project_cache_to_cbor(u22))
     if v.serviceRoleOverride.is_some():
         auto u23 = v.serviceRoleOverride.unwrap()
-        parts.append("\"serviceRoleOverride\":" + codebuild_json_str(u23))
+        keys.append("serviceRoleOverride")
+        vals.append(cbor.cbor_text(u23))
     if v.privilegedModeOverride.is_some():
         auto u24 = v.privilegedModeOverride.unwrap()
-        parts.append("\"privilegedModeOverride\":" + json.dumps(JsonValue.Bool(u24)))
+        keys.append("privilegedModeOverride")
+        vals.append(cbor.cbor_bool(u24))
     if v.buildTimeoutInMinutesOverride.is_some():
         auto u25 = v.buildTimeoutInMinutesOverride.unwrap()
-        parts.append("\"buildTimeoutInMinutesOverride\":" + str(u25))
+        keys.append("buildTimeoutInMinutesOverride")
+        vals.append(cbor.cbor_int(u25))
     if v.queuedTimeoutInMinutesOverride.is_some():
         auto u26 = v.queuedTimeoutInMinutesOverride.unwrap()
-        parts.append("\"queuedTimeoutInMinutesOverride\":" + str(u26))
+        keys.append("queuedTimeoutInMinutesOverride")
+        vals.append(cbor.cbor_int(u26))
     if v.encryptionKeyOverride.is_some():
         auto u27 = v.encryptionKeyOverride.unwrap()
-        parts.append("\"encryptionKeyOverride\":" + codebuild_json_str(u27))
+        keys.append("encryptionKeyOverride")
+        vals.append(cbor.cbor_text(u27))
     if v.idempotencyToken.is_some():
         auto u28 = v.idempotencyToken.unwrap()
-        parts.append("\"idempotencyToken\":" + codebuild_json_str(u28))
+        keys.append("idempotencyToken")
+        vals.append(cbor.cbor_text(u28))
     if v.logsConfigOverride.is_some():
         auto u29 = v.logsConfigOverride.unwrap()
-        parts.append("\"logsConfigOverride\":" + u29.to_json())
+        keys.append("logsConfigOverride")
+        vals.append(logs_config_to_cbor(u29))
     if v.registryCredentialOverride.is_some():
         auto u30 = v.registryCredentialOverride.unwrap()
-        parts.append("\"registryCredentialOverride\":" + u30.to_json())
+        keys.append("registryCredentialOverride")
+        vals.append(registry_credential_to_cbor(u30))
     if v.imagePullCredentialsTypeOverride.is_some():
         auto u31 = v.imagePullCredentialsTypeOverride.unwrap()
-        parts.append("\"imagePullCredentialsTypeOverride\":" + u31.to_json())
+        keys.append("imagePullCredentialsTypeOverride")
+        vals.append(cbor.cbor_text(u31))
     if v.buildBatchConfigOverride.is_some():
         auto u32 = v.buildBatchConfigOverride.unwrap()
-        parts.append("\"buildBatchConfigOverride\":" + project_build_batch_config_to_json(u32))
+        keys.append("buildBatchConfigOverride")
+        vals.append(project_build_batch_config_to_cbor(u32))
     if v.debugSessionEnabled.is_some():
         auto u33 = v.debugSessionEnabled.unwrap()
-        parts.append("\"debugSessionEnabled\":" + json.dumps(JsonValue.Bool(u33)))
-    return codebuild_json_obj(parts)
+        keys.append("debugSessionEnabled")
+        vals.append(cbor.cbor_bool(u33))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartBuildInput to a compact JSON object (declaration order).
-def start_build_input_to_json(StartBuildInput v) -> str:
-    list[str] parts = []
-    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+# Serialize StartBuildInput to a CBOR map (member wire name -> value, model order).
+def start_build_input_to_cbor(StartBuildInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
     if v.secondarySourcesOverride.is_some():
         auto u0 = v.secondarySourcesOverride.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"secondarySourcesOverride\":" + codebuild_json_arr(e1))
+            e1.append(project_source_to_cbor(x1))
+        keys.append("secondarySourcesOverride")
+        vals.append(cbor.cbor_list(e1))
     if v.secondarySourcesVersionOverride.is_some():
         auto u2 = v.secondarySourcesVersionOverride.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"secondarySourcesVersionOverride\":" + codebuild_json_arr(e3))
+            e3.append(project_source_version_to_cbor(x3))
+        keys.append("secondarySourcesVersionOverride")
+        vals.append(cbor.cbor_list(e3))
     if v.sourceVersion.is_some():
         auto u4 = v.sourceVersion.unwrap()
-        parts.append("\"sourceVersion\":" + codebuild_json_str(u4))
+        keys.append("sourceVersion")
+        vals.append(cbor.cbor_text(u4))
     if v.artifactsOverride.is_some():
         auto u5 = v.artifactsOverride.unwrap()
-        parts.append("\"artifactsOverride\":" + u5.to_json())
+        keys.append("artifactsOverride")
+        vals.append(project_artifacts_to_cbor(u5))
     if v.secondaryArtifactsOverride.is_some():
         auto u6 = v.secondaryArtifactsOverride.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"secondaryArtifactsOverride\":" + codebuild_json_arr(e7))
+            e7.append(project_artifacts_to_cbor(x7))
+        keys.append("secondaryArtifactsOverride")
+        vals.append(cbor.cbor_list(e7))
     if v.environmentVariablesOverride.is_some():
         auto u8 = v.environmentVariablesOverride.unwrap()
-        list[str] e9 = []
+        list[cbor.CborValue] e9 = []
         for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"environmentVariablesOverride\":" + codebuild_json_arr(e9))
+            e9.append(environment_variable_to_cbor(x9))
+        keys.append("environmentVariablesOverride")
+        vals.append(cbor.cbor_list(e9))
     if v.sourceTypeOverride.is_some():
         auto u10 = v.sourceTypeOverride.unwrap()
-        parts.append("\"sourceTypeOverride\":" + u10.to_json())
+        keys.append("sourceTypeOverride")
+        vals.append(cbor.cbor_text(u10))
     if v.sourceLocationOverride.is_some():
         auto u11 = v.sourceLocationOverride.unwrap()
-        parts.append("\"sourceLocationOverride\":" + codebuild_json_str(u11))
+        keys.append("sourceLocationOverride")
+        vals.append(cbor.cbor_text(u11))
     if v.sourceAuthOverride.is_some():
         auto u12 = v.sourceAuthOverride.unwrap()
-        parts.append("\"sourceAuthOverride\":" + u12.to_json())
+        keys.append("sourceAuthOverride")
+        vals.append(source_auth_to_cbor(u12))
     if v.gitCloneDepthOverride.is_some():
         auto u13 = v.gitCloneDepthOverride.unwrap()
-        parts.append("\"gitCloneDepthOverride\":" + str(u13))
+        keys.append("gitCloneDepthOverride")
+        vals.append(cbor.cbor_int(u13))
     if v.gitSubmodulesConfigOverride.is_some():
         auto u14 = v.gitSubmodulesConfigOverride.unwrap()
-        parts.append("\"gitSubmodulesConfigOverride\":" + u14.to_json())
+        keys.append("gitSubmodulesConfigOverride")
+        vals.append(git_submodules_config_to_cbor(u14))
     if v.buildspecOverride.is_some():
         auto u15 = v.buildspecOverride.unwrap()
-        parts.append("\"buildspecOverride\":" + codebuild_json_str(u15))
+        keys.append("buildspecOverride")
+        vals.append(cbor.cbor_text(u15))
     if v.insecureSslOverride.is_some():
         auto u16 = v.insecureSslOverride.unwrap()
-        parts.append("\"insecureSslOverride\":" + json.dumps(JsonValue.Bool(u16)))
+        keys.append("insecureSslOverride")
+        vals.append(cbor.cbor_bool(u16))
     if v.reportBuildStatusOverride.is_some():
         auto u17 = v.reportBuildStatusOverride.unwrap()
-        parts.append("\"reportBuildStatusOverride\":" + json.dumps(JsonValue.Bool(u17)))
+        keys.append("reportBuildStatusOverride")
+        vals.append(cbor.cbor_bool(u17))
     if v.buildStatusConfigOverride.is_some():
         auto u18 = v.buildStatusConfigOverride.unwrap()
-        parts.append("\"buildStatusConfigOverride\":" + u18.to_json())
+        keys.append("buildStatusConfigOverride")
+        vals.append(build_status_config_to_cbor(u18))
     if v.environmentTypeOverride.is_some():
         auto u19 = v.environmentTypeOverride.unwrap()
-        parts.append("\"environmentTypeOverride\":" + u19.to_json())
+        keys.append("environmentTypeOverride")
+        vals.append(cbor.cbor_text(u19))
     if v.imageOverride.is_some():
         auto u20 = v.imageOverride.unwrap()
-        parts.append("\"imageOverride\":" + codebuild_json_str(u20))
+        keys.append("imageOverride")
+        vals.append(cbor.cbor_text(u20))
     if v.computeTypeOverride.is_some():
         auto u21 = v.computeTypeOverride.unwrap()
-        parts.append("\"computeTypeOverride\":" + u21.to_json())
+        keys.append("computeTypeOverride")
+        vals.append(cbor.cbor_text(u21))
     if v.certificateOverride.is_some():
         auto u22 = v.certificateOverride.unwrap()
-        parts.append("\"certificateOverride\":" + codebuild_json_str(u22))
+        keys.append("certificateOverride")
+        vals.append(cbor.cbor_text(u22))
     if v.cacheOverride.is_some():
         auto u23 = v.cacheOverride.unwrap()
-        parts.append("\"cacheOverride\":" + project_cache_to_json(u23))
+        keys.append("cacheOverride")
+        vals.append(project_cache_to_cbor(u23))
     if v.serviceRoleOverride.is_some():
         auto u24 = v.serviceRoleOverride.unwrap()
-        parts.append("\"serviceRoleOverride\":" + codebuild_json_str(u24))
+        keys.append("serviceRoleOverride")
+        vals.append(cbor.cbor_text(u24))
     if v.privilegedModeOverride.is_some():
         auto u25 = v.privilegedModeOverride.unwrap()
-        parts.append("\"privilegedModeOverride\":" + json.dumps(JsonValue.Bool(u25)))
+        keys.append("privilegedModeOverride")
+        vals.append(cbor.cbor_bool(u25))
     if v.timeoutInMinutesOverride.is_some():
         auto u26 = v.timeoutInMinutesOverride.unwrap()
-        parts.append("\"timeoutInMinutesOverride\":" + str(u26))
+        keys.append("timeoutInMinutesOverride")
+        vals.append(cbor.cbor_int(u26))
     if v.queuedTimeoutInMinutesOverride.is_some():
         auto u27 = v.queuedTimeoutInMinutesOverride.unwrap()
-        parts.append("\"queuedTimeoutInMinutesOverride\":" + str(u27))
+        keys.append("queuedTimeoutInMinutesOverride")
+        vals.append(cbor.cbor_int(u27))
     if v.encryptionKeyOverride.is_some():
         auto u28 = v.encryptionKeyOverride.unwrap()
-        parts.append("\"encryptionKeyOverride\":" + codebuild_json_str(u28))
+        keys.append("encryptionKeyOverride")
+        vals.append(cbor.cbor_text(u28))
     if v.idempotencyToken.is_some():
         auto u29 = v.idempotencyToken.unwrap()
-        parts.append("\"idempotencyToken\":" + codebuild_json_str(u29))
+        keys.append("idempotencyToken")
+        vals.append(cbor.cbor_text(u29))
     if v.logsConfigOverride.is_some():
         auto u30 = v.logsConfigOverride.unwrap()
-        parts.append("\"logsConfigOverride\":" + u30.to_json())
+        keys.append("logsConfigOverride")
+        vals.append(logs_config_to_cbor(u30))
     if v.registryCredentialOverride.is_some():
         auto u31 = v.registryCredentialOverride.unwrap()
-        parts.append("\"registryCredentialOverride\":" + u31.to_json())
+        keys.append("registryCredentialOverride")
+        vals.append(registry_credential_to_cbor(u31))
     if v.imagePullCredentialsTypeOverride.is_some():
         auto u32 = v.imagePullCredentialsTypeOverride.unwrap()
-        parts.append("\"imagePullCredentialsTypeOverride\":" + u32.to_json())
+        keys.append("imagePullCredentialsTypeOverride")
+        vals.append(cbor.cbor_text(u32))
     if v.debugSessionEnabled.is_some():
         auto u33 = v.debugSessionEnabled.unwrap()
-        parts.append("\"debugSessionEnabled\":" + json.dumps(JsonValue.Bool(u33)))
+        keys.append("debugSessionEnabled")
+        vals.append(cbor.cbor_bool(u33))
     if v.fleetOverride.is_some():
         auto u34 = v.fleetOverride.unwrap()
-        parts.append("\"fleetOverride\":" + u34.to_json())
+        keys.append("fleetOverride")
+        vals.append(project_fleet_to_cbor(u34))
     if v.autoRetryLimitOverride.is_some():
         auto u35 = v.autoRetryLimitOverride.unwrap()
-        parts.append("\"autoRetryLimitOverride\":" + str(u35))
+        keys.append("autoRetryLimitOverride")
+        vals.append(cbor.cbor_int(u35))
     if v.hostKernelOverride.is_some():
         auto u36 = v.hostKernelOverride.unwrap()
-        parts.append("\"hostKernelOverride\":" + u36.to_json())
-    return codebuild_json_obj(parts)
+        keys.append("hostKernelOverride")
+        vals.append(cbor.cbor_text(u36))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateFleetInput to a compact JSON object (declaration order).
-def update_fleet_input_to_json(UpdateFleetInput v) -> str:
-    list[str] parts = []
-    parts.append("\"arn\":" + codebuild_json_str(v.arn))
+# Serialize StartCommandExecutionInput to a CBOR map (member wire name -> value, model order).
+def start_command_execution_input_to_cbor(StartCommandExecutionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("sandboxId")
+    vals.append(cbor.cbor_text(v.sandboxId))
+    keys.append("command")
+    vals.append(cbor.cbor_text(v.command))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartSandboxConnectionInput to a CBOR map (member wire name -> value, model order).
+def start_sandbox_connection_input_to_cbor(StartSandboxConnectionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("sandboxId")
+    vals.append(cbor.cbor_text(v.sandboxId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartSandboxInput to a CBOR map (member wire name -> value, model order).
+def start_sandbox_input_to_cbor(StartSandboxInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.projectName.is_some():
+        auto u0 = v.projectName.unwrap()
+        keys.append("projectName")
+        vals.append(cbor.cbor_text(u0))
+    if v.idempotencyToken.is_some():
+        auto u1 = v.idempotencyToken.unwrap()
+        keys.append("idempotencyToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopBuildBatchInput to a CBOR map (member wire name -> value, model order).
+def stop_build_batch_input_to_cbor(StopBuildBatchInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("id")
+    vals.append(cbor.cbor_text(v.id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopBuildInput to a CBOR map (member wire name -> value, model order).
+def stop_build_input_to_cbor(StopBuildInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("id")
+    vals.append(cbor.cbor_text(v.id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopSandboxInput to a CBOR map (member wire name -> value, model order).
+def stop_sandbox_input_to_cbor(StopSandboxInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("id")
+    vals.append(cbor.cbor_text(v.id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.key.is_some():
+        auto u0 = v.key.unwrap()
+        keys.append("key")
+        vals.append(cbor.cbor_text(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        keys.append("value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TargetTrackingScalingConfiguration to a CBOR map (member wire name -> value, model order).
+def target_tracking_scaling_configuration_to_cbor(TargetTrackingScalingConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.metricType.is_some():
+        auto u0 = v.metricType.unwrap()
+        keys.append("metricType")
+        vals.append(cbor.cbor_text(u0))
+    if v.targetValue.is_some():
+        auto u1 = v.targetValue.unwrap()
+        keys.append("targetValue")
+        vals.append(cbor.cbor_double(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TestCaseFilter to a CBOR map (member wire name -> value, model order).
+def test_case_filter_to_cbor(TestCaseFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.status.is_some():
+        auto u0 = v.status.unwrap()
+        keys.append("status")
+        vals.append(cbor.cbor_text(u0))
+    if v.keyword.is_some():
+        auto u1 = v.keyword.unwrap()
+        keys.append("keyword")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFleetInput to a CBOR map (member wire name -> value, model order).
+def update_fleet_input_to_cbor(UpdateFleetInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("arn")
+    vals.append(cbor.cbor_text(v.arn))
     if v.baseCapacity.is_some():
         auto u0 = v.baseCapacity.unwrap()
-        parts.append("\"baseCapacity\":" + str(u0))
+        keys.append("baseCapacity")
+        vals.append(cbor.cbor_int(u0))
     if v.environmentType.is_some():
         auto u1 = v.environmentType.unwrap()
-        parts.append("\"environmentType\":" + u1.to_json())
+        keys.append("environmentType")
+        vals.append(cbor.cbor_text(u1))
     if v.computeType.is_some():
         auto u2 = v.computeType.unwrap()
-        parts.append("\"computeType\":" + u2.to_json())
+        keys.append("computeType")
+        vals.append(cbor.cbor_text(u2))
     if v.computeConfiguration.is_some():
         auto u3 = v.computeConfiguration.unwrap()
-        parts.append("\"computeConfiguration\":" + u3.to_json())
+        keys.append("computeConfiguration")
+        vals.append(compute_configuration_to_cbor(u3))
     if v.scalingConfiguration.is_some():
         auto u4 = v.scalingConfiguration.unwrap()
-        parts.append("\"scalingConfiguration\":" + scaling_configuration_input_to_json(u4))
+        keys.append("scalingConfiguration")
+        vals.append(scaling_configuration_input_to_cbor(u4))
     if v.overflowBehavior.is_some():
         auto u5 = v.overflowBehavior.unwrap()
-        parts.append("\"overflowBehavior\":" + u5.to_json())
+        keys.append("overflowBehavior")
+        vals.append(cbor.cbor_text(u5))
     if v.vpcConfig.is_some():
         auto u6 = v.vpcConfig.unwrap()
-        parts.append("\"vpcConfig\":" + vpc_config_to_json(u6))
+        keys.append("vpcConfig")
+        vals.append(vpc_config_to_cbor(u6))
     if v.proxyConfiguration.is_some():
         auto u7 = v.proxyConfiguration.unwrap()
-        parts.append("\"proxyConfiguration\":" + proxy_configuration_to_json(u7))
+        keys.append("proxyConfiguration")
+        vals.append(proxy_configuration_to_cbor(u7))
     if v.imageId.is_some():
         auto u8 = v.imageId.unwrap()
-        parts.append("\"imageId\":" + codebuild_json_str(u8))
+        keys.append("imageId")
+        vals.append(cbor.cbor_text(u8))
     if v.fleetServiceRole.is_some():
         auto u9 = v.fleetServiceRole.unwrap()
-        parts.append("\"fleetServiceRole\":" + codebuild_json_str(u9))
+        keys.append("fleetServiceRole")
+        vals.append(cbor.cbor_text(u9))
     if v.tags.is_some():
         auto u10 = v.tags.unwrap()
-        list[str] e11 = []
+        list[cbor.CborValue] e11 = []
         for x11 in u10:
-            e11.append(x11.to_json())
-        parts.append("\"tags\":" + codebuild_json_arr(e11))
-    return codebuild_json_obj(parts)
+            e11.append(tag_to_cbor(x11))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e11))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateProjectInput to a compact JSON object (declaration order).
-def update_project_input_to_json(UpdateProjectInput v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codebuild_json_str(v.name))
+# Serialize UpdateProjectInput to a CBOR map (member wire name -> value, model order).
+def update_project_input_to_cbor(UpdateProjectInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
     if v.description.is_some():
         auto u0 = v.description.unwrap()
-        parts.append("\"description\":" + codebuild_json_str(u0))
+        keys.append("description")
+        vals.append(cbor.cbor_text(u0))
     if v.source.is_some():
         auto u1 = v.source.unwrap()
-        parts.append("\"source\":" + u1.to_json())
+        keys.append("source")
+        vals.append(project_source_to_cbor(u1))
     if v.secondarySources.is_some():
         auto u2 = v.secondarySources.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"secondarySources\":" + codebuild_json_arr(e3))
+            e3.append(project_source_to_cbor(x3))
+        keys.append("secondarySources")
+        vals.append(cbor.cbor_list(e3))
     if v.sourceVersion.is_some():
         auto u4 = v.sourceVersion.unwrap()
-        parts.append("\"sourceVersion\":" + codebuild_json_str(u4))
+        keys.append("sourceVersion")
+        vals.append(cbor.cbor_text(u4))
     if v.secondarySourceVersions.is_some():
         auto u5 = v.secondarySourceVersions.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"secondarySourceVersions\":" + codebuild_json_arr(e6))
+            e6.append(project_source_version_to_cbor(x6))
+        keys.append("secondarySourceVersions")
+        vals.append(cbor.cbor_list(e6))
     if v.artifacts.is_some():
         auto u7 = v.artifacts.unwrap()
-        parts.append("\"artifacts\":" + u7.to_json())
+        keys.append("artifacts")
+        vals.append(project_artifacts_to_cbor(u7))
     if v.secondaryArtifacts.is_some():
         auto u8 = v.secondaryArtifacts.unwrap()
-        list[str] e9 = []
+        list[cbor.CborValue] e9 = []
         for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"secondaryArtifacts\":" + codebuild_json_arr(e9))
+            e9.append(project_artifacts_to_cbor(x9))
+        keys.append("secondaryArtifacts")
+        vals.append(cbor.cbor_list(e9))
     if v.cache.is_some():
         auto u10 = v.cache.unwrap()
-        parts.append("\"cache\":" + project_cache_to_json(u10))
+        keys.append("cache")
+        vals.append(project_cache_to_cbor(u10))
     if v.environment.is_some():
         auto u11 = v.environment.unwrap()
-        parts.append("\"environment\":" + project_environment_to_json(u11))
+        keys.append("environment")
+        vals.append(project_environment_to_cbor(u11))
     if v.serviceRole.is_some():
         auto u12 = v.serviceRole.unwrap()
-        parts.append("\"serviceRole\":" + codebuild_json_str(u12))
+        keys.append("serviceRole")
+        vals.append(cbor.cbor_text(u12))
     if v.timeoutInMinutes.is_some():
         auto u13 = v.timeoutInMinutes.unwrap()
-        parts.append("\"timeoutInMinutes\":" + str(u13))
+        keys.append("timeoutInMinutes")
+        vals.append(cbor.cbor_int(u13))
     if v.queuedTimeoutInMinutes.is_some():
         auto u14 = v.queuedTimeoutInMinutes.unwrap()
-        parts.append("\"queuedTimeoutInMinutes\":" + str(u14))
+        keys.append("queuedTimeoutInMinutes")
+        vals.append(cbor.cbor_int(u14))
     if v.encryptionKey.is_some():
         auto u15 = v.encryptionKey.unwrap()
-        parts.append("\"encryptionKey\":" + codebuild_json_str(u15))
+        keys.append("encryptionKey")
+        vals.append(cbor.cbor_text(u15))
     if v.tags.is_some():
         auto u16 = v.tags.unwrap()
-        list[str] e17 = []
+        list[cbor.CborValue] e17 = []
         for x17 in u16:
-            e17.append(x17.to_json())
-        parts.append("\"tags\":" + codebuild_json_arr(e17))
+            e17.append(tag_to_cbor(x17))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e17))
     if v.vpcConfig.is_some():
         auto u18 = v.vpcConfig.unwrap()
-        parts.append("\"vpcConfig\":" + vpc_config_to_json(u18))
+        keys.append("vpcConfig")
+        vals.append(vpc_config_to_cbor(u18))
     if v.badgeEnabled.is_some():
         auto u19 = v.badgeEnabled.unwrap()
-        parts.append("\"badgeEnabled\":" + json.dumps(JsonValue.Bool(u19)))
+        keys.append("badgeEnabled")
+        vals.append(cbor.cbor_bool(u19))
     if v.logsConfig.is_some():
         auto u20 = v.logsConfig.unwrap()
-        parts.append("\"logsConfig\":" + u20.to_json())
+        keys.append("logsConfig")
+        vals.append(logs_config_to_cbor(u20))
     if v.fileSystemLocations.is_some():
         auto u21 = v.fileSystemLocations.unwrap()
-        list[str] e22 = []
+        list[cbor.CborValue] e22 = []
         for x22 in u21:
-            e22.append(x22.to_json())
-        parts.append("\"fileSystemLocations\":" + codebuild_json_arr(e22))
+            e22.append(project_file_system_location_to_cbor(x22))
+        keys.append("fileSystemLocations")
+        vals.append(cbor.cbor_list(e22))
     if v.buildBatchConfig.is_some():
         auto u23 = v.buildBatchConfig.unwrap()
-        parts.append("\"buildBatchConfig\":" + project_build_batch_config_to_json(u23))
+        keys.append("buildBatchConfig")
+        vals.append(project_build_batch_config_to_cbor(u23))
     if v.concurrentBuildLimit.is_some():
         auto u24 = v.concurrentBuildLimit.unwrap()
-        parts.append("\"concurrentBuildLimit\":" + str(u24))
+        keys.append("concurrentBuildLimit")
+        vals.append(cbor.cbor_int(u24))
     if v.autoRetryLimit.is_some():
         auto u25 = v.autoRetryLimit.unwrap()
-        parts.append("\"autoRetryLimit\":" + str(u25))
-    return codebuild_json_obj(parts)
+        keys.append("autoRetryLimit")
+        vals.append(cbor.cbor_int(u25))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateReportGroupInput to a compact JSON object (declaration order).
-def update_report_group_input_to_json(UpdateReportGroupInput v) -> str:
-    list[str] parts = []
-    parts.append("\"arn\":" + codebuild_json_str(v.arn))
+# Serialize UpdateProjectVisibilityInput to a CBOR map (member wire name -> value, model order).
+def update_project_visibility_input_to_cbor(UpdateProjectVisibilityInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectArn")
+    vals.append(cbor.cbor_text(v.projectArn))
+    keys.append("projectVisibility")
+    vals.append(cbor.cbor_text(v.projectVisibility))
+    if v.resourceAccessRole.is_some():
+        auto u0 = v.resourceAccessRole.unwrap()
+        keys.append("resourceAccessRole")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateReportGroupInput to a CBOR map (member wire name -> value, model order).
+def update_report_group_input_to_cbor(UpdateReportGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("arn")
+    vals.append(cbor.cbor_text(v.arn))
     if v.exportConfig.is_some():
         auto u0 = v.exportConfig.unwrap()
-        parts.append("\"exportConfig\":" + u0.to_json())
+        keys.append("exportConfig")
+        vals.append(report_export_config_to_cbor(u0))
     if v.tags.is_some():
         auto u1 = v.tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tags\":" + codebuild_json_arr(e2))
-    return codebuild_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateWebhookInput to a compact JSON object (declaration order).
-def update_webhook_input_to_json(UpdateWebhookInput v) -> str:
-    list[str] parts = []
-    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+# Serialize UpdateWebhookInput to a CBOR map (member wire name -> value, model order).
+def update_webhook_input_to_cbor(UpdateWebhookInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("projectName")
+    vals.append(cbor.cbor_text(v.projectName))
     if v.branchFilter.is_some():
         auto u0 = v.branchFilter.unwrap()
-        parts.append("\"branchFilter\":" + codebuild_json_str(u0))
+        keys.append("branchFilter")
+        vals.append(cbor.cbor_text(u0))
     if v.rotateSecret.is_some():
         auto u1 = v.rotateSecret.unwrap()
-        parts.append("\"rotateSecret\":" + json.dumps(JsonValue.Bool(u1)))
+        keys.append("rotateSecret")
+        vals.append(cbor.cbor_bool(u1))
     if v.filterGroups.is_some():
         auto u2 = v.filterGroups.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            list[str] e4 = []
+            list[cbor.CborValue] e4 = []
             for x4 in x3:
-                e4.append(x4.to_json())
-            e3.append(codebuild_json_arr(e4))
-        parts.append("\"filterGroups\":" + codebuild_json_arr(e3))
+                e4.append(webhook_filter_to_cbor(x4))
+            e3.append(cbor.cbor_list(e4))
+        keys.append("filterGroups")
+        vals.append(cbor.cbor_list(e3))
     if v.buildType.is_some():
         auto u5 = v.buildType.unwrap()
-        parts.append("\"buildType\":" + u5.to_json())
+        keys.append("buildType")
+        vals.append(cbor.cbor_text(u5))
     if v.pullRequestBuildPolicy.is_some():
         auto u6 = v.pullRequestBuildPolicy.unwrap()
-        parts.append("\"pullRequestBuildPolicy\":" + pull_request_build_policy_to_json(u6))
-    return codebuild_json_obj(parts)
+        keys.append("pullRequestBuildPolicy")
+        vals.append(pull_request_build_policy_to_cbor(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize VpcConfig to a compact JSON object (declaration order).
-def vpc_config_to_json(VpcConfig v) -> str:
-    list[str] parts = []
+# Serialize VpcConfig to a CBOR map (member wire name -> value, model order).
+def vpc_config_to_cbor(VpcConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.vpcId.is_some():
         auto u0 = v.vpcId.unwrap()
-        parts.append("\"vpcId\":" + codebuild_json_str(u0))
+        keys.append("vpcId")
+        vals.append(cbor.cbor_text(u0))
     if v.subnets.is_some():
         auto u1 = v.subnets.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(codebuild_json_str(x2))
-        parts.append("\"subnets\":" + codebuild_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("subnets")
+        vals.append(cbor.cbor_list(e2))
     if v.securityGroupIds.is_some():
         auto u3 = v.securityGroupIds.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(codebuild_json_str(x4))
-        parts.append("\"securityGroupIds\":" + codebuild_json_arr(e4))
-    return codebuild_json_obj(parts)
+            e4.append(cbor.cbor_text(x4))
+        keys.append("securityGroupIds")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize WebhookFilter to a CBOR map (member wire name -> value, model order).
+def webhook_filter_to_cbor(WebhookFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    keys.append("pattern")
+    vals.append(cbor.cbor_text(v.pattern))
+    if v.excludeMatchedPattern.is_some():
+        auto u0 = v.excludeMatchedPattern.unwrap()
+        keys.append("excludeMatchedPattern")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
 
 # A bound CodeBuild client: credentials + region, threaded into every operation.
 struct CodeBuildClient:
@@ -2984,566 +3832,533 @@ struct CodeBuildClient:
 
     # BatchDeleteBuilds
     # errors: InvalidInputException
-    def batch_delete_builds(self, BatchDeleteBuildsInput input) -> str:
-        auto body = batch_delete_builds_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchDeleteBuilds", body)
+    def batch_delete_builds(self, BatchDeleteBuildsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_delete_builds_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchDeleteBuilds", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetBuildBatches
     # errors: InvalidInputException
-    def batch_get_build_batches(self, BatchGetBuildBatchesInput input) -> str:
-        auto body = batch_get_build_batches_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetBuildBatches", body)
+    def batch_get_build_batches(self, BatchGetBuildBatchesInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_build_batches_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetBuildBatches", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetBuilds
     # errors: InvalidInputException
-    def batch_get_builds(self, BatchGetBuildsInput input) -> str:
-        auto body = batch_get_builds_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetBuilds", body)
+    def batch_get_builds(self, BatchGetBuildsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_builds_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetBuilds", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetCommandExecutions
     # errors: InvalidInputException
-    def batch_get_command_executions(self, BatchGetCommandExecutionsInput input) -> str:
-        auto body = batch_get_command_executions_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetCommandExecutions", body)
+    def batch_get_command_executions(self, BatchGetCommandExecutionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_command_executions_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetCommandExecutions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetFleets
     # errors: InvalidInputException
-    def batch_get_fleets(self, BatchGetFleetsInput input) -> str:
-        auto body = batch_get_fleets_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetFleets", body)
+    def batch_get_fleets(self, BatchGetFleetsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_fleets_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetFleets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetProjects
     # errors: InvalidInputException
-    def batch_get_projects(self, BatchGetProjectsInput input) -> str:
-        auto body = batch_get_projects_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetProjects", body)
+    def batch_get_projects(self, BatchGetProjectsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_projects_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetProjects", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetReportGroups
     # errors: InvalidInputException
-    def batch_get_report_groups(self, BatchGetReportGroupsInput input) -> str:
-        auto body = batch_get_report_groups_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetReportGroups", body)
+    def batch_get_report_groups(self, BatchGetReportGroupsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_report_groups_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetReportGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetReports
     # errors: InvalidInputException
-    def batch_get_reports(self, BatchGetReportsInput input) -> str:
-        auto body = batch_get_reports_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetReports", body)
+    def batch_get_reports(self, BatchGetReportsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_reports_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetReports", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetSandboxes
     # errors: InvalidInputException
-    def batch_get_sandboxes(self, BatchGetSandboxesInput input) -> str:
-        auto body = batch_get_sandboxes_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetSandboxes", body)
+    def batch_get_sandboxes(self, BatchGetSandboxesInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_sandboxes_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "BatchGetSandboxes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateFleet
     # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
-    def create_fleet(self, CreateFleetInput input) -> str:
-        auto body = create_fleet_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateFleet", body)
+    def create_fleet(self, CreateFleetInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_fleet_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "CreateFleet", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateProject
     # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
-    def create_project(self, CreateProjectInput input) -> str:
-        auto body = create_project_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateProject", body)
+    def create_project(self, CreateProjectInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_project_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "CreateProject", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateReportGroup
     # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
-    def create_report_group(self, CreateReportGroupInput input) -> str:
-        auto body = create_report_group_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateReportGroup", body)
+    def create_report_group(self, CreateReportGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_report_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "CreateReportGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateWebhook
     # errors: InvalidInputException, OAuthProviderException, ResourceAlreadyExistsException, ResourceNotFoundException
-    def create_webhook(self, CreateWebhookInput input) -> str:
-        auto body = create_webhook_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateWebhook", body)
+    def create_webhook(self, CreateWebhookInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_webhook_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "CreateWebhook", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteBuildBatch
     # errors: InvalidInputException
-    def delete_build_batch(self, DeleteBuildBatchInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteBuildBatch", body)
+    def delete_build_batch(self, DeleteBuildBatchInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_build_batch_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteBuildBatch", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteFleet
     # errors: InvalidInputException
-    def delete_fleet(self, DeleteFleetInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteFleet", body)
+    def delete_fleet(self, DeleteFleetInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_fleet_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteFleet", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProject
     # errors: InvalidInputException
-    def delete_project(self, DeleteProjectInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteProject", body)
+    def delete_project(self, DeleteProjectInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_project_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteProject", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteReport
     # errors: InvalidInputException
-    def delete_report(self, DeleteReportInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteReport", body)
+    def delete_report(self, DeleteReportInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_report_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteReport", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteReportGroup
     # errors: InvalidInputException
-    def delete_report_group(self, DeleteReportGroupInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteReportGroup", body)
+    def delete_report_group(self, DeleteReportGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_report_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteReportGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteResourcePolicy
     # errors: InvalidInputException
-    def delete_resource_policy(self, DeleteResourcePolicyInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
+    def delete_resource_policy(self, DeleteResourcePolicyInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_resource_policy_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteSourceCredentials
     # errors: InvalidInputException, ResourceNotFoundException
-    def delete_source_credentials(self, DeleteSourceCredentialsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteSourceCredentials", body)
+    def delete_source_credentials(self, DeleteSourceCredentialsInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_source_credentials_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteSourceCredentials", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteWebhook
     # errors: InvalidInputException, OAuthProviderException, ResourceNotFoundException
-    def delete_webhook(self, DeleteWebhookInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DeleteWebhook", body)
+    def delete_webhook(self, DeleteWebhookInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_webhook_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DeleteWebhook", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCodeCoverages
     # errors: InvalidInputException
-    def describe_code_coverages(self, DescribeCodeCoveragesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DescribeCodeCoverages", body)
+    def describe_code_coverages(self, DescribeCodeCoveragesInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_code_coverages_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DescribeCodeCoverages", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTestCases
     # errors: InvalidInputException, ResourceNotFoundException
-    def describe_test_cases(self, DescribeTestCasesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DescribeTestCases", body)
+    def describe_test_cases(self, DescribeTestCasesInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_test_cases_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "DescribeTestCases", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetReportGroupTrend
     # errors: InvalidInputException, ResourceNotFoundException
-    def get_report_group_trend(self, GetReportGroupTrendInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "GetReportGroupTrend", body)
+    def get_report_group_trend(self, GetReportGroupTrendInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_report_group_trend_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "GetReportGroupTrend", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetResourcePolicy
     # errors: InvalidInputException, ResourceNotFoundException
-    def get_resource_policy(self, GetResourcePolicyInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "GetResourcePolicy", body)
+    def get_resource_policy(self, GetResourcePolicyInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_resource_policy_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "GetResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportSourceCredentials
     # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
-    def import_source_credentials(self, ImportSourceCredentialsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ImportSourceCredentials", body)
+    def import_source_credentials(self, ImportSourceCredentialsInput input) -> bytes:
+        auto body = cbor.cbor_encode(import_source_credentials_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ImportSourceCredentials", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # InvalidateProjectCache
     # errors: InvalidInputException, ResourceNotFoundException
-    def invalidate_project_cache(self, InvalidateProjectCacheInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "InvalidateProjectCache", body)
+    def invalidate_project_cache(self, InvalidateProjectCacheInput input) -> bytes:
+        auto body = cbor.cbor_encode(invalidate_project_cache_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "InvalidateProjectCache", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListBuildBatches
     # errors: InvalidInputException
-    def list_build_batches(self, ListBuildBatchesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuildBatches", body)
+    def list_build_batches(self, ListBuildBatchesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_build_batches_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListBuildBatches", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListBuildBatchesForProject
     # errors: InvalidInputException, ResourceNotFoundException
-    def list_build_batches_for_project(self, ListBuildBatchesForProjectInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuildBatchesForProject", body)
+    def list_build_batches_for_project(self, ListBuildBatchesForProjectInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_build_batches_for_project_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListBuildBatchesForProject", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListBuilds
     # errors: InvalidInputException
-    def list_builds(self, ListBuildsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuilds", body)
+    def list_builds(self, ListBuildsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_builds_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListBuilds", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListBuildsForProject
     # errors: InvalidInputException, ResourceNotFoundException
-    def list_builds_for_project(self, ListBuildsForProjectInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuildsForProject", body)
+    def list_builds_for_project(self, ListBuildsForProjectInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_builds_for_project_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListBuildsForProject", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListCommandExecutionsForSandbox
     # errors: InvalidInputException, ResourceNotFoundException
-    def list_command_executions_for_sandbox(self, ListCommandExecutionsForSandboxInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListCommandExecutionsForSandbox", body)
+    def list_command_executions_for_sandbox(self, ListCommandExecutionsForSandboxInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_command_executions_for_sandbox_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListCommandExecutionsForSandbox", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListCuratedEnvironmentImages
-    def list_curated_environment_images(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListCuratedEnvironmentImages", body)
+    def list_curated_environment_images(self, ListCuratedEnvironmentImagesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_curated_environment_images_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListCuratedEnvironmentImages", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFleets
     # errors: InvalidInputException
-    def list_fleets(self, ListFleetsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListFleets", body)
+    def list_fleets(self, ListFleetsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_fleets_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListFleets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListProjects
     # errors: InvalidInputException
-    def list_projects(self, ListProjectsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListProjects", body)
+    def list_projects(self, ListProjectsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_projects_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListProjects", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListReportGroups
     # errors: InvalidInputException
-    def list_report_groups(self, ListReportGroupsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListReportGroups", body)
+    def list_report_groups(self, ListReportGroupsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_report_groups_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListReportGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListReports
     # errors: InvalidInputException
-    def list_reports(self, ListReportsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListReports", body)
+    def list_reports(self, ListReportsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_reports_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListReports", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListReportsForReportGroup
     # errors: InvalidInputException, ResourceNotFoundException
-    def list_reports_for_report_group(self, ListReportsForReportGroupInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListReportsForReportGroup", body)
+    def list_reports_for_report_group(self, ListReportsForReportGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_reports_for_report_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListReportsForReportGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSandboxes
     # errors: InvalidInputException
-    def list_sandboxes(self, ListSandboxesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSandboxes", body)
+    def list_sandboxes(self, ListSandboxesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_sandboxes_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListSandboxes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSandboxesForProject
     # errors: InvalidInputException, ResourceNotFoundException
-    def list_sandboxes_for_project(self, ListSandboxesForProjectInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSandboxesForProject", body)
+    def list_sandboxes_for_project(self, ListSandboxesForProjectInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_sandboxes_for_project_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListSandboxesForProject", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSharedProjects
     # errors: InvalidInputException
-    def list_shared_projects(self, ListSharedProjectsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSharedProjects", body)
+    def list_shared_projects(self, ListSharedProjectsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_shared_projects_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListSharedProjects", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSharedReportGroups
     # errors: InvalidInputException
-    def list_shared_report_groups(self, ListSharedReportGroupsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSharedReportGroups", body)
+    def list_shared_report_groups(self, ListSharedReportGroupsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_shared_report_groups_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListSharedReportGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSourceCredentials
     # errors: InvalidInputException
-    def list_source_credentials(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSourceCredentials", body)
+    def list_source_credentials(self, ListSourceCredentialsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_source_credentials_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "ListSourceCredentials", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutResourcePolicy
     # errors: InvalidInputException, ResourceNotFoundException
-    def put_resource_policy(self, PutResourcePolicyInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+    def put_resource_policy(self, PutResourcePolicyInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_resource_policy_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "PutResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RetryBuild
     # errors: AccountLimitExceededException, InvalidInputException, ResourceNotFoundException
-    def retry_build(self, RetryBuildInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "RetryBuild", body)
+    def retry_build(self, RetryBuildInput input) -> bytes:
+        auto body = cbor.cbor_encode(retry_build_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "RetryBuild", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RetryBuildBatch
     # errors: InvalidInputException, ResourceNotFoundException
-    def retry_build_batch(self, RetryBuildBatchInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "RetryBuildBatch", body)
+    def retry_build_batch(self, RetryBuildBatchInput input) -> bytes:
+        auto body = cbor.cbor_encode(retry_build_batch_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "RetryBuildBatch", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartBuild
     # errors: AccountLimitExceededException, InvalidInputException, ResourceNotFoundException
-    def start_build(self, StartBuildInput input) -> str:
-        auto body = start_build_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartBuild", body)
+    def start_build(self, StartBuildInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_build_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StartBuild", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartBuildBatch
     # errors: InvalidInputException, ResourceNotFoundException
-    def start_build_batch(self, StartBuildBatchInput input) -> str:
-        auto body = start_build_batch_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartBuildBatch", body)
+    def start_build_batch(self, StartBuildBatchInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_build_batch_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StartBuildBatch", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartCommandExecution
     # errors: InvalidInputException, ResourceNotFoundException
-    def start_command_execution(self, StartCommandExecutionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartCommandExecution", body)
+    def start_command_execution(self, StartCommandExecutionInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_command_execution_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StartCommandExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartSandbox
     # errors: AccountSuspendedException, InvalidInputException, ResourceNotFoundException
-    def start_sandbox(self, StartSandboxInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartSandbox", body)
+    def start_sandbox(self, StartSandboxInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_sandbox_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StartSandbox", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartSandboxConnection
     # errors: InvalidInputException, ResourceNotFoundException
-    def start_sandbox_connection(self, StartSandboxConnectionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartSandboxConnection", body)
+    def start_sandbox_connection(self, StartSandboxConnectionInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_sandbox_connection_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StartSandboxConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopBuild
     # errors: InvalidInputException, ResourceNotFoundException
-    def stop_build(self, StopBuildInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StopBuild", body)
+    def stop_build(self, StopBuildInput input) -> bytes:
+        auto body = cbor.cbor_encode(stop_build_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StopBuild", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopBuildBatch
     # errors: InvalidInputException, ResourceNotFoundException
-    def stop_build_batch(self, StopBuildBatchInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StopBuildBatch", body)
+    def stop_build_batch(self, StopBuildBatchInput input) -> bytes:
+        auto body = cbor.cbor_encode(stop_build_batch_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StopBuildBatch", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopSandbox
     # errors: InvalidInputException, ResourceNotFoundException
-    def stop_sandbox(self, StopSandboxInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StopSandbox", body)
+    def stop_sandbox(self, StopSandboxInput input) -> bytes:
+        auto body = cbor.cbor_encode(stop_sandbox_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "StopSandbox", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFleet
     # errors: AccountLimitExceededException, InvalidInputException, ResourceNotFoundException
-    def update_fleet(self, UpdateFleetInput input) -> str:
-        auto body = update_fleet_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateFleet", body)
+    def update_fleet(self, UpdateFleetInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_fleet_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "UpdateFleet", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProject
     # errors: InvalidInputException, ResourceNotFoundException
-    def update_project(self, UpdateProjectInput input) -> str:
-        auto body = update_project_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateProject", body)
+    def update_project(self, UpdateProjectInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_project_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "UpdateProject", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProjectVisibility
     # errors: InvalidInputException, ResourceNotFoundException
-    def update_project_visibility(self, UpdateProjectVisibilityInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateProjectVisibility", body)
+    def update_project_visibility(self, UpdateProjectVisibilityInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_project_visibility_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "UpdateProjectVisibility", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateReportGroup
     # errors: InvalidInputException, ResourceNotFoundException
-    def update_report_group(self, UpdateReportGroupInput input) -> str:
-        auto body = update_report_group_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateReportGroup", body)
+    def update_report_group(self, UpdateReportGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_report_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "UpdateReportGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateWebhook
     # errors: InvalidInputException, OAuthProviderException, ResourceNotFoundException
-    def update_webhook(self, UpdateWebhookInput input) -> str:
-        auto body = update_webhook_input_to_json(input)
-        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateWebhook", body)
-
-    # Paginator for DescribeCodeCoverages — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: codeCoverages).
-    def paginate_describe_code_coverages(self, DescribeCodeCoveragesInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DescribeCodeCoverages", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeTestCases — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: testCases).
-    def paginate_describe_test_cases(self, DescribeTestCasesInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "DescribeTestCases", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListBuildBatches — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ids).
-    def paginate_list_build_batches(self, ListBuildBatchesInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuildBatches", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListBuildBatchesForProject — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ids).
-    def paginate_list_build_batches_for_project(self, ListBuildBatchesForProjectInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuildBatchesForProject", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListBuilds — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ids).
-    def paginate_list_builds(self, ListBuildsInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuilds", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListBuildsForProject — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ids).
-    def paginate_list_builds_for_project(self, ListBuildsForProjectInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListBuildsForProject", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListCommandExecutionsForSandbox — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: commandExecutions).
-    def paginate_list_command_executions_for_sandbox(self, ListCommandExecutionsForSandboxInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListCommandExecutionsForSandbox", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListProjects — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: projects).
-    def paginate_list_projects(self, ListProjectsInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListProjects", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListReportGroups — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: reportGroups).
-    def paginate_list_report_groups(self, ListReportGroupsInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListReportGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListReports — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: reports).
-    def paginate_list_reports(self, ListReportsInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListReports", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListReportsForReportGroup — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: reports).
-    def paginate_list_reports_for_report_group(self, ListReportsForReportGroupInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListReportsForReportGroup", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListSandboxes — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ids).
-    def paginate_list_sandboxes(self, ListSandboxesInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSandboxes", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListSandboxesForProject — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ids).
-    def paginate_list_sandboxes_for_project(self, ListSandboxesForProjectInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSandboxesForProject", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListSharedProjects — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: projects).
-    def paginate_list_shared_projects(self, ListSharedProjectsInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSharedProjects", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListSharedReportGroups — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: reportGroups).
-    def paginate_list_shared_report_groups(self, ListSharedReportGroupsInput input):
-        auto host = endpoints.regional_host(codebuild_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "ListSharedReportGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
+    def update_webhook(self, UpdateWebhookInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_webhook_input_to_cbor(input))
+        auto host = endpoints.regional_host(codebuild_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codebuild_service(), self.region, host, "CodeBuild_20161006", "UpdateWebhook", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a CodeBuildClient bound to credentials + region.
 def codebuild_client(core.Credentials creds, str region) -> CodeBuildClient:

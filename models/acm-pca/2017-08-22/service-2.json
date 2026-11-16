@@ -7,8 +7,9 @@
   ],
   "endpointPrefix": "acm-pca",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceAbbreviation": "ACM-PCA",

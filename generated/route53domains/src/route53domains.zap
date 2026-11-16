@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: Amazon Route 53 Domains (serviceId Route 53 Domains, API 2014-05-15)
-# Protocol: awsJson 1.1 (targetPrefix Route53Domains_v20140515)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service route53domains, service shape Route53Domains_v20140515)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 35 operations — 35 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   92 structs (74 @derive(Json)), 13 enums, 8 error variants.
-#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 36 operations — 36 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   94 structs (plain carriers), 13 enums, 8 error variants.
+#   0 paginators generated (4 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 import datetime
 
-# The Route_53_Domains awsJson protocol: version 1.1, API id "Route53Domains_v20140515".
-def route53domains_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("Route53Domains_v20140515", "route53domains")
+# The Route_53_Domains smithy-rpc-v2-cbor protocol: SigV4 service "route53domains" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/Route53Domains_v20140515/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def route53domains_service() -> str:
+    return "route53domains"
 
 # --- enums -----------------------------------------------------------------
 
@@ -456,132 +460,104 @@ enum Transferable:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AcceptDomainTransferFromAnotherAwsAccountRequest:
     str DomainName
     str Password
 
-@derive(Json)
 struct AcceptDomainTransferFromAnotherAwsAccountResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct AssociateDelegationSignerToDomainRequest:
     str DomainName
     DnssecSigningAttributes SigningAttributes
 
-@derive(Json)
 struct AssociateDelegationSignerToDomainResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct BillingRecord:
     Optional[str] DomainName
-    Optional[OperationType] Operation
+    Optional[str] Operation
     Optional[str] InvoiceId
     Optional[DateTime] BillDate
     Optional[float64] Price
 
-@derive(Json)
 struct CancelDomainTransferToAnotherAwsAccountRequest:
     str DomainName
 
-@derive(Json)
 struct CancelDomainTransferToAnotherAwsAccountResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct CheckDomainAvailabilityRequest:
     str DomainName
     Optional[str] IdnLangCode
 
-@derive(Json)
 struct CheckDomainAvailabilityResponse:
-    Optional[DomainAvailability] Availability
+    Optional[str] Availability
     Optional[PriceWithCurrency] Price
 
-@derive(Json)
 struct CheckDomainTransferabilityRequest:
     str DomainName
     Optional[str] AuthCode
 
-@derive(Json)
 struct CheckDomainTransferabilityResponse:
     Optional[DomainTransferability] Transferability
     Optional[str] Message
     Optional[PriceWithCurrency] Price
 
-@derive(Json)
 struct Consent:
     float64 MaxPrice
     str Currency
 
-# no @derive(Json): member(s) ExtraParams: list[ExtraParam] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ContactDetail:
     Optional[str] FirstName
     Optional[str] LastName
-    Optional[ContactType] ContactType
+    Optional[str] ContactType
     Optional[str] OrganizationName
     Optional[str] AddressLine1
     Optional[str] AddressLine2
     Optional[str] City
     Optional[str] State
-    Optional[CountryCode] CountryCode
+    Optional[str] CountryCode
     Optional[str] ZipCode
     Optional[str] PhoneNumber
     Optional[str] Email
     Optional[str] Fax
     Optional[list[ExtraParam]] ExtraParams
 
-@derive(Json)
 struct DeleteDomainRequest:
     str DomainName
 
-@derive(Json)
 struct DeleteDomainResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) TagsToDelete: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteTagsForDomainRequest:
     str DomainName
     list[str] TagsToDelete
 
-@derive(Json)
 struct DeleteTagsForDomainResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableDomainAutoRenewRequest:
     str DomainName
 
-@derive(Json)
 struct DisableDomainAutoRenewResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableDomainTransferLockRequest:
     str DomainName
 
-@derive(Json)
 struct DisableDomainTransferLockResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct DisassociateDelegationSignerFromDomainRequest:
     str DomainName
     str Id
 
-@derive(Json)
 struct DisassociateDelegationSignerFromDomainResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct DnssecKey:
     Optional[int64] Algorithm
     Optional[int64] Flags
@@ -591,21 +567,17 @@ struct DnssecKey:
     Optional[int64] KeyTag
     Optional[str] Id
 
-@derive(Json)
 struct DnssecLimitExceeded:
     Optional[str] message
 
-@derive(Json)
 struct DnssecSigningAttributes:
     Optional[int64] Algorithm
     Optional[int64] Flags
     Optional[str] PublicKey
 
-@derive(Json)
 struct DomainLimitExceeded:
     Optional[str] message
 
-@derive(Json)
 struct DomainPrice:
     Optional[str] Name
     Optional[PriceWithCurrency] RegistrationPrice
@@ -614,74 +586,56 @@ struct DomainPrice:
     Optional[PriceWithCurrency] ChangeOwnershipPrice
     Optional[PriceWithCurrency] RestorationPrice
 
-@derive(Json)
 struct DomainSuggestion:
     Optional[str] DomainName
     Optional[str] Availability
     Optional[PriceWithCurrency] Price
 
-@derive(Json)
 struct DomainSummary:
     Optional[str] DomainName
     Optional[bool] AutoRenew
     Optional[bool] TransferLock
     Optional[DateTime] Expiry
 
-@derive(Json)
 struct DomainTransferability:
-    Optional[Transferable] Transferable
+    Optional[str] Transferable
 
-@derive(Json)
 struct DuplicateRequest:
     Optional[str] requestId
     Optional[str] message
 
-@derive(Json)
 struct EnableDomainAutoRenewRequest:
     str DomainName
 
-@derive(Json)
 struct EnableDomainAutoRenewResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableDomainTransferLockRequest:
     str DomainName
 
-@derive(Json)
 struct EnableDomainTransferLockResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct ExtraParam:
-    ExtraParamName Name
+    str Name
     str Value
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FilterCondition:
-    ListDomainsAttributeName Name
-    Operator Operator
+    str Name
+    str Operator
     list[str] Values
 
-@derive(Json)
 struct GetContactReachabilityStatusRequest:
     Optional[str] domainName
 
-@derive(Json)
 struct GetContactReachabilityStatusResponse:
     Optional[str] domainName
-    Optional[ReachabilityStatus] status
+    Optional[str] status
 
-@derive(Json)
 struct GetDomainDetailRequest:
     str DomainName
 
-# no @derive(Json): member(s) Nameservers: list[Nameserver], AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, StatusList: list[str], DnssecKeys: list[DnssecKey], BillingContact: ContactDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDomainDetailResponse:
     Optional[str] DomainName
     Optional[list[Nameserver]] Nameservers
@@ -708,140 +662,101 @@ struct GetDomainDetailResponse:
     Optional[ContactDetail] BillingContact
     Optional[bool] BillingPrivacy
 
-@derive(Json)
 struct GetDomainPricesRequest:
     str DomainName
 
-@derive(Json)
 struct GetDomainPricesResponse:
     Optional[DomainPrice] DomainPrice
 
-@derive(Json)
 struct GetDomainSuggestionsRequest:
     str DomainName
     int64 SuggestionCount
     bool OnlyAvailable
     Optional[bool] OnlyStandardPrices
 
-# no @derive(Json): member(s) SuggestionsList: list[DomainSuggestion] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDomainSuggestionsResponse:
     Optional[list[DomainSuggestion]] SuggestionsList
 
-@derive(Json)
 struct GetOperationDetailRequest:
     str OperationId
 
-@derive(Json)
 struct GetOperationDetailResponse:
     Optional[str] OperationId
-    Optional[OperationStatus] Status
+    Optional[str] Status
     Optional[str] Message
     Optional[str] DomainName
-    Optional[OperationType] Type
+    Optional[str] Type
     Optional[DateTime] SubmittedDate
     Optional[DateTime] LastUpdatedDate
-    Optional[StatusFlag] StatusFlag
+    Optional[str] StatusFlag
 
-@derive(Json)
 struct InvalidInput:
     Optional[str] message
 
-# no @derive(Json): member(s) FilterConditions: list[FilterCondition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDomainsRequest:
     Optional[list[FilterCondition]] FilterConditions
     Optional[SortCondition] SortCondition
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Domains: list[DomainSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     Optional[list[DomainSummary]] Domains
     Optional[str] NextPageMarker
 
-# no @derive(Json): member(s) Status: list[OperationStatus], Type: list[OperationType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOperationsRequest:
     Optional[DateTime] SubmittedSince
     Optional[str] Marker
     Optional[int64] MaxItems
-    Optional[list[OperationStatus]] Status
-    Optional[list[OperationType]] Type
+    Optional[list[str]] Status
+    Optional[list[str]] Type
     Optional[str] SortBy
-    Optional[SortOrder] SortOrder
+    Optional[str] SortOrder
 
-# no @derive(Json): member(s) Operations: list[OperationSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOperationsResponse:
     Optional[list[OperationSummary]] Operations
     Optional[str] NextPageMarker
 
-@derive(Json)
 struct ListPricesRequest:
     Optional[str] Tld
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) Prices: list[DomainPrice] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPricesResponse:
     Optional[list[DomainPrice]] Prices
     Optional[str] NextPageMarker
 
-@derive(Json)
 struct ListTagsForDomainRequest:
     str DomainName
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForDomainResponse:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) GlueIps: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Nameserver:
     str Name
     Optional[list[str]] GlueIps
 
-@derive(Json)
 struct OperationLimitExceeded:
     Optional[str] message
 
-@derive(Json)
 struct OperationSummary:
     Optional[str] OperationId
-    Optional[OperationStatus] Status
-    Optional[OperationType] Type
+    Optional[str] Status
+    Optional[str] Type
     Optional[DateTime] SubmittedDate
     Optional[str] DomainName
     Optional[str] Message
-    Optional[StatusFlag] StatusFlag
+    Optional[str] StatusFlag
     Optional[DateTime] LastUpdatedDate
 
-@derive(Json)
 struct PriceWithCurrency:
     float64 Price
     str Currency
-    Optional[PriceType] PriceType
+    Optional[str] PriceType
 
-@derive(Json)
 struct PushDomainRequest:
     str DomainName
     str Target
 
-# no @derive(Json): member(s) AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RegisterDomainRequest:
     str DomainName
     Optional[str] IdnLangCode
@@ -857,73 +772,63 @@ struct RegisterDomainRequest:
     Optional[bool] PrivacyProtectBillingContact
     Optional[Consent] Consent
 
-@derive(Json)
 struct RegisterDomainResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct RejectDomainTransferFromAnotherAwsAccountRequest:
     str DomainName
 
-@derive(Json)
 struct RejectDomainTransferFromAnotherAwsAccountResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct RenewDomainRequest:
     str DomainName
     Optional[int64] DurationInYears
     int64 CurrentExpiryYear
     Optional[Consent] Consent
 
-@derive(Json)
 struct RenewDomainResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct ResendContactReachabilityEmailRequest:
     Optional[str] domainName
 
-@derive(Json)
 struct ResendContactReachabilityEmailResponse:
     Optional[str] domainName
     Optional[str] emailAddress
     Optional[bool] isAlreadyVerified
 
-@derive(Json)
 struct ResendOperationAuthorizationRequest:
     str OperationId
 
-@derive(Json)
+struct RestoreDomainRequest:
+    str DomainName
+    Optional[Consent] Consent
+
+struct RestoreDomainResponse:
+    Optional[str] OperationId
+
 struct RetrieveDomainAuthCodeRequest:
     str DomainName
 
-@derive(Json)
 struct RetrieveDomainAuthCodeResponse:
     Optional[str] AuthCode
 
-@derive(Json)
 struct SortCondition:
-    ListDomainsAttributeName Name
-    SortOrder SortOrder
+    str Name
+    str SortOrder
 
-@derive(Json)
 struct TLDInMaintenance:
     Optional[str] message
     Optional[str] tld
 
-@derive(Json)
 struct TLDRulesViolation:
     Optional[str] message
 
-@derive(Json)
 struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Nameservers: list[Nameserver], AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TransferDomainRequest:
     str DomainName
     Optional[str] IdnLangCode
@@ -941,25 +846,20 @@ struct TransferDomainRequest:
     Optional[bool] PrivacyProtectBillingContact
     Optional[Consent] Consent
 
-@derive(Json)
 struct TransferDomainResponse:
     Optional[str] OperationId
 
-@derive(Json)
 struct TransferDomainToAnotherAwsAccountRequest:
     str DomainName
     str AccountId
 
-@derive(Json)
 struct TransferDomainToAnotherAwsAccountResponse:
     Optional[str] OperationId
     Optional[str] Password
 
-@derive(Json)
 struct UnsupportedTLD:
     Optional[str] message
 
-@derive(Json)
 struct UpdateDomainContactPrivacyRequest:
     str DomainName
     Optional[bool] AdminPrivacy
@@ -967,13 +867,9 @@ struct UpdateDomainContactPrivacyRequest:
     Optional[bool] TechPrivacy
     Optional[bool] BillingPrivacy
 
-@derive(Json)
 struct UpdateDomainContactPrivacyResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) AdminContact: ContactDetail, RegistrantContact: ContactDetail, TechContact: ContactDetail, BillingContact: ContactDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDomainContactRequest:
     str DomainName
     Optional[ContactDetail] AdminContact
@@ -982,44 +878,31 @@ struct UpdateDomainContactRequest:
     Optional[Consent] Consent
     Optional[ContactDetail] BillingContact
 
-@derive(Json)
 struct UpdateDomainContactResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) Nameservers: list[Nameserver] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDomainNameserversRequest:
     str DomainName
     Optional[str] FIAuthKey
     list[Nameserver] Nameservers
 
-@derive(Json)
 struct UpdateDomainNameserversResponse:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) TagsToUpdate: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateTagsForDomainRequest:
     str DomainName
     Optional[list[Tag]] TagsToUpdate
 
-@derive(Json)
 struct UpdateTagsForDomainResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ViewBillingRequest:
     Optional[DateTime] Start
     Optional[DateTime] End
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) BillingRecords: list[BillingRecord] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ViewBillingResponse:
     Optional[str] NextPageMarker
     Optional[list[BillingRecord]] BillingRecords
@@ -1031,7 +914,7 @@ struct ViewBillingResponse:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -1098,295 +981,728 @@ def route53domains_error_name(Route_53_DomainsErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def route53domains_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListDomains
+#   ListOperations
+#   ListPrices
+#   ViewBilling
 
-def route53domains_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def route53domains_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize AcceptDomainTransferFromAnotherAwsAccountRequest to a CBOR map (member wire name -> value, model order).
+def accept_domain_transfer_from_another_aws_account_request_to_cbor(AcceptDomainTransferFromAnotherAwsAccountRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("Password")
+    vals.append(cbor.cbor_text(v.Password))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AssociateDelegationSignerToDomainRequest to a CBOR map (member wire name -> value, model order).
+def associate_delegation_signer_to_domain_request_to_cbor(AssociateDelegationSignerToDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("SigningAttributes")
+    vals.append(dnssec_signing_attributes_to_cbor(v.SigningAttributes))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ContactDetail to a compact JSON object (declaration order).
-def contact_detail_to_json(ContactDetail v) -> str:
-    list[str] parts = []
+# Serialize CancelDomainTransferToAnotherAwsAccountRequest to a CBOR map (member wire name -> value, model order).
+def cancel_domain_transfer_to_another_aws_account_request_to_cbor(CancelDomainTransferToAnotherAwsAccountRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CheckDomainAvailabilityRequest to a CBOR map (member wire name -> value, model order).
+def check_domain_availability_request_to_cbor(CheckDomainAvailabilityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    if v.IdnLangCode.is_some():
+        auto u0 = v.IdnLangCode.unwrap()
+        keys.append("IdnLangCode")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CheckDomainTransferabilityRequest to a CBOR map (member wire name -> value, model order).
+def check_domain_transferability_request_to_cbor(CheckDomainTransferabilityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    if v.AuthCode.is_some():
+        auto u0 = v.AuthCode.unwrap()
+        keys.append("AuthCode")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Consent to a CBOR map (member wire name -> value, model order).
+def consent_to_cbor(Consent v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MaxPrice")
+    vals.append(cbor.cbor_double(v.MaxPrice))
+    keys.append("Currency")
+    vals.append(cbor.cbor_text(v.Currency))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ContactDetail to a CBOR map (member wire name -> value, model order).
+def contact_detail_to_cbor(ContactDetail v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.FirstName.is_some():
         auto u0 = v.FirstName.unwrap()
-        parts.append("\"FirstName\":" + route53domains_json_str(u0))
+        keys.append("FirstName")
+        vals.append(cbor.cbor_text(u0))
     if v.LastName.is_some():
         auto u1 = v.LastName.unwrap()
-        parts.append("\"LastName\":" + route53domains_json_str(u1))
+        keys.append("LastName")
+        vals.append(cbor.cbor_text(u1))
     if v.ContactType.is_some():
         auto u2 = v.ContactType.unwrap()
-        parts.append("\"ContactType\":" + u2.to_json())
+        keys.append("ContactType")
+        vals.append(cbor.cbor_text(u2))
     if v.OrganizationName.is_some():
         auto u3 = v.OrganizationName.unwrap()
-        parts.append("\"OrganizationName\":" + route53domains_json_str(u3))
+        keys.append("OrganizationName")
+        vals.append(cbor.cbor_text(u3))
     if v.AddressLine1.is_some():
         auto u4 = v.AddressLine1.unwrap()
-        parts.append("\"AddressLine1\":" + route53domains_json_str(u4))
+        keys.append("AddressLine1")
+        vals.append(cbor.cbor_text(u4))
     if v.AddressLine2.is_some():
         auto u5 = v.AddressLine2.unwrap()
-        parts.append("\"AddressLine2\":" + route53domains_json_str(u5))
+        keys.append("AddressLine2")
+        vals.append(cbor.cbor_text(u5))
     if v.City.is_some():
         auto u6 = v.City.unwrap()
-        parts.append("\"City\":" + route53domains_json_str(u6))
+        keys.append("City")
+        vals.append(cbor.cbor_text(u6))
     if v.State.is_some():
         auto u7 = v.State.unwrap()
-        parts.append("\"State\":" + route53domains_json_str(u7))
+        keys.append("State")
+        vals.append(cbor.cbor_text(u7))
     if v.CountryCode.is_some():
         auto u8 = v.CountryCode.unwrap()
-        parts.append("\"CountryCode\":" + u8.to_json())
+        keys.append("CountryCode")
+        vals.append(cbor.cbor_text(u8))
     if v.ZipCode.is_some():
         auto u9 = v.ZipCode.unwrap()
-        parts.append("\"ZipCode\":" + route53domains_json_str(u9))
+        keys.append("ZipCode")
+        vals.append(cbor.cbor_text(u9))
     if v.PhoneNumber.is_some():
         auto u10 = v.PhoneNumber.unwrap()
-        parts.append("\"PhoneNumber\":" + route53domains_json_str(u10))
+        keys.append("PhoneNumber")
+        vals.append(cbor.cbor_text(u10))
     if v.Email.is_some():
         auto u11 = v.Email.unwrap()
-        parts.append("\"Email\":" + route53domains_json_str(u11))
+        keys.append("Email")
+        vals.append(cbor.cbor_text(u11))
     if v.Fax.is_some():
         auto u12 = v.Fax.unwrap()
-        parts.append("\"Fax\":" + route53domains_json_str(u12))
+        keys.append("Fax")
+        vals.append(cbor.cbor_text(u12))
     if v.ExtraParams.is_some():
         auto u13 = v.ExtraParams.unwrap()
-        list[str] e14 = []
+        list[cbor.CborValue] e14 = []
         for x14 in u13:
-            e14.append(x14.to_json())
-        parts.append("\"ExtraParams\":" + route53domains_json_arr(e14))
-    return route53domains_json_obj(parts)
+            e14.append(extra_param_to_cbor(x14))
+        keys.append("ExtraParams")
+        vals.append(cbor.cbor_list(e14))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DeleteTagsForDomainRequest to a compact JSON object (declaration order).
-def delete_tags_for_domain_request_to_json(DeleteTagsForDomainRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
-    list[str] e0 = []
+# Serialize DeleteDomainRequest to a CBOR map (member wire name -> value, model order).
+def delete_domain_request_to_cbor(DeleteDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTagsForDomainRequest to a CBOR map (member wire name -> value, model order).
+def delete_tags_for_domain_request_to_cbor(DeleteTagsForDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagsToDelete:
-        e0.append(route53domains_json_str(x0))
-    parts.append("\"TagsToDelete\":" + route53domains_json_arr(e0))
-    return route53domains_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagsToDelete")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize FilterCondition to a compact JSON object (declaration order).
-def filter_condition_to_json(FilterCondition v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    parts.append("\"Operator\":" + v.Operator.to_json())
-    list[str] e0 = []
+# Serialize DisableDomainAutoRenewRequest to a CBOR map (member wire name -> value, model order).
+def disable_domain_auto_renew_request_to_cbor(DisableDomainAutoRenewRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableDomainTransferLockRequest to a CBOR map (member wire name -> value, model order).
+def disable_domain_transfer_lock_request_to_cbor(DisableDomainTransferLockRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateDelegationSignerFromDomainRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_delegation_signer_from_domain_request_to_cbor(DisassociateDelegationSignerFromDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DnssecSigningAttributes to a CBOR map (member wire name -> value, model order).
+def dnssec_signing_attributes_to_cbor(DnssecSigningAttributes v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Algorithm.is_some():
+        auto u0 = v.Algorithm.unwrap()
+        keys.append("Algorithm")
+        vals.append(cbor.cbor_int(u0))
+    if v.Flags.is_some():
+        auto u1 = v.Flags.unwrap()
+        keys.append("Flags")
+        vals.append(cbor.cbor_int(u1))
+    if v.PublicKey.is_some():
+        auto u2 = v.PublicKey.unwrap()
+        keys.append("PublicKey")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableDomainAutoRenewRequest to a CBOR map (member wire name -> value, model order).
+def enable_domain_auto_renew_request_to_cbor(EnableDomainAutoRenewRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableDomainTransferLockRequest to a CBOR map (member wire name -> value, model order).
+def enable_domain_transfer_lock_request_to_cbor(EnableDomainTransferLockRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ExtraParam to a CBOR map (member wire name -> value, model order).
+def extra_param_to_cbor(ExtraParam v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FilterCondition to a CBOR map (member wire name -> value, model order).
+def filter_condition_to_cbor(FilterCondition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("Operator")
+    vals.append(cbor.cbor_text(v.Operator))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Values:
-        e0.append(route53domains_json_str(x0))
-    parts.append("\"Values\":" + route53domains_json_arr(e0))
-    return route53domains_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListDomainsRequest to a compact JSON object (declaration order).
-def list_domains_request_to_json(ListDomainsRequest v) -> str:
-    list[str] parts = []
+# Serialize GetContactReachabilityStatusRequest to a CBOR map (member wire name -> value, model order).
+def get_contact_reachability_status_request_to_cbor(GetContactReachabilityStatusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.domainName.is_some():
+        auto u0 = v.domainName.unwrap()
+        keys.append("domainName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDomainDetailRequest to a CBOR map (member wire name -> value, model order).
+def get_domain_detail_request_to_cbor(GetDomainDetailRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDomainPricesRequest to a CBOR map (member wire name -> value, model order).
+def get_domain_prices_request_to_cbor(GetDomainPricesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDomainSuggestionsRequest to a CBOR map (member wire name -> value, model order).
+def get_domain_suggestions_request_to_cbor(GetDomainSuggestionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("SuggestionCount")
+    vals.append(cbor.cbor_int(v.SuggestionCount))
+    keys.append("OnlyAvailable")
+    vals.append(cbor.cbor_bool(v.OnlyAvailable))
+    if v.OnlyStandardPrices.is_some():
+        auto u0 = v.OnlyStandardPrices.unwrap()
+        keys.append("OnlyStandardPrices")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetOperationDetailRequest to a CBOR map (member wire name -> value, model order).
+def get_operation_detail_request_to_cbor(GetOperationDetailRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("OperationId")
+    vals.append(cbor.cbor_text(v.OperationId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDomainsRequest to a CBOR map (member wire name -> value, model order).
+def list_domains_request_to_cbor(ListDomainsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.FilterConditions.is_some():
         auto u0 = v.FilterConditions.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(filter_condition_to_json(x1))
-        parts.append("\"FilterConditions\":" + route53domains_json_arr(e1))
+            e1.append(filter_condition_to_cbor(x1))
+        keys.append("FilterConditions")
+        vals.append(cbor.cbor_list(e1))
     if v.SortCondition.is_some():
         auto u2 = v.SortCondition.unwrap()
-        parts.append("\"SortCondition\":" + u2.to_json())
+        keys.append("SortCondition")
+        vals.append(sort_condition_to_cbor(u2))
     if v.Marker.is_some():
         auto u3 = v.Marker.unwrap()
-        parts.append("\"Marker\":" + route53domains_json_str(u3))
+        keys.append("Marker")
+        vals.append(cbor.cbor_text(u3))
     if v.MaxItems.is_some():
         auto u4 = v.MaxItems.unwrap()
-        parts.append("\"MaxItems\":" + str(u4))
-    return route53domains_json_obj(parts)
+        keys.append("MaxItems")
+        vals.append(cbor.cbor_int(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListOperationsRequest to a compact JSON object (declaration order).
-def list_operations_request_to_json(ListOperationsRequest v) -> str:
-    list[str] parts = []
+# Serialize ListOperationsRequest to a CBOR map (member wire name -> value, model order).
+def list_operations_request_to_cbor(ListOperationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.SubmittedSince.is_some():
         auto u0 = v.SubmittedSince.unwrap()
-        parts.append("\"SubmittedSince\":" + str(datetime.to_timestamp(u0)))
+        keys.append("SubmittedSince")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
     if v.Marker.is_some():
         auto u1 = v.Marker.unwrap()
-        parts.append("\"Marker\":" + route53domains_json_str(u1))
+        keys.append("Marker")
+        vals.append(cbor.cbor_text(u1))
     if v.MaxItems.is_some():
         auto u2 = v.MaxItems.unwrap()
-        parts.append("\"MaxItems\":" + str(u2))
+        keys.append("MaxItems")
+        vals.append(cbor.cbor_int(u2))
     if v.Status.is_some():
         auto u3 = v.Status.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Status\":" + route53domains_json_arr(e4))
+            e4.append(cbor.cbor_text(x4))
+        keys.append("Status")
+        vals.append(cbor.cbor_list(e4))
     if v.Type.is_some():
         auto u5 = v.Type.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Type\":" + route53domains_json_arr(e6))
+            e6.append(cbor.cbor_text(x6))
+        keys.append("Type")
+        vals.append(cbor.cbor_list(e6))
     if v.SortBy.is_some():
         auto u7 = v.SortBy.unwrap()
-        parts.append("\"SortBy\":" + route53domains_json_str(u7))
+        keys.append("SortBy")
+        vals.append(cbor.cbor_text(u7))
     if v.SortOrder.is_some():
         auto u8 = v.SortOrder.unwrap()
-        parts.append("\"SortOrder\":" + u8.to_json())
-    return route53domains_json_obj(parts)
+        keys.append("SortOrder")
+        vals.append(cbor.cbor_text(u8))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize Nameserver to a compact JSON object (declaration order).
-def nameserver_to_json(Nameserver v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + route53domains_json_str(v.Name))
+# Serialize ListPricesRequest to a CBOR map (member wire name -> value, model order).
+def list_prices_request_to_cbor(ListPricesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Tld.is_some():
+        auto u0 = v.Tld.unwrap()
+        keys.append("Tld")
+        vals.append(cbor.cbor_text(u0))
+    if v.Marker.is_some():
+        auto u1 = v.Marker.unwrap()
+        keys.append("Marker")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxItems.is_some():
+        auto u2 = v.MaxItems.unwrap()
+        keys.append("MaxItems")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForDomainRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_domain_request_to_cbor(ListTagsForDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Nameserver to a CBOR map (member wire name -> value, model order).
+def nameserver_to_cbor(Nameserver v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.GlueIps.is_some():
         auto u0 = v.GlueIps.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(route53domains_json_str(x1))
-        parts.append("\"GlueIps\":" + route53domains_json_arr(e1))
-    return route53domains_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("GlueIps")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RegisterDomainRequest to a compact JSON object (declaration order).
-def register_domain_request_to_json(RegisterDomainRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+# Serialize PushDomainRequest to a CBOR map (member wire name -> value, model order).
+def push_domain_request_to_cbor(PushDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("Target")
+    vals.append(cbor.cbor_text(v.Target))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RegisterDomainRequest to a CBOR map (member wire name -> value, model order).
+def register_domain_request_to_cbor(RegisterDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
     if v.IdnLangCode.is_some():
         auto u0 = v.IdnLangCode.unwrap()
-        parts.append("\"IdnLangCode\":" + route53domains_json_str(u0))
-    parts.append("\"DurationInYears\":" + str(v.DurationInYears))
+        keys.append("IdnLangCode")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DurationInYears")
+    vals.append(cbor.cbor_int(v.DurationInYears))
     if v.AutoRenew.is_some():
         auto u1 = v.AutoRenew.unwrap()
-        parts.append("\"AutoRenew\":" + json.dumps(JsonValue.Bool(u1)))
-    parts.append("\"AdminContact\":" + contact_detail_to_json(v.AdminContact))
-    parts.append("\"RegistrantContact\":" + contact_detail_to_json(v.RegistrantContact))
-    parts.append("\"TechContact\":" + contact_detail_to_json(v.TechContact))
+        keys.append("AutoRenew")
+        vals.append(cbor.cbor_bool(u1))
+    keys.append("AdminContact")
+    vals.append(contact_detail_to_cbor(v.AdminContact))
+    keys.append("RegistrantContact")
+    vals.append(contact_detail_to_cbor(v.RegistrantContact))
+    keys.append("TechContact")
+    vals.append(contact_detail_to_cbor(v.TechContact))
     if v.PrivacyProtectAdminContact.is_some():
         auto u2 = v.PrivacyProtectAdminContact.unwrap()
-        parts.append("\"PrivacyProtectAdminContact\":" + json.dumps(JsonValue.Bool(u2)))
+        keys.append("PrivacyProtectAdminContact")
+        vals.append(cbor.cbor_bool(u2))
     if v.PrivacyProtectRegistrantContact.is_some():
         auto u3 = v.PrivacyProtectRegistrantContact.unwrap()
-        parts.append("\"PrivacyProtectRegistrantContact\":" + json.dumps(JsonValue.Bool(u3)))
+        keys.append("PrivacyProtectRegistrantContact")
+        vals.append(cbor.cbor_bool(u3))
     if v.PrivacyProtectTechContact.is_some():
         auto u4 = v.PrivacyProtectTechContact.unwrap()
-        parts.append("\"PrivacyProtectTechContact\":" + json.dumps(JsonValue.Bool(u4)))
+        keys.append("PrivacyProtectTechContact")
+        vals.append(cbor.cbor_bool(u4))
     if v.BillingContact.is_some():
         auto u5 = v.BillingContact.unwrap()
-        parts.append("\"BillingContact\":" + contact_detail_to_json(u5))
+        keys.append("BillingContact")
+        vals.append(contact_detail_to_cbor(u5))
     if v.PrivacyProtectBillingContact.is_some():
         auto u6 = v.PrivacyProtectBillingContact.unwrap()
-        parts.append("\"PrivacyProtectBillingContact\":" + json.dumps(JsonValue.Bool(u6)))
+        keys.append("PrivacyProtectBillingContact")
+        vals.append(cbor.cbor_bool(u6))
     if v.Consent.is_some():
         auto u7 = v.Consent.unwrap()
-        parts.append("\"Consent\":" + u7.to_json())
-    return route53domains_json_obj(parts)
+        keys.append("Consent")
+        vals.append(consent_to_cbor(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TransferDomainRequest to a compact JSON object (declaration order).
-def transfer_domain_request_to_json(TransferDomainRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+# Serialize RejectDomainTransferFromAnotherAwsAccountRequest to a CBOR map (member wire name -> value, model order).
+def reject_domain_transfer_from_another_aws_account_request_to_cbor(RejectDomainTransferFromAnotherAwsAccountRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RenewDomainRequest to a CBOR map (member wire name -> value, model order).
+def renew_domain_request_to_cbor(RenewDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    if v.DurationInYears.is_some():
+        auto u0 = v.DurationInYears.unwrap()
+        keys.append("DurationInYears")
+        vals.append(cbor.cbor_int(u0))
+    keys.append("CurrentExpiryYear")
+    vals.append(cbor.cbor_int(v.CurrentExpiryYear))
+    if v.Consent.is_some():
+        auto u1 = v.Consent.unwrap()
+        keys.append("Consent")
+        vals.append(consent_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ResendContactReachabilityEmailRequest to a CBOR map (member wire name -> value, model order).
+def resend_contact_reachability_email_request_to_cbor(ResendContactReachabilityEmailRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.domainName.is_some():
+        auto u0 = v.domainName.unwrap()
+        keys.append("domainName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ResendOperationAuthorizationRequest to a CBOR map (member wire name -> value, model order).
+def resend_operation_authorization_request_to_cbor(ResendOperationAuthorizationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("OperationId")
+    vals.append(cbor.cbor_text(v.OperationId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RestoreDomainRequest to a CBOR map (member wire name -> value, model order).
+def restore_domain_request_to_cbor(RestoreDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    if v.Consent.is_some():
+        auto u0 = v.Consent.unwrap()
+        keys.append("Consent")
+        vals.append(consent_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RetrieveDomainAuthCodeRequest to a CBOR map (member wire name -> value, model order).
+def retrieve_domain_auth_code_request_to_cbor(RetrieveDomainAuthCodeRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SortCondition to a CBOR map (member wire name -> value, model order).
+def sort_condition_to_cbor(SortCondition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("SortOrder")
+    vals.append(cbor.cbor_text(v.SortOrder))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TransferDomainRequest to a CBOR map (member wire name -> value, model order).
+def transfer_domain_request_to_cbor(TransferDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
     if v.IdnLangCode.is_some():
         auto u0 = v.IdnLangCode.unwrap()
-        parts.append("\"IdnLangCode\":" + route53domains_json_str(u0))
+        keys.append("IdnLangCode")
+        vals.append(cbor.cbor_text(u0))
     if v.DurationInYears.is_some():
         auto u1 = v.DurationInYears.unwrap()
-        parts.append("\"DurationInYears\":" + str(u1))
+        keys.append("DurationInYears")
+        vals.append(cbor.cbor_int(u1))
     if v.Nameservers.is_some():
         auto u2 = v.Nameservers.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(nameserver_to_json(x3))
-        parts.append("\"Nameservers\":" + route53domains_json_arr(e3))
+            e3.append(nameserver_to_cbor(x3))
+        keys.append("Nameservers")
+        vals.append(cbor.cbor_list(e3))
     if v.AuthCode.is_some():
         auto u4 = v.AuthCode.unwrap()
-        parts.append("\"AuthCode\":" + route53domains_json_str(u4))
+        keys.append("AuthCode")
+        vals.append(cbor.cbor_text(u4))
     if v.AutoRenew.is_some():
         auto u5 = v.AutoRenew.unwrap()
-        parts.append("\"AutoRenew\":" + json.dumps(JsonValue.Bool(u5)))
-    parts.append("\"AdminContact\":" + contact_detail_to_json(v.AdminContact))
-    parts.append("\"RegistrantContact\":" + contact_detail_to_json(v.RegistrantContact))
-    parts.append("\"TechContact\":" + contact_detail_to_json(v.TechContact))
+        keys.append("AutoRenew")
+        vals.append(cbor.cbor_bool(u5))
+    keys.append("AdminContact")
+    vals.append(contact_detail_to_cbor(v.AdminContact))
+    keys.append("RegistrantContact")
+    vals.append(contact_detail_to_cbor(v.RegistrantContact))
+    keys.append("TechContact")
+    vals.append(contact_detail_to_cbor(v.TechContact))
     if v.PrivacyProtectAdminContact.is_some():
         auto u6 = v.PrivacyProtectAdminContact.unwrap()
-        parts.append("\"PrivacyProtectAdminContact\":" + json.dumps(JsonValue.Bool(u6)))
+        keys.append("PrivacyProtectAdminContact")
+        vals.append(cbor.cbor_bool(u6))
     if v.PrivacyProtectRegistrantContact.is_some():
         auto u7 = v.PrivacyProtectRegistrantContact.unwrap()
-        parts.append("\"PrivacyProtectRegistrantContact\":" + json.dumps(JsonValue.Bool(u7)))
+        keys.append("PrivacyProtectRegistrantContact")
+        vals.append(cbor.cbor_bool(u7))
     if v.PrivacyProtectTechContact.is_some():
         auto u8 = v.PrivacyProtectTechContact.unwrap()
-        parts.append("\"PrivacyProtectTechContact\":" + json.dumps(JsonValue.Bool(u8)))
+        keys.append("PrivacyProtectTechContact")
+        vals.append(cbor.cbor_bool(u8))
     if v.BillingContact.is_some():
         auto u9 = v.BillingContact.unwrap()
-        parts.append("\"BillingContact\":" + contact_detail_to_json(u9))
+        keys.append("BillingContact")
+        vals.append(contact_detail_to_cbor(u9))
     if v.PrivacyProtectBillingContact.is_some():
         auto u10 = v.PrivacyProtectBillingContact.unwrap()
-        parts.append("\"PrivacyProtectBillingContact\":" + json.dumps(JsonValue.Bool(u10)))
+        keys.append("PrivacyProtectBillingContact")
+        vals.append(cbor.cbor_bool(u10))
     if v.Consent.is_some():
         auto u11 = v.Consent.unwrap()
-        parts.append("\"Consent\":" + u11.to_json())
-    return route53domains_json_obj(parts)
+        keys.append("Consent")
+        vals.append(consent_to_cbor(u11))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateDomainContactRequest to a compact JSON object (declaration order).
-def update_domain_contact_request_to_json(UpdateDomainContactRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+# Serialize TransferDomainToAnotherAwsAccountRequest to a CBOR map (member wire name -> value, model order).
+def transfer_domain_to_another_aws_account_request_to_cbor(TransferDomainToAnotherAwsAccountRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("AccountId")
+    vals.append(cbor.cbor_text(v.AccountId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateDomainContactPrivacyRequest to a CBOR map (member wire name -> value, model order).
+def update_domain_contact_privacy_request_to_cbor(UpdateDomainContactPrivacyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    if v.AdminPrivacy.is_some():
+        auto u0 = v.AdminPrivacy.unwrap()
+        keys.append("AdminPrivacy")
+        vals.append(cbor.cbor_bool(u0))
+    if v.RegistrantPrivacy.is_some():
+        auto u1 = v.RegistrantPrivacy.unwrap()
+        keys.append("RegistrantPrivacy")
+        vals.append(cbor.cbor_bool(u1))
+    if v.TechPrivacy.is_some():
+        auto u2 = v.TechPrivacy.unwrap()
+        keys.append("TechPrivacy")
+        vals.append(cbor.cbor_bool(u2))
+    if v.BillingPrivacy.is_some():
+        auto u3 = v.BillingPrivacy.unwrap()
+        keys.append("BillingPrivacy")
+        vals.append(cbor.cbor_bool(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateDomainContactRequest to a CBOR map (member wire name -> value, model order).
+def update_domain_contact_request_to_cbor(UpdateDomainContactRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
     if v.AdminContact.is_some():
         auto u0 = v.AdminContact.unwrap()
-        parts.append("\"AdminContact\":" + contact_detail_to_json(u0))
+        keys.append("AdminContact")
+        vals.append(contact_detail_to_cbor(u0))
     if v.RegistrantContact.is_some():
         auto u1 = v.RegistrantContact.unwrap()
-        parts.append("\"RegistrantContact\":" + contact_detail_to_json(u1))
+        keys.append("RegistrantContact")
+        vals.append(contact_detail_to_cbor(u1))
     if v.TechContact.is_some():
         auto u2 = v.TechContact.unwrap()
-        parts.append("\"TechContact\":" + contact_detail_to_json(u2))
+        keys.append("TechContact")
+        vals.append(contact_detail_to_cbor(u2))
     if v.Consent.is_some():
         auto u3 = v.Consent.unwrap()
-        parts.append("\"Consent\":" + u3.to_json())
+        keys.append("Consent")
+        vals.append(consent_to_cbor(u3))
     if v.BillingContact.is_some():
         auto u4 = v.BillingContact.unwrap()
-        parts.append("\"BillingContact\":" + contact_detail_to_json(u4))
-    return route53domains_json_obj(parts)
+        keys.append("BillingContact")
+        vals.append(contact_detail_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateDomainNameserversRequest to a compact JSON object (declaration order).
-def update_domain_nameservers_request_to_json(UpdateDomainNameserversRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+# Serialize UpdateDomainNameserversRequest to a CBOR map (member wire name -> value, model order).
+def update_domain_nameservers_request_to_cbor(UpdateDomainNameserversRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
     if v.FIAuthKey.is_some():
         auto u0 = v.FIAuthKey.unwrap()
-        parts.append("\"FIAuthKey\":" + route53domains_json_str(u0))
-    list[str] e1 = []
+        keys.append("FIAuthKey")
+        vals.append(cbor.cbor_text(u0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.Nameservers:
-        e1.append(nameserver_to_json(x1))
-    parts.append("\"Nameservers\":" + route53domains_json_arr(e1))
-    return route53domains_json_obj(parts)
+        e1.append(nameserver_to_cbor(x1))
+    keys.append("Nameservers")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateTagsForDomainRequest to a compact JSON object (declaration order).
-def update_tags_for_domain_request_to_json(UpdateTagsForDomainRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DomainName\":" + route53domains_json_str(v.DomainName))
+# Serialize UpdateTagsForDomainRequest to a CBOR map (member wire name -> value, model order).
+def update_tags_for_domain_request_to_cbor(UpdateTagsForDomainRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
     if v.TagsToUpdate.is_some():
         auto u0 = v.TagsToUpdate.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"TagsToUpdate\":" + route53domains_json_arr(e1))
-    return route53domains_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("TagsToUpdate")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ViewBillingRequest to a CBOR map (member wire name -> value, model order).
+def view_billing_request_to_cbor(ViewBillingRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Start.is_some():
+        auto u0 = v.Start.unwrap()
+        keys.append("Start")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
+    if v.End.is_some():
+        auto u1 = v.End.unwrap()
+        keys.append("End")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        keys.append("Marker")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxItems.is_some():
+        auto u3 = v.MaxItems.unwrap()
+        keys.append("MaxItems")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Route_53_Domains client: credentials + region, threaded into every operation.
 struct Route_53_DomainsClient:
@@ -1395,269 +1711,327 @@ struct Route_53_DomainsClient:
 
     # AcceptDomainTransferFromAnotherAwsAccount
     # errors: DomainLimitExceeded, InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def accept_domain_transfer_from_another_aws_account(self, AcceptDomainTransferFromAnotherAwsAccountRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "AcceptDomainTransferFromAnotherAwsAccount", body)
+    def accept_domain_transfer_from_another_aws_account(self, AcceptDomainTransferFromAnotherAwsAccountRequest input) -> bytes:
+        auto body = cbor.cbor_encode(accept_domain_transfer_from_another_aws_account_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "AcceptDomainTransferFromAnotherAwsAccount", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateDelegationSignerToDomain
     # errors: DnssecLimitExceeded, DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def associate_delegation_signer_to_domain(self, AssociateDelegationSignerToDomainRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "AssociateDelegationSignerToDomain", body)
+    def associate_delegation_signer_to_domain(self, AssociateDelegationSignerToDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_delegation_signer_to_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "AssociateDelegationSignerToDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CancelDomainTransferToAnotherAwsAccount
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def cancel_domain_transfer_to_another_aws_account(self, CancelDomainTransferToAnotherAwsAccountRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "CancelDomainTransferToAnotherAwsAccount", body)
+    def cancel_domain_transfer_to_another_aws_account(self, CancelDomainTransferToAnotherAwsAccountRequest input) -> bytes:
+        auto body = cbor.cbor_encode(cancel_domain_transfer_to_another_aws_account_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "CancelDomainTransferToAnotherAwsAccount", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CheckDomainAvailability
     # errors: InvalidInput, TLDInMaintenance, UnsupportedTLD
-    def check_domain_availability(self, CheckDomainAvailabilityRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "CheckDomainAvailability", body)
+    def check_domain_availability(self, CheckDomainAvailabilityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(check_domain_availability_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "CheckDomainAvailability", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CheckDomainTransferability
     # errors: InvalidInput, TLDInMaintenance, UnsupportedTLD
-    def check_domain_transferability(self, CheckDomainTransferabilityRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "CheckDomainTransferability", body)
+    def check_domain_transferability(self, CheckDomainTransferabilityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(check_domain_transferability_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "CheckDomainTransferability", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDomain
     # errors: DuplicateRequest, InvalidInput, TLDRulesViolation, UnsupportedTLD
-    def delete_domain(self, DeleteDomainRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DeleteDomain", body)
+    def delete_domain(self, DeleteDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "DeleteDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTagsForDomain
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def delete_tags_for_domain(self, DeleteTagsForDomainRequest input) -> str:
-        auto body = delete_tags_for_domain_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DeleteTagsForDomain", body)
+    def delete_tags_for_domain(self, DeleteTagsForDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_tags_for_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "DeleteTagsForDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableDomainAutoRenew
     # errors: InvalidInput, UnsupportedTLD
-    def disable_domain_auto_renew(self, DisableDomainAutoRenewRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DisableDomainAutoRenew", body)
+    def disable_domain_auto_renew(self, DisableDomainAutoRenewRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_domain_auto_renew_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "DisableDomainAutoRenew", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableDomainTransferLock
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def disable_domain_transfer_lock(self, DisableDomainTransferLockRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DisableDomainTransferLock", body)
+    def disable_domain_transfer_lock(self, DisableDomainTransferLockRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_domain_transfer_lock_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "DisableDomainTransferLock", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateDelegationSignerFromDomain
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def disassociate_delegation_signer_from_domain(self, DisassociateDelegationSignerFromDomainRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "DisassociateDelegationSignerFromDomain", body)
+    def disassociate_delegation_signer_from_domain(self, DisassociateDelegationSignerFromDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_delegation_signer_from_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "DisassociateDelegationSignerFromDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableDomainAutoRenew
     # errors: InvalidInput, TLDRulesViolation, UnsupportedTLD
-    def enable_domain_auto_renew(self, EnableDomainAutoRenewRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "EnableDomainAutoRenew", body)
+    def enable_domain_auto_renew(self, EnableDomainAutoRenewRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_domain_auto_renew_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "EnableDomainAutoRenew", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableDomainTransferLock
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def enable_domain_transfer_lock(self, EnableDomainTransferLockRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "EnableDomainTransferLock", body)
+    def enable_domain_transfer_lock(self, EnableDomainTransferLockRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_domain_transfer_lock_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "EnableDomainTransferLock", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetContactReachabilityStatus
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def get_contact_reachability_status(self, GetContactReachabilityStatusRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "GetContactReachabilityStatus", body)
+    def get_contact_reachability_status(self, GetContactReachabilityStatusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_contact_reachability_status_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "GetContactReachabilityStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDomainDetail
     # errors: InvalidInput, UnsupportedTLD
-    def get_domain_detail(self, GetDomainDetailRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "GetDomainDetail", body)
+    def get_domain_detail(self, GetDomainDetailRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_domain_detail_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "GetDomainDetail", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDomainPrices
     # errors: InvalidInput, TLDInMaintenance, UnsupportedTLD
-    def get_domain_prices(self, GetDomainPricesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "GetDomainPrices", body)
+    def get_domain_prices(self, GetDomainPricesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_domain_prices_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "GetDomainPrices", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDomainSuggestions
     # errors: InvalidInput, TLDInMaintenance, UnsupportedTLD
-    def get_domain_suggestions(self, GetDomainSuggestionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "GetDomainSuggestions", body)
+    def get_domain_suggestions(self, GetDomainSuggestionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_domain_suggestions_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "GetDomainSuggestions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetOperationDetail
     # errors: InvalidInput
-    def get_operation_detail(self, GetOperationDetailRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "GetOperationDetail", body)
+    def get_operation_detail(self, GetOperationDetailRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_operation_detail_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "GetOperationDetail", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDomains
     # errors: InvalidInput
-    def list_domains(self, ListDomainsRequest input) -> str:
-        auto body = list_domains_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListDomains", body)
+    def list_domains(self, ListDomainsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_domains_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ListDomains", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListOperations
     # errors: InvalidInput
-    def list_operations(self, ListOperationsRequest input) -> str:
-        auto body = list_operations_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListOperations", body)
+    def list_operations(self, ListOperationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_operations_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ListOperations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPrices
     # errors: InvalidInput, UnsupportedTLD
-    def list_prices(self, ListPricesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListPrices", body)
+    def list_prices(self, ListPricesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_prices_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ListPrices", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForDomain
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def list_tags_for_domain(self, ListTagsForDomainRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListTagsForDomain", body)
+    def list_tags_for_domain(self, ListTagsForDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ListTagsForDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PushDomain
     # errors: InvalidInput, OperationLimitExceeded, TLDInMaintenance, UnsupportedTLD
-    def push_domain(self, PushDomainRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "PushDomain", body)
+    def push_domain(self, PushDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(push_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "PushDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterDomain
     # errors: DomainLimitExceeded, DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def register_domain(self, RegisterDomainRequest input) -> str:
-        auto body = register_domain_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RegisterDomain", body)
+    def register_domain(self, RegisterDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(register_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "RegisterDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RejectDomainTransferFromAnotherAwsAccount
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def reject_domain_transfer_from_another_aws_account(self, RejectDomainTransferFromAnotherAwsAccountRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RejectDomainTransferFromAnotherAwsAccount", body)
+    def reject_domain_transfer_from_another_aws_account(self, RejectDomainTransferFromAnotherAwsAccountRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reject_domain_transfer_from_another_aws_account_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "RejectDomainTransferFromAnotherAwsAccount", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RenewDomain
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def renew_domain(self, RenewDomainRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RenewDomain", body)
+    def renew_domain(self, RenewDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(renew_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "RenewDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ResendContactReachabilityEmail
     # errors: InvalidInput, OperationLimitExceeded, TLDInMaintenance, UnsupportedTLD
-    def resend_contact_reachability_email(self, ResendContactReachabilityEmailRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ResendContactReachabilityEmail", body)
+    def resend_contact_reachability_email(self, ResendContactReachabilityEmailRequest input) -> bytes:
+        auto body = cbor.cbor_encode(resend_contact_reachability_email_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ResendContactReachabilityEmail", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ResendOperationAuthorization
     # errors: InvalidInput, TLDInMaintenance
-    def resend_operation_authorization(self, ResendOperationAuthorizationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ResendOperationAuthorization", body)
+    def resend_operation_authorization(self, ResendOperationAuthorizationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(resend_operation_authorization_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ResendOperationAuthorization", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # RestoreDomain
+    # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, UnsupportedTLD
+    def restore_domain(self, RestoreDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(restore_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "RestoreDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RetrieveDomainAuthCode
     # errors: InvalidInput, TLDInMaintenance, UnsupportedTLD
-    def retrieve_domain_auth_code(self, RetrieveDomainAuthCodeRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "RetrieveDomainAuthCode", body)
+    def retrieve_domain_auth_code(self, RetrieveDomainAuthCodeRequest input) -> bytes:
+        auto body = cbor.cbor_encode(retrieve_domain_auth_code_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "RetrieveDomainAuthCode", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TransferDomain
     # errors: DomainLimitExceeded, DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def transfer_domain(self, TransferDomainRequest input) -> str:
-        auto body = transfer_domain_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "TransferDomain", body)
+    def transfer_domain(self, TransferDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(transfer_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "TransferDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TransferDomainToAnotherAwsAccount
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def transfer_domain_to_another_aws_account(self, TransferDomainToAnotherAwsAccountRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "TransferDomainToAnotherAwsAccount", body)
+    def transfer_domain_to_another_aws_account(self, TransferDomainToAnotherAwsAccountRequest input) -> bytes:
+        auto body = cbor.cbor_encode(transfer_domain_to_another_aws_account_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "TransferDomainToAnotherAwsAccount", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDomainContact
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def update_domain_contact(self, UpdateDomainContactRequest input) -> str:
-        auto body = update_domain_contact_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateDomainContact", body)
+    def update_domain_contact(self, UpdateDomainContactRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_domain_contact_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "UpdateDomainContact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDomainContactPrivacy
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def update_domain_contact_privacy(self, UpdateDomainContactPrivacyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateDomainContactPrivacy", body)
+    def update_domain_contact_privacy(self, UpdateDomainContactPrivacyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_domain_contact_privacy_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "UpdateDomainContactPrivacy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDomainNameservers
     # errors: DuplicateRequest, InvalidInput, OperationLimitExceeded, TLDRulesViolation, UnsupportedTLD
-    def update_domain_nameservers(self, UpdateDomainNameserversRequest input) -> str:
-        auto body = update_domain_nameservers_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateDomainNameservers", body)
+    def update_domain_nameservers(self, UpdateDomainNameserversRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_domain_nameservers_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "UpdateDomainNameservers", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateTagsForDomain
     # errors: InvalidInput, OperationLimitExceeded, UnsupportedTLD
-    def update_tags_for_domain(self, UpdateTagsForDomainRequest input) -> str:
-        auto body = update_tags_for_domain_request_to_json(input)
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "UpdateTagsForDomain", body)
+    def update_tags_for_domain(self, UpdateTagsForDomainRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_tags_for_domain_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "UpdateTagsForDomain", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ViewBilling
     # errors: InvalidInput
-    def view_billing(self, ViewBillingRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ViewBilling", body)
-
-    # Paginator for ListDomains — yields each Response page, threading the
-    # NextPageMarker -> Marker continuation token until the output token is absent (result key: Domains).
-    def paginate_list_domains(self, ListDomainsRequest input):
-        auto host = endpoints.regional_host(route53domains_protocol().service, self.region)
-        while True:
-            auto body = list_domains_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListDomains", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageMarker")
-            if not np.has_more:
-                break
-            input.Marker = Optional.Some(np.token)
-
-    # Paginator for ListOperations — yields each Response page, threading the
-    # NextPageMarker -> Marker continuation token until the output token is absent (result key: Operations).
-    def paginate_list_operations(self, ListOperationsRequest input):
-        auto host = endpoints.regional_host(route53domains_protocol().service, self.region)
-        while True:
-            auto body = list_operations_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListOperations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageMarker")
-            if not np.has_more:
-                break
-            input.Marker = Optional.Some(np.token)
-
-    # Paginator for ListPrices — yields each Response page, threading the
-    # NextPageMarker -> Marker continuation token until the output token is absent (result key: Prices).
-    def paginate_list_prices(self, ListPricesRequest input):
-        auto host = endpoints.regional_host(route53domains_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ListPrices", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageMarker")
-            if not np.has_more:
-                break
-            input.Marker = Optional.Some(np.token)
-
-    # Paginator for ViewBilling — yields each Response page, threading the
-    # NextPageMarker -> Marker continuation token until the output token is absent (result key: BillingRecords).
-    def paginate_view_billing(self, ViewBillingRequest input):
-        auto host = endpoints.regional_host(route53domains_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(route53domains_protocol(), self.creds, self.region, "ViewBilling", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageMarker")
-            if not np.has_more:
-                break
-            input.Marker = Optional.Some(np.token)
+    def view_billing(self, ViewBillingRequest input) -> bytes:
+        auto body = cbor.cbor_encode(view_billing_request_to_cbor(input))
+        auto host = endpoints.regional_host(route53domains_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(route53domains_service(), self.region, host, "Route53Domains_v20140515", "ViewBilling", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a Route_53_DomainsClient bound to credentials + region.
 def route53domains_client(core.Credentials creds, str region) -> Route_53_DomainsClient:

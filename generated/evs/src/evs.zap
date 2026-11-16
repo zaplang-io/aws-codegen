@@ -123,6 +123,8 @@ enum InstanceType:
     i4i_metal
     i7i_metal_24xl
     i7i_metal_48xl
+    r7i_metal_24xl
+    r7i_metal_48xl
     Unknown(str value)
 
 @derive(Json)

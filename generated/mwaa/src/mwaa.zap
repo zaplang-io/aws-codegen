@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 12 operations — 12 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   46 structs (34 @derive(Json)), 8 enums, 7 error variants.
+#   49 structs (36 @derive(Json)), 8 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -186,6 +186,8 @@ struct CreateEnvironmentInput:
     Optional[EndpointManagement] EndpointManagement
     Optional[int64] MinWebservers
     Optional[int64] MaxWebservers
+    Optional[IdentityCenterConfiguration] IdentityCenterConfiguration
+    Optional[dict[str, TeamConfig]] Teams
 
 @derive(Json)
 struct CreateEnvironmentOutput:
@@ -223,7 +225,7 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AirflowConfigurationOptions: dict[str, str], NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) AirflowConfigurationOptions: dict[str, str], NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str], Teams: dict[str, TeamConfig] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Environment:
@@ -261,6 +263,8 @@ struct Environment:
     Optional[EndpointManagement] EndpointManagement
     Optional[int64] MinWebservers
     Optional[int64] MaxWebservers
+    Optional[IdentityCenterConfiguration] IdentityCenterConfiguration
+    Optional[dict[str, TeamConfig]] Teams
 
 # rest-json request for GetEnvironmentInput: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -272,6 +276,11 @@ struct GetEnvironmentInput:
 # (zaplang-io/zap#424).
 struct GetEnvironmentOutput:
     Optional[Environment] Environment
+
+@derive(Json)
+struct IdentityCenterConfiguration:
+    Optional[str] StartUrl
+    Optional[str] IdentityStoreId
 
 @derive(Json)
 struct InternalServerException:
@@ -425,6 +434,11 @@ struct TagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+@derive(Json)
+struct TeamConfig:
+    str SourceBucketArn
+    str DagS3Path
+
 # rest-json request for UntagResourceInput: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct UntagResourceInput:
@@ -462,6 +476,8 @@ struct UpdateEnvironmentInput:
     Optional[str] StartupScriptS3ObjectVersion
     Optional[WebserverAccessMode] WebserverAccessMode
     Optional[str] WeeklyMaintenanceWindowStart
+    Optional[IdentityCenterConfiguration] IdentityCenterConfiguration
+    Optional[UpdateTeamsInput] Teams
 
 @derive(Json)
 struct UpdateEnvironmentOutput:
@@ -477,6 +493,13 @@ struct UpdateError:
 # (zaplang-io/zap#424).
 struct UpdateNetworkConfigurationInput:
     list[str] SecurityGroupIds
+
+# no @derive(Json): member(s) AddOrUpdate: dict[str, TeamConfig], Remove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateTeamsInput:
+    Optional[dict[str, TeamConfig]] AddOrUpdate
+    Optional[list[str]] Remove
 
 @derive(Json)
 struct ValidationException:
@@ -640,6 +663,23 @@ def update_network_configuration_input_to_json(UpdateNetworkConfigurationInput v
     parts.append("\"SecurityGroupIds\":" + airflow_json_arr(e0))
     return airflow_json_obj(parts)
 
+# Serialize UpdateTeamsInput to a compact JSON object (declaration order).
+def update_teams_input_to_json(UpdateTeamsInput v) -> str:
+    list[str] parts = []
+    if v.AddOrUpdate.is_some():
+        auto u0 = v.AddOrUpdate.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(airflow_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"AddOrUpdate\":" + airflow_json_obj(m1))
+    if v.Remove.is_some():
+        auto u2 = v.Remove.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(airflow_json_str(x3))
+        parts.append("\"Remove\":" + airflow_json_arr(e3))
+    return airflow_json_obj(parts)
+
 # A bound MWAA client: credentials + region, threaded into every operation.
 struct MWAAClient:
     core.Credentials creds
@@ -732,6 +772,15 @@ struct MWAAClient:
         if input.MaxWebservers.is_some():
             auto u21 = input.MaxWebservers.unwrap()
             parts.append("\"MaxWebservers\":" + str(u21))
+        if input.IdentityCenterConfiguration.is_some():
+            auto u22 = input.IdentityCenterConfiguration.unwrap()
+            parts.append("\"IdentityCenterConfiguration\":" + u22.to_json())
+        if input.Teams.is_some():
+            auto u23 = input.Teams.unwrap()
+            list[str] m24 = []
+            for k24 in sorted(u23.keys()):
+                m24.append(airflow_json_str(k24) + ":" + u23[k24].to_json())
+            parts.append("\"Teams\":" + airflow_json_obj(m24))
         auto bp = restjson.rest_json_document(b, airflow_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, airflow_service(), self.region, host)
 
@@ -912,6 +961,12 @@ struct MWAAClient:
         if input.WeeklyMaintenanceWindowStart.is_some():
             auto u22 = input.WeeklyMaintenanceWindowStart.unwrap()
             parts.append("\"WeeklyMaintenanceWindowStart\":" + airflow_json_str(u22))
+        if input.IdentityCenterConfiguration.is_some():
+            auto u23 = input.IdentityCenterConfiguration.unwrap()
+            parts.append("\"IdentityCenterConfiguration\":" + u23.to_json())
+        if input.Teams.is_some():
+            auto u24 = input.Teams.unwrap()
+            parts.append("\"Teams\":" + update_teams_input_to_json(u24))
         auto bp = restjson.rest_json_document(b, airflow_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, airflow_service(), self.region, host)
 

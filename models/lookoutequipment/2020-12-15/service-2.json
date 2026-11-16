@@ -50,7 +50,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "CreateInferenceScheduler": {
    "name": "CreateInferenceScheduler",
@@ -86,7 +89,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "CreateLabel": {
    "name": "CreateLabel",
@@ -122,7 +128,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "CreateLabelGroup": {
    "name": "CreateLabelGroup",
@@ -155,7 +164,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "CreateModel": {
    "name": "CreateModel",
@@ -191,7 +203,10 @@
     {
      "shape": "AccessDeniedException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "CreateRetrainingScheduler": {
    "name": "CreateRetrainingScheduler",
@@ -224,7 +239,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteDataset": {
    "name": "DeleteDataset",
@@ -254,7 +272,10 @@
     {
      "shape": "ValidationException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteInferenceScheduler": {
    "name": "DeleteInferenceScheduler",
@@ -284,7 +305,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteLabel": {
    "name": "DeleteLabel",
@@ -314,7 +338,10 @@
     {
      "shape": "ValidationException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteLabelGroup": {
    "name": "DeleteLabelGroup",
@@ -344,7 +371,10 @@
     {
      "shape": "ValidationException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteModel": {
    "name": "DeleteModel",
@@ -374,7 +404,10 @@
     {
      "shape": "ValidationException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteResourcePolicy": {
    "name": "DeleteResourcePolicy",
@@ -404,7 +437,10 @@
     {
      "shape": "ValidationException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DeleteRetrainingScheduler": {
    "name": "DeleteRetrainingScheduler",
@@ -434,7 +470,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeDataIngestionJob": {
    "name": "DescribeDataIngestionJob",
@@ -464,7 +503,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeDataset": {
    "name": "DescribeDataset",
@@ -494,7 +536,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeInferenceScheduler": {
    "name": "DescribeInferenceScheduler",
@@ -524,7 +569,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeLabel": {
    "name": "DescribeLabel",
@@ -554,7 +602,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeLabelGroup": {
    "name": "DescribeLabelGroup",
@@ -584,7 +635,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeModel": {
    "name": "DescribeModel",
@@ -614,7 +668,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeModelVersion": {
    "name": "DescribeModelVersion",
@@ -644,7 +701,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeResourcePolicy": {
    "name": "DescribeResourcePolicy",
@@ -674,7 +734,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "DescribeRetrainingScheduler": {
    "name": "DescribeRetrainingScheduler",
@@ -704,7 +767,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ImportDataset": {
    "name": "ImportDataset",
@@ -740,7 +806,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ImportModelVersion": {
    "name": "ImportModelVersion",
@@ -776,7 +845,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListDataIngestionJobs": {
    "name": "ListDataIngestionJobs",
@@ -803,7 +875,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListDatasets": {
    "name": "ListDatasets",
@@ -830,7 +905,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListInferenceEvents": {
    "name": "ListInferenceEvents",
@@ -860,7 +938,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListInferenceExecutions": {
    "name": "ListInferenceExecutions",
@@ -890,7 +971,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListInferenceSchedulers": {
    "name": "ListInferenceSchedulers",
@@ -917,7 +1001,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListLabelGroups": {
    "name": "ListLabelGroups",
@@ -944,7 +1031,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListLabels": {
    "name": "ListLabels",
@@ -971,7 +1061,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListModelVersions": {
    "name": "ListModelVersions",
@@ -1001,7 +1094,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListModels": {
    "name": "ListModels",
@@ -1028,7 +1124,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListRetrainingSchedulers": {
    "name": "ListRetrainingSchedulers",
@@ -1055,7 +1154,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListSensorStatistics": {
    "name": "ListSensorStatistics",
@@ -1085,7 +1187,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "ListTagsForResource": {
    "name": "ListTagsForResource",
@@ -1115,7 +1220,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "PutResourcePolicy": {
    "name": "PutResourcePolicy",
@@ -1151,7 +1259,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "StartDataIngestionJob": {
    "name": "StartDataIngestionJob",
@@ -1187,7 +1298,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "StartInferenceScheduler": {
    "name": "StartInferenceScheduler",
@@ -1220,7 +1334,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "StartRetrainingScheduler": {
    "name": "StartRetrainingScheduler",
@@ -1253,7 +1370,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "StopInferenceScheduler": {
    "name": "StopInferenceScheduler",
@@ -1286,7 +1406,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "StopRetrainingScheduler": {
    "name": "StopRetrainingScheduler",
@@ -1319,7 +1442,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "TagResource": {
    "name": "TagResource",
@@ -1352,7 +1478,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "UntagResource": {
    "name": "UntagResource",
@@ -1382,7 +1511,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "UpdateActiveModelVersion": {
    "name": "UpdateActiveModelVersion",
@@ -1415,7 +1547,10 @@
     {
      "shape": "ConflictException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "UpdateInferenceScheduler": {
    "name": "UpdateInferenceScheduler",
@@ -1445,7 +1580,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "UpdateLabelGroup": {
    "name": "UpdateLabelGroup",
@@ -1475,7 +1613,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "UpdateModel": {
    "name": "UpdateModel",
@@ -1505,7 +1646,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   },
   "UpdateRetrainingScheduler": {
    "name": "UpdateRetrainingScheduler",
@@ -1535,7 +1679,10 @@
     {
      "shape": "InternalServerException"
     }
-   ]
+   ],
+   "deprecated": true,
+   "deprecatedMessage": "End of support notice: On October 7, 2026, AWS ended support for Amazon Lookout for Equipment. For more information, see https://aws.amazon.com/products/lifecycle/",
+   "deprecatedSince": "2026-10-07"
   }
  },
  "shapes": {

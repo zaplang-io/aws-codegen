@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 19 operations — 19 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   92 structs (50 @derive(Json)), 14 enums, 7 error variants.
+#   92 structs (50 @derive(Json)), 15 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -89,6 +89,13 @@ enum EndpointType:
 enum ExecutionPolicy:
     FIRST_BOOT_ONLY
     EVERY_BOOT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum LaunchTemplateMode:
+    CUSTOM
+    MANAGED
     Unknown(str value)
 
 @derive(Json)
@@ -242,10 +249,13 @@ struct ClusterSummary:
     DateTime modifiedAt
     ClusterStatus status
 
-# no @derive(Json): member(s) subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfiguration, nodeLifecycleActions: NodeLifecycleActions, errorInfo: list[ErrorInfo] not derivable (list/map collections);
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfiguration, nodeLifecycleActions: NodeLifecycleActions, errorInfo: list[ErrorInfo] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ComputeNodeGroup:
+    Optional[str] amiId
+    Optional[list[str]] securityGroupIds
+    Optional[str] sshKeyName
     str name
     str id
     str arn
@@ -253,10 +263,10 @@ struct ComputeNodeGroup:
     DateTime createdAt
     DateTime modifiedAt
     ComputeNodeGroupStatus status
-    Optional[str] amiId
     list[str] subnetIds
     Optional[PurchaseOption] purchaseOption
-    CustomLaunchTemplate customLaunchTemplate
+    Optional[LaunchTemplateMode] launchTemplateMode
+    Optional[CustomLaunchTemplate] customLaunchTemplate
     str iamInstanceProfileArn
     ScalingConfiguration scalingConfiguration
     list[InstanceConfig] instanceConfigs
@@ -321,16 +331,19 @@ struct CreateClusterRequest:
 struct CreateClusterResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: NodeLifecycleActionsRequest, tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: NodeLifecycleActionsRequest, tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CreateComputeNodeGroupRequest:
+    Optional[str] amiId
+    Optional[list[str]] securityGroupIds
+    Optional[str] sshKeyName
     str clusterIdentifier
     str computeNodeGroupName
-    Optional[str] amiId
     list[str] subnetIds
     Optional[PurchaseOption] purchaseOption
-    CustomLaunchTemplate customLaunchTemplate
+    Optional[LaunchTemplateMode] launchTemplateMode
+    Optional[CustomLaunchTemplate] customLaunchTemplate
     str iamInstanceProfileArn
     ScalingConfigurationRequest scalingConfiguration
     list[InstanceConfig] instanceConfigs
@@ -741,14 +754,17 @@ struct UpdateClusterSlurmConfigurationRequest:
     Optional[UpdateAccountingRequest] accounting
     Optional[UpdateSlurmRestRequest] slurmRest
 
-# no @derive(Json): member(s) subnetIds: list[str], slurmConfiguration: UpdateComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: UpdateNodeLifecycleActionsRequest not derivable (list/map collections);
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str], slurmConfiguration: UpdateComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: UpdateNodeLifecycleActionsRequest not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct UpdateComputeNodeGroupRequest:
+    Optional[str] amiId
+    Optional[list[str]] securityGroupIds
+    Optional[str] sshKeyName
     str clusterIdentifier
     str computeNodeGroupIdentifier
-    Optional[str] amiId
     Optional[list[str]] subnetIds
+    Optional[LaunchTemplateMode] launchTemplateMode
     Optional[CustomLaunchTemplate] customLaunchTemplate
     Optional[PurchaseOption] purchaseOption
     Optional[SpotOptions] spotOptions
@@ -1000,43 +1016,57 @@ def create_cluster_request_to_json(CreateClusterRequest v) -> str:
 # Serialize CreateComputeNodeGroupRequest to a compact JSON object (declaration order).
 def create_compute_node_group_request_to_json(CreateComputeNodeGroupRequest v) -> str:
     list[str] parts = []
-    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
-    parts.append("\"computeNodeGroupName\":" + pcs_json_str(v.computeNodeGroupName))
     if v.amiId.is_some():
         auto u0 = v.amiId.unwrap()
         parts.append("\"amiId\":" + pcs_json_str(u0))
-    list[str] e1 = []
-    for x1 in v.subnetIds:
-        e1.append(pcs_json_str(x1))
-    parts.append("\"subnetIds\":" + pcs_json_arr(e1))
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(pcs_json_str(x2))
+        parts.append("\"securityGroupIds\":" + pcs_json_arr(e2))
+    if v.sshKeyName.is_some():
+        auto u3 = v.sshKeyName.unwrap()
+        parts.append("\"sshKeyName\":" + pcs_json_str(u3))
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    parts.append("\"computeNodeGroupName\":" + pcs_json_str(v.computeNodeGroupName))
+    list[str] e4 = []
+    for x4 in v.subnetIds:
+        e4.append(pcs_json_str(x4))
+    parts.append("\"subnetIds\":" + pcs_json_arr(e4))
     if v.purchaseOption.is_some():
-        auto u2 = v.purchaseOption.unwrap()
-        parts.append("\"purchaseOption\":" + u2.to_json())
-    parts.append("\"customLaunchTemplate\":" + v.customLaunchTemplate.to_json())
+        auto u5 = v.purchaseOption.unwrap()
+        parts.append("\"purchaseOption\":" + u5.to_json())
+    if v.launchTemplateMode.is_some():
+        auto u6 = v.launchTemplateMode.unwrap()
+        parts.append("\"launchTemplateMode\":" + u6.to_json())
+    if v.customLaunchTemplate.is_some():
+        auto u7 = v.customLaunchTemplate.unwrap()
+        parts.append("\"customLaunchTemplate\":" + u7.to_json())
     parts.append("\"iamInstanceProfileArn\":" + pcs_json_str(v.iamInstanceProfileArn))
     parts.append("\"scalingConfiguration\":" + v.scalingConfiguration.to_json())
-    list[str] e3 = []
-    for x3 in v.instanceConfigs:
-        e3.append(x3.to_json())
-    parts.append("\"instanceConfigs\":" + pcs_json_arr(e3))
+    list[str] e8 = []
+    for x8 in v.instanceConfigs:
+        e8.append(x8.to_json())
+    parts.append("\"instanceConfigs\":" + pcs_json_arr(e8))
     if v.spotOptions.is_some():
-        auto u4 = v.spotOptions.unwrap()
-        parts.append("\"spotOptions\":" + u4.to_json())
+        auto u9 = v.spotOptions.unwrap()
+        parts.append("\"spotOptions\":" + u9.to_json())
     if v.slurmConfiguration.is_some():
-        auto u5 = v.slurmConfiguration.unwrap()
-        parts.append("\"slurmConfiguration\":" + compute_node_group_slurm_configuration_request_to_json(u5))
+        auto u10 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + compute_node_group_slurm_configuration_request_to_json(u10))
     if v.nodeLifecycleActions.is_some():
-        auto u6 = v.nodeLifecycleActions.unwrap()
-        parts.append("\"nodeLifecycleActions\":" + node_lifecycle_actions_request_to_json(u6))
+        auto u11 = v.nodeLifecycleActions.unwrap()
+        parts.append("\"nodeLifecycleActions\":" + node_lifecycle_actions_request_to_json(u11))
     if v.clientToken.is_some():
-        auto u7 = v.clientToken.unwrap()
-        parts.append("\"clientToken\":" + pcs_json_str(u7))
+        auto u12 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u12))
     if v.tags.is_some():
-        auto u8 = v.tags.unwrap()
-        list[str] m9 = []
-        for k9 in sorted(u8.keys()):
-            m9.append(pcs_json_str(k9) + ":" + pcs_json_str(u8[k9]))
-        parts.append("\"tags\":" + pcs_json_obj(m9))
+        auto u13 = v.tags.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(pcs_json_str(k14) + ":" + pcs_json_str(u13[k14]))
+        parts.append("\"tags\":" + pcs_json_obj(m14))
     return pcs_json_obj(parts)
 
 # Serialize CreateQueueRequest to a compact JSON object (declaration order).
@@ -1210,41 +1240,53 @@ def update_cluster_slurm_configuration_request_to_json(UpdateClusterSlurmConfigu
 # Serialize UpdateComputeNodeGroupRequest to a compact JSON object (declaration order).
 def update_compute_node_group_request_to_json(UpdateComputeNodeGroupRequest v) -> str:
     list[str] parts = []
-    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
-    parts.append("\"computeNodeGroupIdentifier\":" + pcs_json_str(v.computeNodeGroupIdentifier))
     if v.amiId.is_some():
         auto u0 = v.amiId.unwrap()
         parts.append("\"amiId\":" + pcs_json_str(u0))
-    if v.subnetIds.is_some():
-        auto u1 = v.subnetIds.unwrap()
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
         list[str] e2 = []
         for x2 in u1:
             e2.append(pcs_json_str(x2))
-        parts.append("\"subnetIds\":" + pcs_json_arr(e2))
+        parts.append("\"securityGroupIds\":" + pcs_json_arr(e2))
+    if v.sshKeyName.is_some():
+        auto u3 = v.sshKeyName.unwrap()
+        parts.append("\"sshKeyName\":" + pcs_json_str(u3))
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    parts.append("\"computeNodeGroupIdentifier\":" + pcs_json_str(v.computeNodeGroupIdentifier))
+    if v.subnetIds.is_some():
+        auto u4 = v.subnetIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(pcs_json_str(x5))
+        parts.append("\"subnetIds\":" + pcs_json_arr(e5))
+    if v.launchTemplateMode.is_some():
+        auto u6 = v.launchTemplateMode.unwrap()
+        parts.append("\"launchTemplateMode\":" + u6.to_json())
     if v.customLaunchTemplate.is_some():
-        auto u3 = v.customLaunchTemplate.unwrap()
-        parts.append("\"customLaunchTemplate\":" + u3.to_json())
+        auto u7 = v.customLaunchTemplate.unwrap()
+        parts.append("\"customLaunchTemplate\":" + u7.to_json())
     if v.purchaseOption.is_some():
-        auto u4 = v.purchaseOption.unwrap()
-        parts.append("\"purchaseOption\":" + u4.to_json())
+        auto u8 = v.purchaseOption.unwrap()
+        parts.append("\"purchaseOption\":" + u8.to_json())
     if v.spotOptions.is_some():
-        auto u5 = v.spotOptions.unwrap()
-        parts.append("\"spotOptions\":" + u5.to_json())
+        auto u9 = v.spotOptions.unwrap()
+        parts.append("\"spotOptions\":" + u9.to_json())
     if v.scalingConfiguration.is_some():
-        auto u6 = v.scalingConfiguration.unwrap()
-        parts.append("\"scalingConfiguration\":" + u6.to_json())
+        auto u10 = v.scalingConfiguration.unwrap()
+        parts.append("\"scalingConfiguration\":" + u10.to_json())
     if v.iamInstanceProfileArn.is_some():
-        auto u7 = v.iamInstanceProfileArn.unwrap()
-        parts.append("\"iamInstanceProfileArn\":" + pcs_json_str(u7))
+        auto u11 = v.iamInstanceProfileArn.unwrap()
+        parts.append("\"iamInstanceProfileArn\":" + pcs_json_str(u11))
     if v.slurmConfiguration.is_some():
-        auto u8 = v.slurmConfiguration.unwrap()
-        parts.append("\"slurmConfiguration\":" + update_compute_node_group_slurm_configuration_request_to_json(u8))
+        auto u12 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + update_compute_node_group_slurm_configuration_request_to_json(u12))
     if v.nodeLifecycleActions.is_some():
-        auto u9 = v.nodeLifecycleActions.unwrap()
-        parts.append("\"nodeLifecycleActions\":" + update_node_lifecycle_actions_request_to_json(u9))
+        auto u13 = v.nodeLifecycleActions.unwrap()
+        parts.append("\"nodeLifecycleActions\":" + update_node_lifecycle_actions_request_to_json(u13))
     if v.clientToken.is_some():
-        auto u10 = v.clientToken.unwrap()
-        parts.append("\"clientToken\":" + pcs_json_str(u10))
+        auto u14 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u14))
     return pcs_json_obj(parts)
 
 # Serialize UpdateComputeNodeGroupSlurmConfigurationRequest to a compact JSON object (declaration order).

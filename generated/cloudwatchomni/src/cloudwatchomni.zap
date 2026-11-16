@@ -16,9 +16,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (smithy-rpc-v2-cbor): 61 operations — 61 with a generated method,
+# Coverage (smithy-rpc-v2-cbor): 62 operations — 62 with a generated method,
 #   0 skipped (input has a non-text-keyed map member).
-#   194 structs (plain carriers), 31 enums, 7 error variants.
+#   198 structs (plain carriers), 33 enums, 8 error variants.
 #   0 paginators generated (15 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -166,6 +166,20 @@ enum IntegrationType:
     SLACK
     EXTERNAL_AGENT
     AWS_INTEGRATION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MetricAggregationTemporality:
+    delta
+    cumulative
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MetricMonotonicity:
+    monotonic
+    non_monotonic
     Unknown(str value)
 
 @derive(Json)
@@ -572,6 +586,9 @@ struct CreateViewResponse:
     DateTime updatedAt
     str arn
 
+struct DataAccessTarget:
+    list[str] actions
+
 struct DeleteAccessGrantInput:
     str grantId
 
@@ -802,6 +819,15 @@ struct GetSpaceCredentialsForOrganizationInput:
 struct GetSpaceCredentialsForOrganizationOutput:
     AwsCredentials credentials
 
+struct GetSpaceDataAccessInput:
+    str spaceId
+    list[DataAccessTarget] targetScopes
+    Optional[int64] durationSeconds
+    Optional[dict[str, str]] auditContext
+
+struct GetSpaceDataAccessOutput:
+    AwsCredentials credentials
+
 struct GetSpaceInput:
     str spaceId
 
@@ -1007,6 +1033,8 @@ struct MetricMetadata:
     Optional[str] metricType
     Optional[dict[str, str]] attributes
     Optional[MetricSemantics] semantics
+    Optional[str] aggregationTemporality
+    Optional[str] monotonicity
 
 struct MetricSemantics:
     Optional[str] description
@@ -1148,6 +1176,9 @@ struct OrganizationDomain:
 
 struct PartialResults:
     Optional[bool] partialResultsDetected
+
+struct PolicyTooLargeException:
+    str message
 
 struct PrincipalSearchResult:
     str principalId
@@ -1401,6 +1432,7 @@ enum CloudWatchOmniErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
+    PolicyTooLargeException
     ResourceNotFoundException
     ServiceQuotaExceededException
     ThrottlingException
@@ -1418,6 +1450,8 @@ def cloudwatch_omni_error_kind(str code) -> CloudWatchOmniErrorKind:
         return CloudWatchOmniErrorKind.ConflictException
     if name == "InternalServerException":
         return CloudWatchOmniErrorKind.InternalServerException
+    if name == "PolicyTooLargeException":
+        return CloudWatchOmniErrorKind.PolicyTooLargeException
     if name == "ResourceNotFoundException":
         return CloudWatchOmniErrorKind.ResourceNotFoundException
     if name == "ServiceQuotaExceededException":
@@ -1442,6 +1476,8 @@ def cloudwatch_omni_error_name(CloudWatchOmniErrorKind k) -> str:
             return "ConflictException"
         case CloudWatchOmniErrorKind.InternalServerException:
             return "InternalServerException"
+        case CloudWatchOmniErrorKind.PolicyTooLargeException:
+            return "PolicyTooLargeException"
         case CloudWatchOmniErrorKind.ResourceNotFoundException:
             return "ResourceNotFoundException"
         case CloudWatchOmniErrorKind.ServiceQuotaExceededException:
@@ -1940,6 +1976,17 @@ def create_view_request_to_cbor(CreateViewRequest v) -> cbor.CborValue:
         vals.append(cbor.cbor_text(u3))
     return cbor.cbor_map(keys, vals)
 
+# Serialize DataAccessTarget to a CBOR map (member wire name -> value, model order).
+def data_access_target_to_cbor(DataAccessTarget v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.actions:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("actions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
 # Serialize DeleteAccessGrantInput to a CBOR map (member wire name -> value, model order).
 def delete_access_grant_input_to_cbor(DeleteAccessGrantInput v) -> cbor.CborValue:
     list[str] keys = []
@@ -2203,6 +2250,32 @@ def get_space_credentials_for_organization_input_to_cbor(GetSpaceCredentialsForO
     vals.append(space_credential_request_context_to_cbor(v.context))
     keys.append("credentialType")
     vals.append(cbor.cbor_text(v.credentialType))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetSpaceDataAccessInput to a CBOR map (member wire name -> value, model order).
+def get_space_data_access_input_to_cbor(GetSpaceDataAccessInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("spaceId")
+    vals.append(cbor.cbor_text(v.spaceId))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.targetScopes:
+        e0.append(data_access_target_to_cbor(x0))
+    keys.append("targetScopes")
+    vals.append(cbor.cbor_list(e0))
+    if v.durationSeconds.is_some():
+        auto u1 = v.durationSeconds.unwrap()
+        keys.append("durationSeconds")
+        vals.append(cbor.cbor_int(u1))
+    if v.auditContext.is_some():
+        auto u2 = v.auditContext.unwrap()
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
+        for k3 in sorted(u2.keys()):
+            mk3.append(k3)
+            mv3.append(cbor.cbor_text(u2[k3]))
+        keys.append("auditContext")
+        vals.append(cbor.cbor_map(mk3, mv3))
     return cbor.cbor_map(keys, vals)
 
 # Serialize GetSpaceInput to a CBOR map (member wire name -> value, model order).
@@ -3428,6 +3501,15 @@ struct CloudWatchOmniClient:
         auto host = endpoints.regional_host(cloudwatch_omni_service(), self.region)
         auto t = core.signing_time_now()
         auto req = cbor.cbor_build_request(cloudwatch_omni_service(), self.region, host, "CloudWatchOmniFrontend", "GetSpaceCredentialsForOrganization", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # GetSpaceDataAccess
+    # errors: AccessDeniedException, InternalServerException, PolicyTooLargeException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_space_data_access(self, GetSpaceDataAccessInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_space_data_access_input_to_cbor(input))
+        auto host = endpoints.regional_host(cloudwatch_omni_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudwatch_omni_service(), self.region, host, "CloudWatchOmniFrontend", "GetSpaceDataAccess", body, t.amz_date)
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetTelemetryQueryResults

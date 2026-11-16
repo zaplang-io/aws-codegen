@@ -1482,6 +1482,16 @@
    ],
    "idempotent": true
   },
+  "RemoveAlias": {
+   "name": "RemoveAlias",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "RemoveAliasInput"
+   }
+  },
   "RollbackStack": {
    "name": "RollbackStack",
    "http": {
@@ -1498,6 +1508,24 @@
    "errors": [
     {
      "shape": "TokenAlreadyExistsException"
+    }
+   ]
+  },
+  "SetAlias": {
+   "name": "SetAlias",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "SetAliasInput"
+   },
+   "errors": [
+    {
+     "shape": "LimitExceededException"
+    },
+    {
+     "shape": "AlreadyExistsException"
     }
    ]
   },
@@ -1910,6 +1938,11 @@
    "enum": [
     "TEMPLATE"
    ]
+  },
+  "AliasName": {
+   "type": "string",
+   "max": 128,
+   "min": 1
   },
   "AllowedValue": {
    "type": "string"
@@ -6090,6 +6123,17 @@
    "max": 16384,
    "min": 1
   },
+  "RemoveAliasInput": {
+   "type": "structure",
+   "required": [
+    "AliasName"
+   ],
+   "members": {
+    "AliasName": {
+     "shape": "AliasName"
+    }
+   }
+  },
   "Replacement": {
    "type": "string",
    "enum": [
@@ -6825,6 +6869,21 @@
     "shape": "ResourceAttribute"
    }
   },
+  "SetAliasInput": {
+   "type": "structure",
+   "required": [
+    "StackName",
+    "AliasName"
+   ],
+   "members": {
+    "StackName": {
+     "shape": "StackName"
+    },
+    "AliasName": {
+     "shape": "AliasName"
+    }
+   }
+  },
   "SetStackPolicyInput": {
    "type": "structure",
    "required": [
@@ -7005,6 +7064,9 @@
     },
     "LastOperations": {
      "shape": "LastOperations"
+    },
+    "AliasName": {
+     "shape": "AliasName"
     }
    }
   },

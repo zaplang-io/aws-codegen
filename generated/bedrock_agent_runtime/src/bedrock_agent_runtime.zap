@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 35 operations — 35 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   382 structs (217 @derive(Json)), 62 enums, 10 error variants.
+#   384 structs (218 @derive(Json)), 62 enums, 10 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -115,6 +115,7 @@ enum AgenticRetrieveStep:
     SpeculativeRetrieval
     FullDocumentExpansion
     SessionHistoryLoad
+    CodeExecution
     Unknown(str value)
 
 @derive(Json)
@@ -669,10 +670,11 @@ struct AgentCollaboratorOutputPayload:
     Optional[str] text
     Optional[PayloadType] type
 
-# no @derive(Json): member(s) retrieve: AgenticRetrieveActionDetails not derivable (list/map collections);
+# no @derive(Json): member(s) codeExecution: AgenticRetrieveCodeExecutionDetails, retrieve: AgenticRetrieveActionDetails not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct AgenticRetrieveAction:
+    Optional[AgenticRetrieveCodeExecutionDetails] codeExecution
     Optional[AgenticRetrieveFullDocExpansionDetails] fullDocumentExpansion
     Optional[AgenticRetrieveMemoryRetrieveDetails] memoryRetrieve
     Optional[AgenticRetrieveActionDetails] retrieve
@@ -713,6 +715,17 @@ struct AgenticRetrieveCitation:
 @derive(Json)
 struct AgenticRetrieveCitationReference:
     int64 resultIndex
+
+# no @derive(Json): member(s) documents: list[AgenticRetrieveCodeExecutionDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AgenticRetrieveCodeExecutionDetails:
+    Optional[list[AgenticRetrieveCodeExecutionDocument]] documents
+
+@derive(Json)
+struct AgenticRetrieveCodeExecutionDocument:
+    Optional[str] documentId
+    Optional[AgenticRetrieveSourceRetriever] sourceRetriever
 
 @derive(Json)
 struct AgenticRetrieveConfiguration:
@@ -1650,6 +1663,7 @@ struct GetDocumentContentRequest:
     str dataSourceId
     str documentId
     str knowledgeBaseId
+    Optional[str] mediaId
     Optional[DocumentOutputFormat] outputFormat
     Optional[UserContext] userContext
 
@@ -3344,6 +3358,7 @@ struct GenerateQueryDocument:
 @derive(Json)
 struct GetDocumentContentDocument:
     # document members of GetDocumentContent
+    Optional[str] mediaId
     Optional[DocumentOutputFormat] outputFormat
     Optional[UserContext] userContext
 
@@ -4404,7 +4419,7 @@ struct Bedrock_Agent_RuntimeClient:
         labels["documentId"] = input.documentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/{documentId}/content", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = GetDocumentContentDocument(outputFormat=input.outputFormat, userContext=input.userContext)
+        auto doc = GetDocumentContentDocument(mediaId=input.mediaId, outputFormat=input.outputFormat, userContext=input.userContext)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_runtime_service(), self.region, host)
 

@@ -486,6 +486,9 @@
    "errors": [
     {
      "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "RetryableConflictException"
     }
    ],
    "staticContextParams": {
@@ -2852,6 +2855,31 @@
    "type": "list",
    "member": {
     "shape": "String"
+   }
+  },
+  "RetryableConflictException": {
+   "type": "structure",
+   "required": [
+    "message"
+   ],
+   "members": {
+    "message": {
+     "shape": "String"
+    },
+    "resourceId": {
+     "shape": "String"
+    },
+    "resourceType": {
+     "shape": "String"
+    }
+   },
+   "error": {
+    "httpStatusCode": 409,
+    "senderFault": true
+   },
+   "exception": true,
+   "retryable": {
+    "throttling": false
    }
   },
   "RoleArn": {

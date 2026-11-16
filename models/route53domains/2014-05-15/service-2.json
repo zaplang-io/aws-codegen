@@ -4,8 +4,9 @@
   "apiVersion": "2014-05-15",
   "endpointPrefix": "route53domains",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceFullName": "Amazon Route 53 Domains",
@@ -13,6 +14,7 @@
   "signatureVersion": "v4",
   "targetPrefix": "Route53Domains_v20140515",
   "uid": "route53domains-2014-05-15",
+  "xmlNamespace": "https://route53domains.amazonaws.com/doc/2014-05-15/",
   "auth": [
    "aws.auth#sigv4"
   ]
@@ -682,6 +684,33 @@
     },
     {
      "shape": "TLDInMaintenance"
+    }
+   ]
+  },
+  "RestoreDomain": {
+   "name": "RestoreDomain",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "RestoreDomainRequest"
+   },
+   "output": {
+    "shape": "RestoreDomainResponse"
+   },
+   "errors": [
+    {
+     "shape": "InvalidInput"
+    },
+    {
+     "shape": "DuplicateRequest"
+    },
+    {
+     "shape": "OperationLimitExceeded"
+    },
+    {
+     "shape": "UnsupportedTLD"
     }
    ]
   },
@@ -1562,6 +1591,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "DnssecPublicKey": {
@@ -1608,6 +1640,9 @@
     "message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -1718,6 +1753,9 @@
     "message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -2085,6 +2123,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "InvoiceId": {
@@ -2261,6 +2302,9 @@
     "message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -2579,6 +2623,28 @@
     }
    }
   },
+  "RestoreDomainRequest": {
+   "type": "structure",
+   "required": [
+    "DomainName"
+   ],
+   "members": {
+    "DomainName": {
+     "shape": "DomainName"
+    },
+    "Consent": {
+     "shape": "Consent"
+    }
+   }
+  },
+  "RestoreDomainResponse": {
+   "type": "structure",
+   "members": {
+    "OperationId": {
+     "shape": "OperationId"
+    }
+   }
+  },
   "RetrieveDomainAuthCodeRequest": {
    "type": "structure",
    "required": [
@@ -2648,6 +2714,9 @@
      "shape": "TldName"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "TLDRulesViolation": {
@@ -2656,6 +2725,9 @@
     "message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -2808,6 +2880,9 @@
     "message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },

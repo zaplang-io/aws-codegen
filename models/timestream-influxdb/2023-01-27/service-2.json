@@ -940,7 +940,12 @@
      "shape": "KmsKeyId"
     },
     "clusterConfiguration": {
-     "shape": "ClusterConfiguration"
+     "shape": "ClusterConfiguration",
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
+    },
+    "deploymentConfiguration": {
+     "shape": "DeploymentConfiguration"
     },
     "dbParameterGroupId": {
      "shape": "DbParameterGroupId"
@@ -987,7 +992,6 @@
    "type": "structure",
    "required": [
     "name",
-    "dbInstanceType",
     "vpcSubnetIds",
     "vpcSecurityGroupIds"
    ],
@@ -1036,6 +1040,9 @@
     },
     "deploymentType": {
      "shape": "ClusterDeploymentType"
+    },
+    "deploymentConfiguration": {
+     "shape": "DeploymentConfiguration"
     },
     "failoverMode": {
      "shape": "FailoverMode"
@@ -1758,7 +1765,12 @@
      "shape": "KmsKeyId"
     },
     "clusterConfiguration": {
-     "shape": "ClusterConfiguration"
+     "shape": "ClusterConfiguration",
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
+    },
+    "deploymentConfiguration": {
+     "shape": "DeploymentConfiguration"
     },
     "dbParameterGroupId": {
      "shape": "DbParameterGroupId"
@@ -1929,6 +1941,15 @@
     }
    }
   },
+  "DeploymentConfiguration": {
+   "type": "structure",
+   "members": {
+    "InfluxDBv3Enterprise": {
+     "shape": "InfluxDBv3EnterpriseDeploymentConfiguration"
+    }
+   },
+   "union": true
+  },
   "DeploymentType": {
    "type": "string",
    "enum": [
@@ -2033,7 +2054,12 @@
      "shape": "KmsKeyId"
     },
     "clusterConfiguration": {
-     "shape": "ClusterConfiguration"
+     "shape": "ClusterConfiguration",
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
+    },
+    "deploymentConfiguration": {
+     "shape": "DeploymentConfiguration"
     },
     "dbParameterGroupId": {
      "shape": "DbParameterGroupId"
@@ -2168,7 +2194,12 @@
      "shape": "FailoverMode"
     },
     "clusterConfiguration": {
-     "shape": "ClusterConfiguration"
+     "shape": "ClusterConfiguration",
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
+    },
+    "deploymentConfiguration": {
+     "shape": "DeploymentConfiguration"
     },
     "dbBackupConfigurations": {
      "shape": "DbBackupConfigurationOutputList"
@@ -2771,13 +2802,19 @@
    "max": 10000,
    "min": 1
   },
-  "InfluxDBv3EnterpriseParameters": {
+  "InfluxDBv3EnterpriseDeploymentConfiguration": {
    "type": "structure",
    "required": [
-    "ingestQueryInstances",
-    "queryOnlyInstances",
-    "dedicatedCompactor"
+    "nodeGroups"
    ],
+   "members": {
+    "nodeGroups": {
+     "shape": "NodeGroupList"
+    }
+   }
+  },
+  "InfluxDBv3EnterpriseParameters": {
+   "type": "structure",
    "members": {
     "queryFileLimit": {
      "shape": "InfluxDBv3EnterpriseParametersQueryFileLimitInteger"
@@ -2903,13 +2940,22 @@
      "shape": "PluginRepositorySecretArn"
     },
     "ingestQueryInstances": {
-     "shape": "InfluxDBv3EnterpriseParametersIngestQueryInstancesInteger"
+     "shape": "InfluxDBv3EnterpriseParametersIngestQueryInstancesInteger",
+     "box": true,
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
     },
     "queryOnlyInstances": {
-     "shape": "InfluxDBv3EnterpriseParametersQueryOnlyInstancesInteger"
+     "shape": "InfluxDBv3EnterpriseParametersQueryOnlyInstancesInteger",
+     "box": true,
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
     },
     "dedicatedCompactor": {
-     "shape": "Boolean"
+     "shape": "Boolean",
+     "box": true,
+     "deprecated": true,
+     "deprecatedMessage": "Use deploymentConfiguration instead."
     },
     "compactionRowLimit": {
      "shape": "InfluxDBv3EnterpriseParametersCompactionRowLimitInteger"
@@ -3118,7 +3164,9 @@
    "type": "list",
    "member": {
     "shape": "InstanceMode"
-   }
+   },
+   "max": 4,
+   "min": 1
   },
   "Integer": {
    "type": "integer",
@@ -3360,6 +3408,39 @@
   },
   "NextToken": {
    "type": "string",
+   "min": 1
+  },
+  "NodeGroup": {
+   "type": "structure",
+   "required": [
+    "instanceModes",
+    "instanceType",
+    "count"
+   ],
+   "members": {
+    "instanceModes": {
+     "shape": "InstanceModeList"
+    },
+    "instanceType": {
+     "shape": "DbInstanceType"
+    },
+    "count": {
+     "shape": "NodeGroupCountInteger"
+    }
+   }
+  },
+  "NodeGroupCountInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 13,
+   "min": 1
+  },
+  "NodeGroupList": {
+   "type": "list",
+   "member": {
+    "shape": "NodeGroup"
+   },
+   "max": 10,
    "min": 1
   },
   "Organization": {
@@ -3861,6 +3942,9 @@
     },
     "dbInstanceType": {
      "shape": "DbInstanceType"
+    },
+    "deploymentConfiguration": {
+     "shape": "DeploymentConfiguration"
     },
     "failoverMode": {
      "shape": "FailoverMode"

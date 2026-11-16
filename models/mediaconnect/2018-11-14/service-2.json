@@ -3356,6 +3356,11 @@
   }
  },
  "shapes": {
+  "ActionString": {
+   "type": "string",
+   "max": 256,
+   "min": 1
+  },
   "AddBridgeFlowSourceRequest": {
    "type": "structure",
    "required": [
@@ -3881,6 +3886,10 @@
     "NdiAudioReferenceLevel": {
      "shape": "NdiAudioReferenceLevel",
      "locationName": "ndiAudioReferenceLevel"
+    },
+    "RtmpPushSettings": {
+     "shape": "RtmpPushOutputSettings",
+     "locationName": "rtmpPushSettings"
     }
    }
   },
@@ -3901,11 +3910,38 @@
     }
    }
   },
+  "AutoPidMapConfiguration": {
+   "type": "structure",
+   "required": [
+    "StartPid",
+    "PidsPerProgram"
+   ],
+   "members": {
+    "StartPid": {
+     "shape": "Pid",
+     "locationName": "startPid"
+    },
+    "PidsPerProgram": {
+     "shape": "AutoPidMapConfigurationPidsPerProgramInteger",
+     "locationName": "pidsPerProgram"
+    }
+   }
+  },
+  "AutoPidMapConfigurationPidsPerProgramInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 8158,
+   "min": 1
+  },
   "AutomaticEncryptionKeyConfiguration": {
    "type": "structure",
    "members": {}
   },
   "AutomaticEndpointEncryptionConfiguration": {
+   "type": "structure",
+   "members": {}
+  },
+  "AutomaticRtmpPushNamingConfiguration": {
    "type": "structure",
    "members": {}
   },
@@ -5046,6 +5082,10 @@
      "shape": "ClientToken",
      "idempotencyToken": true,
      "locationName": "clientToken"
+    },
+    "Processors": {
+     "shape": "RouterOutputProcessors",
+     "locationName": "processors"
     }
    }
   },
@@ -5455,6 +5495,10 @@
     "NdiInfo": {
      "shape": "NdiSourceMetadataInfo",
      "locationName": "ndiInfo"
+    },
+    "RtmpInfo": {
+     "shape": "RtmpSourceMetadataInfo",
+     "locationName": "rtmpInfo"
     }
    }
   },
@@ -6233,6 +6277,14 @@
     "RecoveryLatencyMode": {
      "shape": "FabricLatencyMode",
      "locationName": "recoveryLatencyMode"
+    },
+    "SwitchingMode": {
+     "shape": "FabricSwitchingMode",
+     "locationName": "switchingMode"
+    },
+    "SwitchingConfiguration": {
+     "shape": "FabricSwitchingConfiguration",
+     "locationName": "switchingConfiguration"
     }
    }
   },
@@ -6241,6 +6293,27 @@
    "enum": [
     "BALANCED",
     "LOW_LATENCY"
+   ]
+  },
+  "FabricSwitchingConfiguration": {
+   "type": "structure",
+   "members": {
+    "Immediate": {
+     "shape": "ImmediateFabricSwitchingConfiguration",
+     "locationName": "immediate"
+    },
+    "KeyFrame": {
+     "shape": "KeyFrameFabricSwitchingConfiguration",
+     "locationName": "keyFrame"
+    }
+   },
+   "union": true
+  },
+  "FabricSwitchingMode": {
+   "type": "string",
+   "enum": [
+    "IMMEDIATE",
+    "KEY_FRAME"
    ]
   },
   "FailoverConfig": {
@@ -6323,6 +6396,10 @@
     "SourceIpAddress": {
      "shape": "String",
      "locationName": "sourceIpAddress"
+    },
+    "RtmpPush": {
+     "shape": "RtmpPushStreamDetails",
+     "locationName": "rtmpPush"
     }
    }
   },
@@ -6336,6 +6413,10 @@
     "SrtListener": {
      "shape": "SrtListenerRouterInputConfiguration",
      "locationName": "srtListener"
+    },
+    "RtmpPush": {
+     "shape": "RtmpPushRouterInputConfiguration",
+     "locationName": "rtmpPush"
     },
     "SrtCaller": {
      "shape": "SrtCallerRouterInputConfiguration",
@@ -7059,6 +7140,10 @@
     }
    }
   },
+  "ImmediateFabricSwitchingConfiguration": {
+   "type": "structure",
+   "members": {}
+  },
   "IngressGatewayBridge": {
    "type": "structure",
    "required": [
@@ -7177,6 +7262,21 @@
    "retryable": {
     "throttling": false
    }
+  },
+  "KeyFrameFabricSwitchingConfiguration": {
+   "type": "structure",
+   "members": {
+    "KeyFrameWaitMilliseconds": {
+     "shape": "KeyFrameFabricSwitchingConfigurationKeyFrameWaitMillisecondsLong",
+     "locationName": "keyFrameWaitMilliseconds"
+    }
+   }
+  },
+  "KeyFrameFabricSwitchingConfigurationKeyFrameWaitMillisecondsLong": {
+   "type": "long",
+   "box": true,
+   "max": 10000,
+   "min": 0
   },
   "KeyType": {
    "type": "string",
@@ -8301,6 +8401,23 @@
     "DEFAULT"
    ]
   },
+  "ManualRtmpPushNamingConfiguration": {
+   "type": "structure",
+   "required": [
+    "ApplicationName",
+    "StreamName"
+   ],
+   "members": {
+    "ApplicationName": {
+     "shape": "String",
+     "locationName": "applicationName"
+    },
+    "StreamName": {
+     "shape": "String",
+     "locationName": "streamName"
+    }
+   }
+  },
   "MaxResults": {
    "type": "integer",
    "box": true,
@@ -8686,6 +8803,14 @@
     "Rist": {
      "shape": "RistRouterInputConfiguration",
      "locationName": "rist"
+    },
+    "SrtListener": {
+     "shape": "SrtListenerRouterInputConfiguration",
+     "locationName": "srtListener"
+    },
+    "SrtCaller": {
+     "shape": "SrtCallerRouterInputConfiguration",
+     "locationName": "srtCaller"
     }
    },
    "union": true
@@ -9125,6 +9250,46 @@
     }
    }
   },
+  "Passthrough": {
+   "type": "structure",
+   "members": {}
+  },
+  "Pid": {
+   "type": "integer",
+   "box": true,
+   "max": 8190,
+   "min": 32
+  },
+  "PidMapRule": {
+   "type": "structure",
+   "required": [
+    "MatchExpression",
+    "Action"
+   ],
+   "members": {
+    "MatchExpression": {
+     "shape": "PidMapRuleMatchExpressionString",
+     "locationName": "matchExpression"
+    },
+    "Action": {
+     "shape": "ActionString",
+     "locationName": "action"
+    }
+   }
+  },
+  "PidMapRuleMatchExpressionString": {
+   "type": "string",
+   "max": 256,
+   "min": 1
+  },
+  "PidMapRules": {
+   "type": "list",
+   "member": {
+    "shape": "PidMapRule"
+   },
+   "max": 32,
+   "min": 0
+  },
   "PreferredDayTimeMaintenanceConfiguration": {
    "type": "structure",
    "required": [
@@ -9148,6 +9313,54 @@
     "HOURLY"
    ]
   },
+  "ProgramClockReferencePidConfiguration": {
+   "type": "structure",
+   "members": {
+    "Passthrough": {
+     "shape": "Passthrough",
+     "locationName": "passthrough"
+    },
+    "Set": {
+     "shape": "Pid",
+     "locationName": "set"
+    }
+   },
+   "union": true
+  },
+  "ProgramMapTablePidConfiguration": {
+   "type": "structure",
+   "members": {
+    "Passthrough": {
+     "shape": "Passthrough",
+     "locationName": "passthrough"
+    },
+    "Set": {
+     "shape": "Pid",
+     "locationName": "set"
+    }
+   },
+   "union": true
+  },
+  "ProgramNumberConfiguration": {
+   "type": "structure",
+   "members": {
+    "Passthrough": {
+     "shape": "Passthrough",
+     "locationName": "passthrough"
+    },
+    "Set": {
+     "shape": "ProgramNumberConfigurationSetInteger",
+     "locationName": "set"
+    }
+   },
+   "union": true
+  },
+  "ProgramNumberConfigurationSetInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 65535,
+   "min": 1
+  },
   "Protocol": {
    "type": "string",
    "enum": [
@@ -9162,7 +9375,8 @@
     "srt-caller",
     "fujitsu-qos",
     "udp",
-    "ndi-speed-hq"
+    "ndi-speed-hq",
+    "rtmp-push"
    ]
   },
   "PublicDestinationEndpointNetworkingConfiguration": {
@@ -9349,8 +9563,8 @@
   "RegisterDestinationEndpointRequestDescriptionString": {
    "type": "string",
    "max": 1000,
-   "min": 1,
-   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+   "min": 0,
+   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
   },
   "RegisterDestinationEndpointResponse": {
    "type": "structure",
@@ -9396,8 +9610,8 @@
   "RegisterSourceEndpointRequestDescriptionString": {
    "type": "string",
    "max": 1000,
-   "min": 1,
-   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+   "min": 0,
+   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
   },
   "RegisterSourceEndpointResponse": {
    "type": "structure",
@@ -10313,6 +10527,10 @@
     "TransportStreamMediaInfo": {
      "shape": "TransportMediaInfo",
      "locationName": "transportStreamMediaInfo"
+    },
+    "RtmpInfo": {
+     "shape": "RtmpSourceMetadataInfo",
+     "locationName": "rtmpInfo"
     }
    },
    "union": true
@@ -10323,7 +10541,8 @@
     "RTP",
     "RIST",
     "SRT_CALLER",
-    "SRT_LISTENER"
+    "SRT_LISTENER",
+    "RTMP_PUSH"
    ]
   },
   "RouterInputProtocolConfiguration": {
@@ -10336,6 +10555,10 @@
     "SrtListener": {
      "shape": "SrtListenerRouterInputConfiguration",
      "locationName": "srtListener"
+    },
+    "RtmpPush": {
+     "shape": "RtmpPushRouterInputConfiguration",
+     "locationName": "rtmpPush"
     },
     "SrtCaller": {
      "shape": "SrtCallerRouterInputConfiguration",
@@ -10802,6 +11025,10 @@
      "shape": "FabricConfiguration",
      "locationName": "fabricConfiguration"
     },
+    "Processors": {
+     "shape": "RouterOutputProcessors",
+     "locationName": "processors"
+    },
     "AssociatedSourceEndpointArns": {
      "shape": "SourceEndpointArnList",
      "locationName": "associatedSourceEndpointArns"
@@ -10897,6 +11124,15 @@
    "type": "list",
    "member": {
     "shape": "RouterOutputMessage"
+   }
+  },
+  "RouterOutputProcessors": {
+   "type": "structure",
+   "members": {
+    "SingleProgramTransportStreamPidMap": {
+     "shape": "SingleProgramTransportStreamPidMapConfiguration",
+     "locationName": "singleProgramTransportStreamPidMap"
+    }
    }
   },
   "RouterOutputProtocol": {
@@ -11091,6 +11327,147 @@
     "shape": "RoutingScope"
    }
   },
+  "RtmpMediaInfo": {
+   "type": "structure",
+   "required": [
+    "Streams"
+   ],
+   "members": {
+    "Streams": {
+     "shape": "RtmpMediaStreamInfoList",
+     "locationName": "streams"
+    }
+   }
+  },
+  "RtmpMediaStreamInfo": {
+   "type": "structure",
+   "required": [
+    "StreamId",
+    "StreamType",
+    "Codec"
+   ],
+   "members": {
+    "StreamId": {
+     "shape": "Integer",
+     "locationName": "streamId"
+    },
+    "StreamType": {
+     "shape": "SourceMediaStreamType",
+     "locationName": "streamType"
+    },
+    "Codec": {
+     "shape": "String",
+     "locationName": "codec"
+    },
+    "FrameRate": {
+     "shape": "String",
+     "locationName": "frameRate"
+    },
+    "FrameResolution": {
+     "shape": "FrameResolution",
+     "locationName": "frameResolution"
+    },
+    "ScanMode": {
+     "shape": "ScanMode",
+     "locationName": "scanMode"
+    },
+    "Color": {
+     "shape": "ColorInformation",
+     "locationName": "color"
+    },
+    "Channels": {
+     "shape": "Integer",
+     "locationName": "channels"
+    },
+    "SampleRate": {
+     "shape": "Integer",
+     "locationName": "sampleRate"
+    },
+    "SampleSize": {
+     "shape": "Integer",
+     "locationName": "sampleSize"
+    },
+    "Language": {
+     "shape": "String",
+     "locationName": "language"
+    }
+   }
+  },
+  "RtmpMediaStreamInfoList": {
+   "type": "list",
+   "member": {
+    "shape": "RtmpMediaStreamInfo"
+   }
+  },
+  "RtmpPushNamingConfiguration": {
+   "type": "structure",
+   "members": {
+    "Manual": {
+     "shape": "ManualRtmpPushNamingConfiguration",
+     "locationName": "manual"
+    },
+    "Automatic": {
+     "shape": "AutomaticRtmpPushNamingConfiguration",
+     "locationName": "automatic"
+    }
+   },
+   "union": true
+  },
+  "RtmpPushNamingType": {
+   "type": "string",
+   "enum": [
+    "MANUAL",
+    "AUTOMATIC"
+   ]
+  },
+  "RtmpPushOutputSettings": {
+   "type": "structure",
+   "required": [
+    "ApplicationName",
+    "StreamName"
+   ],
+   "members": {
+    "ApplicationName": {
+     "shape": "String",
+     "locationName": "applicationName"
+    },
+    "StreamName": {
+     "shape": "String",
+     "locationName": "streamName"
+    },
+    "TlsEncryption": {
+     "shape": "TlsEncryption",
+     "locationName": "tlsEncryption"
+    }
+   }
+  },
+  "RtmpPushRouterInputConfiguration": {
+   "type": "structure",
+   "required": [
+    "Port",
+    "NamingConfiguration"
+   ],
+   "members": {
+    "Port": {
+     "shape": "RtmpPushRouterInputConfigurationPortInteger",
+     "locationName": "port"
+    },
+    "NamingType": {
+     "shape": "RtmpPushNamingType",
+     "locationName": "namingType"
+    },
+    "NamingConfiguration": {
+     "shape": "RtmpPushNamingConfiguration",
+     "locationName": "namingConfiguration"
+    }
+   }
+  },
+  "RtmpPushRouterInputConfigurationPortInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 1935,
+   "min": 1935
+  },
   "RtmpPushRouterOutputConfiguration": {
    "type": "structure",
    "required": [
@@ -11127,6 +11504,65 @@
    "box": true,
    "max": 65535,
    "min": 443
+  },
+  "RtmpPushSourceSettings": {
+   "type": "structure",
+   "required": [
+    "ApplicationName",
+    "StreamName",
+    "NamingType"
+   ],
+   "members": {
+    "ApplicationName": {
+     "shape": "String",
+     "locationName": "applicationName"
+    },
+    "StreamName": {
+     "shape": "String",
+     "locationName": "streamName"
+    },
+    "NamingType": {
+     "shape": "RtmpPushNamingType",
+     "locationName": "namingType"
+    }
+   }
+  },
+  "RtmpPushStreamDetails": {
+   "type": "structure",
+   "required": [
+    "ApplicationName",
+    "StreamName"
+   ],
+   "members": {
+    "ApplicationName": {
+     "shape": "String",
+     "locationName": "applicationName"
+    },
+    "StreamName": {
+     "shape": "String",
+     "locationName": "streamName"
+    }
+   }
+  },
+  "RtmpSourceMetadataInfo": {
+   "type": "structure",
+   "required": [
+    "MediaInfo"
+   ],
+   "members": {
+    "ApplicationName": {
+     "shape": "String",
+     "locationName": "applicationName"
+    },
+    "StreamName": {
+     "shape": "String",
+     "locationName": "streamName"
+    },
+    "MediaInfo": {
+     "shape": "RtmpMediaInfo",
+     "locationName": "mediaInfo"
+    }
+   }
   },
   "RtpRouterInputConfiguration": {
    "type": "structure",
@@ -11313,6 +11749,18 @@
    "type": "string",
    "pattern": "arn:.+:mediaconnect.+:bridge:.+"
   },
+  "SetRtmpPushSourceSettings": {
+   "type": "structure",
+   "required": [
+    "NamingConfiguration"
+   ],
+   "members": {
+    "NamingConfiguration": {
+     "shape": "RtmpPushNamingConfiguration",
+     "locationName": "namingConfiguration"
+    }
+   }
+  },
   "SetSourceRequest": {
    "type": "structure",
    "members": {
@@ -11407,6 +11855,10 @@
     "RouterIntegrationTransitDecryption": {
      "shape": "FlowTransitEncryption",
      "locationName": "routerIntegrationTransitDecryption"
+    },
+    "RtmpPushSettings": {
+     "shape": "SetRtmpPushSourceSettings",
+     "locationName": "rtmpPushSettings"
     }
    }
   },
@@ -11441,6 +11893,43 @@
     "ThresholdSeconds": {
      "shape": "RouterCqaThresholdSeconds",
      "locationName": "thresholdSeconds"
+    }
+   }
+  },
+  "SingleProgramTransportStreamPidMapConfiguration": {
+   "type": "structure",
+   "required": [
+    "Rules",
+    "DefaultAction"
+   ],
+   "members": {
+    "Rules": {
+     "shape": "PidMapRules",
+     "locationName": "rules"
+    },
+    "DefaultAction": {
+     "shape": "ActionString",
+     "locationName": "defaultAction"
+    },
+    "TransportStreamId": {
+     "shape": "TransportStreamIdConfiguration",
+     "locationName": "transportStreamId"
+    },
+    "ProgramNumber": {
+     "shape": "ProgramNumberConfiguration",
+     "locationName": "programNumber"
+    },
+    "ProgramMapTablePid": {
+     "shape": "ProgramMapTablePidConfiguration",
+     "locationName": "programMapTablePid"
+    },
+    "ProgramClockReferencePid": {
+     "shape": "ProgramClockReferencePidConfiguration",
+     "locationName": "programClockReferencePid"
+    },
+    "Auto": {
+     "shape": "AutoPidMapConfiguration",
+     "locationName": "auto"
     }
    }
   },
@@ -11841,6 +12330,15 @@
    "member": {
     "shape": "SourceEndpointType"
    }
+  },
+  "SourceMediaStreamType": {
+   "type": "string",
+   "enum": [
+    "VIDEO",
+    "AUDIO",
+    "DATA",
+    "UNKNOWN"
+   ]
   },
   "SourcePriority": {
    "type": "structure",
@@ -12310,6 +12808,10 @@
     "SourceIpAddress": {
      "shape": "String",
      "locationName": "sourceIpAddress"
+    },
+    "RtmpPush": {
+     "shape": "RtmpPushStreamDetails",
+     "locationName": "rtmpPush"
     }
    }
   },
@@ -12958,6 +13460,14 @@
     "NdiAudioReferenceLevel": {
      "shape": "NdiAudioReferenceLevel",
      "locationName": "ndiAudioReferenceLevel"
+    },
+    "RtmpPushSourceSettings": {
+     "shape": "RtmpPushSourceSettings",
+     "locationName": "rtmpPushSourceSettings"
+    },
+    "RtmpPushOutputSettings": {
+     "shape": "RtmpPushOutputSettings",
+     "locationName": "rtmpPushOutputSettings"
     }
    }
   },
@@ -13016,11 +13526,39 @@
      "shape": "Integer",
      "locationName": "sampleSize"
     },
+    "ScanMode": {
+     "shape": "ScanMode",
+     "locationName": "scanMode"
+    },
     "StreamType": {
      "shape": "String",
      "locationName": "streamType"
+    },
+    "Language": {
+     "shape": "String",
+     "locationName": "language"
     }
    }
+  },
+  "TransportStreamIdConfiguration": {
+   "type": "structure",
+   "members": {
+    "Passthrough": {
+     "shape": "Passthrough",
+     "locationName": "passthrough"
+    },
+    "Set": {
+     "shape": "TransportStreamIdConfigurationSetInteger",
+     "locationName": "set"
+    }
+   },
+   "union": true
+  },
+  "TransportStreamIdConfigurationSetInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 65535,
+   "min": 0
   },
   "TransportStreamProgram": {
    "type": "structure",
@@ -13339,8 +13877,8 @@
   "UpdateDestinationEndpointRequestDescriptionString": {
    "type": "string",
    "max": 1000,
-   "min": 1,
-   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+   "min": 0,
+   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
   },
   "UpdateDestinationEndpointResponse": {
    "type": "structure",
@@ -13641,6 +14179,10 @@
     "NdiAudioReferenceLevel": {
      "shape": "NdiAudioReferenceLevel",
      "locationName": "ndiAudioReferenceLevel"
+    },
+    "RtmpPushSettings": {
+     "shape": "RtmpPushOutputSettings",
+     "locationName": "rtmpPushSettings"
     }
    }
   },
@@ -13815,6 +14357,10 @@
     "RouterIntegrationTransitDecryption": {
      "shape": "FlowTransitEncryption",
      "locationName": "routerIntegrationTransitDecryption"
+    },
+    "RtmpPushSettings": {
+     "shape": "SetRtmpPushSourceSettings",
+     "locationName": "rtmpPushSettings"
     }
    }
   },
@@ -14063,6 +14609,10 @@
     "FabricConfiguration": {
      "shape": "FabricConfiguration",
      "locationName": "fabricConfiguration"
+    },
+    "Processors": {
+     "shape": "RouterOutputProcessors",
+     "locationName": "processors"
     }
    }
   },
@@ -14107,8 +14657,8 @@
   "UpdateSourceEndpointRequestDescriptionString": {
    "type": "string",
    "max": 1000,
-   "min": 1,
-   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)\\[\\]*]+"
+   "min": 0,
+   "pattern": "[ a-zA-Z_0-9\\-.',@:;\\(\\)]*"
   },
   "UpdateSourceEndpointResponse": {
    "type": "structure",

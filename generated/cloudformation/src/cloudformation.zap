@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 90 operations — 90 with a generated method,
+# Coverage (query): 92 operations — 92 with a generated method,
 #   0 skipped (a member type is not yet serializable (nesting/map)).
-#   291 structs (plain carriers), 80 enums, 29 error variants.
+#   293 structs (plain carriers), 80 enums, 29 error variants.
 #   0 paginators generated (21 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (10 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1882,6 +1882,9 @@ struct RegisterTypeInput:
 struct RegisterTypeOutput:
     Optional[str] RegistrationToken
 
+struct RemoveAliasInput:
+    str AliasName
+
 struct RequiredActivatedType:
     Optional[str] TypeNameAlias
     Optional[str] OriginalTypeName
@@ -2010,6 +2013,10 @@ struct ScannedResourceIdentifier:
     str ResourceType
     dict[str, str] ResourceIdentifier
 
+struct SetAliasInput:
+    str StackName
+    str AliasName
+
 struct SetStackPolicyInput:
     str StackName
     Optional[str] StackPolicyBody
@@ -2069,6 +2076,7 @@ struct Stack:
     Optional[str] DeletionMode
     Optional[str] DetailedStatus
     Optional[list[OperationEntry]] LastOperations
+    Optional[str] AliasName
 
 struct StackDefinition:
     Optional[str] StackName
@@ -4140,6 +4148,12 @@ struct CloudFormationClient:
             p = query.query_scalar(p, "ClientRequestToken", t2)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
+    # RemoveAlias
+    def remove_alias(self, RemoveAliasInput input) -> str:
+        auto p = query.query_params("RemoveAlias", "2010-05-15")
+        p = query.query_scalar(p, "AliasName", input.AliasName)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
     # RollbackStack
     # errors: TokenAlreadyExistsException
     def rollback_stack(self, RollbackStackInput input) -> str:
@@ -4156,6 +4170,14 @@ struct CloudFormationClient:
         if input.DeploymentConfig.is_some():
             auto t2 = input.DeploymentConfig.unwrap()
             p = deployment_config_to_query(p, "DeploymentConfig", t2)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # SetAlias
+    # errors: AlreadyExistsException, LimitExceededException
+    def set_alias(self, SetAliasInput input) -> str:
+        auto p = query.query_params("SetAlias", "2010-05-15")
+        p = query.query_scalar(p, "StackName", input.StackName)
+        p = query.query_scalar(p, "AliasName", input.AliasName)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # SetStackPolicy

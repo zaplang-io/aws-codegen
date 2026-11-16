@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS CodePipeline (serviceId CodePipeline, API 2015-07-09)
-# Protocol: awsJson 1.1 (targetPrefix CodePipeline_20150709)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service codepipeline, service shape CodePipeline_20150709)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 44 operations — 44 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   231 structs (156 @derive(Json)), 27 enums, 41 error variants.
-#   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 44 operations — 44 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   231 structs (plain carriers), 27 enums, 41 error variants.
+#   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
+import datetime
 
-# The CodePipeline awsJson protocol: version 1.1, API id "CodePipeline_20150709".
-def codepipeline_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("CodePipeline_20150709", "codepipeline")
+# The CodePipeline smithy-rpc-v2-cbor protocol: SigV4 service "codepipeline" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/CodePipeline_20150709/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def codepipeline_service() -> str:
+    return "codepipeline"
 
 # --- enums -----------------------------------------------------------------
 
@@ -279,38 +284,29 @@ enum WebhookAuthenticationType:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AWSSessionCredentials:
     str accessKeyId
     str secretAccessKey
     str sessionToken
 
-@derive(Json)
 struct AcknowledgeJobInput:
     str jobId
     str nonce
 
-@derive(Json)
 struct AcknowledgeJobOutput:
-    Optional[JobStatus] status
+    Optional[str] status
 
-@derive(Json)
 struct AcknowledgeThirdPartyJobInput:
     str jobId
     str nonce
     str clientToken
 
-@derive(Json)
 struct AcknowledgeThirdPartyJobOutput:
-    Optional[JobStatus] status
+    Optional[str] status
 
-# no @derive(Json): member(s) configuration: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionConfiguration:
     Optional[dict[str, str]] configuration
 
-@derive(Json)
 struct ActionConfigurationProperty:
     str name
     bool required
@@ -318,16 +314,12 @@ struct ActionConfigurationProperty:
     bool secret
     Optional[bool] queryable
     Optional[str] description
-    Optional[ActionConfigurationPropertyType] type
+    Optional[str] type
 
-@derive(Json)
 struct ActionContext:
     Optional[str] name
     Optional[str] actionExecutionId
 
-# no @derive(Json): member(s) configuration: dict[str, str], commands: list[str], outputArtifacts: list[OutputArtifact], inputArtifacts: list[InputArtifact], outputVariables: list[str], environmentVariables: list[EnvironmentVariable] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionDeclaration:
     str name
     ActionTypeId actionTypeId
@@ -343,10 +335,9 @@ struct ActionDeclaration:
     Optional[int64] timeoutInMinutes
     Optional[list[EnvironmentVariable]] environmentVariables
 
-@derive(Json)
 struct ActionExecution:
     Optional[str] actionExecutionId
-    Optional[ActionExecutionStatus] status
+    Optional[str] status
     Optional[str] summary
     Optional[DateTime] lastStatusChange
     Optional[str] token
@@ -357,9 +348,6 @@ struct ActionExecution:
     Optional[ErrorDetails] errorDetails
     Optional[str] logStreamARN
 
-# no @derive(Json): member(s) input: ActionExecutionInput, output: ActionExecutionOutput not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionExecutionDetail:
     Optional[str] pipelineExecutionId
     Optional[str] actionExecutionId
@@ -369,18 +357,14 @@ struct ActionExecutionDetail:
     Optional[DateTime] startTime
     Optional[DateTime] lastUpdateTime
     Optional[str] updatedBy
-    Optional[ActionExecutionStatus] status
+    Optional[str] status
     Optional[ActionExecutionInput] input
     Optional[ActionExecutionOutput] output
 
-@derive(Json)
 struct ActionExecutionFilter:
     Optional[str] pipelineExecutionId
     Optional[LatestInPipelineExecutionFilter] latestInPipelineExecution
 
-# no @derive(Json): member(s) configuration: dict[str, str], resolvedConfiguration: dict[str, str], inputArtifacts: list[ArtifactDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionExecutionInput:
     Optional[ActionTypeId] actionTypeId
     Optional[dict[str, str]] configuration
@@ -390,19 +374,14 @@ struct ActionExecutionInput:
     Optional[list[ArtifactDetail]] inputArtifacts
     Optional[str] namespace
 
-@derive(Json)
 struct ActionExecutionNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) outputArtifacts: list[ArtifactDetail], outputVariables: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionExecutionOutput:
     Optional[list[ArtifactDetail]] outputArtifacts
     Optional[ActionExecutionResult] executionResult
     Optional[dict[str, str]] outputVariables
 
-@derive(Json)
 struct ActionExecutionResult:
     Optional[str] externalExecutionId
     Optional[str] externalExecutionSummary
@@ -410,18 +389,15 @@ struct ActionExecutionResult:
     Optional[ErrorDetails] errorDetails
     Optional[str] logStreamARN
 
-@derive(Json)
 struct ActionNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ActionRevision:
     str revisionId
     str revisionChangeId
     DateTime created
 
-@derive(Json)
 struct ActionState:
     Optional[str] actionName
     Optional[ActionRevision] currentRevision
@@ -429,9 +405,6 @@ struct ActionState:
     Optional[str] entityUrl
     Optional[str] revisionUrl
 
-# no @derive(Json): member(s) actionConfigurationProperties: list[ActionConfigurationProperty] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionType:
     ActionTypeId id
     Optional[ActionTypeSettings] settings
@@ -439,19 +412,14 @@ struct ActionType:
     ArtifactDetails inputArtifactDetails
     ArtifactDetails outputArtifactDetails
 
-@derive(Json)
 struct ActionTypeAlreadyExistsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ActionTypeArtifactDetails:
     int64 minimumCount
     int64 maximumCount
 
-# no @derive(Json): member(s) executor: ActionTypeExecutor, permissions: ActionTypePermissions, properties: list[ActionTypeProperty] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionTypeDeclaration:
     Optional[str] description
     ActionTypeExecutor executor
@@ -462,41 +430,31 @@ struct ActionTypeDeclaration:
     Optional[list[ActionTypeProperty]] properties
     Optional[ActionTypeUrls] urls
 
-# no @derive(Json): member(s) configuration: ExecutorConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionTypeExecutor:
     ExecutorConfiguration configuration
-    ExecutorType type
+    str type
     Optional[str] policyStatementsTemplate
     Optional[int64] jobTimeout
 
-@derive(Json)
 struct ActionTypeId:
-    ActionCategory category
-    ActionOwner owner
-    str provider
-    str version
-
-@derive(Json)
-struct ActionTypeIdentifier:
-    ActionCategory category
+    str category
     str owner
     str provider
     str version
 
-@derive(Json)
+struct ActionTypeIdentifier:
+    str category
+    str owner
+    str provider
+    str version
+
 struct ActionTypeNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) allowedAccounts: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionTypePermissions:
     list[str] allowedAccounts
 
-@derive(Json)
 struct ActionTypeProperty:
     str name
     bool optional
@@ -505,52 +463,43 @@ struct ActionTypeProperty:
     Optional[bool] queryable
     Optional[str] description
 
-@derive(Json)
 struct ActionTypeSettings:
     Optional[str] thirdPartyConfigurationUrl
     Optional[str] entityUrlTemplate
     Optional[str] executionUrlTemplate
     Optional[str] revisionUrlTemplate
 
-@derive(Json)
 struct ActionTypeUrls:
     Optional[str] configurationUrl
     Optional[str] entityUrlTemplate
     Optional[str] executionUrlTemplate
     Optional[str] revisionUrlTemplate
 
-@derive(Json)
 struct ApprovalAlreadyCompletedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ApprovalResult:
     str summary
-    ApprovalStatus status
+    str status
 
-@derive(Json)
 struct Artifact:
     Optional[str] name
     Optional[str] revision
     Optional[ArtifactLocation] location
 
-@derive(Json)
 struct ArtifactDetail:
     Optional[str] name
     Optional[S3Location] s3location
 
-@derive(Json)
 struct ArtifactDetails:
     int64 minimumCount
     int64 maximumCount
 
-@derive(Json)
 struct ArtifactLocation:
     Optional[str] type
     Optional[S3ArtifactLocation] s3Location
 
-@derive(Json)
 struct ArtifactRevision:
     Optional[str] name
     Optional[str] revisionId
@@ -559,64 +508,45 @@ struct ArtifactRevision:
     Optional[DateTime] created
     Optional[str] revisionUrl
 
-@derive(Json)
 struct ArtifactStore:
     str type
     str location
     Optional[EncryptionKey] encryptionKey
 
-# no @derive(Json): member(s) conditions: list[Condition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BeforeEntryConditions:
     list[Condition] conditions
 
-@derive(Json)
 struct BlockerDeclaration:
     str name
     str type
 
-@derive(Json)
 struct ConcurrentModificationException:
     Optional[str] message
 
-@derive(Json)
 struct ConcurrentPipelineExecutionsLimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) rules: list[RuleDeclaration] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Condition:
-    Optional[Result] result
+    Optional[str] result
     Optional[list[RuleDeclaration]] rules
 
-@derive(Json)
 struct ConditionExecution:
-    Optional[ConditionExecutionStatus] status
+    Optional[str] status
     Optional[str] summary
     Optional[DateTime] lastStatusChange
 
-@derive(Json)
 struct ConditionNotOverridableException:
     Optional[str] message
 
-# no @derive(Json): member(s) ruleStates: list[RuleState] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ConditionState:
     Optional[ConditionExecution] latestExecution
     Optional[list[RuleState]] ruleStates
 
-@derive(Json)
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) configurationProperties: list[ActionConfigurationProperty], tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateCustomActionTypeInput:
-    ActionCategory category
+    str category
     str provider
     str version
     Optional[ActionTypeSettings] settings
@@ -625,56 +555,39 @@ struct CreateCustomActionTypeInput:
     ArtifactDetails outputArtifactDetails
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) actionType: ActionType, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateCustomActionTypeOutput:
     ActionType actionType
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePipelineInput:
     PipelineDeclaration pipeline
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePipelineOutput:
     Optional[PipelineDeclaration] pipeline
     Optional[list[Tag]] tags
 
-@derive(Json)
 struct CurrentRevision:
     str revision
     str changeIdentifier
     Optional[DateTime] created
     Optional[str] revisionSummary
 
-@derive(Json)
 struct DeleteCustomActionTypeInput:
-    ActionCategory category
+    str category
     str provider
     str version
 
-@derive(Json)
 struct DeletePipelineInput:
     str name
 
-@derive(Json)
 struct DeleteWebhookInput:
     str name
 
-@derive(Json)
 struct DeleteWebhookOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) events: list[DeployTargetEvent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeployActionExecutionTarget:
     Optional[str] targetId
     Optional[str] targetType
@@ -683,7 +596,6 @@ struct DeployActionExecutionTarget:
     Optional[DateTime] endTime
     Optional[list[DeployTargetEvent]] events
 
-@derive(Json)
 struct DeployTargetEvent:
     Optional[str] name
     Optional[str] status
@@ -691,138 +603,100 @@ struct DeployTargetEvent:
     Optional[DateTime] endTime
     Optional[DeployTargetEventContext] context
 
-@derive(Json)
 struct DeployTargetEventContext:
     Optional[str] ssmCommandId
     Optional[str] message
 
-@derive(Json)
 struct DeregisterWebhookWithThirdPartyInput:
     Optional[str] webhookName
 
-@derive(Json)
 struct DeregisterWebhookWithThirdPartyOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableStageTransitionInput:
     str pipelineName
     str stageName
-    StageTransitionType transitionType
+    str transitionType
     str reason
 
-@derive(Json)
 struct DuplicatedStopRequestException:
     Optional[str] message
 
-@derive(Json)
 struct EnableStageTransitionInput:
     str pipelineName
     str stageName
-    StageTransitionType transitionType
+    str transitionType
 
-@derive(Json)
 struct EncryptionKey:
     str id
     str type
 
-@derive(Json)
 struct EnvironmentVariable:
     str name
     str value
-    Optional[EnvironmentVariableType] type
+    Optional[str] type
 
-@derive(Json)
 struct ErrorDetails:
     Optional[str] code
     Optional[str] message
 
-@derive(Json)
 struct ExecutionDetails:
     Optional[str] summary
     Optional[str] externalExecutionId
     Optional[int64] percentComplete
 
-@derive(Json)
 struct ExecutionTrigger:
-    Optional[TriggerType] triggerType
+    Optional[str] triggerType
     Optional[str] triggerDetail
 
-# no @derive(Json): member(s) jobWorkerExecutorConfiguration: JobWorkerExecutorConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExecutorConfiguration:
     Optional[LambdaExecutorConfiguration] lambdaExecutorConfiguration
     Optional[JobWorkerExecutorConfiguration] jobWorkerExecutorConfiguration
 
-# no @derive(Json): member(s) conditions: list[Condition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FailureConditions:
-    Optional[Result] result
+    Optional[str] result
     Optional[RetryConfiguration] retryConfiguration
     Optional[list[Condition]] conditions
 
-@derive(Json)
 struct FailureDetails:
-    FailureType type
+    str type
     str message
     Optional[str] externalExecutionId
 
-@derive(Json)
 struct GetActionTypeInput:
-    ActionCategory category
+    str category
     str owner
     str provider
     str version
 
-# no @derive(Json): member(s) actionType: ActionTypeDeclaration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetActionTypeOutput:
     Optional[ActionTypeDeclaration] actionType
 
-@derive(Json)
 struct GetJobDetailsInput:
     str jobId
 
-# no @derive(Json): member(s) jobDetails: JobDetails not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetJobDetailsOutput:
     Optional[JobDetails] jobDetails
 
-@derive(Json)
 struct GetPipelineExecutionInput:
     str pipelineName
     str pipelineExecutionId
 
-# no @derive(Json): member(s) pipelineExecution: PipelineExecution not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetPipelineExecutionOutput:
     Optional[PipelineExecution] pipelineExecution
 
-@derive(Json)
 struct GetPipelineInput:
     str name
     Optional[int64] version
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetPipelineOutput:
     Optional[PipelineDeclaration] pipeline
     Optional[PipelineMetadata] metadata
 
-@derive(Json)
 struct GetPipelineStateInput:
     str name
 
-# no @derive(Json): member(s) stageStates: list[StageState] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetPipelineStateOutput:
     Optional[str] pipelineName
     Optional[int64] pipelineVersion
@@ -830,146 +704,103 @@ struct GetPipelineStateOutput:
     Optional[DateTime] created
     Optional[DateTime] updated
 
-@derive(Json)
 struct GetThirdPartyJobDetailsInput:
     str jobId
     str clientToken
 
-# no @derive(Json): member(s) jobDetails: ThirdPartyJobDetails not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetThirdPartyJobDetailsOutput:
     Optional[ThirdPartyJobDetails] jobDetails
 
-# no @derive(Json): member(s) includes: list[str], excludes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GitBranchFilterCriteria:
     Optional[list[str]] includes
     Optional[list[str]] excludes
 
-# no @derive(Json): member(s) push: list[GitPushFilter], pullRequest: list[GitPullRequestFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GitConfiguration:
     str sourceActionName
     Optional[list[GitPushFilter]] push
     Optional[list[GitPullRequestFilter]] pullRequest
 
-# no @derive(Json): member(s) includes: list[str], excludes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GitFilePathFilterCriteria:
     Optional[list[str]] includes
     Optional[list[str]] excludes
 
-# no @derive(Json): member(s) events: list[GitPullRequestEventType], branches: GitBranchFilterCriteria, filePaths: GitFilePathFilterCriteria not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GitPullRequestFilter:
-    Optional[list[GitPullRequestEventType]] events
+    Optional[list[str]] events
     Optional[GitBranchFilterCriteria] branches
     Optional[GitFilePathFilterCriteria] filePaths
 
-# no @derive(Json): member(s) tags: GitTagFilterCriteria, branches: GitBranchFilterCriteria, filePaths: GitFilePathFilterCriteria not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GitPushFilter:
     Optional[GitTagFilterCriteria] tags
     Optional[GitBranchFilterCriteria] branches
     Optional[GitFilePathFilterCriteria] filePaths
 
-# no @derive(Json): member(s) includes: list[str], excludes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GitTagFilterCriteria:
     Optional[list[str]] includes
     Optional[list[str]] excludes
 
-@derive(Json)
 struct InputArtifact:
     str name
 
-@derive(Json)
 struct InvalidActionDeclarationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidApprovalTokenException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidArnException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidBlockerDeclarationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidClientTokenException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidJobException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidJobStateException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidNextTokenException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidNonceException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidStageDeclarationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidStructureException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTagsException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidWebhookAuthenticationParametersException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidWebhookFilterPatternException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) data: JobData not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Job:
     Optional[str] id
     Optional[JobData] data
     Optional[str] nonce
     Optional[str] accountId
 
-# no @derive(Json): member(s) actionConfiguration: ActionConfiguration, inputArtifacts: list[Artifact], outputArtifacts: list[Artifact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct JobData:
     Optional[ActionTypeId] actionTypeId
     Optional[ActionConfiguration] actionConfiguration
@@ -980,70 +811,49 @@ struct JobData:
     Optional[str] continuationToken
     Optional[EncryptionKey] encryptionKey
 
-# no @derive(Json): member(s) data: JobData not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct JobDetails:
     Optional[str] id
     Optional[JobData] data
     Optional[str] accountId
 
-@derive(Json)
 struct JobNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) pollingAccounts: list[str], pollingServicePrincipals: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct JobWorkerExecutorConfiguration:
     Optional[list[str]] pollingAccounts
     Optional[list[str]] pollingServicePrincipals
 
-@derive(Json)
 struct LambdaExecutorConfiguration:
     str lambdaFunctionArn
 
-@derive(Json)
 struct LatestInPipelineExecutionFilter:
     str pipelineExecutionId
-    StartTimeRange startTimeRange
+    str startTimeRange
 
-@derive(Json)
 struct LimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ListActionExecutionsInput:
     str pipelineName
     Optional[ActionExecutionFilter] filter
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) actionExecutionDetails: list[ActionExecutionDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListActionExecutionsOutput:
     Optional[list[ActionExecutionDetail]] actionExecutionDetails
     Optional[str] nextToken
 
-@derive(Json)
 struct ListActionTypesInput:
-    Optional[ActionOwner] actionOwnerFilter
+    Optional[str] actionOwnerFilter
     Optional[str] nextToken
     Optional[str] regionFilter
 
-# no @derive(Json): member(s) actionTypes: list[ActionType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListActionTypesOutput:
     list[ActionType] actionTypes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[TargetFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeployActionExecutionTargetsInput:
     Optional[str] pipelineName
     str actionExecutionId
@@ -1051,80 +861,54 @@ struct ListDeployActionExecutionTargetsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targets: list[DeployActionExecutionTarget] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeployActionExecutionTargetsOutput:
     Optional[list[DeployActionExecutionTarget]] targets
     Optional[str] nextToken
 
-@derive(Json)
 struct ListPipelineExecutionsInput:
     str pipelineName
     Optional[int64] maxResults
     Optional[PipelineExecutionFilter] filter
     Optional[str] nextToken
 
-# no @derive(Json): member(s) pipelineExecutionSummaries: list[PipelineExecutionSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPipelineExecutionsOutput:
     Optional[list[PipelineExecutionSummary]] pipelineExecutionSummaries
     Optional[str] nextToken
 
-@derive(Json)
 struct ListPipelinesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) pipelines: list[PipelineSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPipelinesOutput:
     Optional[list[PipelineSummary]] pipelines
     Optional[str] nextToken
 
-@derive(Json)
 struct ListRuleExecutionsInput:
     str pipelineName
     Optional[RuleExecutionFilter] filter
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ruleExecutionDetails: list[RuleExecutionDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListRuleExecutionsOutput:
     Optional[list[RuleExecutionDetail]] ruleExecutionDetails
     Optional[str] nextToken
 
-@derive(Json)
 struct ListRuleTypesInput:
     Optional[str] ruleOwnerFilter
     Optional[str] regionFilter
 
-# no @derive(Json): member(s) ruleTypes: list[RuleType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListRuleTypesOutput:
     list[RuleType] ruleTypes
 
-@derive(Json)
 struct ListTagsForResourceInput:
     str resourceArn
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] tags
     Optional[str] nextToken
 
-# no @derive(Json): member(s) definition: WebhookDefinition, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListWebhookItem:
     WebhookDefinition definition
     str url
@@ -1134,42 +918,31 @@ struct ListWebhookItem:
     Optional[str] arn
     Optional[list[Tag]] tags
 
-@derive(Json)
 struct ListWebhooksInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) webhooks: list[ListWebhookItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListWebhooksOutput:
     Optional[list[ListWebhookItem]] webhooks
     Optional[str] NextToken
 
-@derive(Json)
 struct NotLatestPipelineExecutionException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) files: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct OutputArtifact:
     str name
     Optional[list[str]] files
 
-@derive(Json)
 struct OutputVariablesSizeExceededException:
     Optional[str] message
 
-@derive(Json)
 struct OverrideStageConditionInput:
     str pipelineName
     str stageName
     str pipelineExecutionId
-    ConditionType conditionType
+    str conditionType
 
-@derive(Json)
 struct PipelineContext:
     Optional[str] pipelineName
     Optional[StageContext] stage
@@ -1177,9 +950,6 @@ struct PipelineContext:
     Optional[str] pipelineArn
     Optional[str] pipelineExecutionId
 
-# no @derive(Json): member(s) artifactStores: dict[str, ArtifactStore], stages: list[StageDeclaration], variables: list[PipelineVariableDeclaration], triggers: list[PipelineTriggerDeclaration] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PipelineDeclaration:
     str name
     str roleArn
@@ -1187,151 +957,117 @@ struct PipelineDeclaration:
     Optional[dict[str, ArtifactStore]] artifactStores
     list[StageDeclaration] stages
     Optional[int64] version
-    Optional[ExecutionMode] executionMode
-    Optional[PipelineType] pipelineType
+    Optional[str] executionMode
+    Optional[str] pipelineType
     Optional[list[PipelineVariableDeclaration]] variables
     Optional[list[PipelineTriggerDeclaration]] triggers
 
-# no @derive(Json): member(s) artifactRevisions: list[ArtifactRevision], variables: list[ResolvedPipelineVariable] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PipelineExecution:
     Optional[str] pipelineName
     Optional[int64] pipelineVersion
     Optional[str] pipelineExecutionId
-    Optional[PipelineExecutionStatus] status
+    Optional[str] status
     Optional[str] statusSummary
     Optional[list[ArtifactRevision]] artifactRevisions
     Optional[list[ResolvedPipelineVariable]] variables
     Optional[ExecutionTrigger] trigger
-    Optional[ExecutionMode] executionMode
-    Optional[ExecutionType] executionType
+    Optional[str] executionMode
+    Optional[str] executionType
     Optional[PipelineRollbackMetadata] rollbackMetadata
 
-@derive(Json)
 struct PipelineExecutionFilter:
     Optional[SucceededInStageFilter] succeededInStage
 
-@derive(Json)
 struct PipelineExecutionNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct PipelineExecutionNotStoppableException:
     Optional[str] message
 
-@derive(Json)
 struct PipelineExecutionOutdatedException:
     Optional[str] message
 
-# no @derive(Json): member(s) sourceRevisions: list[SourceRevision] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PipelineExecutionSummary:
     Optional[str] pipelineExecutionId
-    Optional[PipelineExecutionStatus] status
+    Optional[str] status
     Optional[str] statusSummary
     Optional[DateTime] startTime
     Optional[DateTime] lastUpdateTime
     Optional[list[SourceRevision]] sourceRevisions
     Optional[ExecutionTrigger] trigger
     Optional[StopExecutionTrigger] stopTrigger
-    Optional[ExecutionMode] executionMode
-    Optional[ExecutionType] executionType
+    Optional[str] executionMode
+    Optional[str] executionType
     Optional[PipelineRollbackMetadata] rollbackMetadata
 
-@derive(Json)
 struct PipelineMetadata:
     Optional[str] pipelineArn
     Optional[DateTime] created
     Optional[DateTime] updated
     Optional[DateTime] pollingDisabledAt
 
-@derive(Json)
 struct PipelineNameInUseException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct PipelineNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct PipelineRollbackMetadata:
     Optional[str] rollbackTargetPipelineExecutionId
 
-@derive(Json)
 struct PipelineSummary:
     Optional[str] name
     Optional[int64] version
-    Optional[PipelineType] pipelineType
-    Optional[ExecutionMode] executionMode
+    Optional[str] pipelineType
+    Optional[str] executionMode
     Optional[DateTime] created
     Optional[DateTime] updated
 
-# no @derive(Json): member(s) gitConfiguration: GitConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PipelineTriggerDeclaration:
     str providerType
     GitConfiguration gitConfiguration
 
-@derive(Json)
 struct PipelineVariable:
     str name
     str value
 
-@derive(Json)
 struct PipelineVariableDeclaration:
     str name
     Optional[str] defaultValue
     Optional[str] description
 
-@derive(Json)
 struct PipelineVersionNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) queryParam: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PollForJobsInput:
     ActionTypeId actionTypeId
     Optional[int64] maxBatchSize
     Optional[dict[str, str]] queryParam
 
-# no @derive(Json): member(s) jobs: list[Job] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PollForJobsOutput:
     Optional[list[Job]] jobs
 
-@derive(Json)
 struct PollForThirdPartyJobsInput:
     ActionTypeId actionTypeId
     Optional[int64] maxBatchSize
 
-# no @derive(Json): member(s) jobs: list[ThirdPartyJob] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PollForThirdPartyJobsOutput:
     Optional[list[ThirdPartyJob]] jobs
 
-@derive(Json)
 struct PutActionRevisionInput:
     str pipelineName
     str stageName
     str actionName
     ActionRevision actionRevision
 
-@derive(Json)
 struct PutActionRevisionOutput:
     Optional[bool] newRevision
     Optional[str] pipelineExecutionId
 
-@derive(Json)
 struct PutApprovalResultInput:
     str pipelineName
     str stageName
@@ -1339,18 +1075,13 @@ struct PutApprovalResultInput:
     ApprovalResult result
     str token
 
-@derive(Json)
 struct PutApprovalResultOutput:
     Optional[DateTime] approvedAt
 
-@derive(Json)
 struct PutJobFailureResultInput:
     str jobId
     FailureDetails failureDetails
 
-# no @derive(Json): member(s) outputVariables: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PutJobSuccessResultInput:
     str jobId
     Optional[CurrentRevision] currentRevision
@@ -1358,13 +1089,11 @@ struct PutJobSuccessResultInput:
     Optional[ExecutionDetails] executionDetails
     Optional[dict[str, str]] outputVariables
 
-@derive(Json)
 struct PutThirdPartyJobFailureResultInput:
     str jobId
     str clientToken
     FailureDetails failureDetails
 
-@derive(Json)
 struct PutThirdPartyJobSuccessResultInput:
     str jobId
     str clientToken
@@ -1372,74 +1101,56 @@ struct PutThirdPartyJobSuccessResultInput:
     Optional[str] continuationToken
     Optional[ExecutionDetails] executionDetails
 
-# no @derive(Json): member(s) webhook: WebhookDefinition, tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PutWebhookInput:
     WebhookDefinition webhook
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) webhook: ListWebhookItem not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PutWebhookOutput:
     Optional[ListWebhookItem] webhook
 
-@derive(Json)
 struct RegisterWebhookWithThirdPartyInput:
     Optional[str] webhookName
 
-@derive(Json)
 struct RegisterWebhookWithThirdPartyOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RequestFailedException:
     Optional[str] message
 
-@derive(Json)
 struct ResolvedPipelineVariable:
     Optional[str] name
     Optional[str] resolvedValue
 
-@derive(Json)
 struct ResourceNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RetryConfiguration:
-    Optional[StageRetryMode] retryMode
+    Optional[str] retryMode
 
-@derive(Json)
 struct RetryStageExecutionInput:
     str pipelineName
     str stageName
     str pipelineExecutionId
-    StageRetryMode retryMode
+    str retryMode
 
-@derive(Json)
 struct RetryStageExecutionOutput:
     Optional[str] pipelineExecutionId
 
-@derive(Json)
 struct RetryStageMetadata:
     Optional[int64] autoStageRetryAttempt
     Optional[int64] manualStageRetryAttempt
-    Optional[RetryTrigger] latestRetryTrigger
+    Optional[str] latestRetryTrigger
 
-@derive(Json)
 struct RollbackStageInput:
     str pipelineName
     str stageName
     str targetPipelineExecutionId
 
-@derive(Json)
 struct RollbackStageOutput:
     str pipelineExecutionId
 
-@derive(Json)
 struct RuleConfigurationProperty:
     str name
     bool required
@@ -1447,11 +1158,8 @@ struct RuleConfigurationProperty:
     bool secret
     Optional[bool] queryable
     Optional[str] description
-    Optional[RuleConfigurationPropertyType] type
+    Optional[str] type
 
-# no @derive(Json): member(s) configuration: dict[str, str], commands: list[str], inputArtifacts: list[InputArtifact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleDeclaration:
     str name
     RuleTypeId ruleTypeId
@@ -1462,10 +1170,9 @@ struct RuleDeclaration:
     Optional[str] region
     Optional[int64] timeoutInMinutes
 
-@derive(Json)
 struct RuleExecution:
     Optional[str] ruleExecutionId
-    Optional[RuleExecutionStatus] status
+    Optional[str] status
     Optional[str] summary
     Optional[DateTime] lastStatusChange
     Optional[str] token
@@ -1474,9 +1181,6 @@ struct RuleExecution:
     Optional[str] externalExecutionUrl
     Optional[ErrorDetails] errorDetails
 
-# no @derive(Json): member(s) input: RuleExecutionInput not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleExecutionDetail:
     Optional[str] pipelineExecutionId
     Optional[str] ruleExecutionId
@@ -1486,18 +1190,14 @@ struct RuleExecutionDetail:
     Optional[DateTime] startTime
     Optional[DateTime] lastUpdateTime
     Optional[str] updatedBy
-    Optional[RuleExecutionStatus] status
+    Optional[str] status
     Optional[RuleExecutionInput] input
     Optional[RuleExecutionOutput] output
 
-@derive(Json)
 struct RuleExecutionFilter:
     Optional[str] pipelineExecutionId
     Optional[LatestInPipelineExecutionFilter] latestInPipelineExecution
 
-# no @derive(Json): member(s) configuration: dict[str, str], resolvedConfiguration: dict[str, str], inputArtifacts: list[ArtifactDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleExecutionInput:
     Optional[RuleTypeId] ruleTypeId
     Optional[dict[str, str]] configuration
@@ -1506,24 +1206,20 @@ struct RuleExecutionInput:
     Optional[str] region
     Optional[list[ArtifactDetail]] inputArtifacts
 
-@derive(Json)
 struct RuleExecutionOutput:
     Optional[RuleExecutionResult] executionResult
 
-@derive(Json)
 struct RuleExecutionResult:
     Optional[str] externalExecutionId
     Optional[str] externalExecutionSummary
     Optional[str] externalExecutionUrl
     Optional[ErrorDetails] errorDetails
 
-@derive(Json)
 struct RuleRevision:
     str revisionId
     str revisionChangeId
     DateTime created
 
-@derive(Json)
 struct RuleState:
     Optional[str] ruleName
     Optional[RuleRevision] currentRevision
@@ -1531,71 +1227,54 @@ struct RuleState:
     Optional[str] entityUrl
     Optional[str] revisionUrl
 
-# no @derive(Json): member(s) ruleConfigurationProperties: list[RuleConfigurationProperty] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleType:
     RuleTypeId id
     Optional[RuleTypeSettings] settings
     Optional[list[RuleConfigurationProperty]] ruleConfigurationProperties
     ArtifactDetails inputArtifactDetails
 
-@derive(Json)
 struct RuleTypeId:
     str category
     Optional[str] owner
     str provider
     Optional[str] version
 
-@derive(Json)
 struct RuleTypeSettings:
     Optional[str] thirdPartyConfigurationUrl
     Optional[str] entityUrlTemplate
     Optional[str] executionUrlTemplate
     Optional[str] revisionUrlTemplate
 
-@derive(Json)
 struct S3ArtifactLocation:
     str bucketName
     str objectKey
 
-@derive(Json)
 struct S3Location:
     Optional[str] bucket
     Optional[str] key
 
-@derive(Json)
 struct SourceRevision:
     str actionName
     Optional[str] revisionId
     Optional[str] revisionSummary
     Optional[str] revisionUrl
 
-@derive(Json)
 struct SourceRevisionOverride:
     str actionName
-    SourceRevisionType revisionType
+    str revisionType
     str revisionValue
 
-# no @derive(Json): member(s) conditionStates: list[ConditionState] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StageConditionState:
     Optional[StageConditionsExecution] latestExecution
     Optional[list[ConditionState]] conditionStates
 
-@derive(Json)
 struct StageConditionsExecution:
-    Optional[ConditionExecutionStatus] status
+    Optional[str] status
     Optional[str] summary
 
-@derive(Json)
 struct StageContext:
     Optional[str] name
 
-# no @derive(Json): member(s) blockers: list[BlockerDeclaration], actions: list[ActionDeclaration], onFailure: FailureConditions, onSuccess: SuccessConditions, beforeEntry: BeforeEntryConditions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StageDeclaration:
     str name
     Optional[list[BlockerDeclaration]] blockers
@@ -1604,25 +1283,19 @@ struct StageDeclaration:
     Optional[SuccessConditions] onSuccess
     Optional[BeforeEntryConditions] beforeEntry
 
-@derive(Json)
 struct StageExecution:
     str pipelineExecutionId
-    StageExecutionStatus status
-    Optional[ExecutionType] type
+    str status
+    Optional[str] type
 
-@derive(Json)
 struct StageNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct StageNotRetryableException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) inboundExecutions: list[StageExecution], actionStates: list[ActionState], beforeEntryConditionState: StageConditionState, onSuccessConditionState: StageConditionState, onFailureConditionState: StageConditionState not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StageState:
     Optional[str] stageName
     Optional[StageExecution] inboundExecution
@@ -1635,76 +1308,53 @@ struct StageState:
     Optional[StageConditionState] onFailureConditionState
     Optional[RetryStageMetadata] retryStageMetadata
 
-# no @derive(Json): member(s) variables: list[PipelineVariable], sourceRevisions: list[SourceRevisionOverride] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartPipelineExecutionInput:
     str name
     Optional[list[PipelineVariable]] variables
     Optional[str] clientRequestToken
     Optional[list[SourceRevisionOverride]] sourceRevisions
 
-@derive(Json)
 struct StartPipelineExecutionOutput:
     Optional[str] pipelineExecutionId
 
-@derive(Json)
 struct StopExecutionTrigger:
     Optional[str] reason
 
-@derive(Json)
 struct StopPipelineExecutionInput:
     str pipelineName
     str pipelineExecutionId
     Optional[bool] abandon
     Optional[str] reason
 
-@derive(Json)
 struct StopPipelineExecutionOutput:
     Optional[str] pipelineExecutionId
 
-@derive(Json)
 struct SucceededInStageFilter:
     Optional[str] stageName
 
-# no @derive(Json): member(s) conditions: list[Condition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SuccessConditions:
     list[Condition] conditions
 
-@derive(Json)
 struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     list[Tag] tags
 
-@derive(Json)
 struct TagResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TargetFilter:
     Optional[str] name
     Optional[list[str]] values
 
-@derive(Json)
 struct ThirdPartyJob:
     Optional[str] clientId
     Optional[str] jobId
 
-# no @derive(Json): member(s) actionConfiguration: ActionConfiguration, inputArtifacts: list[Artifact], outputArtifacts: list[Artifact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ThirdPartyJobData:
     Optional[ActionTypeId] actionTypeId
     Optional[ActionConfiguration] actionConfiguration
@@ -1715,88 +1365,62 @@ struct ThirdPartyJobData:
     Optional[str] continuationToken
     Optional[EncryptionKey] encryptionKey
 
-# no @derive(Json): member(s) data: ThirdPartyJobData not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ThirdPartyJobDetails:
     Optional[str] id
     Optional[ThirdPartyJobData] data
     Optional[str] nonce
 
-@derive(Json)
 struct TooManyTagsException:
     Optional[str] message
 
-@derive(Json)
 struct TransitionState:
     Optional[bool] enabled
     Optional[str] lastChangedBy
     Optional[DateTime] lastChangedAt
     Optional[str] disabledReason
 
-@derive(Json)
 struct UnableToRollbackStageException:
     Optional[str] message
 
-# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
 
-@derive(Json)
 struct UntagResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) actionType: ActionTypeDeclaration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateActionTypeInput:
     ActionTypeDeclaration actionType
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdatePipelineInput:
     PipelineDeclaration pipeline
 
-# no @derive(Json): member(s) pipeline: PipelineDeclaration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdatePipelineOutput:
     Optional[PipelineDeclaration] pipeline
 
-@derive(Json)
 struct ValidationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct WebhookAuthConfiguration:
     Optional[str] AllowedIPRange
     Optional[str] SecretToken
 
-# no @derive(Json): member(s) filters: list[WebhookFilterRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WebhookDefinition:
     str name
     str targetPipeline
     str targetAction
     list[WebhookFilterRule] filters
-    WebhookAuthenticationType authentication
+    str authentication
     WebhookAuthConfiguration authenticationConfiguration
 
-@derive(Json)
 struct WebhookFilterRule:
     str jsonPath
     Optional[str] matchEquals
 
-@derive(Json)
 struct WebhookNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
 # --- errors ----------------------------------------------------------------
@@ -1806,7 +1430,7 @@ struct WebhookNotFoundException:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2038,622 +1662,1648 @@ def codepipeline_error_name(CodePipelineErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def codepipeline_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListActionExecutions
+#   ListActionTypes
+#   ListDeployActionExecutionTargets
+#   ListPipelineExecutions
+#   ListPipelines
+#   ListRuleExecutions
+#   ListTagsForResource
+#   ListWebhooks
 
-def codepipeline_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def codepipeline_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize AcknowledgeJobInput to a CBOR map (member wire name -> value, model order).
+def acknowledge_job_input_to_cbor(AcknowledgeJobInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    keys.append("nonce")
+    vals.append(cbor.cbor_text(v.nonce))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AcknowledgeThirdPartyJobInput to a CBOR map (member wire name -> value, model order).
+def acknowledge_third_party_job_input_to_cbor(AcknowledgeThirdPartyJobInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    keys.append("nonce")
+    vals.append(cbor.cbor_text(v.nonce))
+    keys.append("clientToken")
+    vals.append(cbor.cbor_text(v.clientToken))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ActionDeclaration to a compact JSON object (declaration order).
-def action_declaration_to_json(ActionDeclaration v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
-    parts.append("\"actionTypeId\":" + v.actionTypeId.to_json())
+# Serialize ActionConfigurationProperty to a CBOR map (member wire name -> value, model order).
+def action_configuration_property_to_cbor(ActionConfigurationProperty v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("required")
+    vals.append(cbor.cbor_bool(v.required))
+    keys.append("key")
+    vals.append(cbor.cbor_bool(v.key))
+    keys.append("secret")
+    vals.append(cbor.cbor_bool(v.secret))
+    if v.queryable.is_some():
+        auto u0 = v.queryable.unwrap()
+        keys.append("queryable")
+        vals.append(cbor.cbor_bool(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        keys.append("description")
+        vals.append(cbor.cbor_text(u1))
+    if v.type.is_some():
+        auto u2 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionDeclaration to a CBOR map (member wire name -> value, model order).
+def action_declaration_to_cbor(ActionDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("actionTypeId")
+    vals.append(action_type_id_to_cbor(v.actionTypeId))
     if v.runOrder.is_some():
         auto u0 = v.runOrder.unwrap()
-        parts.append("\"runOrder\":" + str(u0))
+        keys.append("runOrder")
+        vals.append(cbor.cbor_int(u0))
     if v.configuration.is_some():
         auto u1 = v.configuration.unwrap()
-        list[str] m2 = []
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
         for k2 in sorted(u1.keys()):
-            m2.append(codepipeline_json_str(k2) + ":" + codepipeline_json_str(u1[k2]))
-        parts.append("\"configuration\":" + codepipeline_json_obj(m2))
+            mk2.append(k2)
+            mv2.append(cbor.cbor_text(u1[k2]))
+        keys.append("configuration")
+        vals.append(cbor.cbor_map(mk2, mv2))
     if v.commands.is_some():
         auto u3 = v.commands.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(codepipeline_json_str(x4))
-        parts.append("\"commands\":" + codepipeline_json_arr(e4))
+            e4.append(cbor.cbor_text(x4))
+        keys.append("commands")
+        vals.append(cbor.cbor_list(e4))
     if v.outputArtifacts.is_some():
         auto u5 = v.outputArtifacts.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(output_artifact_to_json(x6))
-        parts.append("\"outputArtifacts\":" + codepipeline_json_arr(e6))
+            e6.append(output_artifact_to_cbor(x6))
+        keys.append("outputArtifacts")
+        vals.append(cbor.cbor_list(e6))
     if v.inputArtifacts.is_some():
         auto u7 = v.inputArtifacts.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"inputArtifacts\":" + codepipeline_json_arr(e8))
+            e8.append(input_artifact_to_cbor(x8))
+        keys.append("inputArtifacts")
+        vals.append(cbor.cbor_list(e8))
     if v.outputVariables.is_some():
         auto u9 = v.outputVariables.unwrap()
-        list[str] e10 = []
+        list[cbor.CborValue] e10 = []
         for x10 in u9:
-            e10.append(codepipeline_json_str(x10))
-        parts.append("\"outputVariables\":" + codepipeline_json_arr(e10))
+            e10.append(cbor.cbor_text(x10))
+        keys.append("outputVariables")
+        vals.append(cbor.cbor_list(e10))
     if v.roleArn.is_some():
         auto u11 = v.roleArn.unwrap()
-        parts.append("\"roleArn\":" + codepipeline_json_str(u11))
+        keys.append("roleArn")
+        vals.append(cbor.cbor_text(u11))
     if v.region.is_some():
         auto u12 = v.region.unwrap()
-        parts.append("\"region\":" + codepipeline_json_str(u12))
+        keys.append("region")
+        vals.append(cbor.cbor_text(u12))
     if v.namespace.is_some():
         auto u13 = v.namespace.unwrap()
-        parts.append("\"namespace\":" + codepipeline_json_str(u13))
+        keys.append("namespace")
+        vals.append(cbor.cbor_text(u13))
     if v.timeoutInMinutes.is_some():
         auto u14 = v.timeoutInMinutes.unwrap()
-        parts.append("\"timeoutInMinutes\":" + str(u14))
+        keys.append("timeoutInMinutes")
+        vals.append(cbor.cbor_int(u14))
     if v.environmentVariables.is_some():
         auto u15 = v.environmentVariables.unwrap()
-        list[str] e16 = []
+        list[cbor.CborValue] e16 = []
         for x16 in u15:
-            e16.append(x16.to_json())
-        parts.append("\"environmentVariables\":" + codepipeline_json_arr(e16))
-    return codepipeline_json_obj(parts)
+            e16.append(environment_variable_to_cbor(x16))
+        keys.append("environmentVariables")
+        vals.append(cbor.cbor_list(e16))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ActionTypeDeclaration to a compact JSON object (declaration order).
-def action_type_declaration_to_json(ActionTypeDeclaration v) -> str:
-    list[str] parts = []
+# Serialize ActionExecutionFilter to a CBOR map (member wire name -> value, model order).
+def action_execution_filter_to_cbor(ActionExecutionFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.pipelineExecutionId.is_some():
+        auto u0 = v.pipelineExecutionId.unwrap()
+        keys.append("pipelineExecutionId")
+        vals.append(cbor.cbor_text(u0))
+    if v.latestInPipelineExecution.is_some():
+        auto u1 = v.latestInPipelineExecution.unwrap()
+        keys.append("latestInPipelineExecution")
+        vals.append(latest_in_pipeline_execution_filter_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionRevision to a CBOR map (member wire name -> value, model order).
+def action_revision_to_cbor(ActionRevision v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("revisionId")
+    vals.append(cbor.cbor_text(v.revisionId))
+    keys.append("revisionChangeId")
+    vals.append(cbor.cbor_text(v.revisionChangeId))
+    keys.append("created")
+    vals.append(cbor.cbor_timestamp(datetime.to_timestamp(v.created)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionTypeArtifactDetails to a CBOR map (member wire name -> value, model order).
+def action_type_artifact_details_to_cbor(ActionTypeArtifactDetails v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("minimumCount")
+    vals.append(cbor.cbor_int(v.minimumCount))
+    keys.append("maximumCount")
+    vals.append(cbor.cbor_int(v.maximumCount))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionTypeDeclaration to a CBOR map (member wire name -> value, model order).
+def action_type_declaration_to_cbor(ActionTypeDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.description.is_some():
         auto u0 = v.description.unwrap()
-        parts.append("\"description\":" + codepipeline_json_str(u0))
-    parts.append("\"executor\":" + action_type_executor_to_json(v.executor))
-    parts.append("\"id\":" + v.id.to_json())
-    parts.append("\"inputArtifactDetails\":" + v.inputArtifactDetails.to_json())
-    parts.append("\"outputArtifactDetails\":" + v.outputArtifactDetails.to_json())
+        keys.append("description")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("executor")
+    vals.append(action_type_executor_to_cbor(v.executor))
+    keys.append("id")
+    vals.append(action_type_identifier_to_cbor(v.id))
+    keys.append("inputArtifactDetails")
+    vals.append(action_type_artifact_details_to_cbor(v.inputArtifactDetails))
+    keys.append("outputArtifactDetails")
+    vals.append(action_type_artifact_details_to_cbor(v.outputArtifactDetails))
     if v.permissions.is_some():
         auto u1 = v.permissions.unwrap()
-        parts.append("\"permissions\":" + action_type_permissions_to_json(u1))
+        keys.append("permissions")
+        vals.append(action_type_permissions_to_cbor(u1))
     if v.properties.is_some():
         auto u2 = v.properties.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"properties\":" + codepipeline_json_arr(e3))
+            e3.append(action_type_property_to_cbor(x3))
+        keys.append("properties")
+        vals.append(cbor.cbor_list(e3))
     if v.urls.is_some():
         auto u4 = v.urls.unwrap()
-        parts.append("\"urls\":" + u4.to_json())
-    return codepipeline_json_obj(parts)
+        keys.append("urls")
+        vals.append(action_type_urls_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ActionTypeExecutor to a compact JSON object (declaration order).
-def action_type_executor_to_json(ActionTypeExecutor v) -> str:
-    list[str] parts = []
-    parts.append("\"configuration\":" + executor_configuration_to_json(v.configuration))
-    parts.append("\"type\":" + v.type.to_json())
+# Serialize ActionTypeExecutor to a CBOR map (member wire name -> value, model order).
+def action_type_executor_to_cbor(ActionTypeExecutor v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("configuration")
+    vals.append(executor_configuration_to_cbor(v.configuration))
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
     if v.policyStatementsTemplate.is_some():
         auto u0 = v.policyStatementsTemplate.unwrap()
-        parts.append("\"policyStatementsTemplate\":" + codepipeline_json_str(u0))
+        keys.append("policyStatementsTemplate")
+        vals.append(cbor.cbor_text(u0))
     if v.jobTimeout.is_some():
         auto u1 = v.jobTimeout.unwrap()
-        parts.append("\"jobTimeout\":" + str(u1))
-    return codepipeline_json_obj(parts)
+        keys.append("jobTimeout")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ActionTypePermissions to a compact JSON object (declaration order).
-def action_type_permissions_to_json(ActionTypePermissions v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize ActionTypeId to a CBOR map (member wire name -> value, model order).
+def action_type_id_to_cbor(ActionTypeId v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("category")
+    vals.append(cbor.cbor_text(v.category))
+    keys.append("owner")
+    vals.append(cbor.cbor_text(v.owner))
+    keys.append("provider")
+    vals.append(cbor.cbor_text(v.provider))
+    keys.append("version")
+    vals.append(cbor.cbor_text(v.version))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionTypeIdentifier to a CBOR map (member wire name -> value, model order).
+def action_type_identifier_to_cbor(ActionTypeIdentifier v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("category")
+    vals.append(cbor.cbor_text(v.category))
+    keys.append("owner")
+    vals.append(cbor.cbor_text(v.owner))
+    keys.append("provider")
+    vals.append(cbor.cbor_text(v.provider))
+    keys.append("version")
+    vals.append(cbor.cbor_text(v.version))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionTypePermissions to a CBOR map (member wire name -> value, model order).
+def action_type_permissions_to_cbor(ActionTypePermissions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.allowedAccounts:
-        e0.append(codepipeline_json_str(x0))
-    parts.append("\"allowedAccounts\":" + codepipeline_json_arr(e0))
-    return codepipeline_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("allowedAccounts")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BeforeEntryConditions to a compact JSON object (declaration order).
-def before_entry_conditions_to_json(BeforeEntryConditions v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize ActionTypeProperty to a CBOR map (member wire name -> value, model order).
+def action_type_property_to_cbor(ActionTypeProperty v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("optional")
+    vals.append(cbor.cbor_bool(v.optional))
+    keys.append("key")
+    vals.append(cbor.cbor_bool(v.key))
+    keys.append("noEcho")
+    vals.append(cbor.cbor_bool(v.noEcho))
+    if v.queryable.is_some():
+        auto u0 = v.queryable.unwrap()
+        keys.append("queryable")
+        vals.append(cbor.cbor_bool(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        keys.append("description")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionTypeSettings to a CBOR map (member wire name -> value, model order).
+def action_type_settings_to_cbor(ActionTypeSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.thirdPartyConfigurationUrl.is_some():
+        auto u0 = v.thirdPartyConfigurationUrl.unwrap()
+        keys.append("thirdPartyConfigurationUrl")
+        vals.append(cbor.cbor_text(u0))
+    if v.entityUrlTemplate.is_some():
+        auto u1 = v.entityUrlTemplate.unwrap()
+        keys.append("entityUrlTemplate")
+        vals.append(cbor.cbor_text(u1))
+    if v.executionUrlTemplate.is_some():
+        auto u2 = v.executionUrlTemplate.unwrap()
+        keys.append("executionUrlTemplate")
+        vals.append(cbor.cbor_text(u2))
+    if v.revisionUrlTemplate.is_some():
+        auto u3 = v.revisionUrlTemplate.unwrap()
+        keys.append("revisionUrlTemplate")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ActionTypeUrls to a CBOR map (member wire name -> value, model order).
+def action_type_urls_to_cbor(ActionTypeUrls v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.configurationUrl.is_some():
+        auto u0 = v.configurationUrl.unwrap()
+        keys.append("configurationUrl")
+        vals.append(cbor.cbor_text(u0))
+    if v.entityUrlTemplate.is_some():
+        auto u1 = v.entityUrlTemplate.unwrap()
+        keys.append("entityUrlTemplate")
+        vals.append(cbor.cbor_text(u1))
+    if v.executionUrlTemplate.is_some():
+        auto u2 = v.executionUrlTemplate.unwrap()
+        keys.append("executionUrlTemplate")
+        vals.append(cbor.cbor_text(u2))
+    if v.revisionUrlTemplate.is_some():
+        auto u3 = v.revisionUrlTemplate.unwrap()
+        keys.append("revisionUrlTemplate")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ApprovalResult to a CBOR map (member wire name -> value, model order).
+def approval_result_to_cbor(ApprovalResult v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("summary")
+    vals.append(cbor.cbor_text(v.summary))
+    keys.append("status")
+    vals.append(cbor.cbor_text(v.status))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ArtifactDetails to a CBOR map (member wire name -> value, model order).
+def artifact_details_to_cbor(ArtifactDetails v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("minimumCount")
+    vals.append(cbor.cbor_int(v.minimumCount))
+    keys.append("maximumCount")
+    vals.append(cbor.cbor_int(v.maximumCount))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ArtifactStore to a CBOR map (member wire name -> value, model order).
+def artifact_store_to_cbor(ArtifactStore v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    keys.append("location")
+    vals.append(cbor.cbor_text(v.location))
+    if v.encryptionKey.is_some():
+        auto u0 = v.encryptionKey.unwrap()
+        keys.append("encryptionKey")
+        vals.append(encryption_key_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize BeforeEntryConditions to a CBOR map (member wire name -> value, model order).
+def before_entry_conditions_to_cbor(BeforeEntryConditions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.conditions:
-        e0.append(condition_to_json(x0))
-    parts.append("\"conditions\":" + codepipeline_json_arr(e0))
-    return codepipeline_json_obj(parts)
+        e0.append(condition_to_cbor(x0))
+    keys.append("conditions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize Condition to a compact JSON object (declaration order).
-def condition_to_json(Condition v) -> str:
-    list[str] parts = []
+# Serialize BlockerDeclaration to a CBOR map (member wire name -> value, model order).
+def blocker_declaration_to_cbor(BlockerDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Condition to a CBOR map (member wire name -> value, model order).
+def condition_to_cbor(Condition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.result.is_some():
         auto u0 = v.result.unwrap()
-        parts.append("\"result\":" + u0.to_json())
+        keys.append("result")
+        vals.append(cbor.cbor_text(u0))
     if v.rules.is_some():
         auto u1 = v.rules.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(rule_declaration_to_json(x2))
-        parts.append("\"rules\":" + codepipeline_json_arr(e2))
-    return codepipeline_json_obj(parts)
+            e2.append(rule_declaration_to_cbor(x2))
+        keys.append("rules")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateCustomActionTypeInput to a compact JSON object (declaration order).
-def create_custom_action_type_input_to_json(CreateCustomActionTypeInput v) -> str:
-    list[str] parts = []
-    parts.append("\"category\":" + v.category.to_json())
-    parts.append("\"provider\":" + codepipeline_json_str(v.provider))
-    parts.append("\"version\":" + codepipeline_json_str(v.version))
+# Serialize CreateCustomActionTypeInput to a CBOR map (member wire name -> value, model order).
+def create_custom_action_type_input_to_cbor(CreateCustomActionTypeInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("category")
+    vals.append(cbor.cbor_text(v.category))
+    keys.append("provider")
+    vals.append(cbor.cbor_text(v.provider))
+    keys.append("version")
+    vals.append(cbor.cbor_text(v.version))
     if v.settings.is_some():
         auto u0 = v.settings.unwrap()
-        parts.append("\"settings\":" + u0.to_json())
+        keys.append("settings")
+        vals.append(action_type_settings_to_cbor(u0))
     if v.configurationProperties.is_some():
         auto u1 = v.configurationProperties.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"configurationProperties\":" + codepipeline_json_arr(e2))
-    parts.append("\"inputArtifactDetails\":" + v.inputArtifactDetails.to_json())
-    parts.append("\"outputArtifactDetails\":" + v.outputArtifactDetails.to_json())
+            e2.append(action_configuration_property_to_cbor(x2))
+        keys.append("configurationProperties")
+        vals.append(cbor.cbor_list(e2))
+    keys.append("inputArtifactDetails")
+    vals.append(artifact_details_to_cbor(v.inputArtifactDetails))
+    keys.append("outputArtifactDetails")
+    vals.append(artifact_details_to_cbor(v.outputArtifactDetails))
     if v.tags.is_some():
         auto u3 = v.tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"tags\":" + codepipeline_json_arr(e4))
-    return codepipeline_json_obj(parts)
+            e4.append(tag_to_cbor(x4))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreatePipelineInput to a compact JSON object (declaration order).
-def create_pipeline_input_to_json(CreatePipelineInput v) -> str:
-    list[str] parts = []
-    parts.append("\"pipeline\":" + pipeline_declaration_to_json(v.pipeline))
+# Serialize CreatePipelineInput to a CBOR map (member wire name -> value, model order).
+def create_pipeline_input_to_cbor(CreatePipelineInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipeline")
+    vals.append(pipeline_declaration_to_cbor(v.pipeline))
     if v.tags.is_some():
         auto u0 = v.tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"tags\":" + codepipeline_json_arr(e1))
-    return codepipeline_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ExecutorConfiguration to a compact JSON object (declaration order).
-def executor_configuration_to_json(ExecutorConfiguration v) -> str:
-    list[str] parts = []
+# Serialize CurrentRevision to a CBOR map (member wire name -> value, model order).
+def current_revision_to_cbor(CurrentRevision v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("revision")
+    vals.append(cbor.cbor_text(v.revision))
+    keys.append("changeIdentifier")
+    vals.append(cbor.cbor_text(v.changeIdentifier))
+    if v.created.is_some():
+        auto u0 = v.created.unwrap()
+        keys.append("created")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
+    if v.revisionSummary.is_some():
+        auto u1 = v.revisionSummary.unwrap()
+        keys.append("revisionSummary")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteCustomActionTypeInput to a CBOR map (member wire name -> value, model order).
+def delete_custom_action_type_input_to_cbor(DeleteCustomActionTypeInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("category")
+    vals.append(cbor.cbor_text(v.category))
+    keys.append("provider")
+    vals.append(cbor.cbor_text(v.provider))
+    keys.append("version")
+    vals.append(cbor.cbor_text(v.version))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeletePipelineInput to a CBOR map (member wire name -> value, model order).
+def delete_pipeline_input_to_cbor(DeletePipelineInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteWebhookInput to a CBOR map (member wire name -> value, model order).
+def delete_webhook_input_to_cbor(DeleteWebhookInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeregisterWebhookWithThirdPartyInput to a CBOR map (member wire name -> value, model order).
+def deregister_webhook_with_third_party_input_to_cbor(DeregisterWebhookWithThirdPartyInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.webhookName.is_some():
+        auto u0 = v.webhookName.unwrap()
+        keys.append("webhookName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableStageTransitionInput to a CBOR map (member wire name -> value, model order).
+def disable_stage_transition_input_to_cbor(DisableStageTransitionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("transitionType")
+    vals.append(cbor.cbor_text(v.transitionType))
+    keys.append("reason")
+    vals.append(cbor.cbor_text(v.reason))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableStageTransitionInput to a CBOR map (member wire name -> value, model order).
+def enable_stage_transition_input_to_cbor(EnableStageTransitionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("transitionType")
+    vals.append(cbor.cbor_text(v.transitionType))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EncryptionKey to a CBOR map (member wire name -> value, model order).
+def encryption_key_to_cbor(EncryptionKey v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("id")
+    vals.append(cbor.cbor_text(v.id))
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnvironmentVariable to a CBOR map (member wire name -> value, model order).
+def environment_variable_to_cbor(EnvironmentVariable v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("value")
+    vals.append(cbor.cbor_text(v.value))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ExecutionDetails to a CBOR map (member wire name -> value, model order).
+def execution_details_to_cbor(ExecutionDetails v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.summary.is_some():
+        auto u0 = v.summary.unwrap()
+        keys.append("summary")
+        vals.append(cbor.cbor_text(u0))
+    if v.externalExecutionId.is_some():
+        auto u1 = v.externalExecutionId.unwrap()
+        keys.append("externalExecutionId")
+        vals.append(cbor.cbor_text(u1))
+    if v.percentComplete.is_some():
+        auto u2 = v.percentComplete.unwrap()
+        keys.append("percentComplete")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ExecutorConfiguration to a CBOR map (member wire name -> value, model order).
+def executor_configuration_to_cbor(ExecutorConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.lambdaExecutorConfiguration.is_some():
         auto u0 = v.lambdaExecutorConfiguration.unwrap()
-        parts.append("\"lambdaExecutorConfiguration\":" + u0.to_json())
+        keys.append("lambdaExecutorConfiguration")
+        vals.append(lambda_executor_configuration_to_cbor(u0))
     if v.jobWorkerExecutorConfiguration.is_some():
         auto u1 = v.jobWorkerExecutorConfiguration.unwrap()
-        parts.append("\"jobWorkerExecutorConfiguration\":" + job_worker_executor_configuration_to_json(u1))
-    return codepipeline_json_obj(parts)
+        keys.append("jobWorkerExecutorConfiguration")
+        vals.append(job_worker_executor_configuration_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize FailureConditions to a compact JSON object (declaration order).
-def failure_conditions_to_json(FailureConditions v) -> str:
-    list[str] parts = []
+# Serialize FailureConditions to a CBOR map (member wire name -> value, model order).
+def failure_conditions_to_cbor(FailureConditions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.result.is_some():
         auto u0 = v.result.unwrap()
-        parts.append("\"result\":" + u0.to_json())
+        keys.append("result")
+        vals.append(cbor.cbor_text(u0))
     if v.retryConfiguration.is_some():
         auto u1 = v.retryConfiguration.unwrap()
-        parts.append("\"retryConfiguration\":" + u1.to_json())
+        keys.append("retryConfiguration")
+        vals.append(retry_configuration_to_cbor(u1))
     if v.conditions.is_some():
         auto u2 = v.conditions.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(condition_to_json(x3))
-        parts.append("\"conditions\":" + codepipeline_json_arr(e3))
-    return codepipeline_json_obj(parts)
+            e3.append(condition_to_cbor(x3))
+        keys.append("conditions")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GitBranchFilterCriteria to a compact JSON object (declaration order).
-def git_branch_filter_criteria_to_json(GitBranchFilterCriteria v) -> str:
-    list[str] parts = []
+# Serialize FailureDetails to a CBOR map (member wire name -> value, model order).
+def failure_details_to_cbor(FailureDetails v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("type")
+    vals.append(cbor.cbor_text(v.type))
+    keys.append("message")
+    vals.append(cbor.cbor_text(v.message))
+    if v.externalExecutionId.is_some():
+        auto u0 = v.externalExecutionId.unwrap()
+        keys.append("externalExecutionId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetActionTypeInput to a CBOR map (member wire name -> value, model order).
+def get_action_type_input_to_cbor(GetActionTypeInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("category")
+    vals.append(cbor.cbor_text(v.category))
+    keys.append("owner")
+    vals.append(cbor.cbor_text(v.owner))
+    keys.append("provider")
+    vals.append(cbor.cbor_text(v.provider))
+    keys.append("version")
+    vals.append(cbor.cbor_text(v.version))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetJobDetailsInput to a CBOR map (member wire name -> value, model order).
+def get_job_details_input_to_cbor(GetJobDetailsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetPipelineExecutionInput to a CBOR map (member wire name -> value, model order).
+def get_pipeline_execution_input_to_cbor(GetPipelineExecutionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("pipelineExecutionId")
+    vals.append(cbor.cbor_text(v.pipelineExecutionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetPipelineInput to a CBOR map (member wire name -> value, model order).
+def get_pipeline_input_to_cbor(GetPipelineInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    if v.version.is_some():
+        auto u0 = v.version.unwrap()
+        keys.append("version")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetPipelineStateInput to a CBOR map (member wire name -> value, model order).
+def get_pipeline_state_input_to_cbor(GetPipelineStateInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetThirdPartyJobDetailsInput to a CBOR map (member wire name -> value, model order).
+def get_third_party_job_details_input_to_cbor(GetThirdPartyJobDetailsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    keys.append("clientToken")
+    vals.append(cbor.cbor_text(v.clientToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GitBranchFilterCriteria to a CBOR map (member wire name -> value, model order).
+def git_branch_filter_criteria_to_cbor(GitBranchFilterCriteria v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.includes.is_some():
         auto u0 = v.includes.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codepipeline_json_str(x1))
-        parts.append("\"includes\":" + codepipeline_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("includes")
+        vals.append(cbor.cbor_list(e1))
     if v.excludes.is_some():
         auto u2 = v.excludes.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(codepipeline_json_str(x3))
-        parts.append("\"excludes\":" + codepipeline_json_arr(e3))
-    return codepipeline_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("excludes")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GitConfiguration to a compact JSON object (declaration order).
-def git_configuration_to_json(GitConfiguration v) -> str:
-    list[str] parts = []
-    parts.append("\"sourceActionName\":" + codepipeline_json_str(v.sourceActionName))
+# Serialize GitConfiguration to a CBOR map (member wire name -> value, model order).
+def git_configuration_to_cbor(GitConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("sourceActionName")
+    vals.append(cbor.cbor_text(v.sourceActionName))
     if v.push.is_some():
         auto u0 = v.push.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(git_push_filter_to_json(x1))
-        parts.append("\"push\":" + codepipeline_json_arr(e1))
+            e1.append(git_push_filter_to_cbor(x1))
+        keys.append("push")
+        vals.append(cbor.cbor_list(e1))
     if v.pullRequest.is_some():
         auto u2 = v.pullRequest.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(git_pull_request_filter_to_json(x3))
-        parts.append("\"pullRequest\":" + codepipeline_json_arr(e3))
-    return codepipeline_json_obj(parts)
+            e3.append(git_pull_request_filter_to_cbor(x3))
+        keys.append("pullRequest")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GitFilePathFilterCriteria to a compact JSON object (declaration order).
-def git_file_path_filter_criteria_to_json(GitFilePathFilterCriteria v) -> str:
-    list[str] parts = []
+# Serialize GitFilePathFilterCriteria to a CBOR map (member wire name -> value, model order).
+def git_file_path_filter_criteria_to_cbor(GitFilePathFilterCriteria v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.includes.is_some():
         auto u0 = v.includes.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codepipeline_json_str(x1))
-        parts.append("\"includes\":" + codepipeline_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("includes")
+        vals.append(cbor.cbor_list(e1))
     if v.excludes.is_some():
         auto u2 = v.excludes.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(codepipeline_json_str(x3))
-        parts.append("\"excludes\":" + codepipeline_json_arr(e3))
-    return codepipeline_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("excludes")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GitPullRequestFilter to a compact JSON object (declaration order).
-def git_pull_request_filter_to_json(GitPullRequestFilter v) -> str:
-    list[str] parts = []
+# Serialize GitPullRequestFilter to a CBOR map (member wire name -> value, model order).
+def git_pull_request_filter_to_cbor(GitPullRequestFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.events.is_some():
         auto u0 = v.events.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"events\":" + codepipeline_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("events")
+        vals.append(cbor.cbor_list(e1))
     if v.branches.is_some():
         auto u2 = v.branches.unwrap()
-        parts.append("\"branches\":" + git_branch_filter_criteria_to_json(u2))
+        keys.append("branches")
+        vals.append(git_branch_filter_criteria_to_cbor(u2))
     if v.filePaths.is_some():
         auto u3 = v.filePaths.unwrap()
-        parts.append("\"filePaths\":" + git_file_path_filter_criteria_to_json(u3))
-    return codepipeline_json_obj(parts)
+        keys.append("filePaths")
+        vals.append(git_file_path_filter_criteria_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GitPushFilter to a compact JSON object (declaration order).
-def git_push_filter_to_json(GitPushFilter v) -> str:
-    list[str] parts = []
+# Serialize GitPushFilter to a CBOR map (member wire name -> value, model order).
+def git_push_filter_to_cbor(GitPushFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.tags.is_some():
         auto u0 = v.tags.unwrap()
-        parts.append("\"tags\":" + git_tag_filter_criteria_to_json(u0))
+        keys.append("tags")
+        vals.append(git_tag_filter_criteria_to_cbor(u0))
     if v.branches.is_some():
         auto u1 = v.branches.unwrap()
-        parts.append("\"branches\":" + git_branch_filter_criteria_to_json(u1))
+        keys.append("branches")
+        vals.append(git_branch_filter_criteria_to_cbor(u1))
     if v.filePaths.is_some():
         auto u2 = v.filePaths.unwrap()
-        parts.append("\"filePaths\":" + git_file_path_filter_criteria_to_json(u2))
-    return codepipeline_json_obj(parts)
+        keys.append("filePaths")
+        vals.append(git_file_path_filter_criteria_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GitTagFilterCriteria to a compact JSON object (declaration order).
-def git_tag_filter_criteria_to_json(GitTagFilterCriteria v) -> str:
-    list[str] parts = []
+# Serialize GitTagFilterCriteria to a CBOR map (member wire name -> value, model order).
+def git_tag_filter_criteria_to_cbor(GitTagFilterCriteria v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.includes.is_some():
         auto u0 = v.includes.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codepipeline_json_str(x1))
-        parts.append("\"includes\":" + codepipeline_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("includes")
+        vals.append(cbor.cbor_list(e1))
     if v.excludes.is_some():
         auto u2 = v.excludes.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(codepipeline_json_str(x3))
-        parts.append("\"excludes\":" + codepipeline_json_arr(e3))
-    return codepipeline_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("excludes")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize JobWorkerExecutorConfiguration to a compact JSON object (declaration order).
-def job_worker_executor_configuration_to_json(JobWorkerExecutorConfiguration v) -> str:
-    list[str] parts = []
+# Serialize InputArtifact to a CBOR map (member wire name -> value, model order).
+def input_artifact_to_cbor(InputArtifact v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize JobWorkerExecutorConfiguration to a CBOR map (member wire name -> value, model order).
+def job_worker_executor_configuration_to_cbor(JobWorkerExecutorConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.pollingAccounts.is_some():
         auto u0 = v.pollingAccounts.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codepipeline_json_str(x1))
-        parts.append("\"pollingAccounts\":" + codepipeline_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("pollingAccounts")
+        vals.append(cbor.cbor_list(e1))
     if v.pollingServicePrincipals.is_some():
         auto u2 = v.pollingServicePrincipals.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(codepipeline_json_str(x3))
-        parts.append("\"pollingServicePrincipals\":" + codepipeline_json_arr(e3))
-    return codepipeline_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("pollingServicePrincipals")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListDeployActionExecutionTargetsInput to a compact JSON object (declaration order).
-def list_deploy_action_execution_targets_input_to_json(ListDeployActionExecutionTargetsInput v) -> str:
-    list[str] parts = []
+# Serialize LambdaExecutorConfiguration to a CBOR map (member wire name -> value, model order).
+def lambda_executor_configuration_to_cbor(LambdaExecutorConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("lambdaFunctionArn")
+    vals.append(cbor.cbor_text(v.lambdaFunctionArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LatestInPipelineExecutionFilter to a CBOR map (member wire name -> value, model order).
+def latest_in_pipeline_execution_filter_to_cbor(LatestInPipelineExecutionFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineExecutionId")
+    vals.append(cbor.cbor_text(v.pipelineExecutionId))
+    keys.append("startTimeRange")
+    vals.append(cbor.cbor_text(v.startTimeRange))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListActionExecutionsInput to a CBOR map (member wire name -> value, model order).
+def list_action_executions_input_to_cbor(ListActionExecutionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(action_execution_filter_to_cbor(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListActionTypesInput to a CBOR map (member wire name -> value, model order).
+def list_action_types_input_to_cbor(ListActionTypesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.actionOwnerFilter.is_some():
+        auto u0 = v.actionOwnerFilter.unwrap()
+        keys.append("actionOwnerFilter")
+        vals.append(cbor.cbor_text(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.regionFilter.is_some():
+        auto u2 = v.regionFilter.unwrap()
+        keys.append("regionFilter")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDeployActionExecutionTargetsInput to a CBOR map (member wire name -> value, model order).
+def list_deploy_action_execution_targets_input_to_cbor(ListDeployActionExecutionTargetsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.pipelineName.is_some():
         auto u0 = v.pipelineName.unwrap()
-        parts.append("\"pipelineName\":" + codepipeline_json_str(u0))
-    parts.append("\"actionExecutionId\":" + codepipeline_json_str(v.actionExecutionId))
+        keys.append("pipelineName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("actionExecutionId")
+    vals.append(cbor.cbor_text(v.actionExecutionId))
     if v.filters.is_some():
         auto u1 = v.filters.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(target_filter_to_json(x2))
-        parts.append("\"filters\":" + codepipeline_json_arr(e2))
+            e2.append(target_filter_to_cbor(x2))
+        keys.append("filters")
+        vals.append(cbor.cbor_list(e2))
     if v.maxResults.is_some():
         auto u3 = v.maxResults.unwrap()
-        parts.append("\"maxResults\":" + str(u3))
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u3))
     if v.nextToken.is_some():
         auto u4 = v.nextToken.unwrap()
-        parts.append("\"nextToken\":" + codepipeline_json_str(u4))
-    return codepipeline_json_obj(parts)
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize OutputArtifact to a compact JSON object (declaration order).
-def output_artifact_to_json(OutputArtifact v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
+# Serialize ListPipelineExecutionsInput to a CBOR map (member wire name -> value, model order).
+def list_pipeline_executions_input_to_cbor(ListPipelineExecutionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.filter.is_some():
+        auto u1 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(pipeline_execution_filter_to_cbor(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPipelinesInput to a CBOR map (member wire name -> value, model order).
+def list_pipelines_input_to_cbor(ListPipelinesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListRuleExecutionsInput to a CBOR map (member wire name -> value, model order).
+def list_rule_executions_input_to_cbor(ListRuleExecutionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        keys.append("filter")
+        vals.append(rule_execution_filter_to_cbor(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListRuleTypesInput to a CBOR map (member wire name -> value, model order).
+def list_rule_types_input_to_cbor(ListRuleTypesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ruleOwnerFilter.is_some():
+        auto u0 = v.ruleOwnerFilter.unwrap()
+        keys.append("ruleOwnerFilter")
+        vals.append(cbor.cbor_text(u0))
+    if v.regionFilter.is_some():
+        auto u1 = v.regionFilter.unwrap()
+        keys.append("regionFilter")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceInput to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_input_to_cbor(ListTagsForResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListWebhooksInput to a CBOR map (member wire name -> value, model order).
+def list_webhooks_input_to_cbor(ListWebhooksInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OutputArtifact to a CBOR map (member wire name -> value, model order).
+def output_artifact_to_cbor(OutputArtifact v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
     if v.files.is_some():
         auto u0 = v.files.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codepipeline_json_str(x1))
-        parts.append("\"files\":" + codepipeline_json_arr(e1))
-    return codepipeline_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("files")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PipelineDeclaration to a compact JSON object (declaration order).
-def pipeline_declaration_to_json(PipelineDeclaration v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
-    parts.append("\"roleArn\":" + codepipeline_json_str(v.roleArn))
+# Serialize OverrideStageConditionInput to a CBOR map (member wire name -> value, model order).
+def override_stage_condition_input_to_cbor(OverrideStageConditionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("pipelineExecutionId")
+    vals.append(cbor.cbor_text(v.pipelineExecutionId))
+    keys.append("conditionType")
+    vals.append(cbor.cbor_text(v.conditionType))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PipelineDeclaration to a CBOR map (member wire name -> value, model order).
+def pipeline_declaration_to_cbor(PipelineDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("roleArn")
+    vals.append(cbor.cbor_text(v.roleArn))
     if v.artifactStore.is_some():
         auto u0 = v.artifactStore.unwrap()
-        parts.append("\"artifactStore\":" + u0.to_json())
+        keys.append("artifactStore")
+        vals.append(artifact_store_to_cbor(u0))
     if v.artifactStores.is_some():
         auto u1 = v.artifactStores.unwrap()
-        list[str] m2 = []
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
         for k2 in sorted(u1.keys()):
-            m2.append(codepipeline_json_str(k2) + ":" + u1[k2].to_json())
-        parts.append("\"artifactStores\":" + codepipeline_json_obj(m2))
-    list[str] e3 = []
+            mk2.append(k2)
+            mv2.append(artifact_store_to_cbor(u1[k2]))
+        keys.append("artifactStores")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    list[cbor.CborValue] e3 = []
     for x3 in v.stages:
-        e3.append(stage_declaration_to_json(x3))
-    parts.append("\"stages\":" + codepipeline_json_arr(e3))
+        e3.append(stage_declaration_to_cbor(x3))
+    keys.append("stages")
+    vals.append(cbor.cbor_list(e3))
     if v.version.is_some():
         auto u4 = v.version.unwrap()
-        parts.append("\"version\":" + str(u4))
+        keys.append("version")
+        vals.append(cbor.cbor_int(u4))
     if v.executionMode.is_some():
         auto u5 = v.executionMode.unwrap()
-        parts.append("\"executionMode\":" + u5.to_json())
+        keys.append("executionMode")
+        vals.append(cbor.cbor_text(u5))
     if v.pipelineType.is_some():
         auto u6 = v.pipelineType.unwrap()
-        parts.append("\"pipelineType\":" + u6.to_json())
+        keys.append("pipelineType")
+        vals.append(cbor.cbor_text(u6))
     if v.variables.is_some():
         auto u7 = v.variables.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"variables\":" + codepipeline_json_arr(e8))
+            e8.append(pipeline_variable_declaration_to_cbor(x8))
+        keys.append("variables")
+        vals.append(cbor.cbor_list(e8))
     if v.triggers.is_some():
         auto u9 = v.triggers.unwrap()
-        list[str] e10 = []
+        list[cbor.CborValue] e10 = []
         for x10 in u9:
-            e10.append(pipeline_trigger_declaration_to_json(x10))
-        parts.append("\"triggers\":" + codepipeline_json_arr(e10))
-    return codepipeline_json_obj(parts)
+            e10.append(pipeline_trigger_declaration_to_cbor(x10))
+        keys.append("triggers")
+        vals.append(cbor.cbor_list(e10))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PipelineTriggerDeclaration to a compact JSON object (declaration order).
-def pipeline_trigger_declaration_to_json(PipelineTriggerDeclaration v) -> str:
-    list[str] parts = []
-    parts.append("\"providerType\":" + codepipeline_json_str(v.providerType))
-    parts.append("\"gitConfiguration\":" + git_configuration_to_json(v.gitConfiguration))
-    return codepipeline_json_obj(parts)
+# Serialize PipelineExecutionFilter to a CBOR map (member wire name -> value, model order).
+def pipeline_execution_filter_to_cbor(PipelineExecutionFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.succeededInStage.is_some():
+        auto u0 = v.succeededInStage.unwrap()
+        keys.append("succeededInStage")
+        vals.append(succeeded_in_stage_filter_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PollForJobsInput to a compact JSON object (declaration order).
-def poll_for_jobs_input_to_json(PollForJobsInput v) -> str:
-    list[str] parts = []
-    parts.append("\"actionTypeId\":" + v.actionTypeId.to_json())
+# Serialize PipelineTriggerDeclaration to a CBOR map (member wire name -> value, model order).
+def pipeline_trigger_declaration_to_cbor(PipelineTriggerDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("providerType")
+    vals.append(cbor.cbor_text(v.providerType))
+    keys.append("gitConfiguration")
+    vals.append(git_configuration_to_cbor(v.gitConfiguration))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PipelineVariable to a CBOR map (member wire name -> value, model order).
+def pipeline_variable_to_cbor(PipelineVariable v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("value")
+    vals.append(cbor.cbor_text(v.value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PipelineVariableDeclaration to a CBOR map (member wire name -> value, model order).
+def pipeline_variable_declaration_to_cbor(PipelineVariableDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    if v.defaultValue.is_some():
+        auto u0 = v.defaultValue.unwrap()
+        keys.append("defaultValue")
+        vals.append(cbor.cbor_text(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        keys.append("description")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PollForJobsInput to a CBOR map (member wire name -> value, model order).
+def poll_for_jobs_input_to_cbor(PollForJobsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("actionTypeId")
+    vals.append(action_type_id_to_cbor(v.actionTypeId))
     if v.maxBatchSize.is_some():
         auto u0 = v.maxBatchSize.unwrap()
-        parts.append("\"maxBatchSize\":" + str(u0))
+        keys.append("maxBatchSize")
+        vals.append(cbor.cbor_int(u0))
     if v.queryParam.is_some():
         auto u1 = v.queryParam.unwrap()
-        list[str] m2 = []
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
         for k2 in sorted(u1.keys()):
-            m2.append(codepipeline_json_str(k2) + ":" + codepipeline_json_str(u1[k2]))
-        parts.append("\"queryParam\":" + codepipeline_json_obj(m2))
-    return codepipeline_json_obj(parts)
+            mk2.append(k2)
+            mv2.append(cbor.cbor_text(u1[k2]))
+        keys.append("queryParam")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PutJobSuccessResultInput to a compact JSON object (declaration order).
-def put_job_success_result_input_to_json(PutJobSuccessResultInput v) -> str:
-    list[str] parts = []
-    parts.append("\"jobId\":" + codepipeline_json_str(v.jobId))
+# Serialize PollForThirdPartyJobsInput to a CBOR map (member wire name -> value, model order).
+def poll_for_third_party_jobs_input_to_cbor(PollForThirdPartyJobsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("actionTypeId")
+    vals.append(action_type_id_to_cbor(v.actionTypeId))
+    if v.maxBatchSize.is_some():
+        auto u0 = v.maxBatchSize.unwrap()
+        keys.append("maxBatchSize")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutActionRevisionInput to a CBOR map (member wire name -> value, model order).
+def put_action_revision_input_to_cbor(PutActionRevisionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("actionName")
+    vals.append(cbor.cbor_text(v.actionName))
+    keys.append("actionRevision")
+    vals.append(action_revision_to_cbor(v.actionRevision))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutApprovalResultInput to a CBOR map (member wire name -> value, model order).
+def put_approval_result_input_to_cbor(PutApprovalResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("actionName")
+    vals.append(cbor.cbor_text(v.actionName))
+    keys.append("result")
+    vals.append(approval_result_to_cbor(v.result))
+    keys.append("token")
+    vals.append(cbor.cbor_text(v.token))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutJobFailureResultInput to a CBOR map (member wire name -> value, model order).
+def put_job_failure_result_input_to_cbor(PutJobFailureResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    keys.append("failureDetails")
+    vals.append(failure_details_to_cbor(v.failureDetails))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutJobSuccessResultInput to a CBOR map (member wire name -> value, model order).
+def put_job_success_result_input_to_cbor(PutJobSuccessResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
     if v.currentRevision.is_some():
         auto u0 = v.currentRevision.unwrap()
-        parts.append("\"currentRevision\":" + u0.to_json())
+        keys.append("currentRevision")
+        vals.append(current_revision_to_cbor(u0))
     if v.continuationToken.is_some():
         auto u1 = v.continuationToken.unwrap()
-        parts.append("\"continuationToken\":" + codepipeline_json_str(u1))
+        keys.append("continuationToken")
+        vals.append(cbor.cbor_text(u1))
     if v.executionDetails.is_some():
         auto u2 = v.executionDetails.unwrap()
-        parts.append("\"executionDetails\":" + u2.to_json())
+        keys.append("executionDetails")
+        vals.append(execution_details_to_cbor(u2))
     if v.outputVariables.is_some():
         auto u3 = v.outputVariables.unwrap()
-        list[str] m4 = []
+        list[str] mk4 = []
+        list[cbor.CborValue] mv4 = []
         for k4 in sorted(u3.keys()):
-            m4.append(codepipeline_json_str(k4) + ":" + codepipeline_json_str(u3[k4]))
-        parts.append("\"outputVariables\":" + codepipeline_json_obj(m4))
-    return codepipeline_json_obj(parts)
+            mk4.append(k4)
+            mv4.append(cbor.cbor_text(u3[k4]))
+        keys.append("outputVariables")
+        vals.append(cbor.cbor_map(mk4, mv4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PutWebhookInput to a compact JSON object (declaration order).
-def put_webhook_input_to_json(PutWebhookInput v) -> str:
-    list[str] parts = []
-    parts.append("\"webhook\":" + webhook_definition_to_json(v.webhook))
+# Serialize PutThirdPartyJobFailureResultInput to a CBOR map (member wire name -> value, model order).
+def put_third_party_job_failure_result_input_to_cbor(PutThirdPartyJobFailureResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    keys.append("clientToken")
+    vals.append(cbor.cbor_text(v.clientToken))
+    keys.append("failureDetails")
+    vals.append(failure_details_to_cbor(v.failureDetails))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutThirdPartyJobSuccessResultInput to a CBOR map (member wire name -> value, model order).
+def put_third_party_job_success_result_input_to_cbor(PutThirdPartyJobSuccessResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jobId")
+    vals.append(cbor.cbor_text(v.jobId))
+    keys.append("clientToken")
+    vals.append(cbor.cbor_text(v.clientToken))
+    if v.currentRevision.is_some():
+        auto u0 = v.currentRevision.unwrap()
+        keys.append("currentRevision")
+        vals.append(current_revision_to_cbor(u0))
+    if v.continuationToken.is_some():
+        auto u1 = v.continuationToken.unwrap()
+        keys.append("continuationToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.executionDetails.is_some():
+        auto u2 = v.executionDetails.unwrap()
+        keys.append("executionDetails")
+        vals.append(execution_details_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutWebhookInput to a CBOR map (member wire name -> value, model order).
+def put_webhook_input_to_cbor(PutWebhookInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("webhook")
+    vals.append(webhook_definition_to_cbor(v.webhook))
     if v.tags.is_some():
         auto u0 = v.tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"tags\":" + codepipeline_json_arr(e1))
-    return codepipeline_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RuleDeclaration to a compact JSON object (declaration order).
-def rule_declaration_to_json(RuleDeclaration v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
-    parts.append("\"ruleTypeId\":" + v.ruleTypeId.to_json())
+# Serialize RegisterWebhookWithThirdPartyInput to a CBOR map (member wire name -> value, model order).
+def register_webhook_with_third_party_input_to_cbor(RegisterWebhookWithThirdPartyInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.webhookName.is_some():
+        auto u0 = v.webhookName.unwrap()
+        keys.append("webhookName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RetryConfiguration to a CBOR map (member wire name -> value, model order).
+def retry_configuration_to_cbor(RetryConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.retryMode.is_some():
+        auto u0 = v.retryMode.unwrap()
+        keys.append("retryMode")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RetryStageExecutionInput to a CBOR map (member wire name -> value, model order).
+def retry_stage_execution_input_to_cbor(RetryStageExecutionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("pipelineExecutionId")
+    vals.append(cbor.cbor_text(v.pipelineExecutionId))
+    keys.append("retryMode")
+    vals.append(cbor.cbor_text(v.retryMode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RollbackStageInput to a CBOR map (member wire name -> value, model order).
+def rollback_stage_input_to_cbor(RollbackStageInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("stageName")
+    vals.append(cbor.cbor_text(v.stageName))
+    keys.append("targetPipelineExecutionId")
+    vals.append(cbor.cbor_text(v.targetPipelineExecutionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleDeclaration to a CBOR map (member wire name -> value, model order).
+def rule_declaration_to_cbor(RuleDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("ruleTypeId")
+    vals.append(rule_type_id_to_cbor(v.ruleTypeId))
     if v.configuration.is_some():
         auto u0 = v.configuration.unwrap()
-        list[str] m1 = []
+        list[str] mk1 = []
+        list[cbor.CborValue] mv1 = []
         for k1 in sorted(u0.keys()):
-            m1.append(codepipeline_json_str(k1) + ":" + codepipeline_json_str(u0[k1]))
-        parts.append("\"configuration\":" + codepipeline_json_obj(m1))
+            mk1.append(k1)
+            mv1.append(cbor.cbor_text(u0[k1]))
+        keys.append("configuration")
+        vals.append(cbor.cbor_map(mk1, mv1))
     if v.commands.is_some():
         auto u2 = v.commands.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(codepipeline_json_str(x3))
-        parts.append("\"commands\":" + codepipeline_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("commands")
+        vals.append(cbor.cbor_list(e3))
     if v.inputArtifacts.is_some():
         auto u4 = v.inputArtifacts.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"inputArtifacts\":" + codepipeline_json_arr(e5))
+            e5.append(input_artifact_to_cbor(x5))
+        keys.append("inputArtifacts")
+        vals.append(cbor.cbor_list(e5))
     if v.roleArn.is_some():
         auto u6 = v.roleArn.unwrap()
-        parts.append("\"roleArn\":" + codepipeline_json_str(u6))
+        keys.append("roleArn")
+        vals.append(cbor.cbor_text(u6))
     if v.region.is_some():
         auto u7 = v.region.unwrap()
-        parts.append("\"region\":" + codepipeline_json_str(u7))
+        keys.append("region")
+        vals.append(cbor.cbor_text(u7))
     if v.timeoutInMinutes.is_some():
         auto u8 = v.timeoutInMinutes.unwrap()
-        parts.append("\"timeoutInMinutes\":" + str(u8))
-    return codepipeline_json_obj(parts)
+        keys.append("timeoutInMinutes")
+        vals.append(cbor.cbor_int(u8))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StageDeclaration to a compact JSON object (declaration order).
-def stage_declaration_to_json(StageDeclaration v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
+# Serialize RuleExecutionFilter to a CBOR map (member wire name -> value, model order).
+def rule_execution_filter_to_cbor(RuleExecutionFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.pipelineExecutionId.is_some():
+        auto u0 = v.pipelineExecutionId.unwrap()
+        keys.append("pipelineExecutionId")
+        vals.append(cbor.cbor_text(u0))
+    if v.latestInPipelineExecution.is_some():
+        auto u1 = v.latestInPipelineExecution.unwrap()
+        keys.append("latestInPipelineExecution")
+        vals.append(latest_in_pipeline_execution_filter_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleTypeId to a CBOR map (member wire name -> value, model order).
+def rule_type_id_to_cbor(RuleTypeId v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("category")
+    vals.append(cbor.cbor_text(v.category))
+    if v.owner.is_some():
+        auto u0 = v.owner.unwrap()
+        keys.append("owner")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("provider")
+    vals.append(cbor.cbor_text(v.provider))
+    if v.version.is_some():
+        auto u1 = v.version.unwrap()
+        keys.append("version")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SourceRevisionOverride to a CBOR map (member wire name -> value, model order).
+def source_revision_override_to_cbor(SourceRevisionOverride v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("actionName")
+    vals.append(cbor.cbor_text(v.actionName))
+    keys.append("revisionType")
+    vals.append(cbor.cbor_text(v.revisionType))
+    keys.append("revisionValue")
+    vals.append(cbor.cbor_text(v.revisionValue))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StageDeclaration to a CBOR map (member wire name -> value, model order).
+def stage_declaration_to_cbor(StageDeclaration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
     if v.blockers.is_some():
         auto u0 = v.blockers.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"blockers\":" + codepipeline_json_arr(e1))
-    list[str] e2 = []
+            e1.append(blocker_declaration_to_cbor(x1))
+        keys.append("blockers")
+        vals.append(cbor.cbor_list(e1))
+    list[cbor.CborValue] e2 = []
     for x2 in v.actions:
-        e2.append(action_declaration_to_json(x2))
-    parts.append("\"actions\":" + codepipeline_json_arr(e2))
+        e2.append(action_declaration_to_cbor(x2))
+    keys.append("actions")
+    vals.append(cbor.cbor_list(e2))
     if v.onFailure.is_some():
         auto u3 = v.onFailure.unwrap()
-        parts.append("\"onFailure\":" + failure_conditions_to_json(u3))
+        keys.append("onFailure")
+        vals.append(failure_conditions_to_cbor(u3))
     if v.onSuccess.is_some():
         auto u4 = v.onSuccess.unwrap()
-        parts.append("\"onSuccess\":" + success_conditions_to_json(u4))
+        keys.append("onSuccess")
+        vals.append(success_conditions_to_cbor(u4))
     if v.beforeEntry.is_some():
         auto u5 = v.beforeEntry.unwrap()
-        parts.append("\"beforeEntry\":" + before_entry_conditions_to_json(u5))
-    return codepipeline_json_obj(parts)
+        keys.append("beforeEntry")
+        vals.append(before_entry_conditions_to_cbor(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartPipelineExecutionInput to a compact JSON object (declaration order).
-def start_pipeline_execution_input_to_json(StartPipelineExecutionInput v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
+# Serialize StartPipelineExecutionInput to a CBOR map (member wire name -> value, model order).
+def start_pipeline_execution_input_to_cbor(StartPipelineExecutionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
     if v.variables.is_some():
         auto u0 = v.variables.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"variables\":" + codepipeline_json_arr(e1))
+            e1.append(pipeline_variable_to_cbor(x1))
+        keys.append("variables")
+        vals.append(cbor.cbor_list(e1))
     if v.clientRequestToken.is_some():
         auto u2 = v.clientRequestToken.unwrap()
-        parts.append("\"clientRequestToken\":" + codepipeline_json_str(u2))
+        keys.append("clientRequestToken")
+        vals.append(cbor.cbor_text(u2))
     if v.sourceRevisions.is_some():
         auto u3 = v.sourceRevisions.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"sourceRevisions\":" + codepipeline_json_arr(e4))
-    return codepipeline_json_obj(parts)
+            e4.append(source_revision_override_to_cbor(x4))
+        keys.append("sourceRevisions")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize SuccessConditions to a compact JSON object (declaration order).
-def success_conditions_to_json(SuccessConditions v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize StopPipelineExecutionInput to a CBOR map (member wire name -> value, model order).
+def stop_pipeline_execution_input_to_cbor(StopPipelineExecutionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipelineName")
+    vals.append(cbor.cbor_text(v.pipelineName))
+    keys.append("pipelineExecutionId")
+    vals.append(cbor.cbor_text(v.pipelineExecutionId))
+    if v.abandon.is_some():
+        auto u0 = v.abandon.unwrap()
+        keys.append("abandon")
+        vals.append(cbor.cbor_bool(u0))
+    if v.reason.is_some():
+        auto u1 = v.reason.unwrap()
+        keys.append("reason")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SucceededInStageFilter to a CBOR map (member wire name -> value, model order).
+def succeeded_in_stage_filter_to_cbor(SucceededInStageFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.stageName.is_some():
+        auto u0 = v.stageName.unwrap()
+        keys.append("stageName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SuccessConditions to a CBOR map (member wire name -> value, model order).
+def success_conditions_to_cbor(SuccessConditions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.conditions:
-        e0.append(condition_to_json(x0))
-    parts.append("\"conditions\":" + codepipeline_json_arr(e0))
-    return codepipeline_json_obj(parts)
+        e0.append(condition_to_cbor(x0))
+    keys.append("conditions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceInput to a compact JSON object (declaration order).
-def tag_resource_input_to_json(TagResourceInput v) -> str:
-    list[str] parts = []
-    parts.append("\"resourceArn\":" + codepipeline_json_str(v.resourceArn))
-    list[str] e0 = []
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("key")
+    vals.append(cbor.cbor_text(v.key))
+    keys.append("value")
+    vals.append(cbor.cbor_text(v.value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceInput to a CBOR map (member wire name -> value, model order).
+def tag_resource_input_to_cbor(TagResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.tags:
-        e0.append(x0.to_json())
-    parts.append("\"tags\":" + codepipeline_json_arr(e0))
-    return codepipeline_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TargetFilter to a compact JSON object (declaration order).
-def target_filter_to_json(TargetFilter v) -> str:
-    list[str] parts = []
+# Serialize TargetFilter to a CBOR map (member wire name -> value, model order).
+def target_filter_to_cbor(TargetFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.name.is_some():
         auto u0 = v.name.unwrap()
-        parts.append("\"name\":" + codepipeline_json_str(u0))
+        keys.append("name")
+        vals.append(cbor.cbor_text(u0))
     if v.values.is_some():
         auto u1 = v.values.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(codepipeline_json_str(x2))
-        parts.append("\"values\":" + codepipeline_json_arr(e2))
-    return codepipeline_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("values")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceInput to a compact JSON object (declaration order).
-def untag_resource_input_to_json(UntagResourceInput v) -> str:
-    list[str] parts = []
-    parts.append("\"resourceArn\":" + codepipeline_json_str(v.resourceArn))
-    list[str] e0 = []
+# Serialize UntagResourceInput to a CBOR map (member wire name -> value, model order).
+def untag_resource_input_to_cbor(UntagResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.tagKeys:
-        e0.append(codepipeline_json_str(x0))
-    parts.append("\"tagKeys\":" + codepipeline_json_arr(e0))
-    return codepipeline_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("tagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateActionTypeInput to a compact JSON object (declaration order).
-def update_action_type_input_to_json(UpdateActionTypeInput v) -> str:
-    list[str] parts = []
-    parts.append("\"actionType\":" + action_type_declaration_to_json(v.actionType))
-    return codepipeline_json_obj(parts)
+# Serialize UpdateActionTypeInput to a CBOR map (member wire name -> value, model order).
+def update_action_type_input_to_cbor(UpdateActionTypeInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("actionType")
+    vals.append(action_type_declaration_to_cbor(v.actionType))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdatePipelineInput to a compact JSON object (declaration order).
-def update_pipeline_input_to_json(UpdatePipelineInput v) -> str:
-    list[str] parts = []
-    parts.append("\"pipeline\":" + pipeline_declaration_to_json(v.pipeline))
-    return codepipeline_json_obj(parts)
+# Serialize UpdatePipelineInput to a CBOR map (member wire name -> value, model order).
+def update_pipeline_input_to_cbor(UpdatePipelineInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("pipeline")
+    vals.append(pipeline_declaration_to_cbor(v.pipeline))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize WebhookDefinition to a compact JSON object (declaration order).
-def webhook_definition_to_json(WebhookDefinition v) -> str:
-    list[str] parts = []
-    parts.append("\"name\":" + codepipeline_json_str(v.name))
-    parts.append("\"targetPipeline\":" + codepipeline_json_str(v.targetPipeline))
-    parts.append("\"targetAction\":" + codepipeline_json_str(v.targetAction))
-    list[str] e0 = []
+# Serialize WebhookAuthConfiguration to a CBOR map (member wire name -> value, model order).
+def webhook_auth_configuration_to_cbor(WebhookAuthConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AllowedIPRange.is_some():
+        auto u0 = v.AllowedIPRange.unwrap()
+        keys.append("AllowedIPRange")
+        vals.append(cbor.cbor_text(u0))
+    if v.SecretToken.is_some():
+        auto u1 = v.SecretToken.unwrap()
+        keys.append("SecretToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize WebhookDefinition to a CBOR map (member wire name -> value, model order).
+def webhook_definition_to_cbor(WebhookDefinition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("name")
+    vals.append(cbor.cbor_text(v.name))
+    keys.append("targetPipeline")
+    vals.append(cbor.cbor_text(v.targetPipeline))
+    keys.append("targetAction")
+    vals.append(cbor.cbor_text(v.targetAction))
+    list[cbor.CborValue] e0 = []
     for x0 in v.filters:
-        e0.append(x0.to_json())
-    parts.append("\"filters\":" + codepipeline_json_arr(e0))
-    parts.append("\"authentication\":" + v.authentication.to_json())
-    parts.append("\"authenticationConfiguration\":" + v.authenticationConfiguration.to_json())
-    return codepipeline_json_obj(parts)
+        e0.append(webhook_filter_rule_to_cbor(x0))
+    keys.append("filters")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("authentication")
+    vals.append(cbor.cbor_text(v.authentication))
+    keys.append("authenticationConfiguration")
+    vals.append(webhook_auth_configuration_to_cbor(v.authenticationConfiguration))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize WebhookFilterRule to a CBOR map (member wire name -> value, model order).
+def webhook_filter_rule_to_cbor(WebhookFilterRule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("jsonPath")
+    vals.append(cbor.cbor_text(v.jsonPath))
+    if v.matchEquals.is_some():
+        auto u0 = v.matchEquals.unwrap()
+        keys.append("matchEquals")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
 
 # A bound CodePipeline client: credentials + region, threaded into every operation.
 struct CodePipelineClient:
@@ -2662,379 +3312,399 @@ struct CodePipelineClient:
 
     # AcknowledgeJob
     # errors: InvalidNonceException, JobNotFoundException, ValidationException
-    def acknowledge_job(self, AcknowledgeJobInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "AcknowledgeJob", body)
+    def acknowledge_job(self, AcknowledgeJobInput input) -> bytes:
+        auto body = cbor.cbor_encode(acknowledge_job_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "AcknowledgeJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AcknowledgeThirdPartyJob
     # errors: InvalidClientTokenException, InvalidNonceException, JobNotFoundException, ValidationException
-    def acknowledge_third_party_job(self, AcknowledgeThirdPartyJobInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "AcknowledgeThirdPartyJob", body)
+    def acknowledge_third_party_job(self, AcknowledgeThirdPartyJobInput input) -> bytes:
+        auto body = cbor.cbor_encode(acknowledge_third_party_job_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "AcknowledgeThirdPartyJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateCustomActionType
     # errors: ConcurrentModificationException, InvalidTagsException, LimitExceededException, TooManyTagsException, ValidationException
-    def create_custom_action_type(self, CreateCustomActionTypeInput input) -> str:
-        auto body = create_custom_action_type_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "CreateCustomActionType", body)
+    def create_custom_action_type(self, CreateCustomActionTypeInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_custom_action_type_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "CreateCustomActionType", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePipeline
     # errors: ConcurrentModificationException, InvalidActionDeclarationException, InvalidBlockerDeclarationException, InvalidStageDeclarationException, InvalidStructureException, InvalidTagsException, LimitExceededException, PipelineNameInUseException, TooManyTagsException, ValidationException
-    def create_pipeline(self, CreatePipelineInput input) -> str:
-        auto body = create_pipeline_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "CreatePipeline", body)
+    def create_pipeline(self, CreatePipelineInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_pipeline_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "CreatePipeline", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteCustomActionType
     # errors: ConcurrentModificationException, ValidationException
-    def delete_custom_action_type(self, DeleteCustomActionTypeInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "DeleteCustomActionType", body)
+    def delete_custom_action_type(self, DeleteCustomActionTypeInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_custom_action_type_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "DeleteCustomActionType", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeletePipeline
     # errors: ConcurrentModificationException, ValidationException
-    def delete_pipeline(self, DeletePipelineInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "DeletePipeline", body)
+    def delete_pipeline(self, DeletePipelineInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_pipeline_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "DeletePipeline", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteWebhook
     # errors: ConcurrentModificationException, ValidationException
-    def delete_webhook(self, DeleteWebhookInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "DeleteWebhook", body)
+    def delete_webhook(self, DeleteWebhookInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_webhook_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "DeleteWebhook", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeregisterWebhookWithThirdParty
     # errors: ValidationException, WebhookNotFoundException
-    def deregister_webhook_with_third_party(self, DeregisterWebhookWithThirdPartyInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "DeregisterWebhookWithThirdParty", body)
+    def deregister_webhook_with_third_party(self, DeregisterWebhookWithThirdPartyInput input) -> bytes:
+        auto body = cbor.cbor_encode(deregister_webhook_with_third_party_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "DeregisterWebhookWithThirdParty", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableStageTransition
     # errors: PipelineNotFoundException, StageNotFoundException, ValidationException
-    def disable_stage_transition(self, DisableStageTransitionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "DisableStageTransition", body)
+    def disable_stage_transition(self, DisableStageTransitionInput input) -> bytes:
+        auto body = cbor.cbor_encode(disable_stage_transition_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "DisableStageTransition", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableStageTransition
     # errors: PipelineNotFoundException, StageNotFoundException, ValidationException
-    def enable_stage_transition(self, EnableStageTransitionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "EnableStageTransition", body)
+    def enable_stage_transition(self, EnableStageTransitionInput input) -> bytes:
+        auto body = cbor.cbor_encode(enable_stage_transition_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "EnableStageTransition", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetActionType
     # errors: ActionTypeNotFoundException, ValidationException
-    def get_action_type(self, GetActionTypeInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "GetActionType", body)
+    def get_action_type(self, GetActionTypeInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_action_type_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "GetActionType", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetJobDetails
     # errors: JobNotFoundException, ValidationException
-    def get_job_details(self, GetJobDetailsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "GetJobDetails", body)
+    def get_job_details(self, GetJobDetailsInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_job_details_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "GetJobDetails", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetPipeline
     # errors: PipelineNotFoundException, PipelineVersionNotFoundException, ValidationException
-    def get_pipeline(self, GetPipelineInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "GetPipeline", body)
+    def get_pipeline(self, GetPipelineInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_pipeline_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "GetPipeline", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetPipelineExecution
     # errors: PipelineExecutionNotFoundException, PipelineNotFoundException, ValidationException
-    def get_pipeline_execution(self, GetPipelineExecutionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "GetPipelineExecution", body)
+    def get_pipeline_execution(self, GetPipelineExecutionInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_pipeline_execution_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "GetPipelineExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetPipelineState
     # errors: PipelineNotFoundException, ValidationException
-    def get_pipeline_state(self, GetPipelineStateInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "GetPipelineState", body)
+    def get_pipeline_state(self, GetPipelineStateInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_pipeline_state_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "GetPipelineState", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetThirdPartyJobDetails
     # errors: InvalidClientTokenException, InvalidJobException, JobNotFoundException, ValidationException
-    def get_third_party_job_details(self, GetThirdPartyJobDetailsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "GetThirdPartyJobDetails", body)
+    def get_third_party_job_details(self, GetThirdPartyJobDetailsInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_third_party_job_details_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "GetThirdPartyJobDetails", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListActionExecutions
     # errors: InvalidNextTokenException, PipelineExecutionNotFoundException, PipelineNotFoundException, ValidationException
-    def list_action_executions(self, ListActionExecutionsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListActionExecutions", body)
+    def list_action_executions(self, ListActionExecutionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_action_executions_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListActionExecutions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListActionTypes
     # errors: InvalidNextTokenException, ValidationException
-    def list_action_types(self, ListActionTypesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListActionTypes", body)
+    def list_action_types(self, ListActionTypesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_action_types_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListActionTypes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDeployActionExecutionTargets
     # errors: ActionExecutionNotFoundException, InvalidNextTokenException, PipelineNotFoundException, ValidationException
-    def list_deploy_action_execution_targets(self, ListDeployActionExecutionTargetsInput input) -> str:
-        auto body = list_deploy_action_execution_targets_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListDeployActionExecutionTargets", body)
+    def list_deploy_action_execution_targets(self, ListDeployActionExecutionTargetsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_deploy_action_execution_targets_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListDeployActionExecutionTargets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPipelineExecutions
     # errors: InvalidNextTokenException, PipelineNotFoundException, ValidationException
-    def list_pipeline_executions(self, ListPipelineExecutionsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListPipelineExecutions", body)
+    def list_pipeline_executions(self, ListPipelineExecutionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_pipeline_executions_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListPipelineExecutions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPipelines
     # errors: InvalidNextTokenException, ValidationException
-    def list_pipelines(self, ListPipelinesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListPipelines", body)
+    def list_pipelines(self, ListPipelinesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_pipelines_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListPipelines", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListRuleExecutions
     # errors: InvalidNextTokenException, PipelineExecutionNotFoundException, PipelineNotFoundException, ValidationException
-    def list_rule_executions(self, ListRuleExecutionsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListRuleExecutions", body)
+    def list_rule_executions(self, ListRuleExecutionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_rule_executions_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListRuleExecutions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListRuleTypes
     # errors: InvalidNextTokenException, ValidationException
-    def list_rule_types(self, ListRuleTypesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListRuleTypes", body)
+    def list_rule_types(self, ListRuleTypesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_rule_types_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListRuleTypes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: InvalidArnException, InvalidNextTokenException, ResourceNotFoundException, ValidationException
-    def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListWebhooks
     # errors: InvalidNextTokenException, ValidationException
-    def list_webhooks(self, ListWebhooksInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListWebhooks", body)
+    def list_webhooks(self, ListWebhooksInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_webhooks_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "ListWebhooks", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # OverrideStageCondition
     # errors: ConcurrentPipelineExecutionsLimitExceededException, ConditionNotOverridableException, ConflictException, NotLatestPipelineExecutionException, PipelineNotFoundException, StageNotFoundException, ValidationException
-    def override_stage_condition(self, OverrideStageConditionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "OverrideStageCondition", body)
+    def override_stage_condition(self, OverrideStageConditionInput input) -> bytes:
+        auto body = cbor.cbor_encode(override_stage_condition_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "OverrideStageCondition", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PollForJobs
     # errors: ActionTypeNotFoundException, ValidationException
-    def poll_for_jobs(self, PollForJobsInput input) -> str:
-        auto body = poll_for_jobs_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PollForJobs", body)
+    def poll_for_jobs(self, PollForJobsInput input) -> bytes:
+        auto body = cbor.cbor_encode(poll_for_jobs_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PollForJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PollForThirdPartyJobs
     # errors: ActionTypeNotFoundException, ValidationException
-    def poll_for_third_party_jobs(self, PollForThirdPartyJobsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PollForThirdPartyJobs", body)
+    def poll_for_third_party_jobs(self, PollForThirdPartyJobsInput input) -> bytes:
+        auto body = cbor.cbor_encode(poll_for_third_party_jobs_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PollForThirdPartyJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutActionRevision
     # errors: ActionNotFoundException, ConcurrentPipelineExecutionsLimitExceededException, PipelineNotFoundException, StageNotFoundException, ValidationException
-    def put_action_revision(self, PutActionRevisionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutActionRevision", body)
+    def put_action_revision(self, PutActionRevisionInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_action_revision_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutActionRevision", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutApprovalResult
     # errors: ActionNotFoundException, ApprovalAlreadyCompletedException, InvalidApprovalTokenException, PipelineNotFoundException, StageNotFoundException, ValidationException
-    def put_approval_result(self, PutApprovalResultInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutApprovalResult", body)
+    def put_approval_result(self, PutApprovalResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_approval_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutApprovalResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutJobFailureResult
     # errors: InvalidJobStateException, JobNotFoundException, ValidationException
-    def put_job_failure_result(self, PutJobFailureResultInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutJobFailureResult", body)
+    def put_job_failure_result(self, PutJobFailureResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_job_failure_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutJobFailureResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutJobSuccessResult
     # errors: InvalidJobStateException, JobNotFoundException, OutputVariablesSizeExceededException, ValidationException
-    def put_job_success_result(self, PutJobSuccessResultInput input) -> str:
-        auto body = put_job_success_result_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutJobSuccessResult", body)
+    def put_job_success_result(self, PutJobSuccessResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_job_success_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutJobSuccessResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutThirdPartyJobFailureResult
     # errors: InvalidClientTokenException, InvalidJobStateException, JobNotFoundException, ValidationException
-    def put_third_party_job_failure_result(self, PutThirdPartyJobFailureResultInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutThirdPartyJobFailureResult", body)
+    def put_third_party_job_failure_result(self, PutThirdPartyJobFailureResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_third_party_job_failure_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutThirdPartyJobFailureResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutThirdPartyJobSuccessResult
     # errors: InvalidClientTokenException, InvalidJobStateException, JobNotFoundException, ValidationException
-    def put_third_party_job_success_result(self, PutThirdPartyJobSuccessResultInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutThirdPartyJobSuccessResult", body)
+    def put_third_party_job_success_result(self, PutThirdPartyJobSuccessResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_third_party_job_success_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutThirdPartyJobSuccessResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutWebhook
     # errors: ConcurrentModificationException, InvalidTagsException, InvalidWebhookAuthenticationParametersException, InvalidWebhookFilterPatternException, LimitExceededException, PipelineNotFoundException, TooManyTagsException, ValidationException
-    def put_webhook(self, PutWebhookInput input) -> str:
-        auto body = put_webhook_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "PutWebhook", body)
+    def put_webhook(self, PutWebhookInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_webhook_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "PutWebhook", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterWebhookWithThirdParty
     # errors: ValidationException, WebhookNotFoundException
-    def register_webhook_with_third_party(self, RegisterWebhookWithThirdPartyInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "RegisterWebhookWithThirdParty", body)
+    def register_webhook_with_third_party(self, RegisterWebhookWithThirdPartyInput input) -> bytes:
+        auto body = cbor.cbor_encode(register_webhook_with_third_party_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "RegisterWebhookWithThirdParty", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RetryStageExecution
     # errors: ConcurrentPipelineExecutionsLimitExceededException, ConflictException, NotLatestPipelineExecutionException, PipelineNotFoundException, StageNotFoundException, StageNotRetryableException, ValidationException
-    def retry_stage_execution(self, RetryStageExecutionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "RetryStageExecution", body)
+    def retry_stage_execution(self, RetryStageExecutionInput input) -> bytes:
+        auto body = cbor.cbor_encode(retry_stage_execution_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "RetryStageExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RollbackStage
     # errors: ConflictException, PipelineExecutionNotFoundException, PipelineExecutionOutdatedException, PipelineNotFoundException, StageNotFoundException, UnableToRollbackStageException, ValidationException
-    def rollback_stage(self, RollbackStageInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "RollbackStage", body)
+    def rollback_stage(self, RollbackStageInput input) -> bytes:
+        auto body = cbor.cbor_encode(rollback_stage_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "RollbackStage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartPipelineExecution
     # errors: ConcurrentPipelineExecutionsLimitExceededException, ConflictException, PipelineNotFoundException, ValidationException
-    def start_pipeline_execution(self, StartPipelineExecutionInput input) -> str:
-        auto body = start_pipeline_execution_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "StartPipelineExecution", body)
+    def start_pipeline_execution(self, StartPipelineExecutionInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_pipeline_execution_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "StartPipelineExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopPipelineExecution
     # errors: ConflictException, DuplicatedStopRequestException, PipelineExecutionNotStoppableException, PipelineNotFoundException, ValidationException
-    def stop_pipeline_execution(self, StopPipelineExecutionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "StopPipelineExecution", body)
+    def stop_pipeline_execution(self, StopPipelineExecutionInput input) -> bytes:
+        auto body = cbor.cbor_encode(stop_pipeline_execution_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "StopPipelineExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: ConcurrentModificationException, InvalidArnException, InvalidTagsException, ResourceNotFoundException, TooManyTagsException, ValidationException
-    def tag_resource(self, TagResourceInput input) -> str:
-        auto body = tag_resource_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: ConcurrentModificationException, InvalidArnException, InvalidTagsException, ResourceNotFoundException, ValidationException
-    def untag_resource(self, UntagResourceInput input) -> str:
-        auto body = untag_resource_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateActionType
     # errors: ActionTypeNotFoundException, RequestFailedException, ValidationException
-    def update_action_type(self, UpdateActionTypeInput input) -> str:
-        auto body = update_action_type_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "UpdateActionType", body)
+    def update_action_type(self, UpdateActionTypeInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_action_type_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "UpdateActionType", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdatePipeline
     # errors: InvalidActionDeclarationException, InvalidBlockerDeclarationException, InvalidStageDeclarationException, InvalidStructureException, LimitExceededException, ValidationException
-    def update_pipeline(self, UpdatePipelineInput input) -> str:
-        auto body = update_pipeline_input_to_json(input)
-        return awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "UpdatePipeline", body)
-
-    # Paginator for ListActionExecutions — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: actionExecutionDetails).
-    def paginate_list_action_executions(self, ListActionExecutionsInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListActionExecutions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListActionTypes — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: actionTypes).
-    def paginate_list_action_types(self, ListActionTypesInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListActionTypes", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListDeployActionExecutionTargets — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: targets).
-    def paginate_list_deploy_action_execution_targets(self, ListDeployActionExecutionTargetsInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = list_deploy_action_execution_targets_input_to_json(input)
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListDeployActionExecutionTargets", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListPipelineExecutions — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: pipelineExecutionSummaries).
-    def paginate_list_pipeline_executions(self, ListPipelineExecutionsInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListPipelineExecutions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListPipelines — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: pipelines).
-    def paginate_list_pipelines(self, ListPipelinesInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListPipelines", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListRuleExecutions — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: ruleExecutionDetails).
-    def paginate_list_rule_executions(self, ListRuleExecutionsInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListRuleExecutions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListTagsForResource — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: tags).
-    def paginate_list_tags_for_resource(self, ListTagsForResourceInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListTagsForResource", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListWebhooks — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: webhooks).
-    def paginate_list_webhooks(self, ListWebhooksInput input):
-        auto host = endpoints.regional_host(codepipeline_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codepipeline_protocol(), self.creds, self.region, "ListWebhooks", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_pipeline(self, UpdatePipelineInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_pipeline_input_to_cbor(input))
+        auto host = endpoints.regional_host(codepipeline_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codepipeline_service(), self.region, host, "CodePipeline_20150709", "UpdatePipeline", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a CodePipelineClient bound to credentials + region.
 def codepipeline_client(core.Credentials creds, str region) -> CodePipelineClient:

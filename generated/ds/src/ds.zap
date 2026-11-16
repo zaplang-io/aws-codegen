@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Directory Service (serviceId Directory Service, API 2015-04-16)
-# Protocol: awsJson 1.1 (targetPrefix DirectoryService_20150416)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service ds, service shape DirectoryService_20150416)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 80 operations — 80 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   249 structs (180 @derive(Json)), 32 enums, 40 error variants.
-#   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   1 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Coverage (smithy-rpc-v2-cbor): 80 operations — 80 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   249 structs (plain carriers), 32 enums, 40 error variants.
+#   0 paginators generated (15 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (1 skipped) from waiters-2.json.
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import aws_core.waiters
+import aws_core.cbor
 
-# The Directory_Service awsJson protocol: version 1.1, API id "DirectoryService_20150416".
-def ds_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("DirectoryService_20150416", "ds")
+# The Directory_Service smithy-rpc-v2-cbor protocol: SigV4 service "ds" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/DirectoryService_20150416/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def ds_service() -> str:
+    return "ds"
 
 # --- enums -----------------------------------------------------------------
 
@@ -337,65 +340,46 @@ enum UpdateType:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct ADAssessmentLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct AcceptSharedDirectoryRequest:
     str SharedDirectoryId
 
-@derive(Json)
 struct AcceptSharedDirectoryResult:
     Optional[SharedDirectory] SharedDirectory
 
-@derive(Json)
 struct AccessDeniedException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) IpRoutes: list[IpRoute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AddIpRoutesRequest:
     str DirectoryId
     list[IpRoute] IpRoutes
     Optional[bool] UpdateSecurityGroupForDirectoryControllers
 
-@derive(Json)
 struct AddIpRoutesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) VPCSettings: DirectoryVpcSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AddRegionRequest:
     str DirectoryId
     str RegionName
     DirectoryVpcSettings VPCSettings
 
-@derive(Json)
 struct AddRegionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AddTagsToResourceRequest:
     str ResourceId
     list[Tag] Tags
 
-@derive(Json)
 struct AddTagsToResourceResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str], SubnetIds: list[str], SecurityGroupIds: list[str], SelfManagedInstanceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Assessment:
     Optional[str] AssessmentId
     Optional[str] DirectoryId
@@ -413,9 +397,6 @@ struct Assessment:
     Optional[str] ReportType
     Optional[str] Version
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str], VpcSettings: DirectoryVpcSettings, InstanceIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssessmentConfiguration:
     list[str] CustomerDnsIps
     str DnsName
@@ -423,16 +404,10 @@ struct AssessmentConfiguration:
     list[str] InstanceIds
     Optional[list[str]] SecurityGroupIds
 
-# no @derive(Json): member(s) Validations: list[AssessmentValidation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssessmentReport:
     Optional[str] DomainControllerIp
     Optional[list[AssessmentValidation]] Validations
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssessmentSummary:
     Optional[str] AssessmentId
     Optional[str] DirectoryId
@@ -443,7 +418,6 @@ struct AssessmentSummary:
     Optional[list[str]] CustomerDnsIps
     Optional[str] ReportType
 
-@derive(Json)
 struct AssessmentValidation:
     Optional[str] Category
     Optional[str] Name
@@ -453,127 +427,99 @@ struct AssessmentValidation:
     Optional[DateTime] StartTime
     Optional[DateTime] LastUpdateDateTime
 
-@derive(Json)
 struct Attribute:
     Optional[str] Name
     Optional[str] Value
 
-@derive(Json)
 struct AuthenticationFailedException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct CancelSchemaExtensionRequest:
     str DirectoryId
     str SchemaExtensionId
 
-@derive(Json)
 struct CancelSchemaExtensionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Certificate:
     Optional[str] CertificateId
-    Optional[CertificateState] State
+    Optional[str] State
     Optional[str] StateReason
     Optional[str] CommonName
     Optional[DateTime] RegisteredDateTime
     Optional[DateTime] ExpiryDateTime
-    Optional[CertificateType] Type
+    Optional[str] Type
     Optional[ClientCertAuthSettings] ClientCertAuthSettings
 
-@derive(Json)
 struct CertificateAlreadyExistsException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct CertificateDoesNotExistException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct CertificateInUseException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct CertificateInfo:
     Optional[str] CertificateId
     Optional[str] CommonName
-    Optional[CertificateState] State
+    Optional[str] State
     Optional[DateTime] ExpiryDateTime
-    Optional[CertificateType] Type
+    Optional[str] Type
 
-@derive(Json)
 struct CertificateLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct ClientAuthenticationSettingInfo:
-    Optional[ClientAuthenticationType] Type
-    Optional[ClientAuthenticationStatus] Status
+    Optional[str] Type
+    Optional[str] Status
     Optional[DateTime] LastUpdatedDateTime
 
-@derive(Json)
 struct ClientCertAuthSettings:
     Optional[str] OCSPUrl
 
-@derive(Json)
 struct ClientException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) ComputerAttributes: list[Attribute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Computer:
     Optional[str] ComputerId
     Optional[str] ComputerName
     Optional[list[Attribute]] ComputerAttributes
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ConditionalForwarder:
     Optional[str] RemoteDomainName
     Optional[list[str]] DnsIpAddrs
     Optional[list[str]] DnsIpv6Addrs
     Optional[str] ReplicationScope
 
-# no @derive(Json): member(s) ConnectSettings: DirectoryConnectSettings, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ConnectDirectoryRequest:
     str Name
     Optional[str] ShortName
     str Password
     Optional[str] Description
-    DirectorySize Size
+    str Size
     DirectoryConnectSettings ConnectSettings
     Optional[list[Tag]] Tags
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
 
-@derive(Json)
 struct ConnectDirectoryResult:
     Optional[str] DirectoryId
 
-@derive(Json)
 struct CreateAliasRequest:
     str DirectoryId
     str Alias
 
-@derive(Json)
 struct CreateAliasResult:
     Optional[str] DirectoryId
     Optional[str] Alias
 
-# no @derive(Json): member(s) ComputerAttributes: list[Attribute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateComputerRequest:
     str DirectoryId
     str ComputerName
@@ -581,420 +527,296 @@ struct CreateComputerRequest:
     Optional[str] OrganizationalUnitDistinguishedName
     Optional[list[Attribute]] ComputerAttributes
 
-# no @derive(Json): member(s) Computer: Computer not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateComputerResult:
     Optional[Computer] Computer
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateConditionalForwarderRequest:
     str DirectoryId
     str RemoteDomainName
     Optional[list[str]] DnsIpAddrs
     Optional[list[str]] DnsIpv6Addrs
 
-@derive(Json)
 struct CreateConditionalForwarderResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectoryRequest:
     str Name
     Optional[str] ShortName
     str Password
     Optional[str] Description
-    DirectorySize Size
+    str Size
     Optional[DirectoryVpcSettings] VpcSettings
     Optional[list[Tag]] Tags
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
 
-@derive(Json)
 struct CreateDirectoryResult:
     Optional[str] DirectoryId
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateHybridADRequest:
     str SecretArn
     str AssessmentId
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateHybridADResult:
     Optional[str] DirectoryId
 
-@derive(Json)
 struct CreateLogSubscriptionRequest:
     str DirectoryId
     str LogGroupName
 
-@derive(Json)
 struct CreateLogSubscriptionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateMicrosoftADRequest:
     str Name
     Optional[str] ShortName
     str Password
     Optional[str] Description
     DirectoryVpcSettings VpcSettings
-    Optional[DirectoryEdition] Edition
+    Optional[str] Edition
     Optional[list[Tag]] Tags
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
 
-@derive(Json)
 struct CreateMicrosoftADResult:
     Optional[str] DirectoryId
 
-@derive(Json)
 struct CreateSnapshotRequest:
     str DirectoryId
     Optional[str] Name
 
-@derive(Json)
 struct CreateSnapshotResult:
     Optional[str] SnapshotId
 
-# no @derive(Json): member(s) ConditionalForwarderIpAddrs: list[str], ConditionalForwarderIpv6Addrs: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTrustRequest:
     str DirectoryId
     str RemoteDomainName
     str TrustPassword
-    TrustDirection TrustDirection
-    Optional[TrustType] TrustType
+    str TrustDirection
+    Optional[str] TrustType
     Optional[list[str]] ConditionalForwarderIpAddrs
     Optional[list[str]] ConditionalForwarderIpv6Addrs
-    Optional[SelectiveAuth] SelectiveAuth
+    Optional[str] SelectiveAuth
 
-@derive(Json)
 struct CreateTrustResult:
     Optional[str] TrustId
 
-@derive(Json)
 struct DeleteADAssessmentRequest:
     str AssessmentId
 
-@derive(Json)
 struct DeleteADAssessmentResult:
     Optional[str] AssessmentId
 
-@derive(Json)
 struct DeleteConditionalForwarderRequest:
     str DirectoryId
     str RemoteDomainName
 
-@derive(Json)
 struct DeleteConditionalForwarderResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteDirectoryRequest:
     str DirectoryId
 
-@derive(Json)
 struct DeleteDirectoryResult:
     Optional[str] DirectoryId
 
-@derive(Json)
 struct DeleteLogSubscriptionRequest:
     str DirectoryId
 
-@derive(Json)
 struct DeleteLogSubscriptionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteSnapshotRequest:
     str SnapshotId
 
-@derive(Json)
 struct DeleteSnapshotResult:
     Optional[str] SnapshotId
 
-@derive(Json)
 struct DeleteTrustRequest:
     str TrustId
     Optional[bool] DeleteAssociatedConditionalForwarder
 
-@derive(Json)
 struct DeleteTrustResult:
     Optional[str] TrustId
 
-@derive(Json)
 struct DeregisterCertificateRequest:
     str DirectoryId
     str CertificateId
 
-@derive(Json)
 struct DeregisterCertificateResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeregisterEventTopicRequest:
     str DirectoryId
     str TopicName
 
-@derive(Json)
 struct DeregisterEventTopicResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeADAssessmentRequest:
     str AssessmentId
 
-# no @derive(Json): member(s) Assessment: Assessment, AssessmentReports: list[AssessmentReport] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeADAssessmentResult:
     Optional[Assessment] Assessment
     Optional[list[AssessmentReport]] AssessmentReports
 
-@derive(Json)
 struct DescribeCAEnrollmentPolicyRequest:
     str DirectoryId
 
-@derive(Json)
 struct DescribeCAEnrollmentPolicyResult:
     Optional[str] DirectoryId
     Optional[str] PcaConnectorArn
-    Optional[CaEnrollmentPolicyStatus] CaEnrollmentPolicyStatus
+    Optional[str] CaEnrollmentPolicyStatus
     Optional[DateTime] LastUpdatedDateTime
     Optional[str] CaEnrollmentPolicyStatusReason
 
-@derive(Json)
 struct DescribeCertificateRequest:
     str DirectoryId
     str CertificateId
 
-@derive(Json)
 struct DescribeCertificateResult:
     Optional[Certificate] Certificate
 
-@derive(Json)
 struct DescribeClientAuthenticationSettingsRequest:
     str DirectoryId
-    Optional[ClientAuthenticationType] Type
+    Optional[str] Type
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ClientAuthenticationSettingsInfo: list[ClientAuthenticationSettingInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClientAuthenticationSettingsResult:
     Optional[list[ClientAuthenticationSettingInfo]] ClientAuthenticationSettingsInfo
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RemoteDomainNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeConditionalForwardersRequest:
     str DirectoryId
     Optional[list[str]] RemoteDomainNames
 
-# no @derive(Json): member(s) ConditionalForwarders: list[ConditionalForwarder] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeConditionalForwardersResult:
     Optional[list[ConditionalForwarder]] ConditionalForwarders
 
-# no @derive(Json): member(s) DirectoryIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDirectoriesRequest:
     Optional[list[str]] DirectoryIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) DirectoryDescriptions: list[DirectoryDescription] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDirectoriesResult:
     Optional[list[DirectoryDescription]] DirectoryDescriptions
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeDirectoryDataAccessRequest:
     str DirectoryId
 
-@derive(Json)
 struct DescribeDirectoryDataAccessResult:
-    Optional[DataAccessStatus] DataAccessStatus
+    Optional[str] DataAccessStatus
 
-# no @derive(Json): member(s) DomainControllerIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDomainControllersRequest:
     str DirectoryId
     Optional[list[str]] DomainControllerIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) DomainControllers: list[DomainController] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDomainControllersResult:
     Optional[list[DomainController]] DomainControllers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TopicNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEventTopicsRequest:
     Optional[str] DirectoryId
     Optional[list[str]] TopicNames
 
-# no @derive(Json): member(s) EventTopics: list[EventTopic] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEventTopicsResult:
     Optional[list[EventTopic]] EventTopics
 
-@derive(Json)
 struct DescribeHybridADUpdateRequest:
     str DirectoryId
-    Optional[HybridUpdateType] UpdateType
+    Optional[str] UpdateType
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UpdateActivities: HybridUpdateActivities not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeHybridADUpdateResult:
     Optional[HybridUpdateActivities] UpdateActivities
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeLDAPSSettingsRequest:
     str DirectoryId
     Optional[str] Type
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) LDAPSSettingsInfo: list[LDAPSSettingInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLDAPSSettingsResult:
     Optional[list[LDAPSSettingInfo]] LDAPSSettingsInfo
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeRegionsRequest:
     str DirectoryId
     Optional[str] RegionName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RegionsDescription: list[RegionDescription] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeRegionsResult:
     Optional[list[RegionDescription]] RegionsDescription
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeSettingsRequest:
     str DirectoryId
-    Optional[DirectoryConfigurationStatus] Status
+    Optional[str] Status
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SettingEntries: list[SettingEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSettingsResult:
     Optional[str] DirectoryId
     Optional[list[SettingEntry]] SettingEntries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SharedDirectoryIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSharedDirectoriesRequest:
     str OwnerDirectoryId
     Optional[list[str]] SharedDirectoryIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) SharedDirectories: list[SharedDirectory] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSharedDirectoriesResult:
     Optional[list[SharedDirectory]] SharedDirectories
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SnapshotIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSnapshotsRequest:
     Optional[str] DirectoryId
     Optional[list[str]] SnapshotIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Snapshots: list[Snapshot] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSnapshotsResult:
     Optional[list[Snapshot]] Snapshots
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrustIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTrustsRequest:
     Optional[str] DirectoryId
     Optional[list[str]] TrustIds
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Trusts: list[Trust] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTrustsResult:
     Optional[list[Trust]] Trusts
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeUpdateDirectoryRequest:
     str DirectoryId
-    UpdateType UpdateType
+    str UpdateType
     Optional[str] RegionName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UpdateActivities: list[UpdateInfoEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeUpdateDirectoryResult:
     Optional[list[UpdateInfoEntry]] UpdateActivities
     Optional[str] NextToken
 
-@derive(Json)
 struct DirectoryAlreadyInRegionException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct DirectoryAlreadySharedException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) SubnetIds: list[str], CustomerDnsIps: list[str], CustomerDnsIpsV6: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectoryConnectSettings:
     str VpcId
     list[str] SubnetIds
@@ -1002,9 +824,6 @@ struct DirectoryConnectSettings:
     Optional[list[str]] CustomerDnsIpsV6
     str CustomerUserName
 
-# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str], ConnectIps: list[str], ConnectIpsV6: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectoryConnectSettingsDescription:
     Optional[str] VpcId
     Optional[list[str]] SubnetIds
@@ -1014,56 +833,49 @@ struct DirectoryConnectSettingsDescription:
     Optional[list[str]] ConnectIps
     Optional[list[str]] ConnectIpsV6
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str], VpcSettings: DirectoryVpcSettingsDescription, ConnectSettings: DirectoryConnectSettingsDescription, RadiusSettings: RadiusSettings, OwnerDirectoryDescription: OwnerDirectoryDescription, RegionsInfo: RegionsInfo, HybridSettings: HybridSettingsDescription not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectoryDescription:
     Optional[str] DirectoryId
     Optional[str] Name
     Optional[str] ShortName
-    Optional[DirectorySize] Size
-    Optional[DirectoryEdition] Edition
+    Optional[str] Size
+    Optional[str] Edition
     Optional[str] Alias
     Optional[str] AccessUrl
     Optional[str] Description
     Optional[list[str]] DnsIpAddrs
     Optional[list[str]] DnsIpv6Addrs
-    Optional[DirectoryStage] Stage
-    Optional[ShareStatus] ShareStatus
-    Optional[ShareMethod] ShareMethod
+    Optional[str] Stage
+    Optional[str] ShareStatus
+    Optional[str] ShareMethod
     Optional[str] ShareNotes
     Optional[DateTime] LaunchTime
     Optional[DateTime] StageLastUpdatedDateTime
-    Optional[DirectoryType] Type
+    Optional[str] Type
     Optional[DirectoryVpcSettingsDescription] VpcSettings
     Optional[DirectoryConnectSettingsDescription] ConnectSettings
     Optional[RadiusSettings] RadiusSettings
-    Optional[RadiusStatus] RadiusStatus
+    Optional[str] RadiusStatus
     Optional[str] StageReason
     Optional[bool] SsoEnabled
     Optional[int64] DesiredNumberOfDomainControllers
     Optional[OwnerDirectoryDescription] OwnerDirectoryDescription
     Optional[RegionsInfo] RegionsInfo
-    Optional[OSVersion] OsVersion
+    Optional[str] OsVersion
     Optional[HybridSettingsDescription] HybridSettings
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
 
-@derive(Json)
 struct DirectoryDoesNotExistException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct DirectoryInDesiredStateException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct DirectoryLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct DirectoryLimits:
     Optional[int64] CloudOnlyDirectoriesLimit
     Optional[int64] CloudOnlyDirectoriesCurrentCount
@@ -1075,100 +887,77 @@ struct DirectoryLimits:
     Optional[int64] ConnectedDirectoriesCurrentCount
     Optional[bool] ConnectedDirectoriesLimitReached
 
-@derive(Json)
 struct DirectoryNotSharedException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct DirectorySizeUpdateSettings:
-    Optional[DirectorySize] DirectorySize
+    Optional[str] DirectorySize
 
-@derive(Json)
 struct DirectoryUnavailableException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectoryVpcSettings:
     str VpcId
     list[str] SubnetIds
 
-# no @derive(Json): member(s) SubnetIds: list[str], AvailabilityZones: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectoryVpcSettingsDescription:
     Optional[str] VpcId
     Optional[list[str]] SubnetIds
     Optional[str] SecurityGroupId
     Optional[list[str]] AvailabilityZones
 
-@derive(Json)
 struct DisableAlreadyInProgressException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct DisableCAEnrollmentPolicyRequest:
     str DirectoryId
 
-@derive(Json)
 struct DisableCAEnrollmentPolicyResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableClientAuthenticationRequest:
     str DirectoryId
-    ClientAuthenticationType Type
+    str Type
 
-@derive(Json)
 struct DisableClientAuthenticationResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableDirectoryDataAccessRequest:
     str DirectoryId
 
-@derive(Json)
 struct DisableDirectoryDataAccessResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableLDAPSRequest:
     str DirectoryId
     str Type
 
-@derive(Json)
 struct DisableLDAPSResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableRadiusRequest:
     str DirectoryId
 
-@derive(Json)
 struct DisableRadiusResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableSsoRequest:
     str DirectoryId
     Optional[str] UserName
     Optional[str] Password
 
-@derive(Json)
 struct DisableSsoResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DomainController:
     Optional[str] DirectoryId
     Optional[str] DomainControllerId
@@ -1177,148 +966,112 @@ struct DomainController:
     Optional[str] VpcId
     Optional[str] SubnetId
     Optional[str] AvailabilityZone
-    Optional[DomainControllerStatus] Status
+    Optional[str] Status
     Optional[str] StatusReason
     Optional[DateTime] LaunchTime
     Optional[DateTime] StatusLastUpdatedDateTime
 
-@derive(Json)
 struct DomainControllerLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct EnableAlreadyInProgressException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct EnableCAEnrollmentPolicyRequest:
     str DirectoryId
     str PcaConnectorArn
 
-@derive(Json)
 struct EnableCAEnrollmentPolicyResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableClientAuthenticationRequest:
     str DirectoryId
-    ClientAuthenticationType Type
+    str Type
 
-@derive(Json)
 struct EnableClientAuthenticationResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableDirectoryDataAccessRequest:
     str DirectoryId
 
-@derive(Json)
 struct EnableDirectoryDataAccessResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableLDAPSRequest:
     str DirectoryId
     str Type
 
-@derive(Json)
 struct EnableLDAPSResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) RadiusSettings: RadiusSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EnableRadiusRequest:
     str DirectoryId
     RadiusSettings RadiusSettings
 
-@derive(Json)
 struct EnableRadiusResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableSsoRequest:
     str DirectoryId
     Optional[str] UserName
     Optional[str] Password
 
-@derive(Json)
 struct EnableSsoResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EntityAlreadyExistsException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct EntityDoesNotExistException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct EventTopic:
     Optional[str] DirectoryId
     Optional[str] TopicName
     Optional[str] TopicArn
     Optional[DateTime] CreatedDateTime
-    Optional[TopicStatus] Status
+    Optional[str] Status
 
-@derive(Json)
 struct GetDirectoryLimitsRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GetDirectoryLimitsResult:
     Optional[DirectoryLimits] DirectoryLimits
 
-@derive(Json)
 struct GetSnapshotLimitsRequest:
     str DirectoryId
 
-@derive(Json)
 struct GetSnapshotLimitsResult:
     Optional[SnapshotLimits] SnapshotLimits
 
-@derive(Json)
 struct HybridAdministratorAccountUpdate:
     str SecretArn
 
-# no @derive(Json): member(s) CustomerDnsIps: list[str], InstanceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HybridCustomerInstancesSettings:
     list[str] CustomerDnsIps
     list[str] InstanceIds
 
-# no @derive(Json): member(s) SelfManagedDnsIpAddrs: list[str], SelfManagedInstanceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HybridSettingsDescription:
     Optional[list[str]] SelfManagedDnsIpAddrs
     Optional[list[str]] SelfManagedInstanceIds
 
-# no @derive(Json): member(s) SelfManagedInstances: list[HybridUpdateInfoEntry], HybridAdministratorAccount: list[HybridUpdateInfoEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HybridUpdateActivities:
     Optional[list[HybridUpdateInfoEntry]] SelfManagedInstances
     Optional[list[HybridUpdateInfoEntry]] HybridAdministratorAccount
 
-# no @derive(Json): member(s) NewValue: HybridUpdateValue, PreviousValue: HybridUpdateValue not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HybridUpdateInfoEntry:
-    Optional[UpdateStatus] Status
+    Optional[str] Status
     Optional[str] StatusReason
     Optional[str] InitiatedBy
     Optional[HybridUpdateValue] NewValue
@@ -1327,193 +1080,143 @@ struct HybridUpdateInfoEntry:
     Optional[DateTime] LastUpdatedDateTime
     Optional[str] AssessmentId
 
-# no @derive(Json): member(s) InstanceIds: list[str], DnsIps: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HybridUpdateValue:
     Optional[list[str]] InstanceIds
     Optional[list[str]] DnsIps
 
-@derive(Json)
 struct IncompatibleSettingsException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InsufficientPermissionsException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidCertificateException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidClientAuthStatusException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidLDAPSStatusException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidNextTokenException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidParameterException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidPasswordException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct InvalidTargetException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct IpRoute:
     Optional[str] CidrIp
     Optional[str] CidrIpv6
     Optional[str] Description
 
-@derive(Json)
 struct IpRouteInfo:
     Optional[str] DirectoryId
     Optional[str] CidrIp
     Optional[str] CidrIpv6
-    Optional[IpRouteStatusMsg] IpRouteStatusMsg
+    Optional[str] IpRouteStatusMsg
     Optional[DateTime] AddedDateTime
     Optional[str] IpRouteStatusReason
     Optional[str] Description
 
-@derive(Json)
 struct IpRouteLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct LDAPSSettingInfo:
-    Optional[LDAPSStatus] LDAPSStatus
+    Optional[str] LDAPSStatus
     Optional[str] LDAPSStatusReason
     Optional[DateTime] LastUpdatedDateTime
 
-@derive(Json)
 struct ListADAssessmentsRequest:
     Optional[str] DirectoryId
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Assessments: list[AssessmentSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListADAssessmentsResult:
     Optional[list[AssessmentSummary]] Assessments
     Optional[str] NextToken
 
-@derive(Json)
 struct ListCertificatesRequest:
     str DirectoryId
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) CertificatesInfo: list[CertificateInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListCertificatesResult:
     Optional[str] NextToken
     Optional[list[CertificateInfo]] CertificatesInfo
 
-@derive(Json)
 struct ListIpRoutesRequest:
     str DirectoryId
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) IpRoutesInfo: list[IpRouteInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListIpRoutesResult:
     Optional[list[IpRouteInfo]] IpRoutesInfo
     Optional[str] NextToken
 
-@derive(Json)
 struct ListLogSubscriptionsRequest:
     Optional[str] DirectoryId
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) LogSubscriptions: list[LogSubscription] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListLogSubscriptionsResult:
     Optional[list[LogSubscription]] LogSubscriptions
     Optional[str] NextToken
 
-@derive(Json)
 struct ListSchemaExtensionsRequest:
     str DirectoryId
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) SchemaExtensionsInfo: list[SchemaExtensionInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSchemaExtensionsResult:
     Optional[list[SchemaExtensionInfo]] SchemaExtensionsInfo
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceId
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
 
-@derive(Json)
 struct LogSubscription:
     Optional[str] DirectoryId
     Optional[str] LogGroupName
     Optional[DateTime] SubscriptionCreatedDateTime
 
-# no @derive(Json): member(s) CustomerDnsIpsV6: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NetworkUpdateSettings:
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
     Optional[list[str]] CustomerDnsIpsV6
 
-@derive(Json)
 struct NoAvailableCertificateException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct OSUpdateSettings:
-    Optional[OSVersion] OSVersion
+    Optional[str] OSVersion
 
-@derive(Json)
 struct OrganizationsException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str], VpcSettings: DirectoryVpcSettingsDescription, RadiusSettings: RadiusSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct OwnerDirectoryDescription:
     Optional[str] DirectoryId
     Optional[str] AccountId
@@ -1521,12 +1224,9 @@ struct OwnerDirectoryDescription:
     Optional[list[str]] DnsIpv6Addrs
     Optional[DirectoryVpcSettingsDescription] VpcSettings
     Optional[RadiusSettings] RadiusSettings
-    Optional[RadiusStatus] RadiusStatus
-    Optional[NetworkType] NetworkType
+    Optional[str] RadiusStatus
+    Optional[str] NetworkType
 
-# no @derive(Json): member(s) RadiusServers: list[str], RadiusServersIpv6: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RadiusSettings:
     Optional[list[str]] RadiusServers
     Optional[list[str]] RadiusServersIpv6
@@ -1534,325 +1234,257 @@ struct RadiusSettings:
     Optional[int64] RadiusTimeout
     Optional[int64] RadiusRetries
     Optional[str] SharedSecret
-    Optional[RadiusAuthenticationProtocol] AuthenticationProtocol
+    Optional[str] AuthenticationProtocol
     Optional[str] DisplayLabel
     Optional[bool] UseSameUsername
 
-# no @derive(Json): member(s) VpcSettings: DirectoryVpcSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RegionDescription:
     Optional[str] DirectoryId
     Optional[str] RegionName
-    Optional[RegionType] RegionType
-    Optional[DirectoryStage] Status
+    Optional[str] RegionType
+    Optional[str] Status
     Optional[DirectoryVpcSettings] VpcSettings
     Optional[int64] DesiredNumberOfDomainControllers
     Optional[DateTime] LaunchTime
     Optional[DateTime] StatusLastUpdatedDateTime
     Optional[DateTime] LastUpdatedDateTime
 
-@derive(Json)
 struct RegionLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) AdditionalRegions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RegionsInfo:
     Optional[str] PrimaryRegion
     Optional[list[str]] AdditionalRegions
 
-@derive(Json)
 struct RegisterCertificateRequest:
     str DirectoryId
     str CertificateData
-    Optional[CertificateType] Type
+    Optional[str] Type
     Optional[ClientCertAuthSettings] ClientCertAuthSettings
 
-@derive(Json)
 struct RegisterCertificateResult:
     Optional[str] CertificateId
 
-@derive(Json)
 struct RegisterEventTopicRequest:
     str DirectoryId
     str TopicName
 
-@derive(Json)
 struct RegisterEventTopicResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RejectSharedDirectoryRequest:
     str SharedDirectoryId
 
-@derive(Json)
 struct RejectSharedDirectoryResult:
     Optional[str] SharedDirectoryId
 
-# no @derive(Json): member(s) CidrIps: list[str], CidrIpv6s: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RemoveIpRoutesRequest:
     str DirectoryId
     Optional[list[str]] CidrIps
     Optional[list[str]] CidrIpv6s
 
-@derive(Json)
 struct RemoveIpRoutesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RemoveRegionRequest:
     str DirectoryId
 
-@derive(Json)
 struct RemoveRegionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RemoveTagsFromResourceRequest:
     str ResourceId
     list[str] TagKeys
 
-@derive(Json)
 struct RemoveTagsFromResourceResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ResetUserPasswordRequest:
     str DirectoryId
     str UserName
     str NewPassword
 
-@derive(Json)
 struct ResetUserPasswordResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RestoreFromSnapshotRequest:
     str SnapshotId
 
-@derive(Json)
 struct RestoreFromSnapshotResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SchemaExtensionInfo:
     Optional[str] DirectoryId
     Optional[str] SchemaExtensionId
     Optional[str] Description
-    Optional[SchemaExtensionStatus] SchemaExtensionStatus
+    Optional[str] SchemaExtensionStatus
     Optional[str] SchemaExtensionStatusReason
     Optional[DateTime] StartDateTime
     Optional[DateTime] EndDateTime
 
-@derive(Json)
 struct ServiceException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct Setting:
     str Name
     str Value
 
-# no @derive(Json): member(s) RequestDetailedStatus: dict[str, DirectoryConfigurationStatus] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SettingEntry:
     Optional[str] Type
     Optional[str] Name
     Optional[str] AllowedValues
     Optional[str] AppliedValue
     Optional[str] RequestedValue
-    Optional[DirectoryConfigurationStatus] RequestStatus
-    Optional[dict[str, DirectoryConfigurationStatus]] RequestDetailedStatus
+    Optional[str] RequestStatus
+    Optional[dict[str, str]] RequestDetailedStatus
     Optional[str] RequestStatusMessage
     Optional[DateTime] LastUpdatedDateTime
     Optional[DateTime] LastRequestedDateTime
     Optional[str] DataType
 
-@derive(Json)
 struct ShareDirectoryRequest:
     str DirectoryId
     Optional[str] ShareNotes
     ShareTarget ShareTarget
-    ShareMethod ShareMethod
+    str ShareMethod
 
-@derive(Json)
 struct ShareDirectoryResult:
     Optional[str] SharedDirectoryId
 
-@derive(Json)
 struct ShareLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct ShareTarget:
     str Id
     str Type
 
-@derive(Json)
 struct SharedDirectory:
     Optional[str] OwnerAccountId
     Optional[str] OwnerDirectoryId
-    Optional[ShareMethod] ShareMethod
+    Optional[str] ShareMethod
     Optional[str] SharedAccountId
     Optional[str] SharedDirectoryId
-    Optional[ShareStatus] ShareStatus
+    Optional[str] ShareStatus
     Optional[str] ShareNotes
     Optional[DateTime] CreatedDateTime
     Optional[DateTime] LastUpdatedDateTime
 
-@derive(Json)
 struct Snapshot:
     Optional[str] DirectoryId
     Optional[str] SnapshotId
-    Optional[SnapshotType] Type
+    Optional[str] Type
     Optional[str] Name
-    Optional[SnapshotStatus] Status
+    Optional[str] Status
     Optional[DateTime] StartTime
 
-@derive(Json)
 struct SnapshotLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct SnapshotLimits:
     Optional[int64] ManualSnapshotsLimit
     Optional[int64] ManualSnapshotsCurrentCount
     Optional[bool] ManualSnapshotsLimitReached
 
-# no @derive(Json): member(s) AssessmentConfiguration: AssessmentConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartADAssessmentRequest:
     Optional[AssessmentConfiguration] AssessmentConfiguration
     Optional[str] DirectoryId
 
-@derive(Json)
 struct StartADAssessmentResult:
     Optional[str] AssessmentId
 
-@derive(Json)
 struct StartSchemaExtensionRequest:
     str DirectoryId
     bool CreateSnapshotBeforeSchemaExtension
     str LdifContent
     str Description
 
-@derive(Json)
 struct StartSchemaExtensionResult:
     Optional[str] SchemaExtensionId
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-@derive(Json)
 struct TagLimitExceededException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct Trust:
     Optional[str] DirectoryId
     Optional[str] TrustId
     Optional[str] RemoteDomainName
-    Optional[TrustType] TrustType
-    Optional[TrustDirection] TrustDirection
-    Optional[TrustState] TrustState
+    Optional[str] TrustType
+    Optional[str] TrustDirection
+    Optional[str] TrustState
     Optional[DateTime] CreatedDateTime
     Optional[DateTime] LastUpdatedDateTime
     Optional[DateTime] StateLastUpdatedDateTime
     Optional[str] TrustStateReason
-    Optional[SelectiveAuth] SelectiveAuth
+    Optional[str] SelectiveAuth
 
-@derive(Json)
 struct UnshareDirectoryRequest:
     str DirectoryId
     UnshareTarget UnshareTarget
 
-@derive(Json)
 struct UnshareDirectoryResult:
     Optional[str] SharedDirectoryId
 
-@derive(Json)
 struct UnshareTarget:
     str Id
     str Type
 
-@derive(Json)
 struct UnsupportedOperationException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct UnsupportedSettingsException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) DnsIpAddrs: list[str], DnsIpv6Addrs: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateConditionalForwarderRequest:
     str DirectoryId
     str RemoteDomainName
     Optional[list[str]] DnsIpAddrs
     Optional[list[str]] DnsIpv6Addrs
 
-@derive(Json)
 struct UpdateConditionalForwarderResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) NetworkUpdateSettings: NetworkUpdateSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDirectorySetupRequest:
     str DirectoryId
-    UpdateType UpdateType
+    str UpdateType
     Optional[OSUpdateSettings] OSUpdateSettings
     Optional[DirectorySizeUpdateSettings] DirectorySizeUpdateSettings
     Optional[NetworkUpdateSettings] NetworkUpdateSettings
     Optional[bool] CreateSnapshotBeforeUpdate
 
-@derive(Json)
 struct UpdateDirectorySetupResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) SelfManagedInstancesSettings: HybridCustomerInstancesSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateHybridADRequest:
     str DirectoryId
     Optional[HybridAdministratorAccountUpdate] HybridAdministratorAccountUpdate
     Optional[HybridCustomerInstancesSettings] SelfManagedInstancesSettings
 
-@derive(Json)
 struct UpdateHybridADResult:
     Optional[str] DirectoryId
     Optional[str] AssessmentId
 
-@derive(Json)
 struct UpdateInfoEntry:
     Optional[str] Region
-    Optional[UpdateStatus] Status
+    Optional[str] Status
     Optional[str] StatusReason
     Optional[str] InitiatedBy
     Optional[UpdateValue] NewValue
@@ -1860,63 +1492,47 @@ struct UpdateInfoEntry:
     Optional[DateTime] StartTime
     Optional[DateTime] LastUpdatedDateTime
 
-@derive(Json)
 struct UpdateNumberOfDomainControllersRequest:
     str DirectoryId
     int64 DesiredNumber
 
-@derive(Json)
 struct UpdateNumberOfDomainControllersResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) RadiusSettings: RadiusSettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateRadiusRequest:
     str DirectoryId
     RadiusSettings RadiusSettings
 
-@derive(Json)
 struct UpdateRadiusResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Settings: list[Setting] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateSettingsRequest:
     str DirectoryId
     list[Setting] Settings
 
-@derive(Json)
 struct UpdateSettingsResult:
     Optional[str] DirectoryId
 
-@derive(Json)
 struct UpdateTrustRequest:
     str TrustId
-    Optional[SelectiveAuth] SelectiveAuth
+    Optional[str] SelectiveAuth
 
-@derive(Json)
 struct UpdateTrustResult:
     Optional[str] RequestId
     Optional[str] TrustId
 
-@derive(Json)
 struct UpdateValue:
     Optional[OSUpdateSettings] OSUpdateSettings
 
-@derive(Json)
 struct UserDoesNotExistException:
     Optional[str] Message
     Optional[str] RequestId
 
-@derive(Json)
 struct VerifyTrustRequest:
     str TrustId
 
-@derive(Json)
 struct VerifyTrustResult:
     Optional[str] TrustId
 
@@ -1927,7 +1543,7 @@ struct VerifyTrustResult:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2154,569 +1770,1459 @@ def ds_error_name(Directory_ServiceErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def ds_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   DescribeClientAuthenticationSettings
+#   DescribeDirectories
+#   DescribeDomainControllers
+#   DescribeLDAPSSettings
+#   DescribeRegions
+#   DescribeSharedDirectories
+#   DescribeSnapshots
+#   DescribeTrusts
+#   DescribeUpdateDirectory
+#   ListADAssessments
+#   ListCertificates
+#   ListIpRoutes
+#   ListLogSubscriptions
+#   ListSchemaExtensions
+#   ListTagsForResource
 
-def ds_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   HybridADUpdated
 
-def ds_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AcceptSharedDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def accept_shared_directory_request_to_cbor(AcceptSharedDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SharedDirectoryId")
+    vals.append(cbor.cbor_text(v.SharedDirectoryId))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AddIpRoutesRequest to a compact JSON object (declaration order).
-def add_ip_routes_request_to_json(AddIpRoutesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    list[str] e0 = []
+# Serialize AddIpRoutesRequest to a CBOR map (member wire name -> value, model order).
+def add_ip_routes_request_to_cbor(AddIpRoutesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.IpRoutes:
-        e0.append(x0.to_json())
-    parts.append("\"IpRoutes\":" + ds_json_arr(e0))
+        e0.append(ip_route_to_cbor(x0))
+    keys.append("IpRoutes")
+    vals.append(cbor.cbor_list(e0))
     if v.UpdateSecurityGroupForDirectoryControllers.is_some():
         auto u1 = v.UpdateSecurityGroupForDirectoryControllers.unwrap()
-        parts.append("\"UpdateSecurityGroupForDirectoryControllers\":" + json.dumps(JsonValue.Bool(u1)))
-    return ds_json_obj(parts)
+        keys.append("UpdateSecurityGroupForDirectoryControllers")
+        vals.append(cbor.cbor_bool(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AddRegionRequest to a compact JSON object (declaration order).
-def add_region_request_to_json(AddRegionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"RegionName\":" + ds_json_str(v.RegionName))
-    parts.append("\"VPCSettings\":" + directory_vpc_settings_to_json(v.VPCSettings))
-    return ds_json_obj(parts)
+# Serialize AddRegionRequest to a CBOR map (member wire name -> value, model order).
+def add_region_request_to_cbor(AddRegionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RegionName")
+    vals.append(cbor.cbor_text(v.RegionName))
+    keys.append("VPCSettings")
+    vals.append(directory_vpc_settings_to_cbor(v.VPCSettings))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AddTagsToResourceRequest to a compact JSON object (declaration order).
-def add_tags_to_resource_request_to_json(AddTagsToResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + ds_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize AddTagsToResourceRequest to a CBOR map (member wire name -> value, model order).
+def add_tags_to_resource_request_to_cbor(AddTagsToResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + ds_json_arr(e0))
-    return ds_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AssessmentConfiguration to a compact JSON object (declaration order).
-def assessment_configuration_to_json(AssessmentConfiguration v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AssessmentConfiguration to a CBOR map (member wire name -> value, model order).
+def assessment_configuration_to_cbor(AssessmentConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.CustomerDnsIps:
-        e0.append(ds_json_str(x0))
-    parts.append("\"CustomerDnsIps\":" + ds_json_arr(e0))
-    parts.append("\"DnsName\":" + ds_json_str(v.DnsName))
-    parts.append("\"VpcSettings\":" + directory_vpc_settings_to_json(v.VpcSettings))
-    list[str] e1 = []
+        e0.append(cbor.cbor_text(x0))
+    keys.append("CustomerDnsIps")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("DnsName")
+    vals.append(cbor.cbor_text(v.DnsName))
+    keys.append("VpcSettings")
+    vals.append(directory_vpc_settings_to_cbor(v.VpcSettings))
+    list[cbor.CborValue] e1 = []
     for x1 in v.InstanceIds:
-        e1.append(ds_json_str(x1))
-    parts.append("\"InstanceIds\":" + ds_json_arr(e1))
+        e1.append(cbor.cbor_text(x1))
+    keys.append("InstanceIds")
+    vals.append(cbor.cbor_list(e1))
     if v.SecurityGroupIds.is_some():
         auto u2 = v.SecurityGroupIds.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(ds_json_str(x3))
-        parts.append("\"SecurityGroupIds\":" + ds_json_arr(e3))
-    return ds_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("SecurityGroupIds")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ConnectDirectoryRequest to a compact JSON object (declaration order).
-def connect_directory_request_to_json(ConnectDirectoryRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + ds_json_str(v.Name))
+# Serialize Attribute to a CBOR map (member wire name -> value, model order).
+def attribute_to_cbor(Attribute v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CancelSchemaExtensionRequest to a CBOR map (member wire name -> value, model order).
+def cancel_schema_extension_request_to_cbor(CancelSchemaExtensionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("SchemaExtensionId")
+    vals.append(cbor.cbor_text(v.SchemaExtensionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ClientCertAuthSettings to a CBOR map (member wire name -> value, model order).
+def client_cert_auth_settings_to_cbor(ClientCertAuthSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.OCSPUrl.is_some():
+        auto u0 = v.OCSPUrl.unwrap()
+        keys.append("OCSPUrl")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ConnectDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def connect_directory_request_to_cbor(ConnectDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.ShortName.is_some():
         auto u0 = v.ShortName.unwrap()
-        parts.append("\"ShortName\":" + ds_json_str(u0))
-    parts.append("\"Password\":" + ds_json_str(v.Password))
+        keys.append("ShortName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Password")
+    vals.append(cbor.cbor_text(v.Password))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + ds_json_str(u1))
-    parts.append("\"Size\":" + v.Size.to_json())
-    parts.append("\"ConnectSettings\":" + directory_connect_settings_to_json(v.ConnectSettings))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("Size")
+    vals.append(cbor.cbor_text(v.Size))
+    keys.append("ConnectSettings")
+    vals.append(directory_connect_settings_to_cbor(v.ConnectSettings))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + ds_json_arr(e3))
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
     if v.NetworkType.is_some():
         auto u4 = v.NetworkType.unwrap()
-        parts.append("\"NetworkType\":" + u4.to_json())
-    return ds_json_obj(parts)
+        keys.append("NetworkType")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateComputerRequest to a compact JSON object (declaration order).
-def create_computer_request_to_json(CreateComputerRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"ComputerName\":" + ds_json_str(v.ComputerName))
-    parts.append("\"Password\":" + ds_json_str(v.Password))
+# Serialize CreateAliasRequest to a CBOR map (member wire name -> value, model order).
+def create_alias_request_to_cbor(CreateAliasRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("Alias")
+    vals.append(cbor.cbor_text(v.Alias))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateComputerRequest to a CBOR map (member wire name -> value, model order).
+def create_computer_request_to_cbor(CreateComputerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("ComputerName")
+    vals.append(cbor.cbor_text(v.ComputerName))
+    keys.append("Password")
+    vals.append(cbor.cbor_text(v.Password))
     if v.OrganizationalUnitDistinguishedName.is_some():
         auto u0 = v.OrganizationalUnitDistinguishedName.unwrap()
-        parts.append("\"OrganizationalUnitDistinguishedName\":" + ds_json_str(u0))
+        keys.append("OrganizationalUnitDistinguishedName")
+        vals.append(cbor.cbor_text(u0))
     if v.ComputerAttributes.is_some():
         auto u1 = v.ComputerAttributes.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"ComputerAttributes\":" + ds_json_arr(e2))
-    return ds_json_obj(parts)
+            e2.append(attribute_to_cbor(x2))
+        keys.append("ComputerAttributes")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateConditionalForwarderRequest to a compact JSON object (declaration order).
-def create_conditional_forwarder_request_to_json(CreateConditionalForwarderRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"RemoteDomainName\":" + ds_json_str(v.RemoteDomainName))
+# Serialize CreateConditionalForwarderRequest to a CBOR map (member wire name -> value, model order).
+def create_conditional_forwarder_request_to_cbor(CreateConditionalForwarderRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RemoteDomainName")
+    vals.append(cbor.cbor_text(v.RemoteDomainName))
     if v.DnsIpAddrs.is_some():
         auto u0 = v.DnsIpAddrs.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"DnsIpAddrs\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("DnsIpAddrs")
+        vals.append(cbor.cbor_list(e1))
     if v.DnsIpv6Addrs.is_some():
         auto u2 = v.DnsIpv6Addrs.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(ds_json_str(x3))
-        parts.append("\"DnsIpv6Addrs\":" + ds_json_arr(e3))
-    return ds_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("DnsIpv6Addrs")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDirectoryRequest to a compact JSON object (declaration order).
-def create_directory_request_to_json(CreateDirectoryRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + ds_json_str(v.Name))
+# Serialize CreateDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def create_directory_request_to_cbor(CreateDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.ShortName.is_some():
         auto u0 = v.ShortName.unwrap()
-        parts.append("\"ShortName\":" + ds_json_str(u0))
-    parts.append("\"Password\":" + ds_json_str(v.Password))
+        keys.append("ShortName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Password")
+    vals.append(cbor.cbor_text(v.Password))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + ds_json_str(u1))
-    parts.append("\"Size\":" + v.Size.to_json())
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("Size")
+    vals.append(cbor.cbor_text(v.Size))
     if v.VpcSettings.is_some():
         auto u2 = v.VpcSettings.unwrap()
-        parts.append("\"VpcSettings\":" + directory_vpc_settings_to_json(u2))
+        keys.append("VpcSettings")
+        vals.append(directory_vpc_settings_to_cbor(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + ds_json_arr(e4))
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
     if v.NetworkType.is_some():
         auto u5 = v.NetworkType.unwrap()
-        parts.append("\"NetworkType\":" + u5.to_json())
-    return ds_json_obj(parts)
+        keys.append("NetworkType")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateHybridADRequest to a compact JSON object (declaration order).
-def create_hybrid_ad_request_to_json(CreateHybridADRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"SecretArn\":" + ds_json_str(v.SecretArn))
-    parts.append("\"AssessmentId\":" + ds_json_str(v.AssessmentId))
+# Serialize CreateHybridADRequest to a CBOR map (member wire name -> value, model order).
+def create_hybrid_ad_request_to_cbor(CreateHybridADRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SecretArn")
+    vals.append(cbor.cbor_text(v.SecretArn))
+    keys.append("AssessmentId")
+    vals.append(cbor.cbor_text(v.AssessmentId))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + ds_json_arr(e1))
-    return ds_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateMicrosoftADRequest to a compact JSON object (declaration order).
-def create_microsoft_ad_request_to_json(CreateMicrosoftADRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + ds_json_str(v.Name))
+# Serialize CreateLogSubscriptionRequest to a CBOR map (member wire name -> value, model order).
+def create_log_subscription_request_to_cbor(CreateLogSubscriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("LogGroupName")
+    vals.append(cbor.cbor_text(v.LogGroupName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateMicrosoftADRequest to a CBOR map (member wire name -> value, model order).
+def create_microsoft_ad_request_to_cbor(CreateMicrosoftADRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.ShortName.is_some():
         auto u0 = v.ShortName.unwrap()
-        parts.append("\"ShortName\":" + ds_json_str(u0))
-    parts.append("\"Password\":" + ds_json_str(v.Password))
+        keys.append("ShortName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Password")
+    vals.append(cbor.cbor_text(v.Password))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + ds_json_str(u1))
-    parts.append("\"VpcSettings\":" + directory_vpc_settings_to_json(v.VpcSettings))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("VpcSettings")
+    vals.append(directory_vpc_settings_to_cbor(v.VpcSettings))
     if v.Edition.is_some():
         auto u2 = v.Edition.unwrap()
-        parts.append("\"Edition\":" + u2.to_json())
+        keys.append("Edition")
+        vals.append(cbor.cbor_text(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + ds_json_arr(e4))
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
     if v.NetworkType.is_some():
         auto u5 = v.NetworkType.unwrap()
-        parts.append("\"NetworkType\":" + u5.to_json())
-    return ds_json_obj(parts)
+        keys.append("NetworkType")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateTrustRequest to a compact JSON object (declaration order).
-def create_trust_request_to_json(CreateTrustRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"RemoteDomainName\":" + ds_json_str(v.RemoteDomainName))
-    parts.append("\"TrustPassword\":" + ds_json_str(v.TrustPassword))
-    parts.append("\"TrustDirection\":" + v.TrustDirection.to_json())
+# Serialize CreateSnapshotRequest to a CBOR map (member wire name -> value, model order).
+def create_snapshot_request_to_cbor(CreateSnapshotRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateTrustRequest to a CBOR map (member wire name -> value, model order).
+def create_trust_request_to_cbor(CreateTrustRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RemoteDomainName")
+    vals.append(cbor.cbor_text(v.RemoteDomainName))
+    keys.append("TrustPassword")
+    vals.append(cbor.cbor_text(v.TrustPassword))
+    keys.append("TrustDirection")
+    vals.append(cbor.cbor_text(v.TrustDirection))
     if v.TrustType.is_some():
         auto u0 = v.TrustType.unwrap()
-        parts.append("\"TrustType\":" + u0.to_json())
+        keys.append("TrustType")
+        vals.append(cbor.cbor_text(u0))
     if v.ConditionalForwarderIpAddrs.is_some():
         auto u1 = v.ConditionalForwarderIpAddrs.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(ds_json_str(x2))
-        parts.append("\"ConditionalForwarderIpAddrs\":" + ds_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("ConditionalForwarderIpAddrs")
+        vals.append(cbor.cbor_list(e2))
     if v.ConditionalForwarderIpv6Addrs.is_some():
         auto u3 = v.ConditionalForwarderIpv6Addrs.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(ds_json_str(x4))
-        parts.append("\"ConditionalForwarderIpv6Addrs\":" + ds_json_arr(e4))
+            e4.append(cbor.cbor_text(x4))
+        keys.append("ConditionalForwarderIpv6Addrs")
+        vals.append(cbor.cbor_list(e4))
     if v.SelectiveAuth.is_some():
         auto u5 = v.SelectiveAuth.unwrap()
-        parts.append("\"SelectiveAuth\":" + u5.to_json())
-    return ds_json_obj(parts)
+        keys.append("SelectiveAuth")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeConditionalForwardersRequest to a compact JSON object (declaration order).
-def describe_conditional_forwarders_request_to_json(DescribeConditionalForwardersRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+# Serialize DeleteADAssessmentRequest to a CBOR map (member wire name -> value, model order).
+def delete_ad_assessment_request_to_cbor(DeleteADAssessmentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AssessmentId")
+    vals.append(cbor.cbor_text(v.AssessmentId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteConditionalForwarderRequest to a CBOR map (member wire name -> value, model order).
+def delete_conditional_forwarder_request_to_cbor(DeleteConditionalForwarderRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RemoteDomainName")
+    vals.append(cbor.cbor_text(v.RemoteDomainName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def delete_directory_request_to_cbor(DeleteDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteLogSubscriptionRequest to a CBOR map (member wire name -> value, model order).
+def delete_log_subscription_request_to_cbor(DeleteLogSubscriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteSnapshotRequest to a CBOR map (member wire name -> value, model order).
+def delete_snapshot_request_to_cbor(DeleteSnapshotRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SnapshotId")
+    vals.append(cbor.cbor_text(v.SnapshotId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTrustRequest to a CBOR map (member wire name -> value, model order).
+def delete_trust_request_to_cbor(DeleteTrustRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TrustId")
+    vals.append(cbor.cbor_text(v.TrustId))
+    if v.DeleteAssociatedConditionalForwarder.is_some():
+        auto u0 = v.DeleteAssociatedConditionalForwarder.unwrap()
+        keys.append("DeleteAssociatedConditionalForwarder")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeregisterCertificateRequest to a CBOR map (member wire name -> value, model order).
+def deregister_certificate_request_to_cbor(DeregisterCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("CertificateId")
+    vals.append(cbor.cbor_text(v.CertificateId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeregisterEventTopicRequest to a CBOR map (member wire name -> value, model order).
+def deregister_event_topic_request_to_cbor(DeregisterEventTopicRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("TopicName")
+    vals.append(cbor.cbor_text(v.TopicName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeADAssessmentRequest to a CBOR map (member wire name -> value, model order).
+def describe_ad_assessment_request_to_cbor(DescribeADAssessmentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AssessmentId")
+    vals.append(cbor.cbor_text(v.AssessmentId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeCAEnrollmentPolicyRequest to a CBOR map (member wire name -> value, model order).
+def describe_ca_enrollment_policy_request_to_cbor(DescribeCAEnrollmentPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeCertificateRequest to a CBOR map (member wire name -> value, model order).
+def describe_certificate_request_to_cbor(DescribeCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("CertificateId")
+    vals.append(cbor.cbor_text(v.CertificateId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeClientAuthenticationSettingsRequest to a CBOR map (member wire name -> value, model order).
+def describe_client_authentication_settings_request_to_cbor(DescribeClientAuthenticationSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConditionalForwardersRequest to a CBOR map (member wire name -> value, model order).
+def describe_conditional_forwarders_request_to_cbor(DescribeConditionalForwardersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
     if v.RemoteDomainNames.is_some():
         auto u0 = v.RemoteDomainNames.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"RemoteDomainNames\":" + ds_json_arr(e1))
-    return ds_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("RemoteDomainNames")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeDirectoriesRequest to a compact JSON object (declaration order).
-def describe_directories_request_to_json(DescribeDirectoriesRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeDirectoriesRequest to a CBOR map (member wire name -> value, model order).
+def describe_directories_request_to_cbor(DescribeDirectoriesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DirectoryIds.is_some():
         auto u0 = v.DirectoryIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"DirectoryIds\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("DirectoryIds")
+        vals.append(cbor.cbor_list(e1))
     if v.NextToken.is_some():
         auto u2 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + ds_json_str(u2))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
     if v.Limit.is_some():
         auto u3 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u3))
-    return ds_json_obj(parts)
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeDomainControllersRequest to a compact JSON object (declaration order).
-def describe_domain_controllers_request_to_json(DescribeDomainControllersRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+# Serialize DescribeDirectoryDataAccessRequest to a CBOR map (member wire name -> value, model order).
+def describe_directory_data_access_request_to_cbor(DescribeDirectoryDataAccessRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDomainControllersRequest to a CBOR map (member wire name -> value, model order).
+def describe_domain_controllers_request_to_cbor(DescribeDomainControllersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
     if v.DomainControllerIds.is_some():
         auto u0 = v.DomainControllerIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"DomainControllerIds\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("DomainControllerIds")
+        vals.append(cbor.cbor_list(e1))
     if v.NextToken.is_some():
         auto u2 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + ds_json_str(u2))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
     if v.Limit.is_some():
         auto u3 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u3))
-    return ds_json_obj(parts)
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeEventTopicsRequest to a compact JSON object (declaration order).
-def describe_event_topics_request_to_json(DescribeEventTopicsRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeEventTopicsRequest to a CBOR map (member wire name -> value, model order).
+def describe_event_topics_request_to_cbor(DescribeEventTopicsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DirectoryId.is_some():
         auto u0 = v.DirectoryId.unwrap()
-        parts.append("\"DirectoryId\":" + ds_json_str(u0))
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u0))
     if v.TopicNames.is_some():
         auto u1 = v.TopicNames.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(ds_json_str(x2))
-        parts.append("\"TopicNames\":" + ds_json_arr(e2))
-    return ds_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("TopicNames")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeSharedDirectoriesRequest to a compact JSON object (declaration order).
-def describe_shared_directories_request_to_json(DescribeSharedDirectoriesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"OwnerDirectoryId\":" + ds_json_str(v.OwnerDirectoryId))
+# Serialize DescribeHybridADUpdateRequest to a CBOR map (member wire name -> value, model order).
+def describe_hybrid_ad_update_request_to_cbor(DescribeHybridADUpdateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.UpdateType.is_some():
+        auto u0 = v.UpdateType.unwrap()
+        keys.append("UpdateType")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLDAPSSettingsRequest to a CBOR map (member wire name -> value, model order).
+def describe_ldaps_settings_request_to_cbor(DescribeLDAPSSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeRegionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_regions_request_to_cbor(DescribeRegionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.RegionName.is_some():
+        auto u0 = v.RegionName.unwrap()
+        keys.append("RegionName")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeSettingsRequest to a CBOR map (member wire name -> value, model order).
+def describe_settings_request_to_cbor(DescribeSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeSharedDirectoriesRequest to a CBOR map (member wire name -> value, model order).
+def describe_shared_directories_request_to_cbor(DescribeSharedDirectoriesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("OwnerDirectoryId")
+    vals.append(cbor.cbor_text(v.OwnerDirectoryId))
     if v.SharedDirectoryIds.is_some():
         auto u0 = v.SharedDirectoryIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"SharedDirectoryIds\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("SharedDirectoryIds")
+        vals.append(cbor.cbor_list(e1))
     if v.NextToken.is_some():
         auto u2 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + ds_json_str(u2))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
     if v.Limit.is_some():
         auto u3 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u3))
-    return ds_json_obj(parts)
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeSnapshotsRequest to a compact JSON object (declaration order).
-def describe_snapshots_request_to_json(DescribeSnapshotsRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeSnapshotsRequest to a CBOR map (member wire name -> value, model order).
+def describe_snapshots_request_to_cbor(DescribeSnapshotsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DirectoryId.is_some():
         auto u0 = v.DirectoryId.unwrap()
-        parts.append("\"DirectoryId\":" + ds_json_str(u0))
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u0))
     if v.SnapshotIds.is_some():
         auto u1 = v.SnapshotIds.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(ds_json_str(x2))
-        parts.append("\"SnapshotIds\":" + ds_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("SnapshotIds")
+        vals.append(cbor.cbor_list(e2))
     if v.NextToken.is_some():
         auto u3 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + ds_json_str(u3))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
     if v.Limit.is_some():
         auto u4 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u4))
-    return ds_json_obj(parts)
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeTrustsRequest to a compact JSON object (declaration order).
-def describe_trusts_request_to_json(DescribeTrustsRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeTrustsRequest to a CBOR map (member wire name -> value, model order).
+def describe_trusts_request_to_cbor(DescribeTrustsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DirectoryId.is_some():
         auto u0 = v.DirectoryId.unwrap()
-        parts.append("\"DirectoryId\":" + ds_json_str(u0))
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u0))
     if v.TrustIds.is_some():
         auto u1 = v.TrustIds.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(ds_json_str(x2))
-        parts.append("\"TrustIds\":" + ds_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("TrustIds")
+        vals.append(cbor.cbor_list(e2))
     if v.NextToken.is_some():
         auto u3 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + ds_json_str(u3))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
     if v.Limit.is_some():
         auto u4 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u4))
-    return ds_json_obj(parts)
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DirectoryConnectSettings to a compact JSON object (declaration order).
-def directory_connect_settings_to_json(DirectoryConnectSettings v) -> str:
-    list[str] parts = []
-    parts.append("\"VpcId\":" + ds_json_str(v.VpcId))
-    list[str] e0 = []
+# Serialize DescribeUpdateDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def describe_update_directory_request_to_cbor(DescribeUpdateDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("UpdateType")
+    vals.append(cbor.cbor_text(v.UpdateType))
+    if v.RegionName.is_some():
+        auto u0 = v.RegionName.unwrap()
+        keys.append("RegionName")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DirectoryConnectSettings to a CBOR map (member wire name -> value, model order).
+def directory_connect_settings_to_cbor(DirectoryConnectSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VpcId")
+    vals.append(cbor.cbor_text(v.VpcId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.SubnetIds:
-        e0.append(ds_json_str(x0))
-    parts.append("\"SubnetIds\":" + ds_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SubnetIds")
+    vals.append(cbor.cbor_list(e0))
     if v.CustomerDnsIps.is_some():
         auto u1 = v.CustomerDnsIps.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(ds_json_str(x2))
-        parts.append("\"CustomerDnsIps\":" + ds_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("CustomerDnsIps")
+        vals.append(cbor.cbor_list(e2))
     if v.CustomerDnsIpsV6.is_some():
         auto u3 = v.CustomerDnsIpsV6.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(ds_json_str(x4))
-        parts.append("\"CustomerDnsIpsV6\":" + ds_json_arr(e4))
-    parts.append("\"CustomerUserName\":" + ds_json_str(v.CustomerUserName))
-    return ds_json_obj(parts)
+            e4.append(cbor.cbor_text(x4))
+        keys.append("CustomerDnsIpsV6")
+        vals.append(cbor.cbor_list(e4))
+    keys.append("CustomerUserName")
+    vals.append(cbor.cbor_text(v.CustomerUserName))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DirectoryVpcSettings to a compact JSON object (declaration order).
-def directory_vpc_settings_to_json(DirectoryVpcSettings v) -> str:
-    list[str] parts = []
-    parts.append("\"VpcId\":" + ds_json_str(v.VpcId))
-    list[str] e0 = []
+# Serialize DirectorySizeUpdateSettings to a CBOR map (member wire name -> value, model order).
+def directory_size_update_settings_to_cbor(DirectorySizeUpdateSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DirectorySize.is_some():
+        auto u0 = v.DirectorySize.unwrap()
+        keys.append("DirectorySize")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DirectoryVpcSettings to a CBOR map (member wire name -> value, model order).
+def directory_vpc_settings_to_cbor(DirectoryVpcSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VpcId")
+    vals.append(cbor.cbor_text(v.VpcId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.SubnetIds:
-        e0.append(ds_json_str(x0))
-    parts.append("\"SubnetIds\":" + ds_json_arr(e0))
-    return ds_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SubnetIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize EnableRadiusRequest to a compact JSON object (declaration order).
-def enable_radius_request_to_json(EnableRadiusRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"RadiusSettings\":" + radius_settings_to_json(v.RadiusSettings))
-    return ds_json_obj(parts)
+# Serialize DisableCAEnrollmentPolicyRequest to a CBOR map (member wire name -> value, model order).
+def disable_ca_enrollment_policy_request_to_cbor(DisableCAEnrollmentPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize HybridCustomerInstancesSettings to a compact JSON object (declaration order).
-def hybrid_customer_instances_settings_to_json(HybridCustomerInstancesSettings v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize DisableClientAuthenticationRequest to a CBOR map (member wire name -> value, model order).
+def disable_client_authentication_request_to_cbor(DisableClientAuthenticationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableDirectoryDataAccessRequest to a CBOR map (member wire name -> value, model order).
+def disable_directory_data_access_request_to_cbor(DisableDirectoryDataAccessRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableLDAPSRequest to a CBOR map (member wire name -> value, model order).
+def disable_ldaps_request_to_cbor(DisableLDAPSRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableRadiusRequest to a CBOR map (member wire name -> value, model order).
+def disable_radius_request_to_cbor(DisableRadiusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableSsoRequest to a CBOR map (member wire name -> value, model order).
+def disable_sso_request_to_cbor(DisableSsoRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.UserName.is_some():
+        auto u0 = v.UserName.unwrap()
+        keys.append("UserName")
+        vals.append(cbor.cbor_text(u0))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableCAEnrollmentPolicyRequest to a CBOR map (member wire name -> value, model order).
+def enable_ca_enrollment_policy_request_to_cbor(EnableCAEnrollmentPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("PcaConnectorArn")
+    vals.append(cbor.cbor_text(v.PcaConnectorArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableClientAuthenticationRequest to a CBOR map (member wire name -> value, model order).
+def enable_client_authentication_request_to_cbor(EnableClientAuthenticationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableDirectoryDataAccessRequest to a CBOR map (member wire name -> value, model order).
+def enable_directory_data_access_request_to_cbor(EnableDirectoryDataAccessRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableLDAPSRequest to a CBOR map (member wire name -> value, model order).
+def enable_ldaps_request_to_cbor(EnableLDAPSRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableRadiusRequest to a CBOR map (member wire name -> value, model order).
+def enable_radius_request_to_cbor(EnableRadiusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RadiusSettings")
+    vals.append(radius_settings_to_cbor(v.RadiusSettings))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableSsoRequest to a CBOR map (member wire name -> value, model order).
+def enable_sso_request_to_cbor(EnableSsoRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.UserName.is_some():
+        auto u0 = v.UserName.unwrap()
+        keys.append("UserName")
+        vals.append(cbor.cbor_text(u0))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDirectoryLimitsRequest to a CBOR map (member wire name -> value, model order).
+def get_directory_limits_request_to_cbor(GetDirectoryLimitsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetSnapshotLimitsRequest to a CBOR map (member wire name -> value, model order).
+def get_snapshot_limits_request_to_cbor(GetSnapshotLimitsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HybridAdministratorAccountUpdate to a CBOR map (member wire name -> value, model order).
+def hybrid_administrator_account_update_to_cbor(HybridAdministratorAccountUpdate v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SecretArn")
+    vals.append(cbor.cbor_text(v.SecretArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HybridCustomerInstancesSettings to a CBOR map (member wire name -> value, model order).
+def hybrid_customer_instances_settings_to_cbor(HybridCustomerInstancesSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.CustomerDnsIps:
-        e0.append(ds_json_str(x0))
-    parts.append("\"CustomerDnsIps\":" + ds_json_arr(e0))
-    list[str] e1 = []
+        e0.append(cbor.cbor_text(x0))
+    keys.append("CustomerDnsIps")
+    vals.append(cbor.cbor_list(e0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.InstanceIds:
-        e1.append(ds_json_str(x1))
-    parts.append("\"InstanceIds\":" + ds_json_arr(e1))
-    return ds_json_obj(parts)
+        e1.append(cbor.cbor_text(x1))
+    keys.append("InstanceIds")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize NetworkUpdateSettings to a compact JSON object (declaration order).
-def network_update_settings_to_json(NetworkUpdateSettings v) -> str:
-    list[str] parts = []
+# Serialize IpRoute to a CBOR map (member wire name -> value, model order).
+def ip_route_to_cbor(IpRoute v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.CidrIp.is_some():
+        auto u0 = v.CidrIp.unwrap()
+        keys.append("CidrIp")
+        vals.append(cbor.cbor_text(u0))
+    if v.CidrIpv6.is_some():
+        auto u1 = v.CidrIpv6.unwrap()
+        keys.append("CidrIpv6")
+        vals.append(cbor.cbor_text(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListADAssessmentsRequest to a CBOR map (member wire name -> value, model order).
+def list_ad_assessments_request_to_cbor(ListADAssessmentsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListCertificatesRequest to a CBOR map (member wire name -> value, model order).
+def list_certificates_request_to_cbor(ListCertificatesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListIpRoutesRequest to a CBOR map (member wire name -> value, model order).
+def list_ip_routes_request_to_cbor(ListIpRoutesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListLogSubscriptionsRequest to a CBOR map (member wire name -> value, model order).
+def list_log_subscriptions_request_to_cbor(ListLogSubscriptionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSchemaExtensionsRequest to a CBOR map (member wire name -> value, model order).
+def list_schema_extensions_request_to_cbor(ListSchemaExtensionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NetworkUpdateSettings to a CBOR map (member wire name -> value, model order).
+def network_update_settings_to_cbor(NetworkUpdateSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NetworkType.is_some():
         auto u0 = v.NetworkType.unwrap()
-        parts.append("\"NetworkType\":" + u0.to_json())
+        keys.append("NetworkType")
+        vals.append(cbor.cbor_text(u0))
     if v.CustomerDnsIpsV6.is_some():
         auto u1 = v.CustomerDnsIpsV6.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(ds_json_str(x2))
-        parts.append("\"CustomerDnsIpsV6\":" + ds_json_arr(e2))
-    return ds_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("CustomerDnsIpsV6")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RadiusSettings to a compact JSON object (declaration order).
-def radius_settings_to_json(RadiusSettings v) -> str:
-    list[str] parts = []
+# Serialize OSUpdateSettings to a CBOR map (member wire name -> value, model order).
+def os_update_settings_to_cbor(OSUpdateSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.OSVersion.is_some():
+        auto u0 = v.OSVersion.unwrap()
+        keys.append("OSVersion")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RadiusSettings to a CBOR map (member wire name -> value, model order).
+def radius_settings_to_cbor(RadiusSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.RadiusServers.is_some():
         auto u0 = v.RadiusServers.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"RadiusServers\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("RadiusServers")
+        vals.append(cbor.cbor_list(e1))
     if v.RadiusServersIpv6.is_some():
         auto u2 = v.RadiusServersIpv6.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(ds_json_str(x3))
-        parts.append("\"RadiusServersIpv6\":" + ds_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("RadiusServersIpv6")
+        vals.append(cbor.cbor_list(e3))
     if v.RadiusPort.is_some():
         auto u4 = v.RadiusPort.unwrap()
-        parts.append("\"RadiusPort\":" + str(u4))
+        keys.append("RadiusPort")
+        vals.append(cbor.cbor_int(u4))
     if v.RadiusTimeout.is_some():
         auto u5 = v.RadiusTimeout.unwrap()
-        parts.append("\"RadiusTimeout\":" + str(u5))
+        keys.append("RadiusTimeout")
+        vals.append(cbor.cbor_int(u5))
     if v.RadiusRetries.is_some():
         auto u6 = v.RadiusRetries.unwrap()
-        parts.append("\"RadiusRetries\":" + str(u6))
+        keys.append("RadiusRetries")
+        vals.append(cbor.cbor_int(u6))
     if v.SharedSecret.is_some():
         auto u7 = v.SharedSecret.unwrap()
-        parts.append("\"SharedSecret\":" + ds_json_str(u7))
+        keys.append("SharedSecret")
+        vals.append(cbor.cbor_text(u7))
     if v.AuthenticationProtocol.is_some():
         auto u8 = v.AuthenticationProtocol.unwrap()
-        parts.append("\"AuthenticationProtocol\":" + u8.to_json())
+        keys.append("AuthenticationProtocol")
+        vals.append(cbor.cbor_text(u8))
     if v.DisplayLabel.is_some():
         auto u9 = v.DisplayLabel.unwrap()
-        parts.append("\"DisplayLabel\":" + ds_json_str(u9))
+        keys.append("DisplayLabel")
+        vals.append(cbor.cbor_text(u9))
     if v.UseSameUsername.is_some():
         auto u10 = v.UseSameUsername.unwrap()
-        parts.append("\"UseSameUsername\":" + json.dumps(JsonValue.Bool(u10)))
-    return ds_json_obj(parts)
+        keys.append("UseSameUsername")
+        vals.append(cbor.cbor_bool(u10))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RemoveIpRoutesRequest to a compact JSON object (declaration order).
-def remove_ip_routes_request_to_json(RemoveIpRoutesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+# Serialize RegisterCertificateRequest to a CBOR map (member wire name -> value, model order).
+def register_certificate_request_to_cbor(RegisterCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("CertificateData")
+    vals.append(cbor.cbor_text(v.CertificateData))
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
+    if v.ClientCertAuthSettings.is_some():
+        auto u1 = v.ClientCertAuthSettings.unwrap()
+        keys.append("ClientCertAuthSettings")
+        vals.append(client_cert_auth_settings_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RegisterEventTopicRequest to a CBOR map (member wire name -> value, model order).
+def register_event_topic_request_to_cbor(RegisterEventTopicRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("TopicName")
+    vals.append(cbor.cbor_text(v.TopicName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RejectSharedDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def reject_shared_directory_request_to_cbor(RejectSharedDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SharedDirectoryId")
+    vals.append(cbor.cbor_text(v.SharedDirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RemoveIpRoutesRequest to a CBOR map (member wire name -> value, model order).
+def remove_ip_routes_request_to_cbor(RemoveIpRoutesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
     if v.CidrIps.is_some():
         auto u0 = v.CidrIps.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"CidrIps\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("CidrIps")
+        vals.append(cbor.cbor_list(e1))
     if v.CidrIpv6s.is_some():
         auto u2 = v.CidrIpv6s.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(ds_json_str(x3))
-        parts.append("\"CidrIpv6s\":" + ds_json_arr(e3))
-    return ds_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("CidrIpv6s")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RemoveTagsFromResourceRequest to a compact JSON object (declaration order).
-def remove_tags_from_resource_request_to_json(RemoveTagsFromResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + ds_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize RemoveRegionRequest to a CBOR map (member wire name -> value, model order).
+def remove_region_request_to_cbor(RemoveRegionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RemoveTagsFromResourceRequest to a CBOR map (member wire name -> value, model order).
+def remove_tags_from_resource_request_to_cbor(RemoveTagsFromResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(ds_json_str(x0))
-    parts.append("\"TagKeys\":" + ds_json_arr(e0))
-    return ds_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartADAssessmentRequest to a compact JSON object (declaration order).
-def start_ad_assessment_request_to_json(StartADAssessmentRequest v) -> str:
-    list[str] parts = []
+# Serialize ResetUserPasswordRequest to a CBOR map (member wire name -> value, model order).
+def reset_user_password_request_to_cbor(ResetUserPasswordRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("UserName")
+    vals.append(cbor.cbor_text(v.UserName))
+    keys.append("NewPassword")
+    vals.append(cbor.cbor_text(v.NewPassword))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RestoreFromSnapshotRequest to a CBOR map (member wire name -> value, model order).
+def restore_from_snapshot_request_to_cbor(RestoreFromSnapshotRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SnapshotId")
+    vals.append(cbor.cbor_text(v.SnapshotId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Setting to a CBOR map (member wire name -> value, model order).
+def setting_to_cbor(Setting v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ShareDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def share_directory_request_to_cbor(ShareDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    if v.ShareNotes.is_some():
+        auto u0 = v.ShareNotes.unwrap()
+        keys.append("ShareNotes")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ShareTarget")
+    vals.append(share_target_to_cbor(v.ShareTarget))
+    keys.append("ShareMethod")
+    vals.append(cbor.cbor_text(v.ShareMethod))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ShareTarget to a CBOR map (member wire name -> value, model order).
+def share_target_to_cbor(ShareTarget v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartADAssessmentRequest to a CBOR map (member wire name -> value, model order).
+def start_ad_assessment_request_to_cbor(StartADAssessmentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AssessmentConfiguration.is_some():
         auto u0 = v.AssessmentConfiguration.unwrap()
-        parts.append("\"AssessmentConfiguration\":" + assessment_configuration_to_json(u0))
+        keys.append("AssessmentConfiguration")
+        vals.append(assessment_configuration_to_cbor(u0))
     if v.DirectoryId.is_some():
         auto u1 = v.DirectoryId.unwrap()
-        parts.append("\"DirectoryId\":" + ds_json_str(u1))
-    return ds_json_obj(parts)
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateConditionalForwarderRequest to a compact JSON object (declaration order).
-def update_conditional_forwarder_request_to_json(UpdateConditionalForwarderRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"RemoteDomainName\":" + ds_json_str(v.RemoteDomainName))
+# Serialize StartSchemaExtensionRequest to a CBOR map (member wire name -> value, model order).
+def start_schema_extension_request_to_cbor(StartSchemaExtensionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("CreateSnapshotBeforeSchemaExtension")
+    vals.append(cbor.cbor_bool(v.CreateSnapshotBeforeSchemaExtension))
+    keys.append("LdifContent")
+    vals.append(cbor.cbor_text(v.LdifContent))
+    keys.append("Description")
+    vals.append(cbor.cbor_text(v.Description))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UnshareDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def unshare_directory_request_to_cbor(UnshareDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("UnshareTarget")
+    vals.append(unshare_target_to_cbor(v.UnshareTarget))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UnshareTarget to a CBOR map (member wire name -> value, model order).
+def unshare_target_to_cbor(UnshareTarget v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateConditionalForwarderRequest to a CBOR map (member wire name -> value, model order).
+def update_conditional_forwarder_request_to_cbor(UpdateConditionalForwarderRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RemoteDomainName")
+    vals.append(cbor.cbor_text(v.RemoteDomainName))
     if v.DnsIpAddrs.is_some():
         auto u0 = v.DnsIpAddrs.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(ds_json_str(x1))
-        parts.append("\"DnsIpAddrs\":" + ds_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("DnsIpAddrs")
+        vals.append(cbor.cbor_list(e1))
     if v.DnsIpv6Addrs.is_some():
         auto u2 = v.DnsIpv6Addrs.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(ds_json_str(x3))
-        parts.append("\"DnsIpv6Addrs\":" + ds_json_arr(e3))
-    return ds_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("DnsIpv6Addrs")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateDirectorySetupRequest to a compact JSON object (declaration order).
-def update_directory_setup_request_to_json(UpdateDirectorySetupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"UpdateType\":" + v.UpdateType.to_json())
+# Serialize UpdateDirectorySetupRequest to a CBOR map (member wire name -> value, model order).
+def update_directory_setup_request_to_cbor(UpdateDirectorySetupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("UpdateType")
+    vals.append(cbor.cbor_text(v.UpdateType))
     if v.OSUpdateSettings.is_some():
         auto u0 = v.OSUpdateSettings.unwrap()
-        parts.append("\"OSUpdateSettings\":" + u0.to_json())
+        keys.append("OSUpdateSettings")
+        vals.append(os_update_settings_to_cbor(u0))
     if v.DirectorySizeUpdateSettings.is_some():
         auto u1 = v.DirectorySizeUpdateSettings.unwrap()
-        parts.append("\"DirectorySizeUpdateSettings\":" + u1.to_json())
+        keys.append("DirectorySizeUpdateSettings")
+        vals.append(directory_size_update_settings_to_cbor(u1))
     if v.NetworkUpdateSettings.is_some():
         auto u2 = v.NetworkUpdateSettings.unwrap()
-        parts.append("\"NetworkUpdateSettings\":" + network_update_settings_to_json(u2))
+        keys.append("NetworkUpdateSettings")
+        vals.append(network_update_settings_to_cbor(u2))
     if v.CreateSnapshotBeforeUpdate.is_some():
         auto u3 = v.CreateSnapshotBeforeUpdate.unwrap()
-        parts.append("\"CreateSnapshotBeforeUpdate\":" + json.dumps(JsonValue.Bool(u3)))
-    return ds_json_obj(parts)
+        keys.append("CreateSnapshotBeforeUpdate")
+        vals.append(cbor.cbor_bool(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateHybridADRequest to a compact JSON object (declaration order).
-def update_hybrid_ad_request_to_json(UpdateHybridADRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
+# Serialize UpdateHybridADRequest to a CBOR map (member wire name -> value, model order).
+def update_hybrid_ad_request_to_cbor(UpdateHybridADRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
     if v.HybridAdministratorAccountUpdate.is_some():
         auto u0 = v.HybridAdministratorAccountUpdate.unwrap()
-        parts.append("\"HybridAdministratorAccountUpdate\":" + u0.to_json())
+        keys.append("HybridAdministratorAccountUpdate")
+        vals.append(hybrid_administrator_account_update_to_cbor(u0))
     if v.SelfManagedInstancesSettings.is_some():
         auto u1 = v.SelfManagedInstancesSettings.unwrap()
-        parts.append("\"SelfManagedInstancesSettings\":" + hybrid_customer_instances_settings_to_json(u1))
-    return ds_json_obj(parts)
+        keys.append("SelfManagedInstancesSettings")
+        vals.append(hybrid_customer_instances_settings_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateRadiusRequest to a compact JSON object (declaration order).
-def update_radius_request_to_json(UpdateRadiusRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    parts.append("\"RadiusSettings\":" + radius_settings_to_json(v.RadiusSettings))
-    return ds_json_obj(parts)
+# Serialize UpdateNumberOfDomainControllersRequest to a CBOR map (member wire name -> value, model order).
+def update_number_of_domain_controllers_request_to_cbor(UpdateNumberOfDomainControllersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("DesiredNumber")
+    vals.append(cbor.cbor_int(v.DesiredNumber))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateSettingsRequest to a compact JSON object (declaration order).
-def update_settings_request_to_json(UpdateSettingsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + ds_json_str(v.DirectoryId))
-    list[str] e0 = []
+# Serialize UpdateRadiusRequest to a CBOR map (member wire name -> value, model order).
+def update_radius_request_to_cbor(UpdateRadiusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("RadiusSettings")
+    vals.append(radius_settings_to_cbor(v.RadiusSettings))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateSettingsRequest to a CBOR map (member wire name -> value, model order).
+def update_settings_request_to_cbor(UpdateSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Settings:
-        e0.append(x0.to_json())
-    parts.append("\"Settings\":" + ds_json_arr(e0))
-    return ds_json_obj(parts)
+        e0.append(setting_to_cbor(x0))
+    keys.append("Settings")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateTrustRequest to a CBOR map (member wire name -> value, model order).
+def update_trust_request_to_cbor(UpdateTrustRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TrustId")
+    vals.append(cbor.cbor_text(v.TrustId))
+    if v.SelectiveAuth.is_some():
+        auto u0 = v.SelectiveAuth.unwrap()
+        keys.append("SelectiveAuth")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize VerifyTrustRequest to a CBOR map (member wire name -> value, model order).
+def verify_trust_request_to_cbor(VerifyTrustRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TrustId")
+    vals.append(cbor.cbor_text(v.TrustId))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Directory_Service client: credentials + region, threaded into every operation.
 struct Directory_ServiceClient:
@@ -2725,716 +3231,723 @@ struct Directory_ServiceClient:
 
     # AcceptSharedDirectory
     # errors: ClientException, DirectoryAlreadySharedException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def accept_shared_directory(self, AcceptSharedDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AcceptSharedDirectory", body)
+    def accept_shared_directory(self, AcceptSharedDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(accept_shared_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "AcceptSharedDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AddIpRoutes
     # errors: ClientException, DirectoryUnavailableException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, IpRouteLimitExceededException, ServiceException
-    def add_ip_routes(self, AddIpRoutesRequest input) -> str:
-        auto body = add_ip_routes_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AddIpRoutes", body)
+    def add_ip_routes(self, AddIpRoutesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(add_ip_routes_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "AddIpRoutes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AddRegion
     # errors: AccessDeniedException, ClientException, DirectoryAlreadyInRegionException, DirectoryDoesNotExistException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, RegionLimitExceededException, ServiceException, UnsupportedOperationException
-    def add_region(self, AddRegionRequest input) -> str:
-        auto body = add_region_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AddRegion", body)
+    def add_region(self, AddRegionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(add_region_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "AddRegion", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AddTagsToResource
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, TagLimitExceededException
-    def add_tags_to_resource(self, AddTagsToResourceRequest input) -> str:
-        auto body = add_tags_to_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "AddTagsToResource", body)
+    def add_tags_to_resource(self, AddTagsToResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(add_tags_to_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "AddTagsToResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CancelSchemaExtension
     # errors: ClientException, EntityDoesNotExistException, ServiceException
-    def cancel_schema_extension(self, CancelSchemaExtensionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CancelSchemaExtension", body)
+    def cancel_schema_extension(self, CancelSchemaExtensionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(cancel_schema_extension_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CancelSchemaExtension", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ConnectDirectory
     # errors: ClientException, DirectoryLimitExceededException, InvalidParameterException, ServiceException
-    def connect_directory(self, ConnectDirectoryRequest input) -> str:
-        auto body = connect_directory_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ConnectDirectory", body)
+    def connect_directory(self, ConnectDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(connect_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ConnectDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateAlias
     # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def create_alias(self, CreateAliasRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateAlias", body)
+    def create_alias(self, CreateAliasRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_alias_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateAlias", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateComputer
     # errors: AuthenticationFailedException, ClientException, DirectoryUnavailableException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def create_computer(self, CreateComputerRequest input) -> str:
-        auto body = create_computer_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateComputer", body)
+    def create_computer(self, CreateComputerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_computer_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateComputer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateConditionalForwarder
     # errors: ClientException, DirectoryUnavailableException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def create_conditional_forwarder(self, CreateConditionalForwarderRequest input) -> str:
-        auto body = create_conditional_forwarder_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateConditionalForwarder", body)
+    def create_conditional_forwarder(self, CreateConditionalForwarderRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_conditional_forwarder_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateConditionalForwarder", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDirectory
     # errors: ClientException, DirectoryLimitExceededException, InvalidParameterException, ServiceException
-    def create_directory(self, CreateDirectoryRequest input) -> str:
-        auto body = create_directory_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateDirectory", body)
+    def create_directory(self, CreateDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateHybridAD
     # errors: ADAssessmentLimitExceededException, ClientException, DirectoryLimitExceededException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def create_hybrid_ad(self, CreateHybridADRequest input) -> str:
-        auto body = create_hybrid_ad_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateHybridAD", body)
+    def create_hybrid_ad(self, CreateHybridADRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_hybrid_ad_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateHybridAD", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLogSubscription
     # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InsufficientPermissionsException, ServiceException, UnsupportedOperationException
-    def create_log_subscription(self, CreateLogSubscriptionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateLogSubscription", body)
+    def create_log_subscription(self, CreateLogSubscriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_log_subscription_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateLogSubscription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateMicrosoftAD
     # errors: ClientException, DirectoryLimitExceededException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def create_microsoft_ad(self, CreateMicrosoftADRequest input) -> str:
-        auto body = create_microsoft_ad_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateMicrosoftAD", body)
+    def create_microsoft_ad(self, CreateMicrosoftADRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_microsoft_ad_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateMicrosoftAD", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateSnapshot
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, SnapshotLimitExceededException
-    def create_snapshot(self, CreateSnapshotRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateSnapshot", body)
+    def create_snapshot(self, CreateSnapshotRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_snapshot_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateSnapshot", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateTrust
     # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def create_trust(self, CreateTrustRequest input) -> str:
-        auto body = create_trust_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "CreateTrust", body)
+    def create_trust(self, CreateTrustRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_trust_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "CreateTrust", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteADAssessment
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def delete_ad_assessment(self, DeleteADAssessmentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeleteADAssessment", body)
+    def delete_ad_assessment(self, DeleteADAssessmentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_ad_assessment_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeleteADAssessment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteConditionalForwarder
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def delete_conditional_forwarder(self, DeleteConditionalForwarderRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeleteConditionalForwarder", body)
+    def delete_conditional_forwarder(self, DeleteConditionalForwarderRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_conditional_forwarder_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeleteConditionalForwarder", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDirectory
     # errors: ClientException, EntityDoesNotExistException, ServiceException
-    def delete_directory(self, DeleteDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeleteDirectory", body)
+    def delete_directory(self, DeleteDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeleteDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteLogSubscription
     # errors: ClientException, EntityDoesNotExistException, ServiceException, UnsupportedOperationException
-    def delete_log_subscription(self, DeleteLogSubscriptionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeleteLogSubscription", body)
+    def delete_log_subscription(self, DeleteLogSubscriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_log_subscription_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeleteLogSubscription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteSnapshot
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def delete_snapshot(self, DeleteSnapshotRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeleteSnapshot", body)
+    def delete_snapshot(self, DeleteSnapshotRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_snapshot_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeleteSnapshot", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTrust
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def delete_trust(self, DeleteTrustRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeleteTrust", body)
+    def delete_trust(self, DeleteTrustRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_trust_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeleteTrust", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeregisterCertificate
     # errors: CertificateDoesNotExistException, CertificateInUseException, ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def deregister_certificate(self, DeregisterCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeregisterCertificate", body)
+    def deregister_certificate(self, DeregisterCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(deregister_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeregisterCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeregisterEventTopic
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def deregister_event_topic(self, DeregisterEventTopicRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DeregisterEventTopic", body)
+    def deregister_event_topic(self, DeregisterEventTopicRequest input) -> bytes:
+        auto body = cbor.cbor_encode(deregister_event_topic_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DeregisterEventTopic", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeADAssessment
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_ad_assessment(self, DescribeADAssessmentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeADAssessment", body)
+    def describe_ad_assessment(self, DescribeADAssessmentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_ad_assessment_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeADAssessment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCAEnrollmentPolicy
     # errors: ClientException, DirectoryDoesNotExistException, ServiceException, UnsupportedOperationException
-    def describe_ca_enrollment_policy(self, DescribeCAEnrollmentPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeCAEnrollmentPolicy", body)
+    def describe_ca_enrollment_policy(self, DescribeCAEnrollmentPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_ca_enrollment_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeCAEnrollmentPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCertificate
     # errors: CertificateDoesNotExistException, ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_certificate(self, DescribeCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeCertificate", body)
+    def describe_certificate(self, DescribeCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeClientAuthenticationSettings
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_client_authentication_settings(self, DescribeClientAuthenticationSettingsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeClientAuthenticationSettings", body)
+    def describe_client_authentication_settings(self, DescribeClientAuthenticationSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_client_authentication_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeClientAuthenticationSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConditionalForwarders
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_conditional_forwarders(self, DescribeConditionalForwardersRequest input) -> str:
-        auto body = describe_conditional_forwarders_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeConditionalForwarders", body)
+    def describe_conditional_forwarders(self, DescribeConditionalForwardersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_conditional_forwarders_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeConditionalForwarders", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDirectories
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
-    def describe_directories(self, DescribeDirectoriesRequest input) -> str:
-        auto body = describe_directories_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDirectories", body)
+    def describe_directories(self, DescribeDirectoriesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_directories_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeDirectories", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDirectoryDataAccess
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, ServiceException, UnsupportedOperationException
-    def describe_directory_data_access(self, DescribeDirectoryDataAccessRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDirectoryDataAccess", body)
+    def describe_directory_data_access(self, DescribeDirectoryDataAccessRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_directory_data_access_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeDirectoryDataAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDomainControllers
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_domain_controllers(self, DescribeDomainControllersRequest input) -> str:
-        auto body = describe_domain_controllers_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDomainControllers", body)
+    def describe_domain_controllers(self, DescribeDomainControllersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_domain_controllers_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeDomainControllers", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEventTopics
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def describe_event_topics(self, DescribeEventTopicsRequest input) -> str:
-        auto body = describe_event_topics_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeEventTopics", body)
+    def describe_event_topics(self, DescribeEventTopicsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_event_topics_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeEventTopics", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeHybridADUpdate
     # errors: ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_hybrid_ad_update(self, DescribeHybridADUpdateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeHybridADUpdate", body)
+    def describe_hybrid_ad_update(self, DescribeHybridADUpdateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_hybrid_ad_update_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeHybridADUpdate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLDAPSSettings
     # errors: ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_ldaps_settings(self, DescribeLDAPSSettingsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeLDAPSSettings", body)
+    def describe_ldaps_settings(self, DescribeLDAPSSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_ldaps_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeLDAPSSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeRegions
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_regions(self, DescribeRegionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeRegions", body)
+    def describe_regions(self, DescribeRegionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_regions_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeRegions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSettings
     # errors: ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_settings(self, DescribeSettingsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSettings", body)
+    def describe_settings(self, DescribeSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSharedDirectories
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_shared_directories(self, DescribeSharedDirectoriesRequest input) -> str:
-        auto body = describe_shared_directories_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSharedDirectories", body)
+    def describe_shared_directories(self, DescribeSharedDirectoriesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_shared_directories_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeSharedDirectories", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSnapshots
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
-    def describe_snapshots(self, DescribeSnapshotsRequest input) -> str:
-        auto body = describe_snapshots_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSnapshots", body)
+    def describe_snapshots(self, DescribeSnapshotsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_snapshots_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeSnapshots", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTrusts
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def describe_trusts(self, DescribeTrustsRequest input) -> str:
-        auto body = describe_trusts_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeTrusts", body)
+    def describe_trusts(self, DescribeTrustsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_trusts_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeTrusts", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeUpdateDirectory
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
-    def describe_update_directory(self, DescribeUpdateDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeUpdateDirectory", body)
+    def describe_update_directory(self, DescribeUpdateDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_update_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DescribeUpdateDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableCAEnrollmentPolicy
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, DisableAlreadyInProgressException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def disable_ca_enrollment_policy(self, DisableCAEnrollmentPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DisableCAEnrollmentPolicy", body)
+    def disable_ca_enrollment_policy(self, DisableCAEnrollmentPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_ca_enrollment_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DisableCAEnrollmentPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableClientAuthentication
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, InvalidClientAuthStatusException, ServiceException, UnsupportedOperationException
-    def disable_client_authentication(self, DisableClientAuthenticationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DisableClientAuthentication", body)
+    def disable_client_authentication(self, DisableClientAuthenticationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_client_authentication_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DisableClientAuthentication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableDirectoryDataAccess
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryInDesiredStateException, DirectoryUnavailableException, ServiceException, UnsupportedOperationException
-    def disable_directory_data_access(self, DisableDirectoryDataAccessRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DisableDirectoryDataAccess", body)
+    def disable_directory_data_access(self, DisableDirectoryDataAccessRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_directory_data_access_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DisableDirectoryDataAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableLDAPS
     # errors: ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, InvalidLDAPSStatusException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def disable_ldaps(self, DisableLDAPSRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DisableLDAPS", body)
+    def disable_ldaps(self, DisableLDAPSRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_ldaps_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DisableLDAPS", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableRadius
     # errors: ClientException, EntityDoesNotExistException, ServiceException
-    def disable_radius(self, DisableRadiusRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DisableRadius", body)
+    def disable_radius(self, DisableRadiusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_radius_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DisableRadius", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableSso
     # errors: AuthenticationFailedException, ClientException, EntityDoesNotExistException, InsufficientPermissionsException, ServiceException
-    def disable_sso(self, DisableSsoRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DisableSso", body)
+    def disable_sso(self, DisableSsoRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_sso_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "DisableSso", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableCAEnrollmentPolicy
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, EnableAlreadyInProgressException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def enable_ca_enrollment_policy(self, EnableCAEnrollmentPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableCAEnrollmentPolicy", body)
+    def enable_ca_enrollment_policy(self, EnableCAEnrollmentPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_ca_enrollment_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "EnableCAEnrollmentPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableClientAuthentication
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, InvalidClientAuthStatusException, NoAvailableCertificateException, ServiceException, UnsupportedOperationException
-    def enable_client_authentication(self, EnableClientAuthenticationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableClientAuthentication", body)
+    def enable_client_authentication(self, EnableClientAuthenticationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_client_authentication_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "EnableClientAuthentication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableDirectoryDataAccess
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryInDesiredStateException, DirectoryUnavailableException, ServiceException, UnsupportedOperationException
-    def enable_directory_data_access(self, EnableDirectoryDataAccessRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableDirectoryDataAccess", body)
+    def enable_directory_data_access(self, EnableDirectoryDataAccessRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_directory_data_access_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "EnableDirectoryDataAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableLDAPS
     # errors: ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, InvalidLDAPSStatusException, InvalidParameterException, NoAvailableCertificateException, ServiceException, UnsupportedOperationException
-    def enable_ldaps(self, EnableLDAPSRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableLDAPS", body)
+    def enable_ldaps(self, EnableLDAPSRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_ldaps_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "EnableLDAPS", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableRadius
     # errors: ClientException, EntityAlreadyExistsException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def enable_radius(self, EnableRadiusRequest input) -> str:
-        auto body = enable_radius_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableRadius", body)
+    def enable_radius(self, EnableRadiusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_radius_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "EnableRadius", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableSso
     # errors: AuthenticationFailedException, ClientException, EntityDoesNotExistException, InsufficientPermissionsException, ServiceException
-    def enable_sso(self, EnableSsoRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "EnableSso", body)
+    def enable_sso(self, EnableSsoRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_sso_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "EnableSso", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDirectoryLimits
     # errors: ClientException, EntityDoesNotExistException, ServiceException
-    def get_directory_limits(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "GetDirectoryLimits", body)
+    def get_directory_limits(self, GetDirectoryLimitsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_directory_limits_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "GetDirectoryLimits", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetSnapshotLimits
     # errors: ClientException, EntityDoesNotExistException, ServiceException
-    def get_snapshot_limits(self, GetSnapshotLimitsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "GetSnapshotLimits", body)
+    def get_snapshot_limits(self, GetSnapshotLimitsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_snapshot_limits_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "GetSnapshotLimits", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListADAssessments
     # errors: ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def list_ad_assessments(self, ListADAssessmentsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListADAssessments", body)
+    def list_ad_assessments(self, ListADAssessmentsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_ad_assessments_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ListADAssessments", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListCertificates
     # errors: ClientException, DirectoryDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def list_certificates(self, ListCertificatesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListCertificates", body)
+    def list_certificates(self, ListCertificatesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_certificates_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ListCertificates", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListIpRoutes
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
-    def list_ip_routes(self, ListIpRoutesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListIpRoutes", body)
+    def list_ip_routes(self, ListIpRoutesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_ip_routes_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ListIpRoutes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListLogSubscriptions
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, ServiceException
-    def list_log_subscriptions(self, ListLogSubscriptionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListLogSubscriptions", body)
+    def list_log_subscriptions(self, ListLogSubscriptionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_log_subscriptions_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ListLogSubscriptions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSchemaExtensions
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, ServiceException
-    def list_schema_extensions(self, ListSchemaExtensionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListSchemaExtensions", body)
+    def list_schema_extensions(self, ListSchemaExtensionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_schema_extensions_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ListSchemaExtensions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: ClientException, EntityDoesNotExistException, InvalidNextTokenException, InvalidParameterException, ServiceException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterCertificate
     # errors: CertificateAlreadyExistsException, CertificateLimitExceededException, ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, InvalidCertificateException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def register_certificate(self, RegisterCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RegisterCertificate", body)
+    def register_certificate(self, RegisterCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(register_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RegisterCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterEventTopic
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def register_event_topic(self, RegisterEventTopicRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RegisterEventTopic", body)
+    def register_event_topic(self, RegisterEventTopicRequest input) -> bytes:
+        auto body = cbor.cbor_encode(register_event_topic_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RegisterEventTopic", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RejectSharedDirectory
     # errors: ClientException, DirectoryAlreadySharedException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def reject_shared_directory(self, RejectSharedDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RejectSharedDirectory", body)
+    def reject_shared_directory(self, RejectSharedDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reject_shared_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RejectSharedDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RemoveIpRoutes
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def remove_ip_routes(self, RemoveIpRoutesRequest input) -> str:
-        auto body = remove_ip_routes_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RemoveIpRoutes", body)
+    def remove_ip_routes(self, RemoveIpRoutesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(remove_ip_routes_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RemoveIpRoutes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RemoveRegion
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, ServiceException, UnsupportedOperationException
-    def remove_region(self, RemoveRegionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RemoveRegion", body)
+    def remove_region(self, RemoveRegionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(remove_region_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RemoveRegion", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RemoveTagsFromResource
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def remove_tags_from_resource(self, RemoveTagsFromResourceRequest input) -> str:
-        auto body = remove_tags_from_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RemoveTagsFromResource", body)
+    def remove_tags_from_resource(self, RemoveTagsFromResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(remove_tags_from_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RemoveTagsFromResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ResetUserPassword
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidPasswordException, ServiceException, UnsupportedOperationException, UserDoesNotExistException
-    def reset_user_password(self, ResetUserPasswordRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ResetUserPassword", body)
+    def reset_user_password(self, ResetUserPasswordRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reset_user_password_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ResetUserPassword", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RestoreFromSnapshot
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def restore_from_snapshot(self, RestoreFromSnapshotRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "RestoreFromSnapshot", body)
+    def restore_from_snapshot(self, RestoreFromSnapshotRequest input) -> bytes:
+        auto body = cbor.cbor_encode(restore_from_snapshot_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "RestoreFromSnapshot", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ShareDirectory
     # errors: AccessDeniedException, ClientException, DirectoryAlreadySharedException, EntityDoesNotExistException, InvalidParameterException, InvalidTargetException, OrganizationsException, ServiceException, ShareLimitExceededException, UnsupportedOperationException
-    def share_directory(self, ShareDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ShareDirectory", body)
+    def share_directory(self, ShareDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(share_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "ShareDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartADAssessment
     # errors: ADAssessmentLimitExceededException, ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def start_ad_assessment(self, StartADAssessmentRequest input) -> str:
-        auto body = start_ad_assessment_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "StartADAssessment", body)
+    def start_ad_assessment(self, StartADAssessmentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_ad_assessment_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "StartADAssessment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartSchemaExtension
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, SnapshotLimitExceededException
-    def start_schema_extension(self, StartSchemaExtensionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "StartSchemaExtension", body)
+    def start_schema_extension(self, StartSchemaExtensionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_schema_extension_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "StartSchemaExtension", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UnshareDirectory
     # errors: ClientException, DirectoryNotSharedException, EntityDoesNotExistException, InvalidTargetException, ServiceException
-    def unshare_directory(self, UnshareDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UnshareDirectory", body)
+    def unshare_directory(self, UnshareDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(unshare_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UnshareDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateConditionalForwarder
     # errors: ClientException, DirectoryUnavailableException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def update_conditional_forwarder(self, UpdateConditionalForwarderRequest input) -> str:
-        auto body = update_conditional_forwarder_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateConditionalForwarder", body)
+    def update_conditional_forwarder(self, UpdateConditionalForwarderRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_conditional_forwarder_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateConditionalForwarder", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDirectorySetup
     # errors: AccessDeniedException, ClientException, DirectoryDoesNotExistException, DirectoryInDesiredStateException, DirectoryUnavailableException, InvalidParameterException, ServiceException, SnapshotLimitExceededException, UnsupportedOperationException
-    def update_directory_setup(self, UpdateDirectorySetupRequest input) -> str:
-        auto body = update_directory_setup_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateDirectorySetup", body)
+    def update_directory_setup(self, UpdateDirectorySetupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_directory_setup_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateDirectorySetup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateHybridAD
     # errors: ADAssessmentLimitExceededException, ClientException, DirectoryDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def update_hybrid_ad(self, UpdateHybridADRequest input) -> str:
-        auto body = update_hybrid_ad_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateHybridAD", body)
+    def update_hybrid_ad(self, UpdateHybridADRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_hybrid_ad_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateHybridAD", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateNumberOfDomainControllers
     # errors: ClientException, DirectoryUnavailableException, DomainControllerLimitExceededException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def update_number_of_domain_controllers(self, UpdateNumberOfDomainControllersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateNumberOfDomainControllers", body)
+    def update_number_of_domain_controllers(self, UpdateNumberOfDomainControllersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_number_of_domain_controllers_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateNumberOfDomainControllers", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateRadius
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def update_radius(self, UpdateRadiusRequest input) -> str:
-        auto body = update_radius_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateRadius", body)
+    def update_radius(self, UpdateRadiusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_radius_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateRadius", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateSettings
     # errors: ClientException, DirectoryDoesNotExistException, DirectoryUnavailableException, IncompatibleSettingsException, InvalidParameterException, ServiceException, UnsupportedOperationException, UnsupportedSettingsException
-    def update_settings(self, UpdateSettingsRequest input) -> str:
-        auto body = update_settings_request_to_json(input)
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateSettings", body)
+    def update_settings(self, UpdateSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateTrust
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException
-    def update_trust(self, UpdateTrustRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "UpdateTrust", body)
+    def update_trust(self, UpdateTrustRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_trust_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "UpdateTrust", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # VerifyTrust
     # errors: ClientException, EntityDoesNotExistException, InvalidParameterException, ServiceException, UnsupportedOperationException
-    def verify_trust(self, VerifyTrustRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "VerifyTrust", body)
-
-    # Paginator for DescribeClientAuthenticationSettings — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ClientAuthenticationSettingsInfo).
-    def paginate_describe_client_authentication_settings(self, DescribeClientAuthenticationSettingsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeClientAuthenticationSettings", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeDirectories — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: DirectoryDescriptions).
-    def paginate_describe_directories(self, DescribeDirectoriesRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = describe_directories_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDirectories", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeDomainControllers — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: DomainControllers).
-    def paginate_describe_domain_controllers(self, DescribeDomainControllersRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = describe_domain_controllers_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeDomainControllers", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeLDAPSSettings — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: LDAPSSettingsInfo).
-    def paginate_describe_ldaps_settings(self, DescribeLDAPSSettingsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeLDAPSSettings", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeRegions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: RegionsDescription).
-    def paginate_describe_regions(self, DescribeRegionsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeRegions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeSharedDirectories — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: SharedDirectories).
-    def paginate_describe_shared_directories(self, DescribeSharedDirectoriesRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = describe_shared_directories_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSharedDirectories", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeSnapshots — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Snapshots).
-    def paginate_describe_snapshots(self, DescribeSnapshotsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = describe_snapshots_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeSnapshots", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeTrusts — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Trusts).
-    def paginate_describe_trusts(self, DescribeTrustsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = describe_trusts_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeTrusts", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeUpdateDirectory — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: UpdateActivities).
-    def paginate_describe_update_directory(self, DescribeUpdateDirectoryRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "DescribeUpdateDirectory", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListADAssessments — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Assessments).
-    def paginate_list_ad_assessments(self, ListADAssessmentsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListADAssessments", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListCertificates — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: CertificatesInfo).
-    def paginate_list_certificates(self, ListCertificatesRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListCertificates", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListIpRoutes — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: IpRoutesInfo).
-    def paginate_list_ip_routes(self, ListIpRoutesRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListIpRoutes", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListLogSubscriptions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: LogSubscriptions).
-    def paginate_list_log_subscriptions(self, ListLogSubscriptionsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListLogSubscriptions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListSchemaExtensions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: SchemaExtensionsInfo).
-    def paginate_list_schema_extensions(self, ListSchemaExtensionsRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListSchemaExtensions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTagsForResource — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Tags).
-    def paginate_list_tags_for_resource(self, ListTagsForResourceRequest input):
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(ds_protocol(), self.creds, self.region, "ListTagsForResource", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # One poll of DescribeHybridADUpdate for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_describe_hybrid_ad_update(self, DescribeHybridADUpdateRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(ds_protocol().service, self.region)
-        auto resp = core.send(host, self.describe_hybrid_ad_update(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # Waiter HybridADUpdated — polls DescribeHybridADUpdate until a success acceptor fires (delay 120s,
-    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_hybrid_ad_updated.
-    def wait_hybrid_ad_updated(self, DescribeHybridADUpdateRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="HybridADUpdated",
-            delay=120,
-            max_attempts=60,
-            acceptors=[
-                waiters.acceptor_path_all(waiters.state_success(), "UpdateActivities.SelfManagedInstances[].Status", "Updated"),
-                waiters.acceptor_path_any(waiters.state_failure(), "UpdateActivities.SelfManagedInstances[].Status", "UpdateFailed")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_hybrid_ad_update(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
+    def verify_trust(self, VerifyTrustRequest input) -> bytes:
+        auto body = cbor.cbor_encode(verify_trust_request_to_cbor(input))
+        auto host = endpoints.regional_host(ds_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(ds_service(), self.region, host, "DirectoryService_20150416", "VerifyTrust", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a Directory_ServiceClient bound to credentials + region.
 def ds_client(core.Credentials creds, str region) -> Directory_ServiceClient:

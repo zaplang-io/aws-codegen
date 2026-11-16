@@ -18,7 +18,7 @@
 #
 # Coverage (smithy-rpc-v2-cbor): 25 operations — 25 with a generated method,
 #   0 skipped (input has a non-text-keyed map member).
-#   122 structs (plain carriers), 20 enums, 7 error variants.
+#   123 structs (plain carriers), 20 enums, 7 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -418,6 +418,7 @@ struct AgreementViewSummary:
     Optional[str] initialAgreementId
     Optional[str] endTimeBehaviorType
     Optional[str] endTimeBehaviorReasonCode
+    Optional[DateTime] freeTrialEndTime
 
 struct BatchCreateBillingAdjustmentError:
     str code
@@ -570,6 +571,7 @@ struct DescribeAgreementOutput:
     Optional[str] status
     Optional[str] initialAgreementId
     Optional[EndTimeBehavior] endTimeBehavior
+    Optional[FreeTrialSummary] freeTrialSummary
 
 struct Dimension:
     str dimensionKey
@@ -624,6 +626,9 @@ struct FreeTrialPricingTerm:
     Optional[str] id
     Optional[str] duration
     Optional[list[GrantItem]] grants
+
+struct FreeTrialSummary:
+    Optional[DateTime] trialEndTime
 
 struct GetAgreementCancellationRequestInput:
     str agreementCancellationRequestId

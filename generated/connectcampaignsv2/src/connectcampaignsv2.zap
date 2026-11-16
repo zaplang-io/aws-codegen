@@ -223,6 +223,7 @@ struct Campaign:
     Optional[EntryLimitsConfig] entryLimitsConfig
     Optional[CommunicationTimeConfig] communicationTimeConfig
     Optional[CommunicationLimitsConfig] communicationLimitsOverride
+    Optional[DateTime] lastModifiedTime
     Optional[dict[str, str]] tags
 
 @derive(Json)
@@ -242,6 +243,7 @@ struct CampaignSummary:
     Optional[Schedule] schedule
     Optional[EntryLimitsConfig] entryLimitsConfig
     Optional[str] connectCampaignFlowArn
+    Optional[DateTime] lastModifiedTime
 
 @derive(Json)
 struct ChannelContext:

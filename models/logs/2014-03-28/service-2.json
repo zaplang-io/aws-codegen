@@ -390,6 +390,9 @@
    "input": {
     "shape": "DeleteAccountPolicyRequest"
    },
+   "output": {
+    "shape": "DeleteAccountPolicyResponse"
+   },
    "errors": [
     {
      "shape": "InvalidParameterException"
@@ -4180,6 +4183,17 @@
     },
     "policyType": {
      "shape": "PolicyType"
+    },
+    "dryRun": {
+     "shape": "DryRun"
+    }
+   }
+  },
+  "DeleteAccountPolicyResponse": {
+   "type": "structure",
+   "members": {
+    "dryRunResult": {
+     "shape": "DryRunResult"
     }
    }
   },
@@ -5472,6 +5486,36 @@
     "Random",
     "ByLogStream"
    ]
+  },
+  "DryRun": {
+   "type": "boolean"
+  },
+  "DryRunCount": {
+   "type": "integer",
+   "min": 0
+  },
+  "DryRunResult": {
+   "type": "structure",
+   "members": {
+    "totalMatchedLogGroups": {
+     "shape": "DryRunCount"
+    },
+    "increasedRetentionLogGroupCount": {
+     "shape": "DryRunCount"
+    },
+    "decreasedRetentionLogGroupCount": {
+     "shape": "DryRunCount"
+    },
+    "unchangedRetentionLogGroupCount": {
+     "shape": "DryRunCount"
+    },
+    "failedAnalysisCount": {
+     "shape": "DryRunCount"
+    },
+    "topLogGroupsImpacted": {
+     "shape": "LogGroupImpacts"
+    }
+   }
   },
   "DynamicTokenPosition": {
    "type": "integer"
@@ -7447,6 +7491,9 @@
     },
     "bearerTokenAuthenticationEnabled": {
      "shape": "BearerTokenAuthenticationEnabled"
+    },
+    "retentionPolicyName": {
+     "shape": "PolicyName"
     }
    }
   },
@@ -7467,7 +7514,8 @@
    "enum": [
     "STANDARD",
     "INFREQUENT_ACCESS",
-    "DELIVERY"
+    "DELIVERY",
+    "ESSENTIALS"
    ]
   },
   "LogGroupCount": {
@@ -7500,6 +7548,29 @@
    "type": "list",
    "member": {
     "shape": "LogGroupIdentifier"
+   }
+  },
+  "LogGroupImpact": {
+   "type": "structure",
+   "members": {
+    "logGroupName": {
+     "shape": "LogGroupName"
+    },
+    "currentRetention": {
+     "shape": "RetentionValue"
+    },
+    "proposedRetention": {
+     "shape": "RetentionValue"
+    },
+    "storedBytes": {
+     "shape": "StoredBytes"
+    }
+   }
+  },
+  "LogGroupImpacts": {
+   "type": "list",
+   "member": {
+    "shape": "LogGroupImpact"
    }
   },
   "LogGroupName": {
@@ -8346,7 +8417,8 @@
     "SUBSCRIPTION_FILTER_POLICY",
     "FIELD_INDEX_POLICY",
     "TRANSFORMER_POLICY",
-    "METRIC_EXTRACTION_POLICY"
+    "METRIC_EXTRACTION_POLICY",
+    "RETENTION_POLICY"
    ]
   },
   "Priority": {
@@ -8457,6 +8529,9 @@
     },
     "selectionCriteria": {
      "shape": "SelectionCriteria"
+    },
+    "dryRun": {
+     "shape": "DryRun"
     }
    }
   },
@@ -8465,6 +8540,9 @@
    "members": {
     "accountPolicy": {
      "shape": "AccountPolicy"
+    },
+    "dryRunResult": {
+     "shape": "DryRunResult"
     }
    }
   },
@@ -9363,6 +9441,11 @@
    "member": {
     "shape": "ResultField"
    }
+  },
+  "RetentionValue": {
+   "type": "string",
+   "max": 12,
+   "min": 1
   },
   "RoleArn": {
    "type": "string",

@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 162 operations — 162 with a generated method,
+# Coverage (v0, awsJson only): 167 operations — 167 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   462 structs (233 @derive(Json)), 81 enums, 8 error variants.
+#   477 structs (241 @derive(Json)), 86 enums, 8 error variants.
 #   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -363,6 +363,25 @@ enum InstanceHealthState:
 
 @derive(Json)
 @json(open)
+enum InstanceHealthStatusDetailValue:
+    passed
+    failed
+    insufficient_data
+    initializing
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InstanceHealthStatusValue:
+    ok
+    impaired
+    initializing
+    insufficient_data
+    not_applicable
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum InstanceMetadataState:
     pending
     applied
@@ -410,6 +429,15 @@ enum IpAddressType:
     dualstack
     ipv4
     ipv6
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum LightsailDistributionSubdomainStateEnum:
+    Creating
+    Attaching
+    Attached
+    Error
     Unknown(str value)
 
 @derive(Json)
@@ -716,6 +744,9 @@ enum OperationType:
     StopGUISession
     SetupInstanceHttps
     GetProfile
+    CreateSubdomain
+    UpdateSubdomainAssociation
+    DeleteSubdomain
     Unknown(str value)
 
 @derive(Json)
@@ -882,6 +913,7 @@ enum ResourceType:
     Distribution
     Certificate
     Bucket
+    Subdomain
     Unknown(str value)
 
 @derive(Json)
@@ -912,6 +944,27 @@ enum Status:
 enum StatusType:
     Active
     Inactive
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SubdomainAssociationAction:
+    ASSOCIATE
+    DISASSOCIATE
+    TRANSFER
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SubdomainState:
+    CREATING
+    CREATE_FAILED
+    UNATTACHED
+    ATTACHING
+    ATTACHED
+    DETACHING
+    TRANSFERRING
+    IMPLICIT
     Unknown(str value)
 
 @derive(Json)
@@ -1279,6 +1332,17 @@ struct CertificateSummary:
     Optional[Certificate] certificateDetail
     Optional[list[Tag]] tags
 
+@derive(Json)
+struct CheckSubdomainAvailabilityRequest:
+    str subdomainName
+    Optional[bool] reserve
+
+@derive(Json)
+struct CheckSubdomainAvailabilityResult:
+    Optional[bool] available
+    Optional[DateTime] reservationExpiresAt
+    Optional[str] subdomainName
+
 # no @derive(Json): member(s) portInfo: PortInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1645,6 +1709,7 @@ struct CreateDistributionRequest:
     Optional[list[DistributionCustomErrorResponse]] customErrorResponses
     Optional[bool] enableWaf
     Optional[list[WafRule]] wafRules
+    Optional[str] subdomainName
 
 # no @derive(Json): member(s) distribution: LightsailDistribution not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1855,6 +1920,20 @@ struct CreateRelationalDatabaseSnapshotRequest:
 # (zaplang-io/zap#424).
 struct CreateRelationalDatabaseSnapshotResult:
     Optional[list[Operation]] operations
+
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateSubdomainRequest:
+    str subdomainName
+    Optional[list[Tag]] tags
+
+# no @derive(Json): member(s) subdomain: Subdomain not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateSubdomainResult:
+    Optional[Subdomain] subdomain
+    Optional[Operation] operation
 
 @derive(Json)
 struct DeleteAlarmRequest:
@@ -2069,6 +2148,17 @@ struct DeleteRelationalDatabaseSnapshotRequest:
 # (zaplang-io/zap#424).
 struct DeleteRelationalDatabaseSnapshotResult:
     Optional[list[Operation]] operations
+
+@derive(Json)
+struct DeleteSubdomainRequest:
+    str subdomainName
+
+# no @derive(Json): member(s) subdomain: Subdomain not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DeleteSubdomainResult:
+    Optional[Subdomain] subdomain
+    Optional[Operation] operation
 
 @derive(Json)
 struct DestinationInfo:
@@ -2725,6 +2815,7 @@ struct GetInstancePortStatesResult:
 @derive(Json)
 struct GetInstanceRequest:
     str instanceName
+    Optional[bool] includeHealthStatus
 
 # no @derive(Json): member(s) instance: Instance not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2764,6 +2855,7 @@ struct GetInstanceStateResult:
 @derive(Json)
 struct GetInstancesRequest:
     Optional[str] pageToken
+    Optional[bool] includeHealthStatus
 
 # no @derive(Json): member(s) instances: list[Instance] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3085,6 +3177,18 @@ struct GetStaticIpsResult:
     Optional[list[StaticIp]] staticIps
     Optional[str] nextPageToken
 
+@derive(Json)
+struct GetSubdomainsRequest:
+    Optional[str] subdomainName
+    Optional[str] pageToken
+
+# no @derive(Json): member(s) subdomains: list[Subdomain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetSubdomainsResult:
+    Optional[list[Subdomain]] subdomains
+    Optional[str] nextPageToken
+
 # no @derive(Json): member(s) headersAllowList: list[HeaderEnum] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -3119,7 +3223,7 @@ struct InputOrigin:
     Optional[int64] responseTimeout
     Optional[OriginIpAddressTypeEnum] ipAddressType
 
-# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn], ipv6Addresses: list[str], hardware: InstanceHardware, networking: InstanceNetworking not derivable (list/map collections);
+# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn], ipv6Addresses: list[str], hardware: InstanceHardware, networking: InstanceNetworking, instanceStatus: InstanceHealthStatus, systemStatus: InstanceHealthStatus not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Instance:
@@ -3145,6 +3249,8 @@ struct Instance:
     Optional[str] username
     Optional[str] sshKeyName
     Optional[InstanceMetadataOptions] metadataOptions
+    Optional[InstanceHealthStatus] instanceStatus
+    Optional[InstanceHealthStatus] systemStatus
 
 # no @derive(Json): member(s) ipv6Addresses: list[str], hostKeys: list[HostKeyAttributes] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3181,6 +3287,19 @@ struct InstanceHardware:
     Optional[int64] cpuCount
     Optional[list[Disk]] disks
     Optional[float64] ramSizeInGb
+
+# no @derive(Json): member(s) details: list[InstanceHealthStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InstanceHealthStatus:
+    Optional[InstanceHealthStatusValue] status
+    Optional[list[InstanceHealthStatusDetail]] details
+
+@derive(Json)
+struct InstanceHealthStatusDetail:
+    Optional[str] name
+    Optional[InstanceHealthStatusDetailValue] status
+    Optional[DateTime] impairedSince
 
 @derive(Json)
 struct InstanceHealthSummary:
@@ -3321,6 +3440,14 @@ struct LightsailDistribution:
     Optional[str] defaultRootObject
     Optional[list[DistributionCustomErrorResponse]] customErrorResponses
     Optional[WafConfig] waf
+    Optional[LightsailDistributionSubdomain] subdomain
+
+@derive(Json)
+struct LightsailDistributionSubdomain:
+    str name
+    LightsailDistributionSubdomainStateEnum state
+    Optional[str] errorCode
+    Optional[str] errorDetails
 
 # no @derive(Json): member(s) tags: list[Tag], publicPorts: list[int64], instanceHealthSummary: list[InstanceHealthSummary], tlsCertificateSummaries: list[LoadBalancerTlsCertificateSummary], configurationOptions: dict[LoadBalancerAttributeName, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3984,6 +4111,29 @@ struct StopRelationalDatabaseRequest:
 struct StopRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
+# no @derive(Json): member(s) children: list[Subdomain], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Subdomain:
+    Optional[str] subdomainName
+    Optional[str] arn
+    Optional[str] fqdn
+    Optional[int64] depth
+    Optional[SubdomainState] state
+    Optional[SubdomainAttachableResource] attachedResource
+    Optional[SubdomainAttachableResource] attachingResource
+    Optional[ResourceLocation] location
+    Optional[DateTime] createdAt
+    Optional[str] parentFqdn
+    Optional[list[Subdomain]] children
+    Optional[list[Tag]] tags
+
+@derive(Json)
+struct SubdomainAttachableResource:
+    Optional[str] arn
+    Optional[str] name
+    Optional[DateTime] attachedAt
+
 @derive(Json)
 struct Tag:
     Optional[str] key
@@ -4196,6 +4346,19 @@ struct UpdateRelationalDatabaseRequest:
 # (zaplang-io/zap#424).
 struct UpdateRelationalDatabaseResult:
     Optional[list[Operation]] operations
+
+@derive(Json)
+struct UpdateSubdomainAssociationRequest:
+    str subdomainName
+    SubdomainAssociationAction action
+    Optional[str] targetResourceArn
+
+# no @derive(Json): member(s) subdomain: Subdomain not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateSubdomainAssociationResult:
+    Optional[Subdomain] subdomain
+    Optional[Operation] operation
 
 # no @derive(Json): member(s) responseInspection: WafResponseInspection not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -4712,6 +4875,9 @@ def create_distribution_request_to_json(CreateDistributionRequest v) -> str:
         for x14 in u13:
             e14.append(waf_rule_to_json(x14))
         parts.append("\"wafRules\":" + lightsail_json_arr(e14))
+    if v.subdomainName.is_some():
+        auto u15 = v.subdomainName.unwrap()
+        parts.append("\"subdomainName\":" + lightsail_json_str(u15))
     return lightsail_json_obj(parts)
 
 # Serialize CreateDomainEntryRequest to a compact JSON object (declaration order).
@@ -4970,6 +5136,18 @@ def create_relational_database_snapshot_request_to_json(CreateRelationalDatabase
     list[str] parts = []
     parts.append("\"relationalDatabaseName\":" + lightsail_json_str(v.relationalDatabaseName))
     parts.append("\"relationalDatabaseSnapshotName\":" + lightsail_json_str(v.relationalDatabaseSnapshotName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateSubdomainRequest to a compact JSON object (declaration order).
+def create_subdomain_request_to_json(CreateSubdomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"subdomainName\":" + lightsail_json_str(v.subdomainName))
     if v.tags.is_some():
         auto u0 = v.tags.unwrap()
         list[str] e1 = []
@@ -5526,6 +5704,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "AttachStaticIp", body)
 
+    # CheckSubdomainAvailability
+    # errors: AccessDeniedException, InvalidInputException, OperationFailureException, ServiceException, UnauthenticatedException
+    def check_subdomain_availability(self, CheckSubdomainAvailabilityRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CheckSubdomainAvailability", body)
+
     # CloseInstancePublicPorts
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def close_instance_public_ports(self, CloseInstancePublicPortsRequest input) -> str:
@@ -5682,6 +5866,12 @@ struct LightsailClient:
         auto body = create_relational_database_snapshot_request_to_json(input)
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateRelationalDatabaseSnapshot", body)
 
+    # CreateSubdomain
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
+    def create_subdomain(self, CreateSubdomainRequest input) -> str:
+        auto body = create_subdomain_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateSubdomain", body)
+
     # DeleteAlarm
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def delete_alarm(self, DeleteAlarmRequest input) -> str:
@@ -5807,6 +5997,12 @@ struct LightsailClient:
     def delete_relational_database_snapshot(self, DeleteRelationalDatabaseSnapshotRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "DeleteRelationalDatabaseSnapshot", body)
+
+    # DeleteSubdomain
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
+    def delete_subdomain(self, DeleteSubdomainRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "DeleteSubdomain", body)
 
     # DetachCertificateFromDistribution
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
@@ -6252,6 +6448,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetStaticIps", body)
 
+    # GetSubdomains
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, ServiceException, UnauthenticatedException
+    def get_subdomains(self, GetSubdomainsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetSubdomains", body)
+
     # ImportKeyPair
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def import_key_pair(self, ImportKeyPairRequest input) -> str:
@@ -6461,6 +6663,12 @@ struct LightsailClient:
     def update_relational_database_parameters(self, UpdateRelationalDatabaseParametersRequest input) -> str:
         auto body = update_relational_database_parameters_request_to_json(input)
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateRelationalDatabaseParameters", body)
+
+    # UpdateSubdomainAssociation
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
+    def update_subdomain_association(self, UpdateSubdomainAssociationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateSubdomainAssociation", body)
 
     # Paginator for GetActiveNames — yields each Response page, threading the
     # nextPageToken -> pageToken continuation token until the output token is absent (result key: activeNames).

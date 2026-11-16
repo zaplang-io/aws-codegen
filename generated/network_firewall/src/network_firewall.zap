@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Network Firewall (serviceId Network Firewall, API 2020-11-12)
-# Protocol: awsJson 1.0 (targetPrefix NetworkFirewall_20201112)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service network-firewall, service shape NetworkFirewall_20201112)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 85 operations — 85 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   289 structs (142 @derive(Json)), 40 enums, 12 error variants.
-#   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   1 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Coverage (smithy-rpc-v2-cbor): 70 operations — 70 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   254 structs (plain carriers), 49 enums, 12 error variants.
+#   0 paginators generated (12 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (1 skipped) from waiters-2.json.
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,14 +31,25 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import aws_core.waiters
+import aws_core.cbor
 
-# The Network_Firewall awsJson protocol: version 1.0, API id "NetworkFirewall_20201112".
-def network_firewall_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_0("NetworkFirewall_20201112", "network-firewall")
+# The Network_Firewall smithy-rpc-v2-cbor protocol: SigV4 service "network-firewall" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/NetworkFirewall_20201112/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def network_firewall_service() -> str:
+    return "network-firewall"
 
 # --- enums -----------------------------------------------------------------
+
+@derive(Json)
+@json(open)
+enum ActionScope:
+    FLOW
+    TX
+    HOOK
+    PACKET
+    Unknown(str value)
 
 @derive(Json)
 @json(open)
@@ -84,6 +96,13 @@ enum DNSExpiryExceptionPolicy:
 
 @derive(Json)
 @json(open)
+enum DecryptionAction:
+    DECRYPT
+    BYPASS
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum EnabledAnalysisType:
     TLS_SNI
     HTTP_HOST
@@ -101,6 +120,61 @@ enum EncryptionType:
 enum FirewallPolicyErrorCode:
     DNS_FIREWALL_RULE_GROUP_UNAVAILABLE
     ROUTE53_RESOLVED_IP_VALIDATION_MISSING
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FirewallRuleAction:
+    ACCEPT
+    DROP
+    REJECT
+    REJECT_DST
+    REJECT_BOTH
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FirewallRuleProtocol:
+    IP
+    TCP
+    UDP
+    ICMP
+    HTTP
+    FTP
+    TLS
+    SMB
+    DNS
+    DCERPC
+    SSH
+    SMTP
+    MSN
+    KRB5
+    IKEV2
+    TFTP
+    NTP
+    DHCP
+    HTTP2
+    QUIC
+    ICMPV4
+    ICMPV6
+    SCTP
+    IPV4
+    IPV6
+    DOH2
+    FTP_DATA
+    NFS
+    RDP
+    RFB
+    MQTT
+    PGSQL
+    SNMP
+    TELNET
+    WEBSOCKET
+    LDAP
+    POP3
+    MDNS
+    BITTORRENT_DHT
+    DNP3
     Unknown(str value)
 
 @derive(Json)
@@ -135,6 +209,207 @@ enum GeneratedRulesType:
     DENYLIST
     REJECTLIST
     ALERTLIST
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum HookKey:
+    TCP_ALL
+    TCP_FLOW_START
+    TCP_PRE_FLOW
+    TCP_PRE_STREAM
+    SCTP_ALL
+    SCTP_FLOW_START
+    SCTP_PRE_FLOW
+    SCTP_PRE_STREAM
+    IPV6_ALL
+    IPV6_FLOW_START
+    IPV6_PRE_FLOW
+    IPV6_PRE_STREAM
+    ICMPV6_ALL
+    ICMPV6_FLOW_START
+    ICMPV6_PRE_FLOW
+    ICMPV6_PRE_STREAM
+    UDP_ALL
+    UDP_FLOW_START
+    UDP_PRE_FLOW
+    UDP_PRE_STREAM
+    ICMP_ALL
+    ICMP_FLOW_START
+    ICMP_PRE_FLOW
+    ICMP_PRE_STREAM
+    ICMPV4_ALL
+    ICMPV4_FLOW_START
+    ICMPV4_PRE_FLOW
+    ICMPV4_PRE_STREAM
+    IP_ALL
+    IP_FLOW_START
+    IP_PRE_FLOW
+    IP_PRE_STREAM
+    IPV4_ALL
+    IPV4_FLOW_START
+    IPV4_PRE_FLOW
+    IPV4_PRE_STREAM
+    TLS_CLIENT_STARTED
+    TLS_CLIENT_HELLO
+    TLS_CLIENT_CERT
+    TLS_CLIENT_DATA
+    TLS_CLIENT_FINISHED
+    TLS_SERVER_STARTED
+    TLS_SERVER_HELLO
+    TLS_SERVER_CERT
+    TLS_SERVER_DATA
+    TLS_SERVER_FINISHED
+    HTTP1_REQUEST_STARTED
+    HTTP1_REQUEST_LINE
+    HTTP1_REQUEST_HEADERS
+    HTTP1_REQUEST_BODY
+    HTTP1_REQUEST_TRAILER
+    HTTP1_REQUEST_COMPLETE
+    HTTP1_RESPONSE_STARTED
+    HTTP1_RESPONSE_LINE
+    HTTP1_RESPONSE_HEADERS
+    HTTP1_RESPONSE_BODY
+    HTTP1_RESPONSE_TRAILER
+    HTTP1_RESPONSE_COMPLETE
+    HTTP2_STREAM_REQUEST_STARTED
+    HTTP2_STREAM_REQUEST_HEADERS
+    HTTP2_STREAM_REQUEST_DATA
+    HTTP2_STREAM_REQUEST_CLOSED
+    HTTP2_STREAM_REQUEST_COMPLETE
+    HTTP2_STREAM_RESPONSE_STARTED
+    HTTP2_STREAM_RESPONSE_HEADERS
+    HTTP2_STREAM_RESPONSE_DATA
+    HTTP2_STREAM_RESPONSE_CLOSED
+    HTTP2_STREAM_RESPONSE_COMPLETE
+    HTTP2_GLOBAL_REQUEST_STARTED
+    HTTP2_GLOBAL_REQUEST_COMPLETE
+    HTTP2_GLOBAL_RESPONSE_STARTED
+    HTTP2_GLOBAL_RESPONSE_COMPLETE
+    DOH2_STREAM_REQUEST_STARTED
+    DOH2_STREAM_REQUEST_HEADERS
+    DOH2_STREAM_REQUEST_DATA
+    DOH2_STREAM_REQUEST_CLOSED
+    DOH2_STREAM_REQUEST_COMPLETE
+    DOH2_STREAM_RESPONSE_STARTED
+    DOH2_STREAM_RESPONSE_HEADERS
+    DOH2_STREAM_RESPONSE_DATA
+    DOH2_STREAM_RESPONSE_CLOSED
+    DOH2_STREAM_RESPONSE_COMPLETE
+    DOH2_GLOBAL_REQUEST_STARTED
+    DOH2_GLOBAL_REQUEST_COMPLETE
+    DOH2_GLOBAL_RESPONSE_STARTED
+    DOH2_GLOBAL_RESPONSE_COMPLETE
+    DNS_REQUEST_STARTED
+    DNS_REQUEST_COMPLETE
+    DNS_RESPONSE_STARTED
+    DNS_RESPONSE_COMPLETE
+    SMTP_REQUEST_STARTED
+    SMTP_REQUEST_DATA
+    SMTP_REQUEST_COMPLETE
+    SMTP_RESPONSE_STARTED
+    SMTP_RESPONSE_DATA
+    SMTP_RESPONSE_COMPLETE
+    FTP_REQUEST_STARTED
+    FTP_REQUEST_COMPLETE
+    FTP_RESPONSE_STARTED
+    FTP_RESPONSE_COMPLETE
+    FTP_DATA_REQUEST_STARTED
+    FTP_DATA_REQUEST_COMPLETE
+    FTP_DATA_RESPONSE_STARTED
+    FTP_DATA_RESPONSE_COMPLETE
+    SMB_REQUEST_STARTED
+    SMB_REQUEST_COMPLETE
+    SMB_RESPONSE_STARTED
+    SMB_RESPONSE_COMPLETE
+    DCERPC_REQUEST_STARTED
+    DCERPC_REQUEST_COMPLETE
+    DCERPC_RESPONSE_STARTED
+    DCERPC_RESPONSE_COMPLETE
+    NFS_REQUEST_STARTED
+    NFS_REQUEST_COMPLETE
+    NFS_RESPONSE_STARTED
+    NFS_RESPONSE_COMPLETE
+    KRB5_REQUEST_STARTED
+    KRB5_REQUEST_COMPLETE
+    KRB5_RESPONSE_STARTED
+    KRB5_RESPONSE_COMPLETE
+    IKE_REQUEST_STARTED
+    IKE_REQUEST_COMPLETE
+    IKE_RESPONSE_STARTED
+    IKE_RESPONSE_COMPLETE
+    TFTP_REQUEST_STARTED
+    TFTP_REQUEST_COMPLETE
+    TFTP_RESPONSE_STARTED
+    TFTP_RESPONSE_COMPLETE
+    DHCP_REQUEST_STARTED
+    DHCP_REQUEST_COMPLETE
+    DHCP_RESPONSE_STARTED
+    DHCP_RESPONSE_COMPLETE
+    QUIC_REQUEST_STARTED
+    QUIC_REQUEST_COMPLETE
+    QUIC_RESPONSE_STARTED
+    QUIC_RESPONSE_COMPLETE
+    RDP_REQUEST_STARTED
+    RDP_REQUEST_COMPLETE
+    RDP_RESPONSE_STARTED
+    RDP_RESPONSE_COMPLETE
+    RFB_REQUEST_STARTED
+    RFB_REQUEST_COMPLETE
+    RFB_RESPONSE_STARTED
+    RFB_RESPONSE_COMPLETE
+    MQTT_REQUEST_STARTED
+    MQTT_REQUEST_COMPLETE
+    MQTT_RESPONSE_STARTED
+    MQTT_RESPONSE_COMPLETE
+    PGSQL_REQUEST_STARTED
+    PGSQL_REQUEST_COMPLETE
+    PGSQL_RESPONSE_STARTED
+    PGSQL_RESPONSE_COMPLETE
+    SNMP_REQUEST_STARTED
+    SNMP_REQUEST_COMPLETE
+    SNMP_RESPONSE_STARTED
+    SNMP_RESPONSE_COMPLETE
+    NTP_REQUEST_STARTED
+    NTP_REQUEST_COMPLETE
+    NTP_RESPONSE_STARTED
+    NTP_RESPONSE_COMPLETE
+    TELNET_REQUEST_STARTED
+    TELNET_REQUEST_COMPLETE
+    TELNET_RESPONSE_STARTED
+    TELNET_RESPONSE_COMPLETE
+    WEBSOCKET_REQUEST_STARTED
+    WEBSOCKET_REQUEST_COMPLETE
+    WEBSOCKET_RESPONSE_STARTED
+    WEBSOCKET_RESPONSE_COMPLETE
+    LDAP_REQUEST_STARTED
+    LDAP_REQUEST_COMPLETE
+    LDAP_RESPONSE_STARTED
+    LDAP_RESPONSE_COMPLETE
+    POP3_REQUEST_STARTED
+    POP3_REQUEST_COMPLETE
+    POP3_RESPONSE_STARTED
+    POP3_RESPONSE_COMPLETE
+    MDNS_REQUEST_STARTED
+    MDNS_REQUEST_COMPLETE
+    MDNS_RESPONSE_STARTED
+    MDNS_RESPONSE_COMPLETE
+    BITTORRENT_DHT_REQUEST_STARTED
+    BITTORRENT_DHT_REQUEST_COMPLETE
+    BITTORRENT_DHT_RESPONSE_STARTED
+    BITTORRENT_DHT_RESPONSE_COMPLETE
+    DNP3_REQUEST_STARTED
+    DNP3_REQUEST_COMPLETE
+    DNP3_RESPONSE_STARTED
+    DNP3_RESPONSE_COMPLETE
+    SSH_REQUEST_IN_PROGRESS
+    SSH_REQUEST_BANNER_WAIT_EOL
+    SSH_REQUEST_BANNER_DONE
+    SSH_REQUEST_FINISHED
+    SSH_RESPONSE_IN_PROGRESS
+    SSH_RESPONSE_BANNER_WAIT_EOL
+    SSH_RESPONSE_BANNER_DONE
+    SSH_RESPONSE_FINISHED
     Unknown(str value)
 
 @derive(Json)
@@ -197,18 +472,26 @@ enum PerObjectSyncStatus:
 
 @derive(Json)
 @json(open)
-enum ProxyModifyState:
-    MODIFYING
-    COMPLETED
-    FAILED
+enum PolicyDefaultAction:
+    DROP
+    ACCEPT
+    REJECT
+    ALERT
     Unknown(str value)
 
 @derive(Json)
 @json(open)
-enum ProxyRulePhaseAction:
-    ALLOW
-    DENY
-    ALERT
+enum PolicyMode:
+    ENFORCE
+    MONITOR
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ProxyModifyState:
+    MODIFYING
+    COMPLETED
+    FAILED
     Unknown(str value)
 
 @derive(Json)
@@ -265,18 +548,12 @@ enum Route53ResolvedIPValidationAction:
 
 @derive(Json)
 @json(open)
-enum RuleGroupRequestPhase:
-    PRE_DNS
-    PRE_REQ
-    POST_RES
-    Unknown(str value)
-
-@derive(Json)
-@json(open)
 enum RuleGroupType:
     STATELESS
     STATEFUL
     STATEFUL_DOMAIN
+    FIREWALL
+    IPS
     Unknown(str value)
 
 @derive(Json)
@@ -284,6 +561,13 @@ enum RuleGroupType:
 enum RuleOrder:
     DEFAULT_ACTION_ORDER
     STRICT_ORDER
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RuleOutputFormat:
+    FIREWALL_RULES
+    RULES_STRING
     Unknown(str value)
 
 @derive(Json)
@@ -338,6 +622,13 @@ enum StreamExceptionPolicy:
 
 @derive(Json)
 @json(open)
+enum StreamExceptionPolicyV2:
+    DROP
+    REJECT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum SubscriptionStatus:
     NOT_SUBSCRIBED
     SUBSCRIBED
@@ -362,6 +653,14 @@ enum TCPFlag:
     URG
     ECE
     CWR
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum TLSInspectionScopeDeploymentMode:
+    TRANSPARENT_FIREWALL_ONLY
+    EXPLICIT_PROXY_ONLY
+    ALL
     Unknown(str value)
 
 @derive(Json)
@@ -393,47 +692,42 @@ enum TransitGatewayAttachmentStatus:
     REJECTED
     Unknown(str value)
 
+@derive(Json)
+@json(open)
+enum TransparentFilteringNatScope:
+    NAT_ALL
+    NAT_NONE
+    Unknown(str value)
+
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AZSyncState:
     Optional[Attachment] Attachment
 
-@derive(Json)
 struct AcceptNetworkFirewallTransitGatewayAttachmentRequest:
     str TransitGatewayAttachmentId
 
-@derive(Json)
 struct AcceptNetworkFirewallTransitGatewayAttachmentResponse:
     str TransitGatewayAttachmentId
-    TransitGatewayAttachmentStatus TransitGatewayAttachmentStatus
+    str TransitGatewayAttachmentStatus
 
-# no @derive(Json): member(s) PublishMetricAction: PublishMetricAction not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ActionDefinition:
     Optional[PublishMetricAction] PublishMetricAction
 
-@derive(Json)
 struct Address:
     str AddressDefinition
 
-@derive(Json)
 struct AnalysisReport:
     Optional[str] AnalysisReportId
-    Optional[EnabledAnalysisType] AnalysisType
+    Optional[str] AnalysisType
     Optional[DateTime] ReportTime
     Optional[str] Status
 
-# no @derive(Json): member(s) IdentifiedRuleIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AnalysisResult:
     Optional[list[str]] IdentifiedRuleIds
-    Optional[IdentifiedType] IdentifiedType
+    Optional[str] IdentifiedType
     Optional[str] AnalysisDetail
 
-@derive(Json)
 struct AnalysisTypeReportResult:
     Optional[str] Protocol
     Optional[DateTime] FirstAccessed
@@ -442,150 +736,97 @@ struct AnalysisTypeReportResult:
     Optional[Hits] Hits
     Optional[UniqueSources] UniqueSources
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateAvailabilityZonesRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[AvailabilityZoneMapping] AvailabilityZoneMappings
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateAvailabilityZonesResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[list[AvailabilityZoneMapping]] AvailabilityZoneMappings
     Optional[str] UpdateToken
 
-@derive(Json)
 struct AssociateFirewallPolicyRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     str FirewallPolicyArn
 
-@derive(Json)
 struct AssociateFirewallPolicyResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] FirewallPolicyArn
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateSubnetsRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[SubnetMapping] SubnetMappings
+    Optional[list[NatGatewayCreateMapping]] NatGatewayCreateMappings
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateSubnetsResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[list[SubnetMapping]] SubnetMappings
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) RuleGroups: list[ProxyRuleGroupAttachment] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct AttachRuleGroupsToProxyConfigurationRequest:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    list[ProxyRuleGroupAttachment] RuleGroups
-    str UpdateToken
-
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct AttachRuleGroupsToProxyConfigurationResponse:
-    Optional[ProxyConfiguration] ProxyConfiguration
-    Optional[str] UpdateToken
-
-@derive(Json)
 struct Attachment:
     Optional[str] SubnetId
     Optional[str] EndpointId
-    Optional[AttachmentStatus] Status
+    Optional[str] Status
     Optional[str] StatusMessage
     Optional[str] DnsName
 
-@derive(Json)
 struct AvailabilityZoneMapping:
     str AvailabilityZone
 
-@derive(Json)
 struct AvailabilityZoneMetadata:
-    Optional[IPAddressType] IPAddressType
+    Optional[str] IPAddressType
 
-# no @derive(Json): member(s) IPSetReferences: dict[str, IPSetMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CIDRSummary:
     Optional[int64] AvailableCIDRCount
     Optional[int64] UtilizedCIDRCount
     Optional[dict[str, IPSetMetadata]] IPSetReferences
 
-# no @derive(Json): member(s) CIDRs: CIDRSummary not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CapacityUsageSummary:
     Optional[CIDRSummary] CIDRs
 
-@derive(Json)
 struct CheckCertificateRevocationStatusActions:
-    Optional[RevocationCheckAction] RevokedStatusAction
-    Optional[RevocationCheckAction] UnknownStatusAction
+    Optional[str] RevokedStatusAction
+    Optional[str] UnknownStatusAction
 
-@derive(Json)
 struct ContainerAssociationSummary:
     Optional[str] Arn
     Optional[str] Name
 
-@derive(Json)
 struct ContainerAttribute:
     str Key
     str Value
 
-# no @derive(Json): member(s) AttributeFilters: list[ContainerAttribute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ContainerMonitoringConfiguration:
     str ClusterArn
     Optional[list[ContainerAttribute]] AttributeFilters
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateContainerAssociationRequest:
     str ContainerAssociationName
     Optional[str] Description
-    ContainerMonitoringType Type
+    str Type
     list[ContainerMonitoringConfiguration] ContainerMonitoringConfigurations
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
     Optional[str] Description
-    Optional[ContainerMonitoringType] Type
+    Optional[str] Type
     Optional[list[ContainerMonitoringConfiguration]] ContainerMonitoringConfigurations
-    Optional[ContainerAssociationStatus] Status
+    Optional[str] Status
     Optional[list[Tag]] Tags
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) FirewallPolicy: FirewallPolicy, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateFirewallPolicyRequest:
     str FirewallPolicyName
     FirewallPolicy FirewallPolicy
@@ -594,16 +835,22 @@ struct CreateFirewallPolicyRequest:
     Optional[bool] DryRun
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateFirewallPolicyResponse:
     str UpdateToken
     FirewallPolicyResponse FirewallPolicyResponse
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping], Tags: list[Tag], EnabledAnalysisTypes: list[EnabledAnalysisType], AvailabilityZoneMappings: list[AvailabilityZoneMapping], NatGatewayMappings: list[NatGatewayMapping], ProxySettings: ProxySettings, VpcEndpoint: VpcEndpoint not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct CreateFirewallPolicyV2Request:
+    str FirewallPolicyV2Name
+    FirewallPolicyV2 FirewallPolicyV2
+    Optional[str] Description
+    Optional[list[Tag]] Tags
+    Optional[bool] DryRun
+    Optional[EncryptionConfiguration] EncryptionConfiguration
+
+struct CreateFirewallPolicyV2Response:
+    str UpdateToken
+    FirewallPolicyV2Response FirewallPolicyV2Response
+
 struct CreateFirewallRequest:
     str FirewallName
     str FirewallPolicyArn
@@ -615,116 +862,26 @@ struct CreateFirewallRequest:
     Optional[str] Description
     Optional[list[Tag]] Tags
     Optional[EncryptionConfiguration] EncryptionConfiguration
-    Optional[list[EnabledAnalysisType]] EnabledAnalysisTypes
+    Optional[list[str]] EnabledAnalysisTypes
     Optional[str] TransitGatewayId
     Optional[list[AvailabilityZoneMapping]] AvailabilityZoneMappings
     Optional[bool] AvailabilityZoneChangeProtection
-    Optional[list[NatGatewayMapping]] NatGatewayMappings
+    Optional[list[NatGatewayCreateMapping]] NatGatewayCreateMappings
     Optional[ProxySettings] ProxySettings
-    Optional[bool] NoSourcePreservation
     Optional[VpcEndpoint] VpcEndpoint
+    Optional[str] TransparentFilteringNatScope
 
-# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateFirewallResponse:
     Optional[Firewall] Firewall
     Optional[FirewallStatus] FirewallStatus
 
-# no @derive(Json): member(s) RuleGroupNames: list[str], RuleGroupArns: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyConfigurationRequest:
-    str ProxyConfigurationName
-    Optional[str] Description
-    Optional[list[str]] RuleGroupNames
-    Optional[list[str]] RuleGroupArns
-    ProxyConfigDefaultRulePhaseActionsRequest DefaultRulePhaseActions
-    Optional[list[Tag]] Tags
-
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyConfigurationResponse:
-    Optional[ProxyConfiguration] ProxyConfiguration
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) ListenerProperties: list[ListenerPropertyRequest], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRequest:
-    str ProxyName
-    str NatGatewayId
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    Optional[list[ListenerPropertyRequest]] ListenerProperties
-    TlsInterceptPropertiesRequest TlsInterceptProperties
-    Optional[list[Tag]] Tags
-
-# no @derive(Json): member(s) Proxy: Proxy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyResponse:
-    Optional[Proxy] Proxy
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) Conditions: list[ProxyRuleCondition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRule:
-    Optional[str] ProxyRuleName
-    Optional[str] Description
-    Optional[ProxyRulePhaseAction] Action
-    Optional[list[ProxyRuleCondition]] Conditions
-    Optional[int64] InsertPosition
-
-# no @derive(Json): member(s) Rules: ProxyRulesByRequestPhase, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRuleGroupRequest:
-    str ProxyRuleGroupName
-    Optional[str] Description
-    Optional[ProxyRulesByRequestPhase] Rules
-    Optional[list[Tag]] Tags
-
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRuleGroupResponse:
-    Optional[ProxyRuleGroup] ProxyRuleGroup
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) PreDNS: list[CreateProxyRule], PreREQUEST: list[CreateProxyRule], PostRESPONSE: list[CreateProxyRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRulesByRequestPhase:
-    Optional[list[CreateProxyRule]] PreDNS
-    Optional[list[CreateProxyRule]] PreREQUEST
-    Optional[list[CreateProxyRule]] PostRESPONSE
-
-# no @derive(Json): member(s) Rules: CreateProxyRulesByRequestPhase not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRulesRequest:
-    Optional[str] ProxyRuleGroupArn
-    Optional[str] ProxyRuleGroupName
-    CreateProxyRulesByRequestPhase Rules
-
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct CreateProxyRulesResponse:
-    Optional[ProxyRuleGroup] ProxyRuleGroup
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) RuleGroup: RuleGroup, Tags: list[Tag], SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateRuleGroupRequest:
     str RuleGroupName
     Optional[RuleGroup] RuleGroup
+    Optional[FirewallRuleGroup] FirewallRuleGroup
+    Optional[IpsRuleGroup] IpsRuleGroup
     Optional[str] Rules
-    RuleGroupType Type
+    str Type
     Optional[str] Description
     int64 Capacity
     Optional[list[Tag]] Tags
@@ -734,16 +891,10 @@ struct CreateRuleGroupRequest:
     Optional[bool] AnalyzeRuleGroup
     Optional[SummaryConfiguration] SummaryConfiguration
 
-# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateRuleGroupResponse:
     str UpdateToken
     RuleGroupResponse RuleGroupResponse
 
-# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTLSInspectionConfigurationRequest:
     str TLSInspectionConfigurationName
     TLSInspectionConfiguration TLSInspectionConfiguration
@@ -751,16 +902,10 @@ struct CreateTLSInspectionConfigurationRequest:
     Optional[list[Tag]] Tags
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTLSInspectionConfigurationResponse:
     str UpdateToken
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateVpcEndpointAssociationRequest:
     str FirewallArn
     str VpcId
@@ -768,214 +913,147 @@ struct CreateVpcEndpointAssociationRequest:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateVpcEndpointAssociationResponse:
     Optional[VpcEndpointAssociation] VpcEndpointAssociation
     Optional[VpcEndpointAssociationStatus] VpcEndpointAssociationStatus
 
-# no @derive(Json): member(s) ActionDefinition: ActionDefinition not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CustomAction:
     str ActionName
     ActionDefinition ActionDefinition
 
-@derive(Json)
 struct DeleteContainerAssociationRequest:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
 
-@derive(Json)
 struct DeleteContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
-    Optional[ContainerAssociationStatus] Status
+    Optional[str] Status
 
-@derive(Json)
 struct DeleteFirewallPolicyRequest:
     Optional[str] FirewallPolicyName
     Optional[str] FirewallPolicyArn
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteFirewallPolicyResponse:
     FirewallPolicyResponse FirewallPolicyResponse
 
-@derive(Json)
+struct DeleteFirewallPolicyV2Request:
+    Optional[str] FirewallPolicyV2Arn
+    Optional[str] FirewallPolicyV2Name
+
+struct DeleteFirewallPolicyV2Response:
+    FirewallPolicyV2Response FirewallPolicyV2Response
+
 struct DeleteFirewallRequest:
     Optional[str] FirewallName
     Optional[str] FirewallArn
+    Optional[bool] DeleteAssociatedNatGateways
 
-# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteFirewallResponse:
     Optional[Firewall] Firewall
     Optional[FirewallStatus] FirewallStatus
 
-@derive(Json)
 struct DeleteNetworkFirewallTransitGatewayAttachmentRequest:
     str TransitGatewayAttachmentId
 
-@derive(Json)
 struct DeleteNetworkFirewallTransitGatewayAttachmentResponse:
     str TransitGatewayAttachmentId
-    TransitGatewayAttachmentStatus TransitGatewayAttachmentStatus
+    str TransitGatewayAttachmentStatus
 
-@derive(Json)
-struct DeleteProxyConfigurationRequest:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-
-@derive(Json)
-struct DeleteProxyConfigurationResponse:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-
-@derive(Json)
 struct DeleteProxyRequest:
     str NatGatewayId
     Optional[str] ProxyName
     Optional[str] ProxyArn
 
-@derive(Json)
 struct DeleteProxyResponse:
     Optional[str] NatGatewayId
     Optional[str] ProxyName
     Optional[str] ProxyArn
 
-@derive(Json)
-struct DeleteProxyRuleGroupRequest:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-
-@derive(Json)
-struct DeleteProxyRuleGroupResponse:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-
-# no @derive(Json): member(s) Rules: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DeleteProxyRulesRequest:
-    Optional[str] ProxyRuleGroupArn
-    Optional[str] ProxyRuleGroupName
-    list[str] Rules
-
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DeleteProxyRulesResponse:
-    Optional[ProxyRuleGroup] ProxyRuleGroup
-
-@derive(Json)
 struct DeleteResourcePolicyRequest:
     str ResourceArn
 
-@derive(Json)
 struct DeleteResourcePolicyResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteRuleGroupRequest:
     Optional[str] RuleGroupName
     Optional[str] RuleGroupArn
-    Optional[RuleGroupType] Type
+    Optional[str] Type
 
-# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteRuleGroupResponse:
     RuleGroupResponse RuleGroupResponse
 
-@derive(Json)
 struct DeleteTLSInspectionConfigurationRequest:
     Optional[str] TLSInspectionConfigurationArn
     Optional[str] TLSInspectionConfigurationName
 
-# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteTLSInspectionConfigurationResponse:
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
-@derive(Json)
 struct DeleteVpcEndpointAssociationRequest:
     str VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteVpcEndpointAssociationResponse:
     Optional[VpcEndpointAssociation] VpcEndpointAssociation
     Optional[VpcEndpointAssociationStatus] VpcEndpointAssociationStatus
 
-@derive(Json)
 struct DescribeContainerAssociationRequest:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
     Optional[str] Description
-    Optional[ContainerMonitoringType] Type
+    Optional[str] Type
     Optional[list[ContainerMonitoringConfiguration]] ContainerMonitoringConfigurations
-    Optional[ContainerAssociationStatus] Status
+    Optional[str] Status
     Optional[int64] ResolvedCidrCount
     Optional[DateTime] LastUpdatedTime
     Optional[list[Tag]] Tags
     Optional[str] UpdateToken
 
-@derive(Json)
 struct DescribeFirewallMetadataRequest:
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) SupportedAvailabilityZones: dict[str, AvailabilityZoneMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeFirewallMetadataResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallPolicyArn
     Optional[str] Description
-    Optional[FirewallStatusValue] Status
+    Optional[str] Status
     Optional[dict[str, AvailabilityZoneMetadata]] SupportedAvailabilityZones
     Optional[str] TransitGatewayAttachmentId
 
-@derive(Json)
 struct DescribeFirewallPolicyRequest:
     Optional[str] FirewallPolicyName
     Optional[str] FirewallPolicyArn
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse, FirewallPolicy: FirewallPolicy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeFirewallPolicyResponse:
     str UpdateToken
     FirewallPolicyResponse FirewallPolicyResponse
     Optional[FirewallPolicy] FirewallPolicy
 
-@derive(Json)
+struct DescribeFirewallPolicyV2Request:
+    Optional[str] FirewallPolicyV2Arn
+    Optional[str] FirewallPolicyV2Name
+    Optional[str] RuleOutputFormat
+
+struct DescribeFirewallPolicyV2Response:
+    str UpdateToken
+    FirewallPolicyV2Response FirewallPolicyV2Response
+    Optional[FirewallPolicyV2] FirewallPolicyV2
+
 struct DescribeFirewallRequest:
     Optional[str] FirewallName
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeFirewallResponse:
     Optional[str] UpdateToken
     Optional[Firewall] Firewall
     Optional[FirewallStatus] FirewallStatus
 
-@derive(Json)
 struct DescribeFlowOperationRequest:
     str FirewallArn
     Optional[str] AvailabilityZone
@@ -984,9 +1062,6 @@ struct DescribeFlowOperationRequest:
     Optional[str] VpcEndpointId
     str FlowOperationId
 
-# no @derive(Json): member(s) FlowOperation: FlowOperation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeFlowOperationResponse:
     Optional[str] FirewallArn
     Optional[str] AvailabilityZone
@@ -994,53 +1069,33 @@ struct DescribeFlowOperationResponse:
     Optional[str] VpcEndpointAssociationArn
     Optional[str] VpcEndpointId
     Optional[str] FlowOperationId
-    Optional[FlowOperationType] FlowOperationType
-    Optional[FlowOperationStatus] FlowOperationStatus
+    Optional[str] FlowOperationType
+    Optional[str] FlowOperationStatus
     Optional[str] StatusMessage
     Optional[DateTime] FlowRequestTimestamp
     Optional[FlowOperation] FlowOperation
 
-@derive(Json)
 struct DescribeLoggingConfigurationRequest:
     Optional[str] FirewallArn
     Optional[str] FirewallName
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLoggingConfigurationResponse:
     Optional[str] FirewallArn
     Optional[LoggingConfiguration] LoggingConfiguration
     Optional[bool] EnableMonitoringDashboard
 
-@derive(Json)
-struct DescribeProxyConfigurationRequest:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DescribeProxyConfigurationResponse:
-    Optional[ProxyConfiguration] ProxyConfiguration
-    Optional[str] UpdateToken
-
-@derive(Json)
 struct DescribeProxyRequest:
     Optional[str] ProxyName
     Optional[str] ProxyArn
 
-# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProxyResource:
     Optional[str] ProxyName
     Optional[str] ProxyArn
     Optional[str] ProxyConfigurationName
     Optional[str] ProxyConfigurationArn
     Optional[str] NatGatewayId
-    Optional[ProxyState] ProxyState
-    Optional[ProxyModifyState] ProxyModifyState
+    Optional[str] ProxyState
+    Optional[str] ProxyModifyState
     Optional[list[ListenerProperty]] ListenerProperties
     Optional[TlsInterceptProperties] TlsInterceptProperties
     Optional[str] VpcEndpointServiceName
@@ -1052,58 +1107,26 @@ struct DescribeProxyResource:
     Optional[str] FailureMessage
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Proxy: DescribeProxyResource not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProxyResponse:
     Optional[DescribeProxyResource] Proxy
     Optional[str] UpdateToken
 
-@derive(Json)
-struct DescribeProxyRuleGroupRequest:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DescribeProxyRuleGroupResponse:
-    Optional[ProxyRuleGroup] ProxyRuleGroup
-    Optional[str] UpdateToken
-
-@derive(Json)
-struct DescribeProxyRuleRequest:
-    str ProxyRuleName
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-
-# no @derive(Json): member(s) ProxyRule: ProxyRule not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DescribeProxyRuleResponse:
-    Optional[ProxyRule] ProxyRule
-    Optional[str] UpdateToken
-
-@derive(Json)
 struct DescribeResourcePolicyRequest:
     str ResourceArn
 
-@derive(Json)
 struct DescribeResourcePolicyResponse:
     Optional[str] Policy
 
-@derive(Json)
 struct DescribeRuleGroupMetadataRequest:
     Optional[str] RuleGroupName
     Optional[str] RuleGroupArn
-    Optional[RuleGroupType] Type
+    Optional[str] Type
 
-@derive(Json)
 struct DescribeRuleGroupMetadataResponse:
     str RuleGroupArn
     str RuleGroupName
     Optional[str] Description
-    Optional[RuleGroupType] Type
+    Optional[str] Type
     Optional[int64] Capacity
     Optional[StatefulRuleOptions] StatefulRuleOptions
     Optional[DateTime] LastModifiedTime
@@ -1111,124 +1134,80 @@ struct DescribeRuleGroupMetadataResponse:
     Optional[str] ProductId
     Optional[str] ListingName
 
-@derive(Json)
 struct DescribeRuleGroupRequest:
     Optional[str] RuleGroupName
     Optional[str] RuleGroupArn
-    Optional[RuleGroupType] Type
+    Optional[str] Type
     Optional[bool] AnalyzeRuleGroup
+    Optional[str] RuleOutputFormat
 
-# no @derive(Json): member(s) RuleGroup: RuleGroup, RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeRuleGroupResponse:
     str UpdateToken
     Optional[RuleGroup] RuleGroup
+    Optional[FirewallRuleGroup] FirewallRuleGroup
+    Optional[IpsRuleGroup] IpsRuleGroup
     RuleGroupResponse RuleGroupResponse
 
-@derive(Json)
 struct DescribeRuleGroupSummaryRequest:
     Optional[str] RuleGroupName
     Optional[str] RuleGroupArn
-    Optional[RuleGroupType] Type
+    Optional[str] Type
 
-# no @derive(Json): member(s) Summary: Summary not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeRuleGroupSummaryResponse:
     str RuleGroupName
     Optional[str] Description
     Optional[Summary] Summary
 
-@derive(Json)
 struct DescribeTLSInspectionConfigurationRequest:
     Optional[str] TLSInspectionConfigurationArn
     Optional[str] TLSInspectionConfigurationName
 
-# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration, TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTLSInspectionConfigurationResponse:
     str UpdateToken
     Optional[TLSInspectionConfiguration] TLSInspectionConfiguration
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
-@derive(Json)
 struct DescribeVpcEndpointAssociationRequest:
     str VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeVpcEndpointAssociationResponse:
     Optional[VpcEndpointAssociation] VpcEndpointAssociation
     Optional[VpcEndpointAssociationStatus] VpcEndpointAssociationStatus
 
-# no @derive(Json): member(s) RuleGroupNames: list[str], RuleGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DetachRuleGroupsFromProxyConfigurationRequest:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    Optional[list[str]] RuleGroupNames
-    Optional[list[str]] RuleGroupArns
-    str UpdateToken
-
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct DetachRuleGroupsFromProxyConfigurationResponse:
-    Optional[ProxyConfiguration] ProxyConfiguration
-    Optional[str] UpdateToken
-
-@derive(Json)
 struct Dimension:
     str Value
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateAvailabilityZonesRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[AvailabilityZoneMapping] AvailabilityZoneMappings
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateAvailabilityZonesResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[list[AvailabilityZoneMapping]] AvailabilityZoneMappings
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateSubnetsRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[str] SubnetIds
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateSubnetsResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[list[SubnetMapping]] SubnetMappings
     Optional[str] UpdateToken
 
-@derive(Json)
+struct DomainMatch:
+    list[str] Domains
+
 struct EncryptionConfiguration:
     Optional[str] KeyId
-    EncryptionType Type
+    str Type
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping], Tags: list[Tag], EnabledAnalysisTypes: list[EnabledAnalysisType], AvailabilityZoneMappings: list[AvailabilityZoneMapping], NatGatewayMappings: list[NatGatewayMapping], ProxySettings: ProxySettings, VpcEndpoint: VpcEndpoint not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Firewall:
     Optional[str] FirewallName
     Optional[str] FirewallArn
@@ -1243,25 +1222,21 @@ struct Firewall:
     Optional[list[Tag]] Tags
     Optional[EncryptionConfiguration] EncryptionConfiguration
     Optional[int64] NumberOfAssociations
-    Optional[list[EnabledAnalysisType]] EnabledAnalysisTypes
+    Optional[list[str]] EnabledAnalysisTypes
     Optional[str] TransitGatewayId
     Optional[str] TransitGatewayOwnerAccountId
     Optional[list[AvailabilityZoneMapping]] AvailabilityZoneMappings
     Optional[bool] AvailabilityZoneChangeProtection
-    Optional[list[NatGatewayMapping]] NatGatewayMappings
+    Optional[list[NatGatewayCreateMapping]] NatGatewayCreateMappings
     Optional[ProxySettings] ProxySettings
-    Optional[bool] NoSourcePreservation
     Optional[VpcEndpoint] VpcEndpoint
+    Optional[str] TransparentFilteringNatScope
 
-@derive(Json)
 struct FirewallMetadata:
     Optional[str] FirewallName
     Optional[str] FirewallArn
     Optional[str] TransitGatewayAttachmentId
 
-# no @derive(Json): member(s) StatelessRuleGroupReferences: list[StatelessRuleGroupReference], StatelessDefaultActions: list[str], StatelessFragmentDefaultActions: list[str], StatelessCustomActions: list[CustomAction], StatefulRuleGroupReferences: list[StatefulRuleGroupReference], StatefulDefaultActions: list[str], PolicyVariables: PolicyVariables, Route53ResolvedIPValidation: Route53ResolvedIPValidation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FirewallPolicy:
     Optional[list[StatelessRuleGroupReference]] StatelessRuleGroupReferences
     list[str] StatelessDefaultActions
@@ -1275,26 +1250,21 @@ struct FirewallPolicy:
     Optional[bool] EnableTLSSessionHolding
     Optional[Route53ResolvedIPValidation] Route53ResolvedIPValidation
 
-@derive(Json)
 struct FirewallPolicyError:
-    FirewallPolicyErrorCode Code
+    str Code
     str Message
     Optional[str] ResourceId
 
-@derive(Json)
 struct FirewallPolicyMetadata:
     Optional[str] Name
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag], Errors: list[FirewallPolicyError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FirewallPolicyResponse:
     str FirewallPolicyName
     str FirewallPolicyArn
     str FirewallPolicyId
     Optional[str] Description
-    Optional[ResourceStatus] FirewallPolicyStatus
+    Optional[str] FirewallPolicyStatus
     Optional[str] StatusMessage
     Optional[list[Tag]] Tags
     Optional[int64] ConsumedStatelessRuleCapacity
@@ -1305,17 +1275,73 @@ struct FirewallPolicyResponse:
     Optional[list[FirewallPolicyError]] Errors
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) SyncStates: dict[str, SyncState], CapacityUsageSummary: CapacityUsageSummary not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct FirewallPolicyV2:
+    Optional[list[FirewallRuleGroupEntry]] FirewallRuleGroupEntries
+    Optional[list[IpsRuleGroupEntry]] IpsRuleGroupEntries
+    Optional[str] PolicyMode
+    Optional[str] FirewallDefaultAction
+    Optional[StatefulEngineOptionsV2] StatefulEngineOptions
+    Optional[str] TLSInspectionConfigurationArn
+    Optional[PolicyVariables] PolicyVariables
+    Optional[Route53ResolvedIPValidation] Route53ResolvedIPValidation
+
+struct FirewallPolicyV2Metadata:
+    Optional[str] Name
+    Optional[str] Arn
+
+struct FirewallPolicyV2Response:
+    str FirewallPolicyV2Name
+    str FirewallPolicyV2Arn
+    str FirewallPolicyV2Id
+    Optional[str] Description
+    Optional[str] FirewallPolicyV2Status
+    Optional[str] StatusMessage
+    Optional[list[Tag]] Tags
+    Optional[int64] ConsumedFirewallRuleCapacity
+    Optional[int64] ConsumedIpsRuleCapacity
+    Optional[int64] ConsumedIpsDomainCapacity
+    Optional[int64] NumberOfAssociations
+    Optional[EncryptionConfiguration] EncryptionConfiguration
+    Optional[list[FirewallPolicyError]] Errors
+    Optional[DateTime] LastModifiedTime
+
+struct FirewallRule:
+    str Action
+    str ActionScope
+    str Hook
+    str Protocol
+    Optional[str] SourceIPs
+    Optional[str] DestIPs
+    Optional[str] SourcePorts
+    Optional[str] DestPorts
+    Optional[list[RuleOption]] RuleOptions
+    Optional[bool] AcceptPriorHooks
+    Optional[bool] AlertEnabled
+    Optional[bool] BypassIPSEnabled
+    Optional[RuleMetadata] RuleMetadata
+
+struct FirewallRuleGroup:
+    FirewallRulesSource RulesSource
+    Optional[RuleVariables] RuleVariables
+    Optional[ReferenceSets] ReferenceSets
+
+struct FirewallRuleGroupEntry:
+    Optional[int64] Priority
+    Optional[str] ResourceArn
+    Optional[FirewallRuleGroup] InlineRuleGroup
+
+struct FirewallRulesSource:
+    Optional[str] RulesString
+    Optional[list[FirewallRule]] FirewallRules
+    Optional[RulesSourceList] RulesSourceList
+
 struct FirewallStatus:
-    FirewallStatusValue Status
-    ConfigurationSyncState ConfigurationSyncStateSummary
+    str Status
+    str ConfigurationSyncStateSummary
     Optional[dict[str, SyncState]] SyncStates
     Optional[CapacityUsageSummary] CapacityUsageSummary
     Optional[TransitGatewayAttachmentSyncState] TransitGatewayAttachmentSyncState
 
-@derive(Json)
 struct Flow:
     Optional[Address] SourceAddress
     Optional[Address] DestinationAddress
@@ -1326,9 +1352,6 @@ struct Flow:
     Optional[int64] PacketCount
     Optional[int64] ByteCount
 
-# no @derive(Json): member(s) Protocols: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FlowFilter:
     Optional[Address] SourceAddress
     Optional[Address] DestinationAddress
@@ -1336,25 +1359,19 @@ struct FlowFilter:
     Optional[str] DestinationPort
     Optional[list[str]] Protocols
 
-# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FlowOperation:
     Optional[int64] MinimumFlowAgeInSeconds
     Optional[list[FlowFilter]] FlowFilters
 
-@derive(Json)
 struct FlowOperationMetadata:
     Optional[str] FlowOperationId
-    Optional[FlowOperationType] FlowOperationType
+    Optional[str] FlowOperationType
     Optional[DateTime] FlowRequestTimestamp
-    Optional[FlowOperationStatus] FlowOperationStatus
+    Optional[str] FlowOperationStatus
 
-@derive(Json)
 struct FlowTimeouts:
     Optional[int64] TcpIdleTimeoutSeconds
 
-@derive(Json)
 struct GetAnalysisReportResultsRequest:
     Optional[str] FirewallName
     str AnalysisReportId
@@ -1362,127 +1379,115 @@ struct GetAnalysisReportResultsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnalysisReportResults: list[AnalysisTypeReportResult] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetAnalysisReportResultsResponse:
     Optional[str] Status
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
     Optional[DateTime] ReportTime
-    Optional[EnabledAnalysisType] AnalysisType
+    Optional[str] AnalysisType
     Optional[str] NextToken
     Optional[list[AnalysisTypeReportResult]] AnalysisReportResults
 
-@derive(Json)
 struct Header:
-    StatefulRuleProtocol Protocol
+    str Protocol
     str Source
     str SourcePort
-    StatefulRuleDirection Direction
+    str Direction
     str Destination
     str DestinationPort
 
-@derive(Json)
 struct Hits:
     Optional[int64] Count
 
-# no @derive(Json): member(s) Definition: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct IPSet:
     list[str] Definition
 
-@derive(Json)
 struct IPSetMetadata:
     Optional[int64] ResolvedCIDRCount
 
-@derive(Json)
 struct IPSetReference:
     Optional[str] ReferenceArn
 
-@derive(Json)
 struct InsufficientCapacityException:
     Optional[str] Message
 
-@derive(Json)
 struct InternalServerError:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidOperationException:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidRequestException:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidResourcePolicyException:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidTokenException:
     Optional[str] Message
 
-@derive(Json)
+struct IpsRuleGroup:
+    IpsRulesSource RulesSource
+    Optional[RuleVariables] RuleVariables
+    Optional[ReferenceSets] ReferenceSets
+
+struct IpsRuleGroupEntry:
+    Optional[str] ResourceArn
+    Optional[IpsRuleGroup] InlineRuleGroup
+    Optional[IpsRuleGroupOverride] Override
+
+struct IpsRuleGroupOverride:
+    Optional[str] Action
+
+struct IpsRulesSource:
+    Optional[str] RulesString
+
 struct LimitExceededException:
     Optional[str] Message
 
-@derive(Json)
 struct ListAnalysisReportsRequest:
     Optional[str] FirewallName
     Optional[str] FirewallArn
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnalysisReports: list[AnalysisReport] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAnalysisReportsResponse:
     Optional[list[AnalysisReport]] AnalysisReports
     Optional[str] NextToken
 
-@derive(Json)
 struct ListContainerAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ContainerAssociations: list[ContainerAssociationSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListContainerAssociationsResponse:
     Optional[list[ContainerAssociationSummary]] ContainerAssociations
     Optional[str] NextToken
 
-@derive(Json)
 struct ListFirewallPoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FirewallPolicies: list[FirewallPolicyMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFirewallPoliciesResponse:
     Optional[str] NextToken
     Optional[list[FirewallPolicyMetadata]] FirewallPolicies
 
-# no @derive(Json): member(s) VpcIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct ListFirewallPoliciesV2Request:
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+struct ListFirewallPoliciesV2Response:
+    Optional[str] NextToken
+    list[FirewallPolicyV2Metadata] FirewallPoliciesV2
+
 struct ListFirewallsRequest:
     Optional[str] NextToken
     Optional[list[str]] VpcIds
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Firewalls: list[FirewallMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFirewallsResponse:
     Optional[str] NextToken
     Optional[list[FirewallMetadata]] Firewalls
 
-@derive(Json)
 struct ListFlowOperationResultsRequest:
     str FirewallArn
     str FlowOperationId
@@ -1493,9 +1498,6 @@ struct ListFlowOperationResultsRequest:
     Optional[str] VpcEndpointId
     Optional[str] VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) Flows: list[Flow] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFlowOperationResultsResponse:
     Optional[str] FirewallArn
     Optional[str] AvailabilityZone
@@ -1503,151 +1505,79 @@ struct ListFlowOperationResultsResponse:
     Optional[str] VpcEndpointAssociationArn
     Optional[str] VpcEndpointId
     Optional[str] FlowOperationId
-    Optional[FlowOperationStatus] FlowOperationStatus
+    Optional[str] FlowOperationStatus
     Optional[str] StatusMessage
     Optional[DateTime] FlowRequestTimestamp
     Optional[list[Flow]] Flows
     Optional[str] NextToken
 
-@derive(Json)
 struct ListFlowOperationsRequest:
     str FirewallArn
     Optional[str] AvailabilityZone
     Optional[str] AvailabilityZoneId
     Optional[str] VpcEndpointAssociationArn
     Optional[str] VpcEndpointId
-    Optional[FlowOperationType] FlowOperationType
+    Optional[str] FlowOperationType
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlowOperations: list[FlowOperationMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFlowOperationsResponse:
     Optional[list[FlowOperationMetadata]] FlowOperations
     Optional[str] NextToken
 
-@derive(Json)
-struct ListProxiesRequest:
-    Optional[str] NextToken
-    Optional[int64] MaxResults
-
-# no @derive(Json): member(s) Proxies: list[ProxyMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ListProxiesResponse:
-    Optional[list[ProxyMetadata]] Proxies
-    Optional[str] NextToken
-
-@derive(Json)
-struct ListProxyConfigurationsRequest:
-    Optional[str] NextToken
-    Optional[int64] MaxResults
-
-# no @derive(Json): member(s) ProxyConfigurations: list[ProxyConfigurationMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ListProxyConfigurationsResponse:
-    Optional[list[ProxyConfigurationMetadata]] ProxyConfigurations
-    Optional[str] NextToken
-
-@derive(Json)
-struct ListProxyRuleGroupsRequest:
-    Optional[str] NextToken
-    Optional[int64] MaxResults
-
-# no @derive(Json): member(s) ProxyRuleGroups: list[ProxyRuleGroupMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ListProxyRuleGroupsResponse:
-    Optional[list[ProxyRuleGroupMetadata]] ProxyRuleGroups
-    Optional[str] NextToken
-
-@derive(Json)
 struct ListRuleGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
-    Optional[ResourceManagedStatus] Scope
-    Optional[ResourceManagedType] ManagedType
-    Optional[SubscriptionStatus] SubscriptionStatus
-    Optional[RuleGroupType] Type
+    Optional[str] Scope
+    Optional[str] ManagedType
+    Optional[str] SubscriptionStatus
+    Optional[str] Type
 
-# no @derive(Json): member(s) RuleGroups: list[RuleGroupMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListRuleGroupsResponse:
     Optional[str] NextToken
     Optional[list[RuleGroupMetadata]] RuleGroups
 
-@derive(Json)
 struct ListTLSInspectionConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TLSInspectionConfigurations: list[TLSInspectionConfigurationMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTLSInspectionConfigurationsResponse:
     Optional[str] NextToken
     Optional[list[TLSInspectionConfigurationMetadata]] TLSInspectionConfigurations
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] NextToken
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct ListVpcEndpointAssociationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) VpcEndpointAssociations: list[VpcEndpointAssociationMetadata] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVpcEndpointAssociationsResponse:
     Optional[str] NextToken
     Optional[list[VpcEndpointAssociationMetadata]] VpcEndpointAssociations
 
-@derive(Json)
 struct ListenerProperty:
     Optional[int64] Port
-    Optional[ListenerPropertyType] Type
+    Optional[str] Type
 
-@derive(Json)
-struct ListenerPropertyRequest:
-    int64 Port
-    ListenerPropertyType Type
-
-# no @derive(Json): member(s) LogDestination: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LogDestinationConfig:
-    LogType LogType
-    LogDestinationType LogDestinationType
+    str LogType
+    str LogDestinationType
     dict[str, str] LogDestination
 
-@derive(Json)
 struct LogDestinationPermissionException:
     Optional[str] Message
 
-# no @derive(Json): member(s) LogDestinationConfigs: list[LogDestinationConfig] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LoggingConfiguration:
     list[LogDestinationConfig] LogDestinationConfigs
 
-# no @derive(Json): member(s) Sources: list[Address], Destinations: list[Address], SourcePorts: list[PortRange], DestinationPorts: list[PortRange], Protocols: list[int64], TCPFlags: list[TCPFlagField] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct MatchAttributes:
     Optional[list[Address]] Sources
     Optional[list[Address]] Destinations
@@ -1656,245 +1586,93 @@ struct MatchAttributes:
     Optional[list[int64]] Protocols
     Optional[list[TCPFlagField]] TCPFlags
 
-@derive(Json)
 struct NatGatewayAttachment:
     str NatGatewayId
-    NatGatewayAttachmentStatus Status
+    str Status
     Optional[str] StatusMessage
     Optional[str] DnsName
 
-@derive(Json)
-struct NatGatewayMapping:
-    str NatGatewayId
+struct NatGatewayCreateMapping:
+    str SubnetId
+    Optional[list[str]] AllocationIds
+    Optional[list[str]] PrivateIps
 
-@derive(Json)
 struct PerObjectStatus:
-    Optional[PerObjectSyncStatus] SyncStatus
+    Optional[str] SyncStatus
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) RuleVariables: dict[str, IPSet] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PolicyVariables:
     Optional[dict[str, IPSet]] RuleVariables
 
-@derive(Json)
 struct PortRange:
     int64 FromPort
     int64 ToPort
 
-# no @derive(Json): member(s) Definition: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PortSet:
     Optional[list[str]] Definition
 
-# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct Proxy:
-    Optional[DateTime] CreateTime
-    Optional[DateTime] DeleteTime
-    Optional[DateTime] UpdateTime
-    Optional[str] FailureCode
-    Optional[str] FailureMessage
-    Optional[ProxyState] ProxyState
-    Optional[ProxyModifyState] ProxyModifyState
-    Optional[str] NatGatewayId
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    Optional[str] ProxyName
-    Optional[str] ProxyArn
-    Optional[list[ListenerProperty]] ListenerProperties
-    Optional[TlsInterceptProperties] TlsInterceptProperties
-    Optional[list[Tag]] Tags
-
-@derive(Json)
-struct ProxyConfigDefaultRulePhaseActionsRequest:
-    Optional[ProxyRulePhaseAction] PreDNS
-    Optional[ProxyRulePhaseAction] PreREQUEST
-    Optional[ProxyRulePhaseAction] PostRESPONSE
-
-@derive(Json)
-struct ProxyConfigRuleGroup:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-    Optional[str] Type
-    Optional[int64] Priority
-
-# no @derive(Json): member(s) RuleGroups: list[ProxyConfigRuleGroup], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ProxyConfiguration:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    Optional[str] Description
-    Optional[DateTime] CreateTime
-    Optional[DateTime] DeleteTime
-    Optional[list[ProxyConfigRuleGroup]] RuleGroups
-    Optional[ProxyConfigDefaultRulePhaseActionsRequest] DefaultRulePhaseActions
-    Optional[list[Tag]] Tags
-
-@derive(Json)
-struct ProxyConfigurationMetadata:
-    Optional[str] Name
-    Optional[str] Arn
-
-@derive(Json)
-struct ProxyMetadata:
-    Optional[str] Name
-    Optional[str] Arn
-
-# no @derive(Json): member(s) Conditions: list[ProxyRuleCondition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ProxyRule:
-    Optional[str] ProxyRuleName
-    Optional[str] Description
-    Optional[ProxyRulePhaseAction] Action
-    Optional[list[ProxyRuleCondition]] Conditions
-
-# no @derive(Json): member(s) ConditionValues: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ProxyRuleCondition:
-    Optional[str] ConditionOperator
-    Optional[str] ConditionKey
-    Optional[list[str]] ConditionValues
-
-# no @derive(Json): member(s) Rules: ProxyRulesByRequestPhase, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ProxyRuleGroup:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-    Optional[DateTime] CreateTime
-    Optional[DateTime] DeleteTime
-    Optional[ProxyRulesByRequestPhase] Rules
-    Optional[str] Description
-    Optional[list[Tag]] Tags
-
-@derive(Json)
-struct ProxyRuleGroupAttachment:
-    Optional[str] ProxyRuleGroupName
-    Optional[int64] InsertPosition
-
-@derive(Json)
-struct ProxyRuleGroupMetadata:
-    Optional[str] Name
-    Optional[str] Arn
-
-@derive(Json)
-struct ProxyRuleGroupPriority:
-    Optional[str] ProxyRuleGroupName
-    Optional[int64] NewPosition
-
-@derive(Json)
-struct ProxyRuleGroupPriorityResult:
-    Optional[str] ProxyRuleGroupName
-    Optional[int64] Priority
-
-@derive(Json)
-struct ProxyRulePriority:
-    Optional[str] ProxyRuleName
-    Optional[int64] NewPosition
-
-# no @derive(Json): member(s) PreDNS: list[ProxyRule], PreREQUEST: list[ProxyRule], PostRESPONSE: list[ProxyRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct ProxyRulesByRequestPhase:
-    Optional[list[ProxyRule]] PreDNS
-    Optional[list[ProxyRule]] PreREQUEST
-    Optional[list[ProxyRule]] PostRESPONSE
-
-# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProxySettings:
     list[ListenerProperty] ListenerProperties
+    Optional[str] CertificateArn
+    Optional[str] DomainName
 
-# no @derive(Json): member(s) Dimensions: list[Dimension] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PublishMetricAction:
     list[Dimension] Dimensions
 
-@derive(Json)
 struct PutResourcePolicyRequest:
     str ResourceArn
     str Policy
 
-@derive(Json)
 struct PutResourcePolicyResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) IPSetReferences: dict[str, IPSetReference] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ReferenceSets:
     Optional[dict[str, IPSetReference]] IPSetReferences
 
-@derive(Json)
 struct RejectNetworkFirewallTransitGatewayAttachmentRequest:
     str TransitGatewayAttachmentId
 
-@derive(Json)
 struct RejectNetworkFirewallTransitGatewayAttachmentResponse:
     str TransitGatewayAttachmentId
-    TransitGatewayAttachmentStatus TransitGatewayAttachmentStatus
+    str TransitGatewayAttachmentStatus
 
-@derive(Json)
 struct ResourceNotFoundException:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceOwnerCheckException:
     Optional[str] Message
 
-# no @derive(Json): member(s) BypassDestinationValidationIPRanges: list[Address], SourceIPRanges: list[Address] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Route53ResolvedIPValidation:
-    Route53ResolvedIPValidationAction Action
+    str Action
     str DNSFirewallRuleGroupId
-    DNSExpiryExceptionPolicy DNSExpiryExceptionPolicy
+    str DNSExpiryExceptionPolicy
     Optional[list[Address]] BypassDestinationValidationIPRanges
     Optional[list[Address]] SourceIPRanges
 
-# no @derive(Json): member(s) MatchAttributes: MatchAttributes, Actions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleDefinition:
     MatchAttributes MatchAttributes
     list[str] Actions
 
-# no @derive(Json): member(s) RuleVariables: RuleVariables, ReferenceSets: ReferenceSets, RulesSource: RulesSource not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleGroup:
     Optional[RuleVariables] RuleVariables
     Optional[ReferenceSets] ReferenceSets
     RulesSource RulesSource
     Optional[StatefulRuleOptions] StatefulRuleOptions
 
-@derive(Json)
 struct RuleGroupMetadata:
     Optional[str] Name
     Optional[str] Arn
     Optional[str] VendorName
 
-# no @derive(Json): member(s) Tags: list[Tag], AnalysisResults: list[AnalysisResult], SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleGroupResponse:
     str RuleGroupArn
     str RuleGroupName
     str RuleGroupId
     Optional[str] Description
-    Optional[RuleGroupType] Type
+    Optional[str] Type
     Optional[int64] Capacity
-    Optional[ResourceStatus] RuleGroupStatus
+    Optional[str] RuleGroupStatus
     Optional[list[Tag]] Tags
     Optional[int64] ConsumedCapacity
     Optional[int64] NumberOfAssociations
@@ -1905,84 +1683,66 @@ struct RuleGroupResponse:
     Optional[list[AnalysisResult]] AnalysisResults
     Optional[SummaryConfiguration] SummaryConfiguration
 
-# no @derive(Json): member(s) Settings: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct RuleMetadata:
+    Optional[bool] RuleEnabled
+    Optional[str] RuleDescription
+
 struct RuleOption:
     str Keyword
     Optional[list[str]] Settings
 
-@derive(Json)
 struct RuleSummary:
     Optional[str] SID
     Optional[str] Msg
     Optional[str] Metadata
 
-# no @derive(Json): member(s) IPSets: dict[str, IPSet], PortSets: dict[str, PortSet] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RuleVariables:
     Optional[dict[str, IPSet]] IPSets
     Optional[dict[str, PortSet]] PortSets
 
-# no @derive(Json): member(s) RulesSourceList: RulesSourceList, StatefulRules: list[StatefulRule], StatelessRulesAndCustomActions: StatelessRulesAndCustomActions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RulesSource:
     Optional[str] RulesString
     Optional[RulesSourceList] RulesSourceList
     Optional[list[StatefulRule]] StatefulRules
     Optional[StatelessRulesAndCustomActions] StatelessRulesAndCustomActions
 
-# no @derive(Json): member(s) Targets: list[str], TargetTypes: list[TargetType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RulesSourceList:
     list[str] Targets
-    list[TargetType] TargetTypes
-    GeneratedRulesType GeneratedRulesType
+    list[str] TargetTypes
+    str GeneratedRulesType
 
-@derive(Json)
 struct ServerCertificate:
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) ServerCertificates: list[ServerCertificate], Scopes: list[ServerCertificateScope] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServerCertificateConfiguration:
     Optional[list[ServerCertificate]] ServerCertificates
     Optional[list[ServerCertificateScope]] Scopes
     Optional[str] CertificateAuthorityArn
     Optional[CheckCertificateRevocationStatusActions] CheckCertificateRevocationStatus
+    Optional[str] DefaultDecryptionBehavior
 
-# no @derive(Json): member(s) Sources: list[Address], Destinations: list[Address], SourcePorts: list[PortRange], DestinationPorts: list[PortRange], Protocols: list[int64] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServerCertificateScope:
     Optional[list[Address]] Sources
     Optional[list[Address]] Destinations
     Optional[list[PortRange]] SourcePorts
     Optional[list[PortRange]] DestinationPorts
     Optional[list[int64]] Protocols
+    Optional[DomainMatch] DomainMatch
+    Optional[str] DecryptionAction
+    Optional[str] DeploymentMode
 
-@derive(Json)
 struct SourceMetadata:
     Optional[str] SourceArn
     Optional[str] SourceUpdateToken
 
-@derive(Json)
 struct StartAnalysisReportRequest:
     Optional[str] FirewallName
     Optional[str] FirewallArn
-    EnabledAnalysisType AnalysisType
+    str AnalysisType
 
-@derive(Json)
 struct StartAnalysisReportResponse:
     str AnalysisReportId
 
-# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartFlowCaptureRequest:
     str FirewallArn
     Optional[str] AvailabilityZone
@@ -1992,15 +1752,11 @@ struct StartFlowCaptureRequest:
     Optional[int64] MinimumFlowAgeInSeconds
     list[FlowFilter] FlowFilters
 
-@derive(Json)
 struct StartFlowCaptureResponse:
     Optional[str] FirewallArn
     Optional[str] FlowOperationId
-    Optional[FlowOperationStatus] FlowOperationStatus
+    Optional[str] FlowOperationStatus
 
-# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartFlowFlushRequest:
     str FirewallArn
     Optional[str] AvailabilityZone
@@ -2010,111 +1766,80 @@ struct StartFlowFlushRequest:
     Optional[int64] MinimumFlowAgeInSeconds
     list[FlowFilter] FlowFilters
 
-@derive(Json)
 struct StartFlowFlushResponse:
     Optional[str] FirewallArn
     Optional[str] FlowOperationId
-    Optional[FlowOperationStatus] FlowOperationStatus
+    Optional[str] FlowOperationStatus
 
-@derive(Json)
 struct StatefulEngineOptions:
-    Optional[RuleOrder] RuleOrder
-    Optional[StreamExceptionPolicy] StreamExceptionPolicy
+    Optional[str] RuleOrder
+    Optional[str] StreamExceptionPolicy
     Optional[FlowTimeouts] FlowTimeouts
 
-# no @derive(Json): member(s) RuleOptions: list[RuleOption] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct StatefulEngineOptionsV2:
+    Optional[str] StreamExceptionPolicy
+    Optional[FlowTimeouts] FlowTimeouts
+
 struct StatefulRule:
-    StatefulAction Action
+    str Action
     Header Header
     list[RuleOption] RuleOptions
 
-@derive(Json)
 struct StatefulRuleGroupOverride:
     Optional[str] Action
 
-@derive(Json)
 struct StatefulRuleGroupReference:
     str ResourceArn
     Optional[int64] Priority
     Optional[StatefulRuleGroupOverride] Override
     Optional[bool] DeepThreatInspection
 
-@derive(Json)
 struct StatefulRuleOptions:
-    Optional[RuleOrder] RuleOrder
+    Optional[str] RuleOrder
 
-# no @derive(Json): member(s) RuleDefinition: RuleDefinition not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StatelessRule:
     RuleDefinition RuleDefinition
     int64 Priority
 
-@derive(Json)
 struct StatelessRuleGroupReference:
     str ResourceArn
     int64 Priority
 
-# no @derive(Json): member(s) StatelessRules: list[StatelessRule], CustomActions: list[CustomAction] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StatelessRulesAndCustomActions:
     list[StatelessRule] StatelessRules
     Optional[list[CustomAction]] CustomActions
 
-@derive(Json)
 struct SubnetMapping:
     str SubnetId
-    Optional[IPAddressType] IPAddressType
+    Optional[str] IPAddressType
 
-# no @derive(Json): member(s) RuleSummaries: list[RuleSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Summary:
     Optional[list[RuleSummary]] RuleSummaries
 
-# no @derive(Json): member(s) RuleOptions: list[SummaryRuleOption] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SummaryConfiguration:
-    Optional[list[SummaryRuleOption]] RuleOptions
+    Optional[list[str]] RuleOptions
 
-# no @derive(Json): member(s) Config: dict[str, PerObjectStatus], NatGatewayAttachments: list[NatGatewayAttachment] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SyncState:
     Optional[Attachment] Attachment
     Optional[dict[str, PerObjectStatus]] Config
     Optional[list[NatGatewayAttachment]] NatGatewayAttachments
 
-# no @derive(Json): member(s) Flags: list[TCPFlag], Masks: list[TCPFlag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TCPFlagField:
-    list[TCPFlag] Flags
-    Optional[list[TCPFlag]] Masks
+    list[str] Flags
+    Optional[list[str]] Masks
 
-# no @derive(Json): member(s) ServerCertificateConfigurations: list[ServerCertificateConfiguration] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TLSInspectionConfiguration:
     Optional[list[ServerCertificateConfiguration]] ServerCertificateConfigurations
 
-@derive(Json)
 struct TLSInspectionConfigurationMetadata:
     Optional[str] Name
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag], Certificates: list[TlsCertificateData] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TLSInspectionConfigurationResponse:
     str TLSInspectionConfigurationArn
     str TLSInspectionConfigurationName
     str TLSInspectionConfigurationId
-    Optional[ResourceStatus] TLSInspectionConfigurationStatus
+    Optional[str] TLSInspectionConfigurationStatus
     Optional[str] Description
     Optional[list[Tag]] Tags
     Optional[DateTime] LastModifiedTime
@@ -2123,186 +1848,141 @@ struct TLSInspectionConfigurationResponse:
     Optional[list[TlsCertificateData]] Certificates
     Optional[TlsCertificateData] CertificateAuthority
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ThrottlingException:
     Optional[str] Message
 
-@derive(Json)
 struct TlsCertificateData:
     Optional[str] CertificateArn
     Optional[str] CertificateSerial
     Optional[str] Status
     Optional[str] StatusMessage
 
-@derive(Json)
 struct TlsInterceptProperties:
     Optional[str] PcaArn
-    Optional[TlsInterceptMode] TlsInterceptMode
+    Optional[str] TlsInterceptMode
 
-@derive(Json)
-struct TlsInterceptPropertiesRequest:
-    Optional[str] PcaArn
-    Optional[TlsInterceptMode] TlsInterceptMode
-
-@derive(Json)
 struct TransitGatewayAttachmentSyncState:
     Optional[str] AttachmentId
-    Optional[TransitGatewayAttachmentStatus] TransitGatewayAttachmentStatus
+    Optional[str] TransitGatewayAttachmentStatus
     Optional[str] StatusMessage
 
-@derive(Json)
 struct UniqueSources:
     Optional[int64] Count
 
-@derive(Json)
 struct UnsupportedOperationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateAvailabilityZoneChangeProtectionRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     bool AvailabilityZoneChangeProtection
 
-@derive(Json)
 struct UpdateAvailabilityZoneChangeProtectionResponse:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[bool] AvailabilityZoneChangeProtection
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateContainerAssociationRequest:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
     Optional[str] Description
-    ContainerMonitoringType Type
+    str Type
     list[ContainerMonitoringConfiguration] ContainerMonitoringConfigurations
     Optional[list[Tag]] Tags
     str UpdateToken
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
     Optional[str] Description
-    Optional[ContainerMonitoringType] Type
+    Optional[str] Type
     Optional[list[ContainerMonitoringConfiguration]] ContainerMonitoringConfigurations
-    Optional[ContainerAssociationStatus] Status
+    Optional[str] Status
     Optional[list[Tag]] Tags
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) EnabledAnalysisTypes: list[EnabledAnalysisType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFirewallAnalysisSettingsRequest:
-    Optional[list[EnabledAnalysisType]] EnabledAnalysisTypes
+    Optional[list[str]] EnabledAnalysisTypes
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) EnabledAnalysisTypes: list[EnabledAnalysisType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFirewallAnalysisSettingsResponse:
-    Optional[list[EnabledAnalysisType]] EnabledAnalysisTypes
+    Optional[list[str]] EnabledAnalysisTypes
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
 
-@derive(Json)
 struct UpdateFirewallDeleteProtectionRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     bool DeleteProtection
 
-@derive(Json)
 struct UpdateFirewallDeleteProtectionResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[bool] DeleteProtection
     Optional[str] UpdateToken
 
-@derive(Json)
 struct UpdateFirewallDescriptionRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] Description
 
-@derive(Json)
 struct UpdateFirewallDescriptionResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] Description
     Optional[str] UpdateToken
 
-@derive(Json)
 struct UpdateFirewallEncryptionConfigurationRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct UpdateFirewallEncryptionConfigurationResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct UpdateFirewallPolicyChangeProtectionRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     bool FirewallPolicyChangeProtection
 
-@derive(Json)
 struct UpdateFirewallPolicyChangeProtectionResponse:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[bool] FirewallPolicyChangeProtection
 
-# no @derive(Json): member(s) FirewallPolicy: FirewallPolicy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFirewallPolicyRequest:
     str UpdateToken
     Optional[str] FirewallPolicyArn
@@ -2312,149 +1992,56 @@ struct UpdateFirewallPolicyRequest:
     Optional[bool] DryRun
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFirewallPolicyResponse:
     str UpdateToken
     FirewallPolicyResponse FirewallPolicyResponse
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct UpdateFirewallPolicyV2Request:
+    str UpdateToken
+    Optional[str] FirewallPolicyV2Arn
+    Optional[str] FirewallPolicyV2Name
+    FirewallPolicyV2 FirewallPolicyV2
+    Optional[str] Description
+    Optional[bool] DryRun
+    Optional[EncryptionConfiguration] EncryptionConfiguration
+
+struct UpdateFirewallPolicyV2Response:
+    str UpdateToken
+    FirewallPolicyV2Response FirewallPolicyV2Response
+
 struct UpdateLoggingConfigurationRequest:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[LoggingConfiguration] LoggingConfiguration
     Optional[bool] EnableMonitoringDashboard
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLoggingConfigurationResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[LoggingConfiguration] LoggingConfiguration
     Optional[bool] EnableMonitoringDashboard
 
-@derive(Json)
-struct UpdateProxyConfigurationRequest:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    ProxyConfigDefaultRulePhaseActionsRequest DefaultRulePhaseActions
-    str UpdateToken
-
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyConfigurationResponse:
-    Optional[ProxyConfiguration] ProxyConfiguration
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) ListenerPropertiesToAdd: list[ListenerPropertyRequest], ListenerPropertiesToRemove: list[ListenerPropertyRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRequest:
-    str NatGatewayId
-    Optional[str] ProxyName
-    Optional[str] ProxyArn
-    Optional[list[ListenerPropertyRequest]] ListenerPropertiesToAdd
-    Optional[list[ListenerPropertyRequest]] ListenerPropertiesToRemove
-    Optional[TlsInterceptPropertiesRequest] TlsInterceptProperties
-    str UpdateToken
-
-# no @derive(Json): member(s) Proxy: Proxy not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyResponse:
-    Optional[Proxy] Proxy
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) RuleGroups: list[ProxyRuleGroupPriority] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRuleGroupPrioritiesRequest:
-    Optional[str] ProxyConfigurationName
-    Optional[str] ProxyConfigurationArn
-    list[ProxyRuleGroupPriority] RuleGroups
-    str UpdateToken
-
-# no @derive(Json): member(s) ProxyRuleGroups: list[ProxyRuleGroupPriorityResult] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRuleGroupPrioritiesResponse:
-    Optional[list[ProxyRuleGroupPriorityResult]] ProxyRuleGroups
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) Rules: list[ProxyRulePriority] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRulePrioritiesRequest:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-    RuleGroupRequestPhase RuleGroupRequestPhase
-    list[ProxyRulePriority] Rules
-    str UpdateToken
-
-# no @derive(Json): member(s) Rules: list[ProxyRulePriority] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRulePrioritiesResponse:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-    Optional[RuleGroupRequestPhase] RuleGroupRequestPhase
-    Optional[list[ProxyRulePriority]] Rules
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) AddConditions: list[ProxyRuleCondition], RemoveConditions: list[ProxyRuleCondition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRuleRequest:
-    Optional[str] ProxyRuleGroupName
-    Optional[str] ProxyRuleGroupArn
-    str ProxyRuleName
-    Optional[str] Description
-    Optional[ProxyRulePhaseAction] Action
-    Optional[list[ProxyRuleCondition]] AddConditions
-    Optional[list[ProxyRuleCondition]] RemoveConditions
-    str UpdateToken
-
-# no @derive(Json): member(s) ProxyRule: ProxyRule, RemovedConditions: list[ProxyRuleCondition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
-struct UpdateProxyRuleResponse:
-    Optional[ProxyRule] ProxyRule
-    Optional[list[ProxyRuleCondition]] RemovedConditions
-    Optional[str] UpdateToken
-
-# no @derive(Json): member(s) ProxySettings: ProxySettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProxySettingsRequest:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
     Optional[ProxySettings] ProxySettings
 
-# no @derive(Json): member(s) ProxySettings: ProxySettings not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProxySettingsResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
     Optional[ProxySettings] ProxySettings
 
-# no @derive(Json): member(s) RuleGroup: RuleGroup, SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateRuleGroupRequest:
     str UpdateToken
     Optional[str] RuleGroupArn
     Optional[str] RuleGroupName
     Optional[RuleGroup] RuleGroup
+    Optional[FirewallRuleGroup] FirewallRuleGroup
+    Optional[IpsRuleGroup] IpsRuleGroup
     Optional[str] Rules
-    Optional[RuleGroupType] Type
+    Optional[str] Type
     Optional[str] Description
     Optional[bool] DryRun
     Optional[EncryptionConfiguration] EncryptionConfiguration
@@ -2462,30 +2049,22 @@ struct UpdateRuleGroupRequest:
     Optional[bool] AnalyzeRuleGroup
     Optional[SummaryConfiguration] SummaryConfiguration
 
-# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateRuleGroupResponse:
     str UpdateToken
     RuleGroupResponse RuleGroupResponse
 
-@derive(Json)
 struct UpdateSubnetChangeProtectionRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     bool SubnetChangeProtection
 
-@derive(Json)
 struct UpdateSubnetChangeProtectionResponse:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[bool] SubnetChangeProtection
 
-# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateTLSInspectionConfigurationRequest:
     Optional[str] TLSInspectionConfigurationArn
     Optional[str] TLSInspectionConfigurationName
@@ -2494,23 +2073,14 @@ struct UpdateTLSInspectionConfigurationRequest:
     Optional[EncryptionConfiguration] EncryptionConfiguration
     str UpdateToken
 
-# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateTLSInspectionConfigurationResponse:
     str UpdateToken
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VpcEndpoint:
     str VpcId
     list[SubnetMapping] SubnetMappings
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VpcEndpointAssociation:
     Optional[str] VpcEndpointAssociationId
     str VpcEndpointAssociationArn
@@ -2520,15 +2090,11 @@ struct VpcEndpointAssociation:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct VpcEndpointAssociationMetadata:
     Optional[str] VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) AssociationSyncState: dict[str, AZSyncState] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VpcEndpointAssociationStatus:
-    FirewallStatusValue Status
+    str Status
     Optional[dict[str, AZSyncState]] AssociationSyncState
 
 # --- errors ----------------------------------------------------------------
@@ -2538,7 +2104,7 @@ struct VpcEndpointAssociationStatus:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2625,1346 +2191,2656 @@ def network_firewall_error_name(Network_FirewallErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def network_firewall_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   GetAnalysisReportResults
+#   ListAnalysisReports
+#   ListContainerAssociations
+#   ListFirewallPolicies
+#   ListFirewallPoliciesV2
+#   ListFirewalls
+#   ListFlowOperationResults
+#   ListFlowOperations
+#   ListRuleGroups
+#   ListTLSInspectionConfigurations
+#   ListTagsForResource
+#   ListVpcEndpointAssociations
 
-def network_firewall_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   FirewallPolicyActive
 
-def network_firewall_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AcceptNetworkFirewallTransitGatewayAttachmentRequest to a CBOR map (member wire name -> value, model order).
+def accept_network_firewall_transit_gateway_attachment_request_to_cbor(AcceptNetworkFirewallTransitGatewayAttachmentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TransitGatewayAttachmentId")
+    vals.append(cbor.cbor_text(v.TransitGatewayAttachmentId))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ActionDefinition to a compact JSON object (declaration order).
-def action_definition_to_json(ActionDefinition v) -> str:
-    list[str] parts = []
+# Serialize ActionDefinition to a CBOR map (member wire name -> value, model order).
+def action_definition_to_cbor(ActionDefinition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.PublishMetricAction.is_some():
         auto u0 = v.PublishMetricAction.unwrap()
-        parts.append("\"PublishMetricAction\":" + publish_metric_action_to_json(u0))
-    return network_firewall_json_obj(parts)
+        keys.append("PublishMetricAction")
+        vals.append(publish_metric_action_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AssociateAvailabilityZonesRequest to a compact JSON object (declaration order).
-def associate_availability_zones_request_to_json(AssociateAvailabilityZonesRequest v) -> str:
-    list[str] parts = []
+# Serialize Address to a CBOR map (member wire name -> value, model order).
+def address_to_cbor(Address v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AddressDefinition")
+    vals.append(cbor.cbor_text(v.AddressDefinition))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateAvailabilityZonesRequest to a CBOR map (member wire name -> value, model order).
+def associate_availability_zones_request_to_cbor(AssociateAvailabilityZonesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.UpdateToken.is_some():
         auto u0 = v.UpdateToken.unwrap()
-        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
     if v.FirewallArn.is_some():
         auto u1 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
     if v.FirewallName.is_some():
         auto u2 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
-    list[str] e3 = []
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    list[cbor.CborValue] e3 = []
     for x3 in v.AvailabilityZoneMappings:
-        e3.append(x3.to_json())
-    parts.append("\"AvailabilityZoneMappings\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
+        e3.append(availability_zone_mapping_to_cbor(x3))
+    keys.append("AvailabilityZoneMappings")
+    vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AssociateSubnetsRequest to a compact JSON object (declaration order).
-def associate_subnets_request_to_json(AssociateSubnetsRequest v) -> str:
-    list[str] parts = []
+# Serialize AssociateFirewallPolicyRequest to a CBOR map (member wire name -> value, model order).
+def associate_firewall_policy_request_to_cbor(AssociateFirewallPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.UpdateToken.is_some():
         auto u0 = v.UpdateToken.unwrap()
-        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
     if v.FirewallArn.is_some():
         auto u1 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
     if v.FirewallName.is_some():
         auto u2 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
-    list[str] e3 = []
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("FirewallPolicyArn")
+    vals.append(cbor.cbor_text(v.FirewallPolicyArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateSubnetsRequest to a CBOR map (member wire name -> value, model order).
+def associate_subnets_request_to_cbor(AssociateSubnetsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    list[cbor.CborValue] e3 = []
     for x3 in v.SubnetMappings:
-        e3.append(x3.to_json())
-    parts.append("\"SubnetMappings\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
+        e3.append(subnet_mapping_to_cbor(x3))
+    keys.append("SubnetMappings")
+    vals.append(cbor.cbor_list(e3))
+    if v.NatGatewayCreateMappings.is_some():
+        auto u4 = v.NatGatewayCreateMappings.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(nat_gateway_create_mapping_to_cbor(x5))
+        keys.append("NatGatewayCreateMappings")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AttachRuleGroupsToProxyConfigurationRequest to a compact JSON object (declaration order).
-def attach_rule_groups_to_proxy_configuration_request_to_json(AttachRuleGroupsToProxyConfigurationRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyConfigurationName.is_some():
-        auto u0 = v.ProxyConfigurationName.unwrap()
-        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
-    if v.ProxyConfigurationArn.is_some():
-        auto u1 = v.ProxyConfigurationArn.unwrap()
-        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
-    list[str] e2 = []
-    for x2 in v.RuleGroups:
-        e2.append(x2.to_json())
-    parts.append("\"RuleGroups\":" + network_firewall_json_arr(e2))
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
+# Serialize AvailabilityZoneMapping to a CBOR map (member wire name -> value, model order).
+def availability_zone_mapping_to_cbor(AvailabilityZoneMapping v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AvailabilityZone")
+    vals.append(cbor.cbor_text(v.AvailabilityZone))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ContainerMonitoringConfiguration to a compact JSON object (declaration order).
-def container_monitoring_configuration_to_json(ContainerMonitoringConfiguration v) -> str:
-    list[str] parts = []
-    parts.append("\"ClusterArn\":" + network_firewall_json_str(v.ClusterArn))
+# Serialize CheckCertificateRevocationStatusActions to a CBOR map (member wire name -> value, model order).
+def check_certificate_revocation_status_actions_to_cbor(CheckCertificateRevocationStatusActions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RevokedStatusAction.is_some():
+        auto u0 = v.RevokedStatusAction.unwrap()
+        keys.append("RevokedStatusAction")
+        vals.append(cbor.cbor_text(u0))
+    if v.UnknownStatusAction.is_some():
+        auto u1 = v.UnknownStatusAction.unwrap()
+        keys.append("UnknownStatusAction")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ContainerAttribute to a CBOR map (member wire name -> value, model order).
+def container_attribute_to_cbor(ContainerAttribute v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ContainerMonitoringConfiguration to a CBOR map (member wire name -> value, model order).
+def container_monitoring_configuration_to_cbor(ContainerMonitoringConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterArn")
+    vals.append(cbor.cbor_text(v.ClusterArn))
     if v.AttributeFilters.is_some():
         auto u0 = v.AttributeFilters.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"AttributeFilters\":" + network_firewall_json_arr(e1))
-    return network_firewall_json_obj(parts)
+            e1.append(container_attribute_to_cbor(x1))
+        keys.append("AttributeFilters")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateContainerAssociationRequest to a compact JSON object (declaration order).
-def create_container_association_request_to_json(CreateContainerAssociationRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ContainerAssociationName\":" + network_firewall_json_str(v.ContainerAssociationName))
+# Serialize CreateContainerAssociationRequest to a CBOR map (member wire name -> value, model order).
+def create_container_association_request_to_cbor(CreateContainerAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ContainerAssociationName")
+    vals.append(cbor.cbor_text(v.ContainerAssociationName))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u0))
-    parts.append("\"Type\":" + v.Type.to_json())
-    list[str] e1 = []
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    list[cbor.CborValue] e1 = []
     for x1 in v.ContainerMonitoringConfigurations:
-        e1.append(container_monitoring_configuration_to_json(x1))
-    parts.append("\"ContainerMonitoringConfigurations\":" + network_firewall_json_arr(e1))
+        e1.append(container_monitoring_configuration_to_cbor(x1))
+    keys.append("ContainerMonitoringConfigurations")
+    vals.append(cbor.cbor_list(e1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateFirewallPolicyRequest to a compact JSON object (declaration order).
-def create_firewall_policy_request_to_json(CreateFirewallPolicyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FirewallPolicyName\":" + network_firewall_json_str(v.FirewallPolicyName))
-    parts.append("\"FirewallPolicy\":" + firewall_policy_to_json(v.FirewallPolicy))
+# Serialize CreateFirewallPolicyRequest to a CBOR map (member wire name -> value, model order).
+def create_firewall_policy_request_to_cbor(CreateFirewallPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallPolicyName")
+    vals.append(cbor.cbor_text(v.FirewallPolicyName))
+    keys.append("FirewallPolicy")
+    vals.append(firewall_policy_to_cbor(v.FirewallPolicy))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u0))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e2))
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
     if v.DryRun.is_some():
         auto u3 = v.DryRun.unwrap()
-        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u3)))
+        keys.append("DryRun")
+        vals.append(cbor.cbor_bool(u3))
     if v.EncryptionConfiguration.is_some():
         auto u4 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u4.to_json())
-    return network_firewall_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateFirewallRequest to a compact JSON object (declaration order).
-def create_firewall_request_to_json(CreateFirewallRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FirewallName\":" + network_firewall_json_str(v.FirewallName))
-    parts.append("\"FirewallPolicyArn\":" + network_firewall_json_str(v.FirewallPolicyArn))
+# Serialize CreateFirewallPolicyV2Request to a CBOR map (member wire name -> value, model order).
+def create_firewall_policy_v2_request_to_cbor(CreateFirewallPolicyV2Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallPolicyV2Name")
+    vals.append(cbor.cbor_text(v.FirewallPolicyV2Name))
+    keys.append("FirewallPolicyV2")
+    vals.append(firewall_policy_v2_to_cbor(v.FirewallPolicyV2))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        keys.append("DryRun")
+        vals.append(cbor.cbor_bool(u3))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateFirewallRequest to a CBOR map (member wire name -> value, model order).
+def create_firewall_request_to_cbor(CreateFirewallRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallName")
+    vals.append(cbor.cbor_text(v.FirewallName))
+    keys.append("FirewallPolicyArn")
+    vals.append(cbor.cbor_text(v.FirewallPolicyArn))
     if v.VpcId.is_some():
         auto u0 = v.VpcId.unwrap()
-        parts.append("\"VpcId\":" + network_firewall_json_str(u0))
+        keys.append("VpcId")
+        vals.append(cbor.cbor_text(u0))
     if v.SubnetMappings.is_some():
         auto u1 = v.SubnetMappings.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"SubnetMappings\":" + network_firewall_json_arr(e2))
+            e2.append(subnet_mapping_to_cbor(x2))
+        keys.append("SubnetMappings")
+        vals.append(cbor.cbor_list(e2))
     if v.DeleteProtection.is_some():
         auto u3 = v.DeleteProtection.unwrap()
-        parts.append("\"DeleteProtection\":" + json.dumps(JsonValue.Bool(u3)))
+        keys.append("DeleteProtection")
+        vals.append(cbor.cbor_bool(u3))
     if v.SubnetChangeProtection.is_some():
         auto u4 = v.SubnetChangeProtection.unwrap()
-        parts.append("\"SubnetChangeProtection\":" + json.dumps(JsonValue.Bool(u4)))
+        keys.append("SubnetChangeProtection")
+        vals.append(cbor.cbor_bool(u4))
     if v.FirewallPolicyChangeProtection.is_some():
         auto u5 = v.FirewallPolicyChangeProtection.unwrap()
-        parts.append("\"FirewallPolicyChangeProtection\":" + json.dumps(JsonValue.Bool(u5)))
+        keys.append("FirewallPolicyChangeProtection")
+        vals.append(cbor.cbor_bool(u5))
     if v.Description.is_some():
         auto u6 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u6))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u6))
     if v.Tags.is_some():
         auto u7 = v.Tags.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e8))
+            e8.append(tag_to_cbor(x8))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e8))
     if v.EncryptionConfiguration.is_some():
         auto u9 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u9.to_json())
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u9))
     if v.EnabledAnalysisTypes.is_some():
         auto u10 = v.EnabledAnalysisTypes.unwrap()
-        list[str] e11 = []
+        list[cbor.CborValue] e11 = []
         for x11 in u10:
-            e11.append(x11.to_json())
-        parts.append("\"EnabledAnalysisTypes\":" + network_firewall_json_arr(e11))
+            e11.append(cbor.cbor_text(x11))
+        keys.append("EnabledAnalysisTypes")
+        vals.append(cbor.cbor_list(e11))
     if v.TransitGatewayId.is_some():
         auto u12 = v.TransitGatewayId.unwrap()
-        parts.append("\"TransitGatewayId\":" + network_firewall_json_str(u12))
+        keys.append("TransitGatewayId")
+        vals.append(cbor.cbor_text(u12))
     if v.AvailabilityZoneMappings.is_some():
         auto u13 = v.AvailabilityZoneMappings.unwrap()
-        list[str] e14 = []
+        list[cbor.CborValue] e14 = []
         for x14 in u13:
-            e14.append(x14.to_json())
-        parts.append("\"AvailabilityZoneMappings\":" + network_firewall_json_arr(e14))
+            e14.append(availability_zone_mapping_to_cbor(x14))
+        keys.append("AvailabilityZoneMappings")
+        vals.append(cbor.cbor_list(e14))
     if v.AvailabilityZoneChangeProtection.is_some():
         auto u15 = v.AvailabilityZoneChangeProtection.unwrap()
-        parts.append("\"AvailabilityZoneChangeProtection\":" + json.dumps(JsonValue.Bool(u15)))
-    if v.NatGatewayMappings.is_some():
-        auto u16 = v.NatGatewayMappings.unwrap()
-        list[str] e17 = []
+        keys.append("AvailabilityZoneChangeProtection")
+        vals.append(cbor.cbor_bool(u15))
+    if v.NatGatewayCreateMappings.is_some():
+        auto u16 = v.NatGatewayCreateMappings.unwrap()
+        list[cbor.CborValue] e17 = []
         for x17 in u16:
-            e17.append(x17.to_json())
-        parts.append("\"NatGatewayMappings\":" + network_firewall_json_arr(e17))
+            e17.append(nat_gateway_create_mapping_to_cbor(x17))
+        keys.append("NatGatewayCreateMappings")
+        vals.append(cbor.cbor_list(e17))
     if v.ProxySettings.is_some():
         auto u18 = v.ProxySettings.unwrap()
-        parts.append("\"ProxySettings\":" + proxy_settings_to_json(u18))
-    if v.NoSourcePreservation.is_some():
-        auto u19 = v.NoSourcePreservation.unwrap()
-        parts.append("\"NoSourcePreservation\":" + json.dumps(JsonValue.Bool(u19)))
+        keys.append("ProxySettings")
+        vals.append(proxy_settings_to_cbor(u18))
     if v.VpcEndpoint.is_some():
-        auto u20 = v.VpcEndpoint.unwrap()
-        parts.append("\"VpcEndpoint\":" + vpc_endpoint_to_json(u20))
-    return network_firewall_json_obj(parts)
+        auto u19 = v.VpcEndpoint.unwrap()
+        keys.append("VpcEndpoint")
+        vals.append(vpc_endpoint_to_cbor(u19))
+    if v.TransparentFilteringNatScope.is_some():
+        auto u20 = v.TransparentFilteringNatScope.unwrap()
+        keys.append("TransparentFilteringNatScope")
+        vals.append(cbor.cbor_text(u20))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProxyConfigurationRequest to a compact JSON object (declaration order).
-def create_proxy_configuration_request_to_json(CreateProxyConfigurationRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(v.ProxyConfigurationName))
-    if v.Description.is_some():
-        auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u0))
-    if v.RuleGroupNames.is_some():
-        auto u1 = v.RuleGroupNames.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(network_firewall_json_str(x2))
-        parts.append("\"RuleGroupNames\":" + network_firewall_json_arr(e2))
-    if v.RuleGroupArns.is_some():
-        auto u3 = v.RuleGroupArns.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(network_firewall_json_str(x4))
-        parts.append("\"RuleGroupArns\":" + network_firewall_json_arr(e4))
-    parts.append("\"DefaultRulePhaseActions\":" + v.DefaultRulePhaseActions.to_json())
-    if v.Tags.is_some():
-        auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
-        for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e6))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateProxyRequest to a compact JSON object (declaration order).
-def create_proxy_request_to_json(CreateProxyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ProxyName\":" + network_firewall_json_str(v.ProxyName))
-    parts.append("\"NatGatewayId\":" + network_firewall_json_str(v.NatGatewayId))
-    if v.ProxyConfigurationName.is_some():
-        auto u0 = v.ProxyConfigurationName.unwrap()
-        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
-    if v.ProxyConfigurationArn.is_some():
-        auto u1 = v.ProxyConfigurationArn.unwrap()
-        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
-    if v.ListenerProperties.is_some():
-        auto u2 = v.ListenerProperties.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"ListenerProperties\":" + network_firewall_json_arr(e3))
-    parts.append("\"TlsInterceptProperties\":" + v.TlsInterceptProperties.to_json())
-    if v.Tags.is_some():
-        auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e5))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateProxyRule to a compact JSON object (declaration order).
-def create_proxy_rule_to_json(CreateProxyRule v) -> str:
-    list[str] parts = []
-    if v.ProxyRuleName.is_some():
-        auto u0 = v.ProxyRuleName.unwrap()
-        parts.append("\"ProxyRuleName\":" + network_firewall_json_str(u0))
-    if v.Description.is_some():
-        auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u1))
-    if v.Action.is_some():
-        auto u2 = v.Action.unwrap()
-        parts.append("\"Action\":" + u2.to_json())
-    if v.Conditions.is_some():
-        auto u3 = v.Conditions.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(proxy_rule_condition_to_json(x4))
-        parts.append("\"Conditions\":" + network_firewall_json_arr(e4))
-    if v.InsertPosition.is_some():
-        auto u5 = v.InsertPosition.unwrap()
-        parts.append("\"InsertPosition\":" + str(u5))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateProxyRuleGroupRequest to a compact JSON object (declaration order).
-def create_proxy_rule_group_request_to_json(CreateProxyRuleGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(v.ProxyRuleGroupName))
-    if v.Description.is_some():
-        auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u0))
-    if v.Rules.is_some():
-        auto u1 = v.Rules.unwrap()
-        parts.append("\"Rules\":" + proxy_rules_by_request_phase_to_json(u1))
-    if v.Tags.is_some():
-        auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateProxyRulesByRequestPhase to a compact JSON object (declaration order).
-def create_proxy_rules_by_request_phase_to_json(CreateProxyRulesByRequestPhase v) -> str:
-    list[str] parts = []
-    if v.PreDNS.is_some():
-        auto u0 = v.PreDNS.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(create_proxy_rule_to_json(x1))
-        parts.append("\"PreDNS\":" + network_firewall_json_arr(e1))
-    if v.PreREQUEST.is_some():
-        auto u2 = v.PreREQUEST.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(create_proxy_rule_to_json(x3))
-        parts.append("\"PreREQUEST\":" + network_firewall_json_arr(e3))
-    if v.PostRESPONSE.is_some():
-        auto u4 = v.PostRESPONSE.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(create_proxy_rule_to_json(x5))
-        parts.append("\"PostRESPONSE\":" + network_firewall_json_arr(e5))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateProxyRulesRequest to a compact JSON object (declaration order).
-def create_proxy_rules_request_to_json(CreateProxyRulesRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyRuleGroupArn.is_some():
-        auto u0 = v.ProxyRuleGroupArn.unwrap()
-        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u0))
-    if v.ProxyRuleGroupName.is_some():
-        auto u1 = v.ProxyRuleGroupName.unwrap()
-        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u1))
-    parts.append("\"Rules\":" + create_proxy_rules_by_request_phase_to_json(v.Rules))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateRuleGroupRequest to a compact JSON object (declaration order).
-def create_rule_group_request_to_json(CreateRuleGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"RuleGroupName\":" + network_firewall_json_str(v.RuleGroupName))
+# Serialize CreateRuleGroupRequest to a CBOR map (member wire name -> value, model order).
+def create_rule_group_request_to_cbor(CreateRuleGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RuleGroupName")
+    vals.append(cbor.cbor_text(v.RuleGroupName))
     if v.RuleGroup.is_some():
         auto u0 = v.RuleGroup.unwrap()
-        parts.append("\"RuleGroup\":" + rule_group_to_json(u0))
-    if v.Rules.is_some():
-        auto u1 = v.Rules.unwrap()
-        parts.append("\"Rules\":" + network_firewall_json_str(u1))
-    parts.append("\"Type\":" + v.Type.to_json())
-    if v.Description.is_some():
-        auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u2))
-    parts.append("\"Capacity\":" + str(v.Capacity))
-    if v.Tags.is_some():
-        auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e4))
-    if v.DryRun.is_some():
-        auto u5 = v.DryRun.unwrap()
-        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u5)))
-    if v.EncryptionConfiguration.is_some():
-        auto u6 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u6.to_json())
-    if v.SourceMetadata.is_some():
-        auto u7 = v.SourceMetadata.unwrap()
-        parts.append("\"SourceMetadata\":" + u7.to_json())
-    if v.AnalyzeRuleGroup.is_some():
-        auto u8 = v.AnalyzeRuleGroup.unwrap()
-        parts.append("\"AnalyzeRuleGroup\":" + json.dumps(JsonValue.Bool(u8)))
-    if v.SummaryConfiguration.is_some():
-        auto u9 = v.SummaryConfiguration.unwrap()
-        parts.append("\"SummaryConfiguration\":" + summary_configuration_to_json(u9))
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateTLSInspectionConfigurationRequest to a compact JSON object (declaration order).
-def create_tls_inspection_configuration_request_to_json(CreateTLSInspectionConfigurationRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"TLSInspectionConfigurationName\":" + network_firewall_json_str(v.TLSInspectionConfigurationName))
-    parts.append("\"TLSInspectionConfiguration\":" + tls_inspection_configuration_to_json(v.TLSInspectionConfiguration))
-    if v.Description.is_some():
-        auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u0))
-    if v.Tags.is_some():
-        auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e2))
-    if v.EncryptionConfiguration.is_some():
-        auto u3 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
-    return network_firewall_json_obj(parts)
-
-# Serialize CreateVpcEndpointAssociationRequest to a compact JSON object (declaration order).
-def create_vpc_endpoint_association_request_to_json(CreateVpcEndpointAssociationRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FirewallArn\":" + network_firewall_json_str(v.FirewallArn))
-    parts.append("\"VpcId\":" + network_firewall_json_str(v.VpcId))
-    parts.append("\"SubnetMapping\":" + v.SubnetMapping.to_json())
-    if v.Description.is_some():
-        auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u0))
-    if v.Tags.is_some():
-        auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e2))
-    return network_firewall_json_obj(parts)
-
-# Serialize CustomAction to a compact JSON object (declaration order).
-def custom_action_to_json(CustomAction v) -> str:
-    list[str] parts = []
-    parts.append("\"ActionName\":" + network_firewall_json_str(v.ActionName))
-    parts.append("\"ActionDefinition\":" + action_definition_to_json(v.ActionDefinition))
-    return network_firewall_json_obj(parts)
-
-# Serialize DeleteProxyRulesRequest to a compact JSON object (declaration order).
-def delete_proxy_rules_request_to_json(DeleteProxyRulesRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyRuleGroupArn.is_some():
-        auto u0 = v.ProxyRuleGroupArn.unwrap()
-        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u0))
-    if v.ProxyRuleGroupName.is_some():
-        auto u1 = v.ProxyRuleGroupName.unwrap()
-        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u1))
-    list[str] e2 = []
-    for x2 in v.Rules:
-        e2.append(network_firewall_json_str(x2))
-    parts.append("\"Rules\":" + network_firewall_json_arr(e2))
-    return network_firewall_json_obj(parts)
-
-# Serialize DetachRuleGroupsFromProxyConfigurationRequest to a compact JSON object (declaration order).
-def detach_rule_groups_from_proxy_configuration_request_to_json(DetachRuleGroupsFromProxyConfigurationRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyConfigurationName.is_some():
-        auto u0 = v.ProxyConfigurationName.unwrap()
-        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
-    if v.ProxyConfigurationArn.is_some():
-        auto u1 = v.ProxyConfigurationArn.unwrap()
-        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
-    if v.RuleGroupNames.is_some():
-        auto u2 = v.RuleGroupNames.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(network_firewall_json_str(x3))
-        parts.append("\"RuleGroupNames\":" + network_firewall_json_arr(e3))
-    if v.RuleGroupArns.is_some():
-        auto u4 = v.RuleGroupArns.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(network_firewall_json_str(x5))
-        parts.append("\"RuleGroupArns\":" + network_firewall_json_arr(e5))
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
-
-# Serialize DisassociateAvailabilityZonesRequest to a compact JSON object (declaration order).
-def disassociate_availability_zones_request_to_json(DisassociateAvailabilityZonesRequest v) -> str:
-    list[str] parts = []
-    if v.UpdateToken.is_some():
-        auto u0 = v.UpdateToken.unwrap()
-        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
-    if v.FirewallArn.is_some():
-        auto u1 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
-    if v.FirewallName.is_some():
-        auto u2 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
-    list[str] e3 = []
-    for x3 in v.AvailabilityZoneMappings:
-        e3.append(x3.to_json())
-    parts.append("\"AvailabilityZoneMappings\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
-
-# Serialize DisassociateSubnetsRequest to a compact JSON object (declaration order).
-def disassociate_subnets_request_to_json(DisassociateSubnetsRequest v) -> str:
-    list[str] parts = []
-    if v.UpdateToken.is_some():
-        auto u0 = v.UpdateToken.unwrap()
-        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
-    if v.FirewallArn.is_some():
-        auto u1 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
-    if v.FirewallName.is_some():
-        auto u2 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
-    list[str] e3 = []
-    for x3 in v.SubnetIds:
-        e3.append(network_firewall_json_str(x3))
-    parts.append("\"SubnetIds\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
-
-# Serialize FirewallPolicy to a compact JSON object (declaration order).
-def firewall_policy_to_json(FirewallPolicy v) -> str:
-    list[str] parts = []
-    if v.StatelessRuleGroupReferences.is_some():
-        auto u0 = v.StatelessRuleGroupReferences.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"StatelessRuleGroupReferences\":" + network_firewall_json_arr(e1))
-    list[str] e2 = []
-    for x2 in v.StatelessDefaultActions:
-        e2.append(network_firewall_json_str(x2))
-    parts.append("\"StatelessDefaultActions\":" + network_firewall_json_arr(e2))
-    list[str] e3 = []
-    for x3 in v.StatelessFragmentDefaultActions:
-        e3.append(network_firewall_json_str(x3))
-    parts.append("\"StatelessFragmentDefaultActions\":" + network_firewall_json_arr(e3))
-    if v.StatelessCustomActions.is_some():
-        auto u4 = v.StatelessCustomActions.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(custom_action_to_json(x5))
-        parts.append("\"StatelessCustomActions\":" + network_firewall_json_arr(e5))
-    if v.StatefulRuleGroupReferences.is_some():
-        auto u6 = v.StatefulRuleGroupReferences.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"StatefulRuleGroupReferences\":" + network_firewall_json_arr(e7))
-    if v.StatefulDefaultActions.is_some():
-        auto u8 = v.StatefulDefaultActions.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(network_firewall_json_str(x9))
-        parts.append("\"StatefulDefaultActions\":" + network_firewall_json_arr(e9))
-    if v.StatefulEngineOptions.is_some():
-        auto u10 = v.StatefulEngineOptions.unwrap()
-        parts.append("\"StatefulEngineOptions\":" + u10.to_json())
-    if v.TLSInspectionConfigurationArn.is_some():
-        auto u11 = v.TLSInspectionConfigurationArn.unwrap()
-        parts.append("\"TLSInspectionConfigurationArn\":" + network_firewall_json_str(u11))
-    if v.PolicyVariables.is_some():
-        auto u12 = v.PolicyVariables.unwrap()
-        parts.append("\"PolicyVariables\":" + policy_variables_to_json(u12))
-    if v.EnableTLSSessionHolding.is_some():
-        auto u13 = v.EnableTLSSessionHolding.unwrap()
-        parts.append("\"EnableTLSSessionHolding\":" + json.dumps(JsonValue.Bool(u13)))
-    if v.Route53ResolvedIPValidation.is_some():
-        auto u14 = v.Route53ResolvedIPValidation.unwrap()
-        parts.append("\"Route53ResolvedIPValidation\":" + route53_resolved_ip_validation_to_json(u14))
-    return network_firewall_json_obj(parts)
-
-# Serialize FlowFilter to a compact JSON object (declaration order).
-def flow_filter_to_json(FlowFilter v) -> str:
-    list[str] parts = []
-    if v.SourceAddress.is_some():
-        auto u0 = v.SourceAddress.unwrap()
-        parts.append("\"SourceAddress\":" + u0.to_json())
-    if v.DestinationAddress.is_some():
-        auto u1 = v.DestinationAddress.unwrap()
-        parts.append("\"DestinationAddress\":" + u1.to_json())
-    if v.SourcePort.is_some():
-        auto u2 = v.SourcePort.unwrap()
-        parts.append("\"SourcePort\":" + network_firewall_json_str(u2))
-    if v.DestinationPort.is_some():
-        auto u3 = v.DestinationPort.unwrap()
-        parts.append("\"DestinationPort\":" + network_firewall_json_str(u3))
-    if v.Protocols.is_some():
-        auto u4 = v.Protocols.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(network_firewall_json_str(x5))
-        parts.append("\"Protocols\":" + network_firewall_json_arr(e5))
-    return network_firewall_json_obj(parts)
-
-# Serialize IPSet to a compact JSON object (declaration order).
-def ip_set_to_json(IPSet v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.Definition:
-        e0.append(network_firewall_json_str(x0))
-    parts.append("\"Definition\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize ListFirewallsRequest to a compact JSON object (declaration order).
-def list_firewalls_request_to_json(ListFirewallsRequest v) -> str:
-    list[str] parts = []
-    if v.NextToken.is_some():
-        auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + network_firewall_json_str(u0))
-    if v.VpcIds.is_some():
-        auto u1 = v.VpcIds.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(network_firewall_json_str(x2))
-        parts.append("\"VpcIds\":" + network_firewall_json_arr(e2))
-    if v.MaxResults.is_some():
-        auto u3 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u3))
-    return network_firewall_json_obj(parts)
-
-# Serialize LogDestinationConfig to a compact JSON object (declaration order).
-def log_destination_config_to_json(LogDestinationConfig v) -> str:
-    list[str] parts = []
-    parts.append("\"LogType\":" + v.LogType.to_json())
-    parts.append("\"LogDestinationType\":" + v.LogDestinationType.to_json())
-    list[str] m0 = []
-    for k0 in sorted(v.LogDestination.keys()):
-        m0.append(network_firewall_json_str(k0) + ":" + network_firewall_json_str(v.LogDestination[k0]))
-    parts.append("\"LogDestination\":" + network_firewall_json_obj(m0))
-    return network_firewall_json_obj(parts)
-
-# Serialize LoggingConfiguration to a compact JSON object (declaration order).
-def logging_configuration_to_json(LoggingConfiguration v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.LogDestinationConfigs:
-        e0.append(log_destination_config_to_json(x0))
-    parts.append("\"LogDestinationConfigs\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize MatchAttributes to a compact JSON object (declaration order).
-def match_attributes_to_json(MatchAttributes v) -> str:
-    list[str] parts = []
-    if v.Sources.is_some():
-        auto u0 = v.Sources.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Sources\":" + network_firewall_json_arr(e1))
-    if v.Destinations.is_some():
-        auto u2 = v.Destinations.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Destinations\":" + network_firewall_json_arr(e3))
-    if v.SourcePorts.is_some():
-        auto u4 = v.SourcePorts.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"SourcePorts\":" + network_firewall_json_arr(e5))
-    if v.DestinationPorts.is_some():
-        auto u6 = v.DestinationPorts.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"DestinationPorts\":" + network_firewall_json_arr(e7))
-    if v.Protocols.is_some():
-        auto u8 = v.Protocols.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(str(x9))
-        parts.append("\"Protocols\":" + network_firewall_json_arr(e9))
-    if v.TCPFlags.is_some():
-        auto u10 = v.TCPFlags.unwrap()
-        list[str] e11 = []
-        for x11 in u10:
-            e11.append(tcp_flag_field_to_json(x11))
-        parts.append("\"TCPFlags\":" + network_firewall_json_arr(e11))
-    return network_firewall_json_obj(parts)
-
-# Serialize PolicyVariables to a compact JSON object (declaration order).
-def policy_variables_to_json(PolicyVariables v) -> str:
-    list[str] parts = []
-    if v.RuleVariables.is_some():
-        auto u0 = v.RuleVariables.unwrap()
-        list[str] m1 = []
-        for k1 in sorted(u0.keys()):
-            m1.append(network_firewall_json_str(k1) + ":" + ip_set_to_json(u0[k1]))
-        parts.append("\"RuleVariables\":" + network_firewall_json_obj(m1))
-    return network_firewall_json_obj(parts)
-
-# Serialize PortSet to a compact JSON object (declaration order).
-def port_set_to_json(PortSet v) -> str:
-    list[str] parts = []
-    if v.Definition.is_some():
-        auto u0 = v.Definition.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(network_firewall_json_str(x1))
-        parts.append("\"Definition\":" + network_firewall_json_arr(e1))
-    return network_firewall_json_obj(parts)
-
-# Serialize ProxyRule to a compact JSON object (declaration order).
-def proxy_rule_to_json(ProxyRule v) -> str:
-    list[str] parts = []
-    if v.ProxyRuleName.is_some():
-        auto u0 = v.ProxyRuleName.unwrap()
-        parts.append("\"ProxyRuleName\":" + network_firewall_json_str(u0))
-    if v.Description.is_some():
-        auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u1))
-    if v.Action.is_some():
-        auto u2 = v.Action.unwrap()
-        parts.append("\"Action\":" + u2.to_json())
-    if v.Conditions.is_some():
-        auto u3 = v.Conditions.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(proxy_rule_condition_to_json(x4))
-        parts.append("\"Conditions\":" + network_firewall_json_arr(e4))
-    return network_firewall_json_obj(parts)
-
-# Serialize ProxyRuleCondition to a compact JSON object (declaration order).
-def proxy_rule_condition_to_json(ProxyRuleCondition v) -> str:
-    list[str] parts = []
-    if v.ConditionOperator.is_some():
-        auto u0 = v.ConditionOperator.unwrap()
-        parts.append("\"ConditionOperator\":" + network_firewall_json_str(u0))
-    if v.ConditionKey.is_some():
-        auto u1 = v.ConditionKey.unwrap()
-        parts.append("\"ConditionKey\":" + network_firewall_json_str(u1))
-    if v.ConditionValues.is_some():
-        auto u2 = v.ConditionValues.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(network_firewall_json_str(x3))
-        parts.append("\"ConditionValues\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
-
-# Serialize ProxyRulesByRequestPhase to a compact JSON object (declaration order).
-def proxy_rules_by_request_phase_to_json(ProxyRulesByRequestPhase v) -> str:
-    list[str] parts = []
-    if v.PreDNS.is_some():
-        auto u0 = v.PreDNS.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(proxy_rule_to_json(x1))
-        parts.append("\"PreDNS\":" + network_firewall_json_arr(e1))
-    if v.PreREQUEST.is_some():
-        auto u2 = v.PreREQUEST.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(proxy_rule_to_json(x3))
-        parts.append("\"PreREQUEST\":" + network_firewall_json_arr(e3))
-    if v.PostRESPONSE.is_some():
-        auto u4 = v.PostRESPONSE.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(proxy_rule_to_json(x5))
-        parts.append("\"PostRESPONSE\":" + network_firewall_json_arr(e5))
-    return network_firewall_json_obj(parts)
-
-# Serialize ProxySettings to a compact JSON object (declaration order).
-def proxy_settings_to_json(ProxySettings v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.ListenerProperties:
-        e0.append(x0.to_json())
-    parts.append("\"ListenerProperties\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize PublishMetricAction to a compact JSON object (declaration order).
-def publish_metric_action_to_json(PublishMetricAction v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.Dimensions:
-        e0.append(x0.to_json())
-    parts.append("\"Dimensions\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize ReferenceSets to a compact JSON object (declaration order).
-def reference_sets_to_json(ReferenceSets v) -> str:
-    list[str] parts = []
-    if v.IPSetReferences.is_some():
-        auto u0 = v.IPSetReferences.unwrap()
-        list[str] m1 = []
-        for k1 in sorted(u0.keys()):
-            m1.append(network_firewall_json_str(k1) + ":" + u0[k1].to_json())
-        parts.append("\"IPSetReferences\":" + network_firewall_json_obj(m1))
-    return network_firewall_json_obj(parts)
-
-# Serialize Route53ResolvedIPValidation to a compact JSON object (declaration order).
-def route53_resolved_ip_validation_to_json(Route53ResolvedIPValidation v) -> str:
-    list[str] parts = []
-    parts.append("\"Action\":" + v.Action.to_json())
-    parts.append("\"DNSFirewallRuleGroupId\":" + network_firewall_json_str(v.DNSFirewallRuleGroupId))
-    parts.append("\"DNSExpiryExceptionPolicy\":" + v.DNSExpiryExceptionPolicy.to_json())
-    if v.BypassDestinationValidationIPRanges.is_some():
-        auto u0 = v.BypassDestinationValidationIPRanges.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"BypassDestinationValidationIPRanges\":" + network_firewall_json_arr(e1))
-    if v.SourceIPRanges.is_some():
-        auto u2 = v.SourceIPRanges.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"SourceIPRanges\":" + network_firewall_json_arr(e3))
-    return network_firewall_json_obj(parts)
-
-# Serialize RuleDefinition to a compact JSON object (declaration order).
-def rule_definition_to_json(RuleDefinition v) -> str:
-    list[str] parts = []
-    parts.append("\"MatchAttributes\":" + match_attributes_to_json(v.MatchAttributes))
-    list[str] e0 = []
-    for x0 in v.Actions:
-        e0.append(network_firewall_json_str(x0))
-    parts.append("\"Actions\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize RuleGroup to a compact JSON object (declaration order).
-def rule_group_to_json(RuleGroup v) -> str:
-    list[str] parts = []
-    if v.RuleVariables.is_some():
-        auto u0 = v.RuleVariables.unwrap()
-        parts.append("\"RuleVariables\":" + rule_variables_to_json(u0))
-    if v.ReferenceSets.is_some():
-        auto u1 = v.ReferenceSets.unwrap()
-        parts.append("\"ReferenceSets\":" + reference_sets_to_json(u1))
-    parts.append("\"RulesSource\":" + rules_source_to_json(v.RulesSource))
-    if v.StatefulRuleOptions.is_some():
-        auto u2 = v.StatefulRuleOptions.unwrap()
-        parts.append("\"StatefulRuleOptions\":" + u2.to_json())
-    return network_firewall_json_obj(parts)
-
-# Serialize RuleOption to a compact JSON object (declaration order).
-def rule_option_to_json(RuleOption v) -> str:
-    list[str] parts = []
-    parts.append("\"Keyword\":" + network_firewall_json_str(v.Keyword))
-    if v.Settings.is_some():
-        auto u0 = v.Settings.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(network_firewall_json_str(x1))
-        parts.append("\"Settings\":" + network_firewall_json_arr(e1))
-    return network_firewall_json_obj(parts)
-
-# Serialize RuleVariables to a compact JSON object (declaration order).
-def rule_variables_to_json(RuleVariables v) -> str:
-    list[str] parts = []
-    if v.IPSets.is_some():
-        auto u0 = v.IPSets.unwrap()
-        list[str] m1 = []
-        for k1 in sorted(u0.keys()):
-            m1.append(network_firewall_json_str(k1) + ":" + ip_set_to_json(u0[k1]))
-        parts.append("\"IPSets\":" + network_firewall_json_obj(m1))
-    if v.PortSets.is_some():
-        auto u2 = v.PortSets.unwrap()
-        list[str] m3 = []
-        for k3 in sorted(u2.keys()):
-            m3.append(network_firewall_json_str(k3) + ":" + port_set_to_json(u2[k3]))
-        parts.append("\"PortSets\":" + network_firewall_json_obj(m3))
-    return network_firewall_json_obj(parts)
-
-# Serialize RulesSource to a compact JSON object (declaration order).
-def rules_source_to_json(RulesSource v) -> str:
-    list[str] parts = []
-    if v.RulesString.is_some():
-        auto u0 = v.RulesString.unwrap()
-        parts.append("\"RulesString\":" + network_firewall_json_str(u0))
-    if v.RulesSourceList.is_some():
-        auto u1 = v.RulesSourceList.unwrap()
-        parts.append("\"RulesSourceList\":" + rules_source_list_to_json(u1))
-    if v.StatefulRules.is_some():
-        auto u2 = v.StatefulRules.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(stateful_rule_to_json(x3))
-        parts.append("\"StatefulRules\":" + network_firewall_json_arr(e3))
-    if v.StatelessRulesAndCustomActions.is_some():
-        auto u4 = v.StatelessRulesAndCustomActions.unwrap()
-        parts.append("\"StatelessRulesAndCustomActions\":" + stateless_rules_and_custom_actions_to_json(u4))
-    return network_firewall_json_obj(parts)
-
-# Serialize RulesSourceList to a compact JSON object (declaration order).
-def rules_source_list_to_json(RulesSourceList v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.Targets:
-        e0.append(network_firewall_json_str(x0))
-    parts.append("\"Targets\":" + network_firewall_json_arr(e0))
-    list[str] e1 = []
-    for x1 in v.TargetTypes:
-        e1.append(x1.to_json())
-    parts.append("\"TargetTypes\":" + network_firewall_json_arr(e1))
-    parts.append("\"GeneratedRulesType\":" + v.GeneratedRulesType.to_json())
-    return network_firewall_json_obj(parts)
-
-# Serialize ServerCertificateConfiguration to a compact JSON object (declaration order).
-def server_certificate_configuration_to_json(ServerCertificateConfiguration v) -> str:
-    list[str] parts = []
-    if v.ServerCertificates.is_some():
-        auto u0 = v.ServerCertificates.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"ServerCertificates\":" + network_firewall_json_arr(e1))
-    if v.Scopes.is_some():
-        auto u2 = v.Scopes.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(server_certificate_scope_to_json(x3))
-        parts.append("\"Scopes\":" + network_firewall_json_arr(e3))
-    if v.CertificateAuthorityArn.is_some():
-        auto u4 = v.CertificateAuthorityArn.unwrap()
-        parts.append("\"CertificateAuthorityArn\":" + network_firewall_json_str(u4))
-    if v.CheckCertificateRevocationStatus.is_some():
-        auto u5 = v.CheckCertificateRevocationStatus.unwrap()
-        parts.append("\"CheckCertificateRevocationStatus\":" + u5.to_json())
-    return network_firewall_json_obj(parts)
-
-# Serialize ServerCertificateScope to a compact JSON object (declaration order).
-def server_certificate_scope_to_json(ServerCertificateScope v) -> str:
-    list[str] parts = []
-    if v.Sources.is_some():
-        auto u0 = v.Sources.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Sources\":" + network_firewall_json_arr(e1))
-    if v.Destinations.is_some():
-        auto u2 = v.Destinations.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Destinations\":" + network_firewall_json_arr(e3))
-    if v.SourcePorts.is_some():
-        auto u4 = v.SourcePorts.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"SourcePorts\":" + network_firewall_json_arr(e5))
-    if v.DestinationPorts.is_some():
-        auto u6 = v.DestinationPorts.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"DestinationPorts\":" + network_firewall_json_arr(e7))
-    if v.Protocols.is_some():
-        auto u8 = v.Protocols.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(str(x9))
-        parts.append("\"Protocols\":" + network_firewall_json_arr(e9))
-    return network_firewall_json_obj(parts)
-
-# Serialize StartFlowCaptureRequest to a compact JSON object (declaration order).
-def start_flow_capture_request_to_json(StartFlowCaptureRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FirewallArn\":" + network_firewall_json_str(v.FirewallArn))
-    if v.AvailabilityZone.is_some():
-        auto u0 = v.AvailabilityZone.unwrap()
-        parts.append("\"AvailabilityZone\":" + network_firewall_json_str(u0))
-    if v.AvailabilityZoneId.is_some():
-        auto u1 = v.AvailabilityZoneId.unwrap()
-        parts.append("\"AvailabilityZoneId\":" + network_firewall_json_str(u1))
-    if v.VpcEndpointAssociationArn.is_some():
-        auto u2 = v.VpcEndpointAssociationArn.unwrap()
-        parts.append("\"VpcEndpointAssociationArn\":" + network_firewall_json_str(u2))
-    if v.VpcEndpointId.is_some():
-        auto u3 = v.VpcEndpointId.unwrap()
-        parts.append("\"VpcEndpointId\":" + network_firewall_json_str(u3))
-    if v.MinimumFlowAgeInSeconds.is_some():
-        auto u4 = v.MinimumFlowAgeInSeconds.unwrap()
-        parts.append("\"MinimumFlowAgeInSeconds\":" + str(u4))
-    list[str] e5 = []
-    for x5 in v.FlowFilters:
-        e5.append(flow_filter_to_json(x5))
-    parts.append("\"FlowFilters\":" + network_firewall_json_arr(e5))
-    return network_firewall_json_obj(parts)
-
-# Serialize StartFlowFlushRequest to a compact JSON object (declaration order).
-def start_flow_flush_request_to_json(StartFlowFlushRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FirewallArn\":" + network_firewall_json_str(v.FirewallArn))
-    if v.AvailabilityZone.is_some():
-        auto u0 = v.AvailabilityZone.unwrap()
-        parts.append("\"AvailabilityZone\":" + network_firewall_json_str(u0))
-    if v.AvailabilityZoneId.is_some():
-        auto u1 = v.AvailabilityZoneId.unwrap()
-        parts.append("\"AvailabilityZoneId\":" + network_firewall_json_str(u1))
-    if v.VpcEndpointAssociationArn.is_some():
-        auto u2 = v.VpcEndpointAssociationArn.unwrap()
-        parts.append("\"VpcEndpointAssociationArn\":" + network_firewall_json_str(u2))
-    if v.VpcEndpointId.is_some():
-        auto u3 = v.VpcEndpointId.unwrap()
-        parts.append("\"VpcEndpointId\":" + network_firewall_json_str(u3))
-    if v.MinimumFlowAgeInSeconds.is_some():
-        auto u4 = v.MinimumFlowAgeInSeconds.unwrap()
-        parts.append("\"MinimumFlowAgeInSeconds\":" + str(u4))
-    list[str] e5 = []
-    for x5 in v.FlowFilters:
-        e5.append(flow_filter_to_json(x5))
-    parts.append("\"FlowFilters\":" + network_firewall_json_arr(e5))
-    return network_firewall_json_obj(parts)
-
-# Serialize StatefulRule to a compact JSON object (declaration order).
-def stateful_rule_to_json(StatefulRule v) -> str:
-    list[str] parts = []
-    parts.append("\"Action\":" + v.Action.to_json())
-    parts.append("\"Header\":" + v.Header.to_json())
-    list[str] e0 = []
-    for x0 in v.RuleOptions:
-        e0.append(rule_option_to_json(x0))
-    parts.append("\"RuleOptions\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize StatelessRule to a compact JSON object (declaration order).
-def stateless_rule_to_json(StatelessRule v) -> str:
-    list[str] parts = []
-    parts.append("\"RuleDefinition\":" + rule_definition_to_json(v.RuleDefinition))
-    parts.append("\"Priority\":" + str(v.Priority))
-    return network_firewall_json_obj(parts)
-
-# Serialize StatelessRulesAndCustomActions to a compact JSON object (declaration order).
-def stateless_rules_and_custom_actions_to_json(StatelessRulesAndCustomActions v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.StatelessRules:
-        e0.append(stateless_rule_to_json(x0))
-    parts.append("\"StatelessRules\":" + network_firewall_json_arr(e0))
-    if v.CustomActions.is_some():
-        auto u1 = v.CustomActions.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(custom_action_to_json(x2))
-        parts.append("\"CustomActions\":" + network_firewall_json_arr(e2))
-    return network_firewall_json_obj(parts)
-
-# Serialize SummaryConfiguration to a compact JSON object (declaration order).
-def summary_configuration_to_json(SummaryConfiguration v) -> str:
-    list[str] parts = []
-    if v.RuleOptions.is_some():
-        auto u0 = v.RuleOptions.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"RuleOptions\":" + network_firewall_json_arr(e1))
-    return network_firewall_json_obj(parts)
-
-# Serialize TCPFlagField to a compact JSON object (declaration order).
-def tcp_flag_field_to_json(TCPFlagField v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.Flags:
-        e0.append(x0.to_json())
-    parts.append("\"Flags\":" + network_firewall_json_arr(e0))
-    if v.Masks.is_some():
-        auto u1 = v.Masks.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Masks\":" + network_firewall_json_arr(e2))
-    return network_firewall_json_obj(parts)
-
-# Serialize TLSInspectionConfiguration to a compact JSON object (declaration order).
-def tls_inspection_configuration_to_json(TLSInspectionConfiguration v) -> str:
-    list[str] parts = []
-    if v.ServerCertificateConfigurations.is_some():
-        auto u0 = v.ServerCertificateConfigurations.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(server_certificate_configuration_to_json(x1))
-        parts.append("\"ServerCertificateConfigurations\":" + network_firewall_json_arr(e1))
-    return network_firewall_json_obj(parts)
-
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + network_firewall_json_str(v.ResourceArn))
-    list[str] e0 = []
-    for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + network_firewall_json_str(v.ResourceArn))
-    list[str] e0 = []
-    for x0 in v.TagKeys:
-        e0.append(network_firewall_json_str(x0))
-    parts.append("\"TagKeys\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateContainerAssociationRequest to a compact JSON object (declaration order).
-def update_container_association_request_to_json(UpdateContainerAssociationRequest v) -> str:
-    list[str] parts = []
-    if v.ContainerAssociationName.is_some():
-        auto u0 = v.ContainerAssociationName.unwrap()
-        parts.append("\"ContainerAssociationName\":" + network_firewall_json_str(u0))
-    if v.ContainerAssociationArn.is_some():
-        auto u1 = v.ContainerAssociationArn.unwrap()
-        parts.append("\"ContainerAssociationArn\":" + network_firewall_json_str(u1))
-    if v.Description.is_some():
-        auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u2))
-    parts.append("\"Type\":" + v.Type.to_json())
-    list[str] e3 = []
-    for x3 in v.ContainerMonitoringConfigurations:
-        e3.append(container_monitoring_configuration_to_json(x3))
-    parts.append("\"ContainerMonitoringConfigurations\":" + network_firewall_json_arr(e3))
-    if v.Tags.is_some():
-        auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + network_firewall_json_arr(e5))
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateFirewallAnalysisSettingsRequest to a compact JSON object (declaration order).
-def update_firewall_analysis_settings_request_to_json(UpdateFirewallAnalysisSettingsRequest v) -> str:
-    list[str] parts = []
-    if v.EnabledAnalysisTypes.is_some():
-        auto u0 = v.EnabledAnalysisTypes.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"EnabledAnalysisTypes\":" + network_firewall_json_arr(e1))
-    if v.FirewallArn.is_some():
-        auto u2 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u2))
-    if v.FirewallName.is_some():
-        auto u3 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u3))
-    if v.UpdateToken.is_some():
-        auto u4 = v.UpdateToken.unwrap()
-        parts.append("\"UpdateToken\":" + network_firewall_json_str(u4))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateFirewallPolicyRequest to a compact JSON object (declaration order).
-def update_firewall_policy_request_to_json(UpdateFirewallPolicyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    if v.FirewallPolicyArn.is_some():
-        auto u0 = v.FirewallPolicyArn.unwrap()
-        parts.append("\"FirewallPolicyArn\":" + network_firewall_json_str(u0))
-    if v.FirewallPolicyName.is_some():
-        auto u1 = v.FirewallPolicyName.unwrap()
-        parts.append("\"FirewallPolicyName\":" + network_firewall_json_str(u1))
-    parts.append("\"FirewallPolicy\":" + firewall_policy_to_json(v.FirewallPolicy))
-    if v.Description.is_some():
-        auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u2))
-    if v.DryRun.is_some():
-        auto u3 = v.DryRun.unwrap()
-        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u3)))
-    if v.EncryptionConfiguration.is_some():
-        auto u4 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u4.to_json())
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateLoggingConfigurationRequest to a compact JSON object (declaration order).
-def update_logging_configuration_request_to_json(UpdateLoggingConfigurationRequest v) -> str:
-    list[str] parts = []
-    if v.FirewallArn.is_some():
-        auto u0 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u0))
-    if v.FirewallName.is_some():
-        auto u1 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u1))
-    if v.LoggingConfiguration.is_some():
-        auto u2 = v.LoggingConfiguration.unwrap()
-        parts.append("\"LoggingConfiguration\":" + logging_configuration_to_json(u2))
-    if v.EnableMonitoringDashboard.is_some():
-        auto u3 = v.EnableMonitoringDashboard.unwrap()
-        parts.append("\"EnableMonitoringDashboard\":" + json.dumps(JsonValue.Bool(u3)))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateProxyRequest to a compact JSON object (declaration order).
-def update_proxy_request_to_json(UpdateProxyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"NatGatewayId\":" + network_firewall_json_str(v.NatGatewayId))
-    if v.ProxyName.is_some():
-        auto u0 = v.ProxyName.unwrap()
-        parts.append("\"ProxyName\":" + network_firewall_json_str(u0))
-    if v.ProxyArn.is_some():
-        auto u1 = v.ProxyArn.unwrap()
-        parts.append("\"ProxyArn\":" + network_firewall_json_str(u1))
-    if v.ListenerPropertiesToAdd.is_some():
-        auto u2 = v.ListenerPropertiesToAdd.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"ListenerPropertiesToAdd\":" + network_firewall_json_arr(e3))
-    if v.ListenerPropertiesToRemove.is_some():
-        auto u4 = v.ListenerPropertiesToRemove.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"ListenerPropertiesToRemove\":" + network_firewall_json_arr(e5))
-    if v.TlsInterceptProperties.is_some():
-        auto u6 = v.TlsInterceptProperties.unwrap()
-        parts.append("\"TlsInterceptProperties\":" + u6.to_json())
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateProxyRuleGroupPrioritiesRequest to a compact JSON object (declaration order).
-def update_proxy_rule_group_priorities_request_to_json(UpdateProxyRuleGroupPrioritiesRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyConfigurationName.is_some():
-        auto u0 = v.ProxyConfigurationName.unwrap()
-        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
-    if v.ProxyConfigurationArn.is_some():
-        auto u1 = v.ProxyConfigurationArn.unwrap()
-        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
-    list[str] e2 = []
-    for x2 in v.RuleGroups:
-        e2.append(x2.to_json())
-    parts.append("\"RuleGroups\":" + network_firewall_json_arr(e2))
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateProxyRulePrioritiesRequest to a compact JSON object (declaration order).
-def update_proxy_rule_priorities_request_to_json(UpdateProxyRulePrioritiesRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyRuleGroupName.is_some():
-        auto u0 = v.ProxyRuleGroupName.unwrap()
-        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u0))
-    if v.ProxyRuleGroupArn.is_some():
-        auto u1 = v.ProxyRuleGroupArn.unwrap()
-        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u1))
-    parts.append("\"RuleGroupRequestPhase\":" + v.RuleGroupRequestPhase.to_json())
-    list[str] e2 = []
-    for x2 in v.Rules:
-        e2.append(x2.to_json())
-    parts.append("\"Rules\":" + network_firewall_json_arr(e2))
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateProxyRuleRequest to a compact JSON object (declaration order).
-def update_proxy_rule_request_to_json(UpdateProxyRuleRequest v) -> str:
-    list[str] parts = []
-    if v.ProxyRuleGroupName.is_some():
-        auto u0 = v.ProxyRuleGroupName.unwrap()
-        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u0))
-    if v.ProxyRuleGroupArn.is_some():
-        auto u1 = v.ProxyRuleGroupArn.unwrap()
-        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u1))
-    parts.append("\"ProxyRuleName\":" + network_firewall_json_str(v.ProxyRuleName))
-    if v.Description.is_some():
-        auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u2))
-    if v.Action.is_some():
-        auto u3 = v.Action.unwrap()
-        parts.append("\"Action\":" + u3.to_json())
-    if v.AddConditions.is_some():
-        auto u4 = v.AddConditions.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(proxy_rule_condition_to_json(x5))
-        parts.append("\"AddConditions\":" + network_firewall_json_arr(e5))
-    if v.RemoveConditions.is_some():
-        auto u6 = v.RemoveConditions.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(proxy_rule_condition_to_json(x7))
-        parts.append("\"RemoveConditions\":" + network_firewall_json_arr(e7))
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateProxySettingsRequest to a compact JSON object (declaration order).
-def update_proxy_settings_request_to_json(UpdateProxySettingsRequest v) -> str:
-    list[str] parts = []
-    if v.FirewallArn.is_some():
-        auto u0 = v.FirewallArn.unwrap()
-        parts.append("\"FirewallArn\":" + network_firewall_json_str(u0))
-    if v.FirewallName.is_some():
-        auto u1 = v.FirewallName.unwrap()
-        parts.append("\"FirewallName\":" + network_firewall_json_str(u1))
-    if v.UpdateToken.is_some():
-        auto u2 = v.UpdateToken.unwrap()
-        parts.append("\"UpdateToken\":" + network_firewall_json_str(u2))
-    if v.ProxySettings.is_some():
-        auto u3 = v.ProxySettings.unwrap()
-        parts.append("\"ProxySettings\":" + proxy_settings_to_json(u3))
-    return network_firewall_json_obj(parts)
-
-# Serialize UpdateRuleGroupRequest to a compact JSON object (declaration order).
-def update_rule_group_request_to_json(UpdateRuleGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    if v.RuleGroupArn.is_some():
-        auto u0 = v.RuleGroupArn.unwrap()
-        parts.append("\"RuleGroupArn\":" + network_firewall_json_str(u0))
-    if v.RuleGroupName.is_some():
-        auto u1 = v.RuleGroupName.unwrap()
-        parts.append("\"RuleGroupName\":" + network_firewall_json_str(u1))
-    if v.RuleGroup.is_some():
-        auto u2 = v.RuleGroup.unwrap()
-        parts.append("\"RuleGroup\":" + rule_group_to_json(u2))
+        keys.append("RuleGroup")
+        vals.append(rule_group_to_cbor(u0))
+    if v.FirewallRuleGroup.is_some():
+        auto u1 = v.FirewallRuleGroup.unwrap()
+        keys.append("FirewallRuleGroup")
+        vals.append(firewall_rule_group_to_cbor(u1))
+    if v.IpsRuleGroup.is_some():
+        auto u2 = v.IpsRuleGroup.unwrap()
+        keys.append("IpsRuleGroup")
+        vals.append(ips_rule_group_to_cbor(u2))
     if v.Rules.is_some():
         auto u3 = v.Rules.unwrap()
-        parts.append("\"Rules\":" + network_firewall_json_str(u3))
-    if v.Type.is_some():
-        auto u4 = v.Type.unwrap()
-        parts.append("\"Type\":" + u4.to_json())
+        keys.append("Rules")
+        vals.append(cbor.cbor_text(u3))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
     if v.Description.is_some():
-        auto u5 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u5))
+        auto u4 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u4))
+    keys.append("Capacity")
+    vals.append(cbor.cbor_int(v.Capacity))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[cbor.CborValue] e6 = []
+        for x6 in u5:
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
     if v.DryRun.is_some():
-        auto u6 = v.DryRun.unwrap()
-        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u6)))
+        auto u7 = v.DryRun.unwrap()
+        keys.append("DryRun")
+        vals.append(cbor.cbor_bool(u7))
     if v.EncryptionConfiguration.is_some():
-        auto u7 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u7.to_json())
+        auto u8 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u8))
     if v.SourceMetadata.is_some():
-        auto u8 = v.SourceMetadata.unwrap()
-        parts.append("\"SourceMetadata\":" + u8.to_json())
+        auto u9 = v.SourceMetadata.unwrap()
+        keys.append("SourceMetadata")
+        vals.append(source_metadata_to_cbor(u9))
     if v.AnalyzeRuleGroup.is_some():
-        auto u9 = v.AnalyzeRuleGroup.unwrap()
-        parts.append("\"AnalyzeRuleGroup\":" + json.dumps(JsonValue.Bool(u9)))
+        auto u10 = v.AnalyzeRuleGroup.unwrap()
+        keys.append("AnalyzeRuleGroup")
+        vals.append(cbor.cbor_bool(u10))
     if v.SummaryConfiguration.is_some():
-        auto u10 = v.SummaryConfiguration.unwrap()
-        parts.append("\"SummaryConfiguration\":" + summary_configuration_to_json(u10))
-    return network_firewall_json_obj(parts)
+        auto u11 = v.SummaryConfiguration.unwrap()
+        keys.append("SummaryConfiguration")
+        vals.append(summary_configuration_to_cbor(u11))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateTLSInspectionConfigurationRequest to a compact JSON object (declaration order).
-def update_tls_inspection_configuration_request_to_json(UpdateTLSInspectionConfigurationRequest v) -> str:
-    list[str] parts = []
-    if v.TLSInspectionConfigurationArn.is_some():
-        auto u0 = v.TLSInspectionConfigurationArn.unwrap()
-        parts.append("\"TLSInspectionConfigurationArn\":" + network_firewall_json_str(u0))
-    if v.TLSInspectionConfigurationName.is_some():
-        auto u1 = v.TLSInspectionConfigurationName.unwrap()
-        parts.append("\"TLSInspectionConfigurationName\":" + network_firewall_json_str(u1))
-    parts.append("\"TLSInspectionConfiguration\":" + tls_inspection_configuration_to_json(v.TLSInspectionConfiguration))
+# Serialize CreateTLSInspectionConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def create_tls_inspection_configuration_request_to_cbor(CreateTLSInspectionConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TLSInspectionConfigurationName")
+    vals.append(cbor.cbor_text(v.TLSInspectionConfigurationName))
+    keys.append("TLSInspectionConfiguration")
+    vals.append(tls_inspection_configuration_to_cbor(v.TLSInspectionConfiguration))
     if v.Description.is_some():
-        auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + network_firewall_json_str(u2))
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
     if v.EncryptionConfiguration.is_some():
         auto u3 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
-    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
-    return network_firewall_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize VpcEndpoint to a compact JSON object (declaration order).
-def vpc_endpoint_to_json(VpcEndpoint v) -> str:
-    list[str] parts = []
-    parts.append("\"VpcId\":" + network_firewall_json_str(v.VpcId))
-    list[str] e0 = []
+# Serialize CreateVpcEndpointAssociationRequest to a CBOR map (member wire name -> value, model order).
+def create_vpc_endpoint_association_request_to_cbor(CreateVpcEndpointAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallArn")
+    vals.append(cbor.cbor_text(v.FirewallArn))
+    keys.append("VpcId")
+    vals.append(cbor.cbor_text(v.VpcId))
+    keys.append("SubnetMapping")
+    vals.append(subnet_mapping_to_cbor(v.SubnetMapping))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CustomAction to a CBOR map (member wire name -> value, model order).
+def custom_action_to_cbor(CustomAction v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ActionName")
+    vals.append(cbor.cbor_text(v.ActionName))
+    keys.append("ActionDefinition")
+    vals.append(action_definition_to_cbor(v.ActionDefinition))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteContainerAssociationRequest to a CBOR map (member wire name -> value, model order).
+def delete_container_association_request_to_cbor(DeleteContainerAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ContainerAssociationName.is_some():
+        auto u0 = v.ContainerAssociationName.unwrap()
+        keys.append("ContainerAssociationName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ContainerAssociationArn.is_some():
+        auto u1 = v.ContainerAssociationArn.unwrap()
+        keys.append("ContainerAssociationArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteFirewallPolicyRequest to a CBOR map (member wire name -> value, model order).
+def delete_firewall_policy_request_to_cbor(DeleteFirewallPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallPolicyName.is_some():
+        auto u0 = v.FirewallPolicyName.unwrap()
+        keys.append("FirewallPolicyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallPolicyArn.is_some():
+        auto u1 = v.FirewallPolicyArn.unwrap()
+        keys.append("FirewallPolicyArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteFirewallPolicyV2Request to a CBOR map (member wire name -> value, model order).
+def delete_firewall_policy_v2_request_to_cbor(DeleteFirewallPolicyV2Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallPolicyV2Arn.is_some():
+        auto u0 = v.FirewallPolicyV2Arn.unwrap()
+        keys.append("FirewallPolicyV2Arn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallPolicyV2Name.is_some():
+        auto u1 = v.FirewallPolicyV2Name.unwrap()
+        keys.append("FirewallPolicyV2Name")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteFirewallRequest to a CBOR map (member wire name -> value, model order).
+def delete_firewall_request_to_cbor(DeleteFirewallRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallName.is_some():
+        auto u0 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.DeleteAssociatedNatGateways.is_some():
+        auto u2 = v.DeleteAssociatedNatGateways.unwrap()
+        keys.append("DeleteAssociatedNatGateways")
+        vals.append(cbor.cbor_bool(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteNetworkFirewallTransitGatewayAttachmentRequest to a CBOR map (member wire name -> value, model order).
+def delete_network_firewall_transit_gateway_attachment_request_to_cbor(DeleteNetworkFirewallTransitGatewayAttachmentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TransitGatewayAttachmentId")
+    vals.append(cbor.cbor_text(v.TransitGatewayAttachmentId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProxyRequest to a CBOR map (member wire name -> value, model order).
+def delete_proxy_request_to_cbor(DeleteProxyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("NatGatewayId")
+    vals.append(cbor.cbor_text(v.NatGatewayId))
+    if v.ProxyName.is_some():
+        auto u0 = v.ProxyName.unwrap()
+        keys.append("ProxyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProxyArn.is_some():
+        auto u1 = v.ProxyArn.unwrap()
+        keys.append("ProxyArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def delete_resource_policy_request_to_cbor(DeleteResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteRuleGroupRequest to a CBOR map (member wire name -> value, model order).
+def delete_rule_group_request_to_cbor(DeleteRuleGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleGroupName.is_some():
+        auto u0 = v.RuleGroupName.unwrap()
+        keys.append("RuleGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.RuleGroupArn.is_some():
+        auto u1 = v.RuleGroupArn.unwrap()
+        keys.append("RuleGroupArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTLSInspectionConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def delete_tls_inspection_configuration_request_to_cbor(DeleteTLSInspectionConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u0 = v.TLSInspectionConfigurationArn.unwrap()
+        keys.append("TLSInspectionConfigurationArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.TLSInspectionConfigurationName.is_some():
+        auto u1 = v.TLSInspectionConfigurationName.unwrap()
+        keys.append("TLSInspectionConfigurationName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteVpcEndpointAssociationRequest to a CBOR map (member wire name -> value, model order).
+def delete_vpc_endpoint_association_request_to_cbor(DeleteVpcEndpointAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VpcEndpointAssociationArn")
+    vals.append(cbor.cbor_text(v.VpcEndpointAssociationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeContainerAssociationRequest to a CBOR map (member wire name -> value, model order).
+def describe_container_association_request_to_cbor(DescribeContainerAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ContainerAssociationName.is_some():
+        auto u0 = v.ContainerAssociationName.unwrap()
+        keys.append("ContainerAssociationName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ContainerAssociationArn.is_some():
+        auto u1 = v.ContainerAssociationArn.unwrap()
+        keys.append("ContainerAssociationArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFirewallMetadataRequest to a CBOR map (member wire name -> value, model order).
+def describe_firewall_metadata_request_to_cbor(DescribeFirewallMetadataRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallArn.is_some():
+        auto u0 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFirewallPolicyRequest to a CBOR map (member wire name -> value, model order).
+def describe_firewall_policy_request_to_cbor(DescribeFirewallPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallPolicyName.is_some():
+        auto u0 = v.FirewallPolicyName.unwrap()
+        keys.append("FirewallPolicyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallPolicyArn.is_some():
+        auto u1 = v.FirewallPolicyArn.unwrap()
+        keys.append("FirewallPolicyArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFirewallPolicyV2Request to a CBOR map (member wire name -> value, model order).
+def describe_firewall_policy_v2_request_to_cbor(DescribeFirewallPolicyV2Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallPolicyV2Arn.is_some():
+        auto u0 = v.FirewallPolicyV2Arn.unwrap()
+        keys.append("FirewallPolicyV2Arn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallPolicyV2Name.is_some():
+        auto u1 = v.FirewallPolicyV2Name.unwrap()
+        keys.append("FirewallPolicyV2Name")
+        vals.append(cbor.cbor_text(u1))
+    if v.RuleOutputFormat.is_some():
+        auto u2 = v.RuleOutputFormat.unwrap()
+        keys.append("RuleOutputFormat")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFirewallRequest to a CBOR map (member wire name -> value, model order).
+def describe_firewall_request_to_cbor(DescribeFirewallRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallName.is_some():
+        auto u0 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFlowOperationRequest to a CBOR map (member wire name -> value, model order).
+def describe_flow_operation_request_to_cbor(DescribeFlowOperationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallArn")
+    vals.append(cbor.cbor_text(v.FirewallArn))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        keys.append("AvailabilityZone")
+        vals.append(cbor.cbor_text(u0))
+    if v.AvailabilityZoneId.is_some():
+        auto u1 = v.AvailabilityZoneId.unwrap()
+        keys.append("AvailabilityZoneId")
+        vals.append(cbor.cbor_text(u1))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u2 = v.VpcEndpointAssociationArn.unwrap()
+        keys.append("VpcEndpointAssociationArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u3))
+    keys.append("FlowOperationId")
+    vals.append(cbor.cbor_text(v.FlowOperationId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLoggingConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def describe_logging_configuration_request_to_cbor(DescribeLoggingConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallArn.is_some():
+        auto u0 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallName.is_some():
+        auto u1 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProxyRequest to a CBOR map (member wire name -> value, model order).
+def describe_proxy_request_to_cbor(DescribeProxyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ProxyName.is_some():
+        auto u0 = v.ProxyName.unwrap()
+        keys.append("ProxyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProxyArn.is_some():
+        auto u1 = v.ProxyArn.unwrap()
+        keys.append("ProxyArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def describe_resource_policy_request_to_cbor(DescribeResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeRuleGroupMetadataRequest to a CBOR map (member wire name -> value, model order).
+def describe_rule_group_metadata_request_to_cbor(DescribeRuleGroupMetadataRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleGroupName.is_some():
+        auto u0 = v.RuleGroupName.unwrap()
+        keys.append("RuleGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.RuleGroupArn.is_some():
+        auto u1 = v.RuleGroupArn.unwrap()
+        keys.append("RuleGroupArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeRuleGroupRequest to a CBOR map (member wire name -> value, model order).
+def describe_rule_group_request_to_cbor(DescribeRuleGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleGroupName.is_some():
+        auto u0 = v.RuleGroupName.unwrap()
+        keys.append("RuleGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.RuleGroupArn.is_some():
+        auto u1 = v.RuleGroupArn.unwrap()
+        keys.append("RuleGroupArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u2))
+    if v.AnalyzeRuleGroup.is_some():
+        auto u3 = v.AnalyzeRuleGroup.unwrap()
+        keys.append("AnalyzeRuleGroup")
+        vals.append(cbor.cbor_bool(u3))
+    if v.RuleOutputFormat.is_some():
+        auto u4 = v.RuleOutputFormat.unwrap()
+        keys.append("RuleOutputFormat")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeRuleGroupSummaryRequest to a CBOR map (member wire name -> value, model order).
+def describe_rule_group_summary_request_to_cbor(DescribeRuleGroupSummaryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleGroupName.is_some():
+        auto u0 = v.RuleGroupName.unwrap()
+        keys.append("RuleGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.RuleGroupArn.is_some():
+        auto u1 = v.RuleGroupArn.unwrap()
+        keys.append("RuleGroupArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTLSInspectionConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def describe_tls_inspection_configuration_request_to_cbor(DescribeTLSInspectionConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u0 = v.TLSInspectionConfigurationArn.unwrap()
+        keys.append("TLSInspectionConfigurationArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.TLSInspectionConfigurationName.is_some():
+        auto u1 = v.TLSInspectionConfigurationName.unwrap()
+        keys.append("TLSInspectionConfigurationName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeVpcEndpointAssociationRequest to a CBOR map (member wire name -> value, model order).
+def describe_vpc_endpoint_association_request_to_cbor(DescribeVpcEndpointAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VpcEndpointAssociationArn")
+    vals.append(cbor.cbor_text(v.VpcEndpointAssociationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Dimension to a CBOR map (member wire name -> value, model order).
+def dimension_to_cbor(Dimension v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateAvailabilityZonesRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_availability_zones_request_to_cbor(DisassociateAvailabilityZonesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    list[cbor.CborValue] e3 = []
+    for x3 in v.AvailabilityZoneMappings:
+        e3.append(availability_zone_mapping_to_cbor(x3))
+    keys.append("AvailabilityZoneMappings")
+    vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateSubnetsRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_subnets_request_to_cbor(DisassociateSubnetsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    list[cbor.CborValue] e3 = []
+    for x3 in v.SubnetIds:
+        e3.append(cbor.cbor_text(x3))
+    keys.append("SubnetIds")
+    vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DomainMatch to a CBOR map (member wire name -> value, model order).
+def domain_match_to_cbor(DomainMatch v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Domains:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Domains")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EncryptionConfiguration to a CBOR map (member wire name -> value, model order).
+def encryption_configuration_to_cbor(EncryptionConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.KeyId.is_some():
+        auto u0 = v.KeyId.unwrap()
+        keys.append("KeyId")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FirewallPolicy to a CBOR map (member wire name -> value, model order).
+def firewall_policy_to_cbor(FirewallPolicy v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.StatelessRuleGroupReferences.is_some():
+        auto u0 = v.StatelessRuleGroupReferences.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(stateless_rule_group_reference_to_cbor(x1))
+        keys.append("StatelessRuleGroupReferences")
+        vals.append(cbor.cbor_list(e1))
+    list[cbor.CborValue] e2 = []
+    for x2 in v.StatelessDefaultActions:
+        e2.append(cbor.cbor_text(x2))
+    keys.append("StatelessDefaultActions")
+    vals.append(cbor.cbor_list(e2))
+    list[cbor.CborValue] e3 = []
+    for x3 in v.StatelessFragmentDefaultActions:
+        e3.append(cbor.cbor_text(x3))
+    keys.append("StatelessFragmentDefaultActions")
+    vals.append(cbor.cbor_list(e3))
+    if v.StatelessCustomActions.is_some():
+        auto u4 = v.StatelessCustomActions.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(custom_action_to_cbor(x5))
+        keys.append("StatelessCustomActions")
+        vals.append(cbor.cbor_list(e5))
+    if v.StatefulRuleGroupReferences.is_some():
+        auto u6 = v.StatefulRuleGroupReferences.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(stateful_rule_group_reference_to_cbor(x7))
+        keys.append("StatefulRuleGroupReferences")
+        vals.append(cbor.cbor_list(e7))
+    if v.StatefulDefaultActions.is_some():
+        auto u8 = v.StatefulDefaultActions.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(cbor.cbor_text(x9))
+        keys.append("StatefulDefaultActions")
+        vals.append(cbor.cbor_list(e9))
+    if v.StatefulEngineOptions.is_some():
+        auto u10 = v.StatefulEngineOptions.unwrap()
+        keys.append("StatefulEngineOptions")
+        vals.append(stateful_engine_options_to_cbor(u10))
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u11 = v.TLSInspectionConfigurationArn.unwrap()
+        keys.append("TLSInspectionConfigurationArn")
+        vals.append(cbor.cbor_text(u11))
+    if v.PolicyVariables.is_some():
+        auto u12 = v.PolicyVariables.unwrap()
+        keys.append("PolicyVariables")
+        vals.append(policy_variables_to_cbor(u12))
+    if v.EnableTLSSessionHolding.is_some():
+        auto u13 = v.EnableTLSSessionHolding.unwrap()
+        keys.append("EnableTLSSessionHolding")
+        vals.append(cbor.cbor_bool(u13))
+    if v.Route53ResolvedIPValidation.is_some():
+        auto u14 = v.Route53ResolvedIPValidation.unwrap()
+        keys.append("Route53ResolvedIPValidation")
+        vals.append(route53_resolved_ip_validation_to_cbor(u14))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FirewallPolicyV2 to a CBOR map (member wire name -> value, model order).
+def firewall_policy_v2_to_cbor(FirewallPolicyV2 v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallRuleGroupEntries.is_some():
+        auto u0 = v.FirewallRuleGroupEntries.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(firewall_rule_group_entry_to_cbor(x1))
+        keys.append("FirewallRuleGroupEntries")
+        vals.append(cbor.cbor_list(e1))
+    if v.IpsRuleGroupEntries.is_some():
+        auto u2 = v.IpsRuleGroupEntries.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(ips_rule_group_entry_to_cbor(x3))
+        keys.append("IpsRuleGroupEntries")
+        vals.append(cbor.cbor_list(e3))
+    if v.PolicyMode.is_some():
+        auto u4 = v.PolicyMode.unwrap()
+        keys.append("PolicyMode")
+        vals.append(cbor.cbor_text(u4))
+    if v.FirewallDefaultAction.is_some():
+        auto u5 = v.FirewallDefaultAction.unwrap()
+        keys.append("FirewallDefaultAction")
+        vals.append(cbor.cbor_text(u5))
+    if v.StatefulEngineOptions.is_some():
+        auto u6 = v.StatefulEngineOptions.unwrap()
+        keys.append("StatefulEngineOptions")
+        vals.append(stateful_engine_options_v2_to_cbor(u6))
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u7 = v.TLSInspectionConfigurationArn.unwrap()
+        keys.append("TLSInspectionConfigurationArn")
+        vals.append(cbor.cbor_text(u7))
+    if v.PolicyVariables.is_some():
+        auto u8 = v.PolicyVariables.unwrap()
+        keys.append("PolicyVariables")
+        vals.append(policy_variables_to_cbor(u8))
+    if v.Route53ResolvedIPValidation.is_some():
+        auto u9 = v.Route53ResolvedIPValidation.unwrap()
+        keys.append("Route53ResolvedIPValidation")
+        vals.append(route53_resolved_ip_validation_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FirewallRule to a CBOR map (member wire name -> value, model order).
+def firewall_rule_to_cbor(FirewallRule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Action")
+    vals.append(cbor.cbor_text(v.Action))
+    keys.append("ActionScope")
+    vals.append(cbor.cbor_text(v.ActionScope))
+    keys.append("Hook")
+    vals.append(cbor.cbor_text(v.Hook))
+    keys.append("Protocol")
+    vals.append(cbor.cbor_text(v.Protocol))
+    if v.SourceIPs.is_some():
+        auto u0 = v.SourceIPs.unwrap()
+        keys.append("SourceIPs")
+        vals.append(cbor.cbor_text(u0))
+    if v.DestIPs.is_some():
+        auto u1 = v.DestIPs.unwrap()
+        keys.append("DestIPs")
+        vals.append(cbor.cbor_text(u1))
+    if v.SourcePorts.is_some():
+        auto u2 = v.SourcePorts.unwrap()
+        keys.append("SourcePorts")
+        vals.append(cbor.cbor_text(u2))
+    if v.DestPorts.is_some():
+        auto u3 = v.DestPorts.unwrap()
+        keys.append("DestPorts")
+        vals.append(cbor.cbor_text(u3))
+    if v.RuleOptions.is_some():
+        auto u4 = v.RuleOptions.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(rule_option_to_cbor(x5))
+        keys.append("RuleOptions")
+        vals.append(cbor.cbor_list(e5))
+    if v.AcceptPriorHooks.is_some():
+        auto u6 = v.AcceptPriorHooks.unwrap()
+        keys.append("AcceptPriorHooks")
+        vals.append(cbor.cbor_bool(u6))
+    if v.AlertEnabled.is_some():
+        auto u7 = v.AlertEnabled.unwrap()
+        keys.append("AlertEnabled")
+        vals.append(cbor.cbor_bool(u7))
+    if v.BypassIPSEnabled.is_some():
+        auto u8 = v.BypassIPSEnabled.unwrap()
+        keys.append("BypassIPSEnabled")
+        vals.append(cbor.cbor_bool(u8))
+    if v.RuleMetadata.is_some():
+        auto u9 = v.RuleMetadata.unwrap()
+        keys.append("RuleMetadata")
+        vals.append(rule_metadata_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FirewallRuleGroup to a CBOR map (member wire name -> value, model order).
+def firewall_rule_group_to_cbor(FirewallRuleGroup v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RulesSource")
+    vals.append(firewall_rules_source_to_cbor(v.RulesSource))
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        keys.append("RuleVariables")
+        vals.append(rule_variables_to_cbor(u0))
+    if v.ReferenceSets.is_some():
+        auto u1 = v.ReferenceSets.unwrap()
+        keys.append("ReferenceSets")
+        vals.append(reference_sets_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FirewallRuleGroupEntry to a CBOR map (member wire name -> value, model order).
+def firewall_rule_group_entry_to_cbor(FirewallRuleGroupEntry v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Priority.is_some():
+        auto u0 = v.Priority.unwrap()
+        keys.append("Priority")
+        vals.append(cbor.cbor_int(u0))
+    if v.ResourceArn.is_some():
+        auto u1 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.InlineRuleGroup.is_some():
+        auto u2 = v.InlineRuleGroup.unwrap()
+        keys.append("InlineRuleGroup")
+        vals.append(firewall_rule_group_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FirewallRulesSource to a CBOR map (member wire name -> value, model order).
+def firewall_rules_source_to_cbor(FirewallRulesSource v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RulesString.is_some():
+        auto u0 = v.RulesString.unwrap()
+        keys.append("RulesString")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallRules.is_some():
+        auto u1 = v.FirewallRules.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(firewall_rule_to_cbor(x2))
+        keys.append("FirewallRules")
+        vals.append(cbor.cbor_list(e2))
+    if v.RulesSourceList.is_some():
+        auto u3 = v.RulesSourceList.unwrap()
+        keys.append("RulesSourceList")
+        vals.append(rules_source_list_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FlowFilter to a CBOR map (member wire name -> value, model order).
+def flow_filter_to_cbor(FlowFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SourceAddress.is_some():
+        auto u0 = v.SourceAddress.unwrap()
+        keys.append("SourceAddress")
+        vals.append(address_to_cbor(u0))
+    if v.DestinationAddress.is_some():
+        auto u1 = v.DestinationAddress.unwrap()
+        keys.append("DestinationAddress")
+        vals.append(address_to_cbor(u1))
+    if v.SourcePort.is_some():
+        auto u2 = v.SourcePort.unwrap()
+        keys.append("SourcePort")
+        vals.append(cbor.cbor_text(u2))
+    if v.DestinationPort.is_some():
+        auto u3 = v.DestinationPort.unwrap()
+        keys.append("DestinationPort")
+        vals.append(cbor.cbor_text(u3))
+    if v.Protocols.is_some():
+        auto u4 = v.Protocols.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(cbor.cbor_text(x5))
+        keys.append("Protocols")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FlowTimeouts to a CBOR map (member wire name -> value, model order).
+def flow_timeouts_to_cbor(FlowTimeouts v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.TcpIdleTimeoutSeconds.is_some():
+        auto u0 = v.TcpIdleTimeoutSeconds.unwrap()
+        keys.append("TcpIdleTimeoutSeconds")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetAnalysisReportResultsRequest to a CBOR map (member wire name -> value, model order).
+def get_analysis_report_results_request_to_cbor(GetAnalysisReportResultsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallName.is_some():
+        auto u0 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("AnalysisReportId")
+    vals.append(cbor.cbor_text(v.AnalysisReportId))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Header to a CBOR map (member wire name -> value, model order).
+def header_to_cbor(Header v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Protocol")
+    vals.append(cbor.cbor_text(v.Protocol))
+    keys.append("Source")
+    vals.append(cbor.cbor_text(v.Source))
+    keys.append("SourcePort")
+    vals.append(cbor.cbor_text(v.SourcePort))
+    keys.append("Direction")
+    vals.append(cbor.cbor_text(v.Direction))
+    keys.append("Destination")
+    vals.append(cbor.cbor_text(v.Destination))
+    keys.append("DestinationPort")
+    vals.append(cbor.cbor_text(v.DestinationPort))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IPSet to a CBOR map (member wire name -> value, model order).
+def ip_set_to_cbor(IPSet v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Definition:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Definition")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IPSetReference to a CBOR map (member wire name -> value, model order).
+def ip_set_reference_to_cbor(IPSetReference v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ReferenceArn.is_some():
+        auto u0 = v.ReferenceArn.unwrap()
+        keys.append("ReferenceArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IpsRuleGroup to a CBOR map (member wire name -> value, model order).
+def ips_rule_group_to_cbor(IpsRuleGroup v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RulesSource")
+    vals.append(ips_rules_source_to_cbor(v.RulesSource))
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        keys.append("RuleVariables")
+        vals.append(rule_variables_to_cbor(u0))
+    if v.ReferenceSets.is_some():
+        auto u1 = v.ReferenceSets.unwrap()
+        keys.append("ReferenceSets")
+        vals.append(reference_sets_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IpsRuleGroupEntry to a CBOR map (member wire name -> value, model order).
+def ips_rule_group_entry_to_cbor(IpsRuleGroupEntry v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ResourceArn.is_some():
+        auto u0 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.InlineRuleGroup.is_some():
+        auto u1 = v.InlineRuleGroup.unwrap()
+        keys.append("InlineRuleGroup")
+        vals.append(ips_rule_group_to_cbor(u1))
+    if v.Override.is_some():
+        auto u2 = v.Override.unwrap()
+        keys.append("Override")
+        vals.append(ips_rule_group_override_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IpsRuleGroupOverride to a CBOR map (member wire name -> value, model order).
+def ips_rule_group_override_to_cbor(IpsRuleGroupOverride v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        keys.append("Action")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IpsRulesSource to a CBOR map (member wire name -> value, model order).
+def ips_rules_source_to_cbor(IpsRulesSource v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RulesString.is_some():
+        auto u0 = v.RulesString.unwrap()
+        keys.append("RulesString")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAnalysisReportsRequest to a CBOR map (member wire name -> value, model order).
+def list_analysis_reports_request_to_cbor(ListAnalysisReportsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallName.is_some():
+        auto u0 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListContainerAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def list_container_associations_request_to_cbor(ListContainerAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFirewallPoliciesRequest to a CBOR map (member wire name -> value, model order).
+def list_firewall_policies_request_to_cbor(ListFirewallPoliciesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFirewallPoliciesV2Request to a CBOR map (member wire name -> value, model order).
+def list_firewall_policies_v2_request_to_cbor(ListFirewallPoliciesV2Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFirewallsRequest to a CBOR map (member wire name -> value, model order).
+def list_firewalls_request_to_cbor(ListFirewallsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.VpcIds.is_some():
+        auto u1 = v.VpcIds.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(cbor.cbor_text(x2))
+        keys.append("VpcIds")
+        vals.append(cbor.cbor_list(e2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFlowOperationResultsRequest to a CBOR map (member wire name -> value, model order).
+def list_flow_operation_results_request_to_cbor(ListFlowOperationResultsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallArn")
+    vals.append(cbor.cbor_text(v.FirewallArn))
+    keys.append("FlowOperationId")
+    vals.append(cbor.cbor_text(v.FlowOperationId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.AvailabilityZone.is_some():
+        auto u2 = v.AvailabilityZone.unwrap()
+        keys.append("AvailabilityZone")
+        vals.append(cbor.cbor_text(u2))
+    if v.AvailabilityZoneId.is_some():
+        auto u3 = v.AvailabilityZoneId.unwrap()
+        keys.append("AvailabilityZoneId")
+        vals.append(cbor.cbor_text(u3))
+    if v.VpcEndpointId.is_some():
+        auto u4 = v.VpcEndpointId.unwrap()
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u4))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u5 = v.VpcEndpointAssociationArn.unwrap()
+        keys.append("VpcEndpointAssociationArn")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFlowOperationsRequest to a CBOR map (member wire name -> value, model order).
+def list_flow_operations_request_to_cbor(ListFlowOperationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallArn")
+    vals.append(cbor.cbor_text(v.FirewallArn))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        keys.append("AvailabilityZone")
+        vals.append(cbor.cbor_text(u0))
+    if v.AvailabilityZoneId.is_some():
+        auto u1 = v.AvailabilityZoneId.unwrap()
+        keys.append("AvailabilityZoneId")
+        vals.append(cbor.cbor_text(u1))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u2 = v.VpcEndpointAssociationArn.unwrap()
+        keys.append("VpcEndpointAssociationArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u3))
+    if v.FlowOperationType.is_some():
+        auto u4 = v.FlowOperationType.unwrap()
+        keys.append("FlowOperationType")
+        vals.append(cbor.cbor_text(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListRuleGroupsRequest to a CBOR map (member wire name -> value, model order).
+def list_rule_groups_request_to_cbor(ListRuleGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.Scope.is_some():
+        auto u2 = v.Scope.unwrap()
+        keys.append("Scope")
+        vals.append(cbor.cbor_text(u2))
+    if v.ManagedType.is_some():
+        auto u3 = v.ManagedType.unwrap()
+        keys.append("ManagedType")
+        vals.append(cbor.cbor_text(u3))
+    if v.SubscriptionStatus.is_some():
+        auto u4 = v.SubscriptionStatus.unwrap()
+        keys.append("SubscriptionStatus")
+        vals.append(cbor.cbor_text(u4))
+    if v.Type.is_some():
+        auto u5 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTLSInspectionConfigurationsRequest to a CBOR map (member wire name -> value, model order).
+def list_tls_inspection_configurations_request_to_cbor(ListTLSInspectionConfigurationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListVpcEndpointAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def list_vpc_endpoint_associations_request_to_cbor(ListVpcEndpointAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.FirewallArn.is_some():
+        auto u2 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListenerProperty to a CBOR map (member wire name -> value, model order).
+def listener_property_to_cbor(ListenerProperty v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Port.is_some():
+        auto u0 = v.Port.unwrap()
+        keys.append("Port")
+        vals.append(cbor.cbor_int(u0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LogDestinationConfig to a CBOR map (member wire name -> value, model order).
+def log_destination_config_to_cbor(LogDestinationConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LogType")
+    vals.append(cbor.cbor_text(v.LogType))
+    keys.append("LogDestinationType")
+    vals.append(cbor.cbor_text(v.LogDestinationType))
+    list[str] mk0 = []
+    list[cbor.CborValue] mv0 = []
+    for k0 in sorted(v.LogDestination.keys()):
+        mk0.append(k0)
+        mv0.append(cbor.cbor_text(v.LogDestination[k0]))
+    keys.append("LogDestination")
+    vals.append(cbor.cbor_map(mk0, mv0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LoggingConfiguration to a CBOR map (member wire name -> value, model order).
+def logging_configuration_to_cbor(LoggingConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.LogDestinationConfigs:
+        e0.append(log_destination_config_to_cbor(x0))
+    keys.append("LogDestinationConfigs")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MatchAttributes to a CBOR map (member wire name -> value, model order).
+def match_attributes_to_cbor(MatchAttributes v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Sources.is_some():
+        auto u0 = v.Sources.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(address_to_cbor(x1))
+        keys.append("Sources")
+        vals.append(cbor.cbor_list(e1))
+    if v.Destinations.is_some():
+        auto u2 = v.Destinations.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(address_to_cbor(x3))
+        keys.append("Destinations")
+        vals.append(cbor.cbor_list(e3))
+    if v.SourcePorts.is_some():
+        auto u4 = v.SourcePorts.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(port_range_to_cbor(x5))
+        keys.append("SourcePorts")
+        vals.append(cbor.cbor_list(e5))
+    if v.DestinationPorts.is_some():
+        auto u6 = v.DestinationPorts.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(port_range_to_cbor(x7))
+        keys.append("DestinationPorts")
+        vals.append(cbor.cbor_list(e7))
+    if v.Protocols.is_some():
+        auto u8 = v.Protocols.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(cbor.cbor_int(x9))
+        keys.append("Protocols")
+        vals.append(cbor.cbor_list(e9))
+    if v.TCPFlags.is_some():
+        auto u10 = v.TCPFlags.unwrap()
+        list[cbor.CborValue] e11 = []
+        for x11 in u10:
+            e11.append(tcp_flag_field_to_cbor(x11))
+        keys.append("TCPFlags")
+        vals.append(cbor.cbor_list(e11))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NatGatewayCreateMapping to a CBOR map (member wire name -> value, model order).
+def nat_gateway_create_mapping_to_cbor(NatGatewayCreateMapping v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SubnetId")
+    vals.append(cbor.cbor_text(v.SubnetId))
+    if v.AllocationIds.is_some():
+        auto u0 = v.AllocationIds.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("AllocationIds")
+        vals.append(cbor.cbor_list(e1))
+    if v.PrivateIps.is_some():
+        auto u2 = v.PrivateIps.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(cbor.cbor_text(x3))
+        keys.append("PrivateIps")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PolicyVariables to a CBOR map (member wire name -> value, model order).
+def policy_variables_to_cbor(PolicyVariables v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        list[str] mk1 = []
+        list[cbor.CborValue] mv1 = []
+        for k1 in sorted(u0.keys()):
+            mk1.append(k1)
+            mv1.append(ip_set_to_cbor(u0[k1]))
+        keys.append("RuleVariables")
+        vals.append(cbor.cbor_map(mk1, mv1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PortRange to a CBOR map (member wire name -> value, model order).
+def port_range_to_cbor(PortRange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FromPort")
+    vals.append(cbor.cbor_int(v.FromPort))
+    keys.append("ToPort")
+    vals.append(cbor.cbor_int(v.ToPort))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PortSet to a CBOR map (member wire name -> value, model order).
+def port_set_to_cbor(PortSet v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Definition.is_some():
+        auto u0 = v.Definition.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Definition")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProxySettings to a CBOR map (member wire name -> value, model order).
+def proxy_settings_to_cbor(ProxySettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.ListenerProperties:
+        e0.append(listener_property_to_cbor(x0))
+    keys.append("ListenerProperties")
+    vals.append(cbor.cbor_list(e0))
+    if v.CertificateArn.is_some():
+        auto u1 = v.CertificateArn.unwrap()
+        keys.append("CertificateArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.DomainName.is_some():
+        auto u2 = v.DomainName.unwrap()
+        keys.append("DomainName")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PublishMetricAction to a CBOR map (member wire name -> value, model order).
+def publish_metric_action_to_cbor(PublishMetricAction v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Dimensions:
+        e0.append(dimension_to_cbor(x0))
+    keys.append("Dimensions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def put_resource_policy_request_to_cbor(PutResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    keys.append("Policy")
+    vals.append(cbor.cbor_text(v.Policy))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReferenceSets to a CBOR map (member wire name -> value, model order).
+def reference_sets_to_cbor(ReferenceSets v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.IPSetReferences.is_some():
+        auto u0 = v.IPSetReferences.unwrap()
+        list[str] mk1 = []
+        list[cbor.CborValue] mv1 = []
+        for k1 in sorted(u0.keys()):
+            mk1.append(k1)
+            mv1.append(ip_set_reference_to_cbor(u0[k1]))
+        keys.append("IPSetReferences")
+        vals.append(cbor.cbor_map(mk1, mv1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RejectNetworkFirewallTransitGatewayAttachmentRequest to a CBOR map (member wire name -> value, model order).
+def reject_network_firewall_transit_gateway_attachment_request_to_cbor(RejectNetworkFirewallTransitGatewayAttachmentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TransitGatewayAttachmentId")
+    vals.append(cbor.cbor_text(v.TransitGatewayAttachmentId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Route53ResolvedIPValidation to a CBOR map (member wire name -> value, model order).
+def route53_resolved_ip_validation_to_cbor(Route53ResolvedIPValidation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Action")
+    vals.append(cbor.cbor_text(v.Action))
+    keys.append("DNSFirewallRuleGroupId")
+    vals.append(cbor.cbor_text(v.DNSFirewallRuleGroupId))
+    keys.append("DNSExpiryExceptionPolicy")
+    vals.append(cbor.cbor_text(v.DNSExpiryExceptionPolicy))
+    if v.BypassDestinationValidationIPRanges.is_some():
+        auto u0 = v.BypassDestinationValidationIPRanges.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(address_to_cbor(x1))
+        keys.append("BypassDestinationValidationIPRanges")
+        vals.append(cbor.cbor_list(e1))
+    if v.SourceIPRanges.is_some():
+        auto u2 = v.SourceIPRanges.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(address_to_cbor(x3))
+        keys.append("SourceIPRanges")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleDefinition to a CBOR map (member wire name -> value, model order).
+def rule_definition_to_cbor(RuleDefinition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MatchAttributes")
+    vals.append(match_attributes_to_cbor(v.MatchAttributes))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Actions:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Actions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleGroup to a CBOR map (member wire name -> value, model order).
+def rule_group_to_cbor(RuleGroup v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        keys.append("RuleVariables")
+        vals.append(rule_variables_to_cbor(u0))
+    if v.ReferenceSets.is_some():
+        auto u1 = v.ReferenceSets.unwrap()
+        keys.append("ReferenceSets")
+        vals.append(reference_sets_to_cbor(u1))
+    keys.append("RulesSource")
+    vals.append(rules_source_to_cbor(v.RulesSource))
+    if v.StatefulRuleOptions.is_some():
+        auto u2 = v.StatefulRuleOptions.unwrap()
+        keys.append("StatefulRuleOptions")
+        vals.append(stateful_rule_options_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleMetadata to a CBOR map (member wire name -> value, model order).
+def rule_metadata_to_cbor(RuleMetadata v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleEnabled.is_some():
+        auto u0 = v.RuleEnabled.unwrap()
+        keys.append("RuleEnabled")
+        vals.append(cbor.cbor_bool(u0))
+    if v.RuleDescription.is_some():
+        auto u1 = v.RuleDescription.unwrap()
+        keys.append("RuleDescription")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleOption to a CBOR map (member wire name -> value, model order).
+def rule_option_to_cbor(RuleOption v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Keyword")
+    vals.append(cbor.cbor_text(v.Keyword))
+    if v.Settings.is_some():
+        auto u0 = v.Settings.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Settings")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RuleVariables to a CBOR map (member wire name -> value, model order).
+def rule_variables_to_cbor(RuleVariables v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.IPSets.is_some():
+        auto u0 = v.IPSets.unwrap()
+        list[str] mk1 = []
+        list[cbor.CborValue] mv1 = []
+        for k1 in sorted(u0.keys()):
+            mk1.append(k1)
+            mv1.append(ip_set_to_cbor(u0[k1]))
+        keys.append("IPSets")
+        vals.append(cbor.cbor_map(mk1, mv1))
+    if v.PortSets.is_some():
+        auto u2 = v.PortSets.unwrap()
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
+        for k3 in sorted(u2.keys()):
+            mk3.append(k3)
+            mv3.append(port_set_to_cbor(u2[k3]))
+        keys.append("PortSets")
+        vals.append(cbor.cbor_map(mk3, mv3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RulesSource to a CBOR map (member wire name -> value, model order).
+def rules_source_to_cbor(RulesSource v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RulesString.is_some():
+        auto u0 = v.RulesString.unwrap()
+        keys.append("RulesString")
+        vals.append(cbor.cbor_text(u0))
+    if v.RulesSourceList.is_some():
+        auto u1 = v.RulesSourceList.unwrap()
+        keys.append("RulesSourceList")
+        vals.append(rules_source_list_to_cbor(u1))
+    if v.StatefulRules.is_some():
+        auto u2 = v.StatefulRules.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(stateful_rule_to_cbor(x3))
+        keys.append("StatefulRules")
+        vals.append(cbor.cbor_list(e3))
+    if v.StatelessRulesAndCustomActions.is_some():
+        auto u4 = v.StatelessRulesAndCustomActions.unwrap()
+        keys.append("StatelessRulesAndCustomActions")
+        vals.append(stateless_rules_and_custom_actions_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RulesSourceList to a CBOR map (member wire name -> value, model order).
+def rules_source_list_to_cbor(RulesSourceList v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Targets:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Targets")
+    vals.append(cbor.cbor_list(e0))
+    list[cbor.CborValue] e1 = []
+    for x1 in v.TargetTypes:
+        e1.append(cbor.cbor_text(x1))
+    keys.append("TargetTypes")
+    vals.append(cbor.cbor_list(e1))
+    keys.append("GeneratedRulesType")
+    vals.append(cbor.cbor_text(v.GeneratedRulesType))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ServerCertificate to a CBOR map (member wire name -> value, model order).
+def server_certificate_to_cbor(ServerCertificate v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ResourceArn.is_some():
+        auto u0 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ServerCertificateConfiguration to a CBOR map (member wire name -> value, model order).
+def server_certificate_configuration_to_cbor(ServerCertificateConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ServerCertificates.is_some():
+        auto u0 = v.ServerCertificates.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(server_certificate_to_cbor(x1))
+        keys.append("ServerCertificates")
+        vals.append(cbor.cbor_list(e1))
+    if v.Scopes.is_some():
+        auto u2 = v.Scopes.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(server_certificate_scope_to_cbor(x3))
+        keys.append("Scopes")
+        vals.append(cbor.cbor_list(e3))
+    if v.CertificateAuthorityArn.is_some():
+        auto u4 = v.CertificateAuthorityArn.unwrap()
+        keys.append("CertificateAuthorityArn")
+        vals.append(cbor.cbor_text(u4))
+    if v.CheckCertificateRevocationStatus.is_some():
+        auto u5 = v.CheckCertificateRevocationStatus.unwrap()
+        keys.append("CheckCertificateRevocationStatus")
+        vals.append(check_certificate_revocation_status_actions_to_cbor(u5))
+    if v.DefaultDecryptionBehavior.is_some():
+        auto u6 = v.DefaultDecryptionBehavior.unwrap()
+        keys.append("DefaultDecryptionBehavior")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ServerCertificateScope to a CBOR map (member wire name -> value, model order).
+def server_certificate_scope_to_cbor(ServerCertificateScope v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Sources.is_some():
+        auto u0 = v.Sources.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(address_to_cbor(x1))
+        keys.append("Sources")
+        vals.append(cbor.cbor_list(e1))
+    if v.Destinations.is_some():
+        auto u2 = v.Destinations.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(address_to_cbor(x3))
+        keys.append("Destinations")
+        vals.append(cbor.cbor_list(e3))
+    if v.SourcePorts.is_some():
+        auto u4 = v.SourcePorts.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(port_range_to_cbor(x5))
+        keys.append("SourcePorts")
+        vals.append(cbor.cbor_list(e5))
+    if v.DestinationPorts.is_some():
+        auto u6 = v.DestinationPorts.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(port_range_to_cbor(x7))
+        keys.append("DestinationPorts")
+        vals.append(cbor.cbor_list(e7))
+    if v.Protocols.is_some():
+        auto u8 = v.Protocols.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(cbor.cbor_int(x9))
+        keys.append("Protocols")
+        vals.append(cbor.cbor_list(e9))
+    if v.DomainMatch.is_some():
+        auto u10 = v.DomainMatch.unwrap()
+        keys.append("DomainMatch")
+        vals.append(domain_match_to_cbor(u10))
+    if v.DecryptionAction.is_some():
+        auto u11 = v.DecryptionAction.unwrap()
+        keys.append("DecryptionAction")
+        vals.append(cbor.cbor_text(u11))
+    if v.DeploymentMode.is_some():
+        auto u12 = v.DeploymentMode.unwrap()
+        keys.append("DeploymentMode")
+        vals.append(cbor.cbor_text(u12))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SourceMetadata to a CBOR map (member wire name -> value, model order).
+def source_metadata_to_cbor(SourceMetadata v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SourceArn.is_some():
+        auto u0 = v.SourceArn.unwrap()
+        keys.append("SourceArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.SourceUpdateToken.is_some():
+        auto u1 = v.SourceUpdateToken.unwrap()
+        keys.append("SourceUpdateToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartAnalysisReportRequest to a CBOR map (member wire name -> value, model order).
+def start_analysis_report_request_to_cbor(StartAnalysisReportRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallName.is_some():
+        auto u0 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("AnalysisType")
+    vals.append(cbor.cbor_text(v.AnalysisType))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartFlowCaptureRequest to a CBOR map (member wire name -> value, model order).
+def start_flow_capture_request_to_cbor(StartFlowCaptureRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallArn")
+    vals.append(cbor.cbor_text(v.FirewallArn))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        keys.append("AvailabilityZone")
+        vals.append(cbor.cbor_text(u0))
+    if v.AvailabilityZoneId.is_some():
+        auto u1 = v.AvailabilityZoneId.unwrap()
+        keys.append("AvailabilityZoneId")
+        vals.append(cbor.cbor_text(u1))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u2 = v.VpcEndpointAssociationArn.unwrap()
+        keys.append("VpcEndpointAssociationArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u3))
+    if v.MinimumFlowAgeInSeconds.is_some():
+        auto u4 = v.MinimumFlowAgeInSeconds.unwrap()
+        keys.append("MinimumFlowAgeInSeconds")
+        vals.append(cbor.cbor_int(u4))
+    list[cbor.CborValue] e5 = []
+    for x5 in v.FlowFilters:
+        e5.append(flow_filter_to_cbor(x5))
+    keys.append("FlowFilters")
+    vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartFlowFlushRequest to a CBOR map (member wire name -> value, model order).
+def start_flow_flush_request_to_cbor(StartFlowFlushRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FirewallArn")
+    vals.append(cbor.cbor_text(v.FirewallArn))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        keys.append("AvailabilityZone")
+        vals.append(cbor.cbor_text(u0))
+    if v.AvailabilityZoneId.is_some():
+        auto u1 = v.AvailabilityZoneId.unwrap()
+        keys.append("AvailabilityZoneId")
+        vals.append(cbor.cbor_text(u1))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u2 = v.VpcEndpointAssociationArn.unwrap()
+        keys.append("VpcEndpointAssociationArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u3))
+    if v.MinimumFlowAgeInSeconds.is_some():
+        auto u4 = v.MinimumFlowAgeInSeconds.unwrap()
+        keys.append("MinimumFlowAgeInSeconds")
+        vals.append(cbor.cbor_int(u4))
+    list[cbor.CborValue] e5 = []
+    for x5 in v.FlowFilters:
+        e5.append(flow_filter_to_cbor(x5))
+    keys.append("FlowFilters")
+    vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatefulEngineOptions to a CBOR map (member wire name -> value, model order).
+def stateful_engine_options_to_cbor(StatefulEngineOptions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleOrder.is_some():
+        auto u0 = v.RuleOrder.unwrap()
+        keys.append("RuleOrder")
+        vals.append(cbor.cbor_text(u0))
+    if v.StreamExceptionPolicy.is_some():
+        auto u1 = v.StreamExceptionPolicy.unwrap()
+        keys.append("StreamExceptionPolicy")
+        vals.append(cbor.cbor_text(u1))
+    if v.FlowTimeouts.is_some():
+        auto u2 = v.FlowTimeouts.unwrap()
+        keys.append("FlowTimeouts")
+        vals.append(flow_timeouts_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatefulEngineOptionsV2 to a CBOR map (member wire name -> value, model order).
+def stateful_engine_options_v2_to_cbor(StatefulEngineOptionsV2 v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.StreamExceptionPolicy.is_some():
+        auto u0 = v.StreamExceptionPolicy.unwrap()
+        keys.append("StreamExceptionPolicy")
+        vals.append(cbor.cbor_text(u0))
+    if v.FlowTimeouts.is_some():
+        auto u1 = v.FlowTimeouts.unwrap()
+        keys.append("FlowTimeouts")
+        vals.append(flow_timeouts_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatefulRule to a CBOR map (member wire name -> value, model order).
+def stateful_rule_to_cbor(StatefulRule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Action")
+    vals.append(cbor.cbor_text(v.Action))
+    keys.append("Header")
+    vals.append(header_to_cbor(v.Header))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.RuleOptions:
+        e0.append(rule_option_to_cbor(x0))
+    keys.append("RuleOptions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatefulRuleGroupOverride to a CBOR map (member wire name -> value, model order).
+def stateful_rule_group_override_to_cbor(StatefulRuleGroupOverride v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        keys.append("Action")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatefulRuleGroupReference to a CBOR map (member wire name -> value, model order).
+def stateful_rule_group_reference_to_cbor(StatefulRuleGroupReference v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    if v.Priority.is_some():
+        auto u0 = v.Priority.unwrap()
+        keys.append("Priority")
+        vals.append(cbor.cbor_int(u0))
+    if v.Override.is_some():
+        auto u1 = v.Override.unwrap()
+        keys.append("Override")
+        vals.append(stateful_rule_group_override_to_cbor(u1))
+    if v.DeepThreatInspection.is_some():
+        auto u2 = v.DeepThreatInspection.unwrap()
+        keys.append("DeepThreatInspection")
+        vals.append(cbor.cbor_bool(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatefulRuleOptions to a CBOR map (member wire name -> value, model order).
+def stateful_rule_options_to_cbor(StatefulRuleOptions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleOrder.is_some():
+        auto u0 = v.RuleOrder.unwrap()
+        keys.append("RuleOrder")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatelessRule to a CBOR map (member wire name -> value, model order).
+def stateless_rule_to_cbor(StatelessRule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RuleDefinition")
+    vals.append(rule_definition_to_cbor(v.RuleDefinition))
+    keys.append("Priority")
+    vals.append(cbor.cbor_int(v.Priority))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatelessRuleGroupReference to a CBOR map (member wire name -> value, model order).
+def stateless_rule_group_reference_to_cbor(StatelessRuleGroupReference v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    keys.append("Priority")
+    vals.append(cbor.cbor_int(v.Priority))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StatelessRulesAndCustomActions to a CBOR map (member wire name -> value, model order).
+def stateless_rules_and_custom_actions_to_cbor(StatelessRulesAndCustomActions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.StatelessRules:
+        e0.append(stateless_rule_to_cbor(x0))
+    keys.append("StatelessRules")
+    vals.append(cbor.cbor_list(e0))
+    if v.CustomActions.is_some():
+        auto u1 = v.CustomActions.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(custom_action_to_cbor(x2))
+        keys.append("CustomActions")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SubnetMapping to a CBOR map (member wire name -> value, model order).
+def subnet_mapping_to_cbor(SubnetMapping v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SubnetId")
+    vals.append(cbor.cbor_text(v.SubnetId))
+    if v.IPAddressType.is_some():
+        auto u0 = v.IPAddressType.unwrap()
+        keys.append("IPAddressType")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SummaryConfiguration to a CBOR map (member wire name -> value, model order).
+def summary_configuration_to_cbor(SummaryConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RuleOptions.is_some():
+        auto u0 = v.RuleOptions.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("RuleOptions")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TCPFlagField to a CBOR map (member wire name -> value, model order).
+def tcp_flag_field_to_cbor(TCPFlagField v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Flags:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Flags")
+    vals.append(cbor.cbor_list(e0))
+    if v.Masks.is_some():
+        auto u1 = v.Masks.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(cbor.cbor_text(x2))
+        keys.append("Masks")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TLSInspectionConfiguration to a CBOR map (member wire name -> value, model order).
+def tls_inspection_configuration_to_cbor(TLSInspectionConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ServerCertificateConfigurations.is_some():
+        auto u0 = v.ServerCertificateConfigurations.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(server_certificate_configuration_to_cbor(x1))
+        keys.append("ServerCertificateConfigurations")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Tags:
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateAvailabilityZoneChangeProtectionRequest to a CBOR map (member wire name -> value, model order).
+def update_availability_zone_change_protection_request_to_cbor(UpdateAvailabilityZoneChangeProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("AvailabilityZoneChangeProtection")
+    vals.append(cbor.cbor_bool(v.AvailabilityZoneChangeProtection))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateContainerAssociationRequest to a CBOR map (member wire name -> value, model order).
+def update_container_association_request_to_cbor(UpdateContainerAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ContainerAssociationName.is_some():
+        auto u0 = v.ContainerAssociationName.unwrap()
+        keys.append("ContainerAssociationName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ContainerAssociationArn.is_some():
+        auto u1 = v.ContainerAssociationArn.unwrap()
+        keys.append("ContainerAssociationArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    list[cbor.CborValue] e3 = []
+    for x3 in v.ContainerMonitoringConfigurations:
+        e3.append(container_monitoring_configuration_to_cbor(x3))
+    keys.append("ContainerMonitoringConfigurations")
+    vals.append(cbor.cbor_list(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    keys.append("UpdateToken")
+    vals.append(cbor.cbor_text(v.UpdateToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallAnalysisSettingsRequest to a CBOR map (member wire name -> value, model order).
+def update_firewall_analysis_settings_request_to_cbor(UpdateFirewallAnalysisSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.EnabledAnalysisTypes.is_some():
+        auto u0 = v.EnabledAnalysisTypes.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("EnabledAnalysisTypes")
+        vals.append(cbor.cbor_list(e1))
+    if v.FirewallArn.is_some():
+        auto u2 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.FirewallName.is_some():
+        auto u3 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u3))
+    if v.UpdateToken.is_some():
+        auto u4 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallDeleteProtectionRequest to a CBOR map (member wire name -> value, model order).
+def update_firewall_delete_protection_request_to_cbor(UpdateFirewallDeleteProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("DeleteProtection")
+    vals.append(cbor.cbor_bool(v.DeleteProtection))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallDescriptionRequest to a CBOR map (member wire name -> value, model order).
+def update_firewall_description_request_to_cbor(UpdateFirewallDescriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallEncryptionConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def update_firewall_encryption_configuration_request_to_cbor(UpdateFirewallEncryptionConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallPolicyChangeProtectionRequest to a CBOR map (member wire name -> value, model order).
+def update_firewall_policy_change_protection_request_to_cbor(UpdateFirewallPolicyChangeProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("FirewallPolicyChangeProtection")
+    vals.append(cbor.cbor_bool(v.FirewallPolicyChangeProtection))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallPolicyRequest to a CBOR map (member wire name -> value, model order).
+def update_firewall_policy_request_to_cbor(UpdateFirewallPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("UpdateToken")
+    vals.append(cbor.cbor_text(v.UpdateToken))
+    if v.FirewallPolicyArn.is_some():
+        auto u0 = v.FirewallPolicyArn.unwrap()
+        keys.append("FirewallPolicyArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallPolicyName.is_some():
+        auto u1 = v.FirewallPolicyName.unwrap()
+        keys.append("FirewallPolicyName")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("FirewallPolicy")
+    vals.append(firewall_policy_to_cbor(v.FirewallPolicy))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        keys.append("DryRun")
+        vals.append(cbor.cbor_bool(u3))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFirewallPolicyV2Request to a CBOR map (member wire name -> value, model order).
+def update_firewall_policy_v2_request_to_cbor(UpdateFirewallPolicyV2Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("UpdateToken")
+    vals.append(cbor.cbor_text(v.UpdateToken))
+    if v.FirewallPolicyV2Arn.is_some():
+        auto u0 = v.FirewallPolicyV2Arn.unwrap()
+        keys.append("FirewallPolicyV2Arn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallPolicyV2Name.is_some():
+        auto u1 = v.FirewallPolicyV2Name.unwrap()
+        keys.append("FirewallPolicyV2Name")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("FirewallPolicyV2")
+    vals.append(firewall_policy_v2_to_cbor(v.FirewallPolicyV2))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        keys.append("DryRun")
+        vals.append(cbor.cbor_bool(u3))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLoggingConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def update_logging_configuration_request_to_cbor(UpdateLoggingConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallArn.is_some():
+        auto u0 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallName.is_some():
+        auto u1 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u1))
+    if v.LoggingConfiguration.is_some():
+        auto u2 = v.LoggingConfiguration.unwrap()
+        keys.append("LoggingConfiguration")
+        vals.append(logging_configuration_to_cbor(u2))
+    if v.EnableMonitoringDashboard.is_some():
+        auto u3 = v.EnableMonitoringDashboard.unwrap()
+        keys.append("EnableMonitoringDashboard")
+        vals.append(cbor.cbor_bool(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProxySettingsRequest to a CBOR map (member wire name -> value, model order).
+def update_proxy_settings_request_to_cbor(UpdateProxySettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FirewallArn.is_some():
+        auto u0 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallName.is_some():
+        auto u1 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u1))
+    if v.UpdateToken.is_some():
+        auto u2 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.ProxySettings.is_some():
+        auto u3 = v.ProxySettings.unwrap()
+        keys.append("ProxySettings")
+        vals.append(proxy_settings_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateRuleGroupRequest to a CBOR map (member wire name -> value, model order).
+def update_rule_group_request_to_cbor(UpdateRuleGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("UpdateToken")
+    vals.append(cbor.cbor_text(v.UpdateToken))
+    if v.RuleGroupArn.is_some():
+        auto u0 = v.RuleGroupArn.unwrap()
+        keys.append("RuleGroupArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.RuleGroupName.is_some():
+        auto u1 = v.RuleGroupName.unwrap()
+        keys.append("RuleGroupName")
+        vals.append(cbor.cbor_text(u1))
+    if v.RuleGroup.is_some():
+        auto u2 = v.RuleGroup.unwrap()
+        keys.append("RuleGroup")
+        vals.append(rule_group_to_cbor(u2))
+    if v.FirewallRuleGroup.is_some():
+        auto u3 = v.FirewallRuleGroup.unwrap()
+        keys.append("FirewallRuleGroup")
+        vals.append(firewall_rule_group_to_cbor(u3))
+    if v.IpsRuleGroup.is_some():
+        auto u4 = v.IpsRuleGroup.unwrap()
+        keys.append("IpsRuleGroup")
+        vals.append(ips_rule_group_to_cbor(u4))
+    if v.Rules.is_some():
+        auto u5 = v.Rules.unwrap()
+        keys.append("Rules")
+        vals.append(cbor.cbor_text(u5))
+    if v.Type.is_some():
+        auto u6 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u6))
+    if v.Description.is_some():
+        auto u7 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u7))
+    if v.DryRun.is_some():
+        auto u8 = v.DryRun.unwrap()
+        keys.append("DryRun")
+        vals.append(cbor.cbor_bool(u8))
+    if v.EncryptionConfiguration.is_some():
+        auto u9 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u9))
+    if v.SourceMetadata.is_some():
+        auto u10 = v.SourceMetadata.unwrap()
+        keys.append("SourceMetadata")
+        vals.append(source_metadata_to_cbor(u10))
+    if v.AnalyzeRuleGroup.is_some():
+        auto u11 = v.AnalyzeRuleGroup.unwrap()
+        keys.append("AnalyzeRuleGroup")
+        vals.append(cbor.cbor_bool(u11))
+    if v.SummaryConfiguration.is_some():
+        auto u12 = v.SummaryConfiguration.unwrap()
+        keys.append("SummaryConfiguration")
+        vals.append(summary_configuration_to_cbor(u12))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateSubnetChangeProtectionRequest to a CBOR map (member wire name -> value, model order).
+def update_subnet_change_protection_request_to_cbor(UpdateSubnetChangeProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        keys.append("UpdateToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        keys.append("FirewallArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        keys.append("FirewallName")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("SubnetChangeProtection")
+    vals.append(cbor.cbor_bool(v.SubnetChangeProtection))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateTLSInspectionConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def update_tls_inspection_configuration_request_to_cbor(UpdateTLSInspectionConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u0 = v.TLSInspectionConfigurationArn.unwrap()
+        keys.append("TLSInspectionConfigurationArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.TLSInspectionConfigurationName.is_some():
+        auto u1 = v.TLSInspectionConfigurationName.unwrap()
+        keys.append("TLSInspectionConfigurationName")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("TLSInspectionConfiguration")
+    vals.append(tls_inspection_configuration_to_cbor(v.TLSInspectionConfiguration))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u3))
+    keys.append("UpdateToken")
+    vals.append(cbor.cbor_text(v.UpdateToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize VpcEndpoint to a CBOR map (member wire name -> value, model order).
+def vpc_endpoint_to_cbor(VpcEndpoint v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VpcId")
+    vals.append(cbor.cbor_text(v.VpcId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.SubnetMappings:
-        e0.append(x0.to_json())
-    parts.append("\"SubnetMappings\":" + network_firewall_json_arr(e0))
-    return network_firewall_json_obj(parts)
+        e0.append(subnet_mapping_to_cbor(x0))
+    keys.append("SubnetMappings")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Network_Firewall client: credentials + region, threaded into every operation.
 struct Network_FirewallClient:
@@ -3973,732 +4849,633 @@ struct Network_FirewallClient:
 
     # AcceptNetworkFirewallTransitGatewayAttachment
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def accept_network_firewall_transit_gateway_attachment(self, AcceptNetworkFirewallTransitGatewayAttachmentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AcceptNetworkFirewallTransitGatewayAttachment", body)
+    def accept_network_firewall_transit_gateway_attachment(self, AcceptNetworkFirewallTransitGatewayAttachmentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(accept_network_firewall_transit_gateway_attachment_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "AcceptNetworkFirewallTransitGatewayAttachment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateAvailabilityZones
     # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def associate_availability_zones(self, AssociateAvailabilityZonesRequest input) -> str:
-        auto body = associate_availability_zones_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AssociateAvailabilityZones", body)
+    def associate_availability_zones(self, AssociateAvailabilityZonesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_availability_zones_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "AssociateAvailabilityZones", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateFirewallPolicy
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def associate_firewall_policy(self, AssociateFirewallPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AssociateFirewallPolicy", body)
+    def associate_firewall_policy(self, AssociateFirewallPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_firewall_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "AssociateFirewallPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateSubnets
     # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def associate_subnets(self, AssociateSubnetsRequest input) -> str:
-        auto body = associate_subnets_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AssociateSubnets", body)
-
-    # AttachRuleGroupsToProxyConfiguration
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def attach_rule_groups_to_proxy_configuration(self, AttachRuleGroupsToProxyConfigurationRequest input) -> str:
-        auto body = attach_rule_groups_to_proxy_configuration_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AttachRuleGroupsToProxyConfiguration", body)
+    def associate_subnets(self, AssociateSubnetsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_subnets_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "AssociateSubnets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateContainerAssociation
     # errors: InsufficientCapacityException, InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
-    def create_container_association(self, CreateContainerAssociationRequest input) -> str:
-        auto body = create_container_association_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateContainerAssociation", body)
+    def create_container_association(self, CreateContainerAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_container_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateContainerAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateFirewall
     # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ThrottlingException
-    def create_firewall(self, CreateFirewallRequest input) -> str:
-        auto body = create_firewall_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateFirewall", body)
+    def create_firewall(self, CreateFirewallRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_firewall_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateFirewall", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateFirewallPolicy
     # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ThrottlingException
-    def create_firewall_policy(self, CreateFirewallPolicyRequest input) -> str:
-        auto body = create_firewall_policy_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateFirewallPolicy", body)
+    def create_firewall_policy(self, CreateFirewallPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_firewall_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateFirewallPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
-    # CreateProxy
-    # errors: InternalServerError, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
-    def create_proxy(self, CreateProxyRequest input) -> str:
-        auto body = create_proxy_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxy", body)
-
-    # CreateProxyConfiguration
-    # errors: InternalServerError, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
-    def create_proxy_configuration(self, CreateProxyConfigurationRequest input) -> str:
-        auto body = create_proxy_configuration_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxyConfiguration", body)
-
-    # CreateProxyRuleGroup
-    # errors: InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
-    def create_proxy_rule_group(self, CreateProxyRuleGroupRequest input) -> str:
-        auto body = create_proxy_rule_group_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxyRuleGroup", body)
-
-    # CreateProxyRules
-    # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def create_proxy_rules(self, CreateProxyRulesRequest input) -> str:
-        auto body = create_proxy_rules_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxyRules", body)
+    # CreateFirewallPolicyV2
+    # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_firewall_policy_v2(self, CreateFirewallPolicyV2Request input) -> bytes:
+        auto body = cbor.cbor_encode(create_firewall_policy_v2_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateFirewallPolicyV2", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateRuleGroup
     # errors: InsufficientCapacityException, InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
-    def create_rule_group(self, CreateRuleGroupRequest input) -> str:
-        auto body = create_rule_group_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateRuleGroup", body)
+    def create_rule_group(self, CreateRuleGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_rule_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateRuleGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateTLSInspectionConfiguration
     # errors: InsufficientCapacityException, InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
-    def create_tls_inspection_configuration(self, CreateTLSInspectionConfigurationRequest input) -> str:
-        auto body = create_tls_inspection_configuration_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateTLSInspectionConfiguration", body)
+    def create_tls_inspection_configuration(self, CreateTLSInspectionConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_tls_inspection_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateTLSInspectionConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateVpcEndpointAssociation
     # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
-    def create_vpc_endpoint_association(self, CreateVpcEndpointAssociationRequest input) -> str:
-        auto body = create_vpc_endpoint_association_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateVpcEndpointAssociation", body)
+    def create_vpc_endpoint_association(self, CreateVpcEndpointAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_vpc_endpoint_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "CreateVpcEndpointAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteContainerAssociation
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_container_association(self, DeleteContainerAssociationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteContainerAssociation", body)
+    def delete_container_association(self, DeleteContainerAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_container_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteContainerAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteFirewall
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
-    def delete_firewall(self, DeleteFirewallRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteFirewall", body)
+    def delete_firewall(self, DeleteFirewallRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_firewall_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteFirewall", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteFirewallPolicy
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
-    def delete_firewall_policy(self, DeleteFirewallPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteFirewallPolicy", body)
+    def delete_firewall_policy(self, DeleteFirewallPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_firewall_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteFirewallPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # DeleteFirewallPolicyV2
+    # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
+    def delete_firewall_policy_v2(self, DeleteFirewallPolicyV2Request input) -> bytes:
+        auto body = cbor.cbor_encode(delete_firewall_policy_v2_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteFirewallPolicyV2", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteNetworkFirewallTransitGatewayAttachment
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_network_firewall_transit_gateway_attachment(self, DeleteNetworkFirewallTransitGatewayAttachmentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteNetworkFirewallTransitGatewayAttachment", body)
+    def delete_network_firewall_transit_gateway_attachment(self, DeleteNetworkFirewallTransitGatewayAttachmentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_network_firewall_transit_gateway_attachment_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteNetworkFirewallTransitGatewayAttachment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProxy
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
-    def delete_proxy(self, DeleteProxyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteProxy", body)
-
-    # DeleteProxyConfiguration
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_proxy_configuration(self, DeleteProxyConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteProxyConfiguration", body)
-
-    # DeleteProxyRuleGroup
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_proxy_rule_group(self, DeleteProxyRuleGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteProxyRuleGroup", body)
-
-    # DeleteProxyRules
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_proxy_rules(self, DeleteProxyRulesRequest input) -> str:
-        auto body = delete_proxy_rules_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteProxyRules", body)
+    def delete_proxy(self, DeleteProxyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_proxy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteProxy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteResourcePolicy
     # errors: InternalServerError, InvalidRequestException, InvalidResourcePolicyException, ResourceNotFoundException, ThrottlingException
-    def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
+    def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteRuleGroup
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
-    def delete_rule_group(self, DeleteRuleGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteRuleGroup", body)
+    def delete_rule_group(self, DeleteRuleGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_rule_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteRuleGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTLSInspectionConfiguration
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_tls_inspection_configuration(self, DeleteTLSInspectionConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteTLSInspectionConfiguration", body)
+    def delete_tls_inspection_configuration(self, DeleteTLSInspectionConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_tls_inspection_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteTLSInspectionConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteVpcEndpointAssociation
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def delete_vpc_endpoint_association(self, DeleteVpcEndpointAssociationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteVpcEndpointAssociation", body)
+    def delete_vpc_endpoint_association(self, DeleteVpcEndpointAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_vpc_endpoint_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DeleteVpcEndpointAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeContainerAssociation
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_container_association(self, DescribeContainerAssociationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeContainerAssociation", body)
+    def describe_container_association(self, DescribeContainerAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_container_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeContainerAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeFirewall
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_firewall(self, DescribeFirewallRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeFirewall", body)
+    def describe_firewall(self, DescribeFirewallRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_firewall_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeFirewall", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeFirewallMetadata
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_firewall_metadata(self, DescribeFirewallMetadataRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeFirewallMetadata", body)
+    def describe_firewall_metadata(self, DescribeFirewallMetadataRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_firewall_metadata_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeFirewallMetadata", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeFirewallPolicy
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_firewall_policy(self, DescribeFirewallPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeFirewallPolicy", body)
+    def describe_firewall_policy(self, DescribeFirewallPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_firewall_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeFirewallPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # DescribeFirewallPolicyV2
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def describe_firewall_policy_v2(self, DescribeFirewallPolicyV2Request input) -> bytes:
+        auto body = cbor.cbor_encode(describe_firewall_policy_v2_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeFirewallPolicyV2", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeFlowOperation
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_flow_operation(self, DescribeFlowOperationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeFlowOperation", body)
+    def describe_flow_operation(self, DescribeFlowOperationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_flow_operation_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeFlowOperation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLoggingConfiguration
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_logging_configuration(self, DescribeLoggingConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeLoggingConfiguration", body)
+    def describe_logging_configuration(self, DescribeLoggingConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_logging_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeLoggingConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProxy
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_proxy(self, DescribeProxyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeProxy", body)
-
-    # DescribeProxyConfiguration
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_proxy_configuration(self, DescribeProxyConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeProxyConfiguration", body)
-
-    # DescribeProxyRule
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_proxy_rule(self, DescribeProxyRuleRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeProxyRule", body)
-
-    # DescribeProxyRuleGroup
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_proxy_rule_group(self, DescribeProxyRuleGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeProxyRuleGroup", body)
+    def describe_proxy(self, DescribeProxyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_proxy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeProxy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeResourcePolicy
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_resource_policy(self, DescribeResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeResourcePolicy", body)
+    def describe_resource_policy(self, DescribeResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeRuleGroup
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_rule_group(self, DescribeRuleGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeRuleGroup", body)
+    def describe_rule_group(self, DescribeRuleGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_rule_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeRuleGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeRuleGroupMetadata
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_rule_group_metadata(self, DescribeRuleGroupMetadataRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeRuleGroupMetadata", body)
+    def describe_rule_group_metadata(self, DescribeRuleGroupMetadataRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_rule_group_metadata_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeRuleGroupMetadata", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeRuleGroupSummary
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_rule_group_summary(self, DescribeRuleGroupSummaryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeRuleGroupSummary", body)
+    def describe_rule_group_summary(self, DescribeRuleGroupSummaryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_rule_group_summary_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeRuleGroupSummary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTLSInspectionConfiguration
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_tls_inspection_configuration(self, DescribeTLSInspectionConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeTLSInspectionConfiguration", body)
+    def describe_tls_inspection_configuration(self, DescribeTLSInspectionConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_tls_inspection_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeTLSInspectionConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeVpcEndpointAssociation
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def describe_vpc_endpoint_association(self, DescribeVpcEndpointAssociationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeVpcEndpointAssociation", body)
-
-    # DetachRuleGroupsFromProxyConfiguration
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def detach_rule_groups_from_proxy_configuration(self, DetachRuleGroupsFromProxyConfigurationRequest input) -> str:
-        auto body = detach_rule_groups_from_proxy_configuration_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DetachRuleGroupsFromProxyConfiguration", body)
+    def describe_vpc_endpoint_association(self, DescribeVpcEndpointAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_vpc_endpoint_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DescribeVpcEndpointAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateAvailabilityZones
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def disassociate_availability_zones(self, DisassociateAvailabilityZonesRequest input) -> str:
-        auto body = disassociate_availability_zones_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DisassociateAvailabilityZones", body)
+    def disassociate_availability_zones(self, DisassociateAvailabilityZonesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_availability_zones_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DisassociateAvailabilityZones", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateSubnets
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def disassociate_subnets(self, DisassociateSubnetsRequest input) -> str:
-        auto body = disassociate_subnets_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DisassociateSubnets", body)
+    def disassociate_subnets(self, DisassociateSubnetsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_subnets_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "DisassociateSubnets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetAnalysisReportResults
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def get_analysis_report_results(self, GetAnalysisReportResultsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "GetAnalysisReportResults", body)
+    def get_analysis_report_results(self, GetAnalysisReportResultsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_analysis_report_results_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "GetAnalysisReportResults", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAnalysisReports
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def list_analysis_reports(self, ListAnalysisReportsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListAnalysisReports", body)
+    def list_analysis_reports(self, ListAnalysisReportsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_analysis_reports_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListAnalysisReports", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListContainerAssociations
     # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_container_associations(self, ListContainerAssociationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListContainerAssociations", body)
+    def list_container_associations(self, ListContainerAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_container_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListContainerAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFirewallPolicies
     # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_firewall_policies(self, ListFirewallPoliciesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewallPolicies", body)
+    def list_firewall_policies(self, ListFirewallPoliciesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_firewall_policies_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListFirewallPolicies", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # ListFirewallPoliciesV2
+    # errors: InternalServerError, InvalidRequestException, ThrottlingException
+    def list_firewall_policies_v2(self, ListFirewallPoliciesV2Request input) -> bytes:
+        auto body = cbor.cbor_encode(list_firewall_policies_v2_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListFirewallPoliciesV2", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFirewalls
     # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_firewalls(self, ListFirewallsRequest input) -> str:
-        auto body = list_firewalls_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewalls", body)
+    def list_firewalls(self, ListFirewallsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_firewalls_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListFirewalls", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFlowOperationResults
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def list_flow_operation_results(self, ListFlowOperationResultsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFlowOperationResults", body)
+    def list_flow_operation_results(self, ListFlowOperationResultsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_flow_operation_results_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListFlowOperationResults", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFlowOperations
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def list_flow_operations(self, ListFlowOperationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFlowOperations", body)
-
-    # ListProxies
-    # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_proxies(self, ListProxiesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListProxies", body)
-
-    # ListProxyConfigurations
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def list_proxy_configurations(self, ListProxyConfigurationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListProxyConfigurations", body)
-
-    # ListProxyRuleGroups
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def list_proxy_rule_groups(self, ListProxyRuleGroupsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListProxyRuleGroups", body)
+    def list_flow_operations(self, ListFlowOperationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_flow_operations_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListFlowOperations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListRuleGroups
     # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_rule_groups(self, ListRuleGroupsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListRuleGroups", body)
+    def list_rule_groups(self, ListRuleGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_rule_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListRuleGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTLSInspectionConfigurations
     # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_tls_inspection_configurations(self, ListTLSInspectionConfigurationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListTLSInspectionConfigurations", body)
+    def list_tls_inspection_configurations(self, ListTLSInspectionConfigurationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tls_inspection_configurations_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListTLSInspectionConfigurations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListVpcEndpointAssociations
     # errors: InternalServerError, InvalidRequestException, ThrottlingException
-    def list_vpc_endpoint_associations(self, ListVpcEndpointAssociationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListVpcEndpointAssociations", body)
+    def list_vpc_endpoint_associations(self, ListVpcEndpointAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_vpc_endpoint_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "ListVpcEndpointAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutResourcePolicy
     # errors: InternalServerError, InvalidRequestException, InvalidResourcePolicyException, ResourceNotFoundException, ThrottlingException
-    def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+    def put_resource_policy(self, PutResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(put_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "PutResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RejectNetworkFirewallTransitGatewayAttachment
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def reject_network_firewall_transit_gateway_attachment(self, RejectNetworkFirewallTransitGatewayAttachmentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "RejectNetworkFirewallTransitGatewayAttachment", body)
+    def reject_network_firewall_transit_gateway_attachment(self, RejectNetworkFirewallTransitGatewayAttachmentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reject_network_firewall_transit_gateway_attachment_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "RejectNetworkFirewallTransitGatewayAttachment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartAnalysisReport
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def start_analysis_report(self, StartAnalysisReportRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "StartAnalysisReport", body)
+    def start_analysis_report(self, StartAnalysisReportRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_analysis_report_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "StartAnalysisReport", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartFlowCapture
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def start_flow_capture(self, StartFlowCaptureRequest input) -> str:
-        auto body = start_flow_capture_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "StartFlowCapture", body)
+    def start_flow_capture(self, StartFlowCaptureRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_flow_capture_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "StartFlowCapture", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartFlowFlush
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def start_flow_flush(self, StartFlowFlushRequest input) -> str:
-        auto body = start_flow_flush_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "StartFlowFlush", body)
+    def start_flow_flush(self, StartFlowFlushRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_flow_flush_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "StartFlowFlush", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateAvailabilityZoneChangeProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
-    def update_availability_zone_change_protection(self, UpdateAvailabilityZoneChangeProtectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateAvailabilityZoneChangeProtection", body)
+    def update_availability_zone_change_protection(self, UpdateAvailabilityZoneChangeProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_availability_zone_change_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateAvailabilityZoneChangeProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateContainerAssociation
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, LimitExceededException, ResourceNotFoundException, ThrottlingException
-    def update_container_association(self, UpdateContainerAssociationRequest input) -> str:
-        auto body = update_container_association_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateContainerAssociation", body)
+    def update_container_association(self, UpdateContainerAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_container_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateContainerAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFirewallAnalysisSettings
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def update_firewall_analysis_settings(self, UpdateFirewallAnalysisSettingsRequest input) -> str:
-        auto body = update_firewall_analysis_settings_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallAnalysisSettings", body)
+    def update_firewall_analysis_settings(self, UpdateFirewallAnalysisSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_analysis_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallAnalysisSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFirewallDeleteProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
-    def update_firewall_delete_protection(self, UpdateFirewallDeleteProtectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallDeleteProtection", body)
+    def update_firewall_delete_protection(self, UpdateFirewallDeleteProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_delete_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallDeleteProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFirewallDescription
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def update_firewall_description(self, UpdateFirewallDescriptionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallDescription", body)
+    def update_firewall_description(self, UpdateFirewallDescriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_description_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallDescription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFirewallEncryptionConfiguration
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
-    def update_firewall_encryption_configuration(self, UpdateFirewallEncryptionConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallEncryptionConfiguration", body)
+    def update_firewall_encryption_configuration(self, UpdateFirewallEncryptionConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_encryption_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallEncryptionConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFirewallPolicy
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def update_firewall_policy(self, UpdateFirewallPolicyRequest input) -> str:
-        auto body = update_firewall_policy_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallPolicy", body)
+    def update_firewall_policy(self, UpdateFirewallPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFirewallPolicyChangeProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
-    def update_firewall_policy_change_protection(self, UpdateFirewallPolicyChangeProtectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallPolicyChangeProtection", body)
+    def update_firewall_policy_change_protection(self, UpdateFirewallPolicyChangeProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_policy_change_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallPolicyChangeProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # UpdateFirewallPolicyV2
+    # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def update_firewall_policy_v2(self, UpdateFirewallPolicyV2Request input) -> bytes:
+        auto body = cbor.cbor_encode(update_firewall_policy_v2_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateFirewallPolicyV2", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLoggingConfiguration
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, LogDestinationPermissionException, ResourceNotFoundException, ThrottlingException
-    def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> str:
-        auto body = update_logging_configuration_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateLoggingConfiguration", body)
-
-    # UpdateProxy
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
-    def update_proxy(self, UpdateProxyRequest input) -> str:
-        auto body = update_proxy_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxy", body)
-
-    # UpdateProxyConfiguration
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def update_proxy_configuration(self, UpdateProxyConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyConfiguration", body)
-
-    # UpdateProxyRule
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def update_proxy_rule(self, UpdateProxyRuleRequest input) -> str:
-        auto body = update_proxy_rule_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyRule", body)
-
-    # UpdateProxyRuleGroupPriorities
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def update_proxy_rule_group_priorities(self, UpdateProxyRuleGroupPrioritiesRequest input) -> str:
-        auto body = update_proxy_rule_group_priorities_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyRuleGroupPriorities", body)
-
-    # UpdateProxyRulePriorities
-    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
-    def update_proxy_rule_priorities(self, UpdateProxyRulePrioritiesRequest input) -> str:
-        auto body = update_proxy_rule_priorities_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyRulePriorities", body)
+    def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_logging_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateLoggingConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProxySettings
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
-    def update_proxy_settings(self, UpdateProxySettingsRequest input) -> str:
-        auto body = update_proxy_settings_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxySettings", body)
+    def update_proxy_settings(self, UpdateProxySettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_proxy_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateProxySettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateRuleGroup
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def update_rule_group(self, UpdateRuleGroupRequest input) -> str:
-        auto body = update_rule_group_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateRuleGroup", body)
+    def update_rule_group(self, UpdateRuleGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_rule_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateRuleGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateSubnetChangeProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
-    def update_subnet_change_protection(self, UpdateSubnetChangeProtectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateSubnetChangeProtection", body)
+    def update_subnet_change_protection(self, UpdateSubnetChangeProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_subnet_change_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateSubnetChangeProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateTLSInspectionConfiguration
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
-    def update_tls_inspection_configuration(self, UpdateTLSInspectionConfigurationRequest input) -> str:
-        auto body = update_tls_inspection_configuration_request_to_json(input)
-        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateTLSInspectionConfiguration", body)
-
-    # Paginator for GetAnalysisReportResults — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: AnalysisReportResults).
-    def paginate_get_analysis_report_results(self, GetAnalysisReportResultsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "GetAnalysisReportResults", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListAnalysisReports — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: AnalysisReports).
-    def paginate_list_analysis_reports(self, ListAnalysisReportsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListAnalysisReports", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListContainerAssociations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ContainerAssociations).
-    def paginate_list_container_associations(self, ListContainerAssociationsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListContainerAssociations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListFirewallPolicies — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: FirewallPolicies).
-    def paginate_list_firewall_policies(self, ListFirewallPoliciesRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewallPolicies", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListFirewalls — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Firewalls).
-    def paginate_list_firewalls(self, ListFirewallsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = list_firewalls_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewalls", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListFlowOperationResults — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Flows).
-    def paginate_list_flow_operation_results(self, ListFlowOperationResultsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFlowOperationResults", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListFlowOperations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: FlowOperations).
-    def paginate_list_flow_operations(self, ListFlowOperationsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFlowOperations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListProxies — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Proxies).
-    def paginate_list_proxies(self, ListProxiesRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListProxies", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListProxyConfigurations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ProxyConfigurations).
-    def paginate_list_proxy_configurations(self, ListProxyConfigurationsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListProxyConfigurations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListProxyRuleGroups — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ProxyRuleGroups).
-    def paginate_list_proxy_rule_groups(self, ListProxyRuleGroupsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListProxyRuleGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListRuleGroups — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: RuleGroups).
-    def paginate_list_rule_groups(self, ListRuleGroupsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListRuleGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTLSInspectionConfigurations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: TLSInspectionConfigurations).
-    def paginate_list_tls_inspection_configurations(self, ListTLSInspectionConfigurationsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListTLSInspectionConfigurations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTagsForResource — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Tags).
-    def paginate_list_tags_for_resource(self, ListTagsForResourceRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListTagsForResource", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListVpcEndpointAssociations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: VpcEndpointAssociations).
-    def paginate_list_vpc_endpoint_associations(self, ListVpcEndpointAssociationsRequest input):
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListVpcEndpointAssociations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # One poll of DescribeFirewallPolicy for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_describe_firewall_policy(self, DescribeFirewallPolicyRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
-        auto resp = core.send(host, self.describe_firewall_policy(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # Waiter FirewallPolicyActive — polls DescribeFirewallPolicy until a success acceptor fires (delay 15s,
-    # max 40 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_firewall_policy_active.
-    def wait_firewall_policy_active(self, DescribeFirewallPolicyRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="FirewallPolicyActive",
-            delay=15,
-            max_attempts=40,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "FirewallPolicyResponse.FirewallPolicyStatus", "ACTIVE"),
-                waiters.acceptor_path(waiters.state_failure(), "FirewallPolicyResponse.FirewallPolicyStatus", "ERROR")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_firewall_policy(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
+    def update_tls_inspection_configuration(self, UpdateTLSInspectionConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_tls_inspection_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(network_firewall_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(network_firewall_service(), self.region, host, "NetworkFirewall_20201112", "UpdateTLSInspectionConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a Network_FirewallClient bound to credentials + region.
 def network_firewall_client(core.Credentials creds, str region) -> Network_FirewallClient:

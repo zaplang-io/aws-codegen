@@ -1266,6 +1266,9 @@
     },
     "endTimeBehaviorReasonCode": {
      "shape": "EndTimeBehaviorReasonCode"
+    },
+    "freeTrialEndTime": {
+     "shape": "Timestamp"
     }
    }
   },
@@ -1901,6 +1904,9 @@
     },
     "endTimeBehavior": {
      "shape": "EndTimeBehavior"
+    },
+    "freeTrialSummary": {
+     "shape": "FreeTrialSummary"
     }
    }
   },
@@ -2140,6 +2146,14 @@
     },
     "grants": {
      "shape": "GrantList"
+    }
+   }
+  },
+  "FreeTrialSummary": {
+   "type": "structure",
+   "members": {
+    "trialEndTime": {
+     "shape": "Timestamp"
     }
    }
   },
@@ -2438,8 +2452,8 @@
   },
   "InvoiceId": {
    "type": "string",
-   "max": 255,
-   "min": 1
+   "max": 1024,
+   "min": 0
   },
   "InvoiceType": {
    "type": "string",

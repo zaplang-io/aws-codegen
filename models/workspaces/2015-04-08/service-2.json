@@ -4,8 +4,9 @@
   "apiVersion": "2015-04-08",
   "endpointPrefix": "workspaces",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceFullName": "Amazon WorkSpaces",
@@ -13,6 +14,7 @@
   "signatureVersion": "v4",
   "targetPrefix": "WorkspacesService",
   "uid": "workspaces-2015-04-08",
+  "xmlNamespace": "http://workspaces.amazonaws.com/api/v1",
   "auth": [
    "aws.auth#sigv4"
   ]
@@ -6053,7 +6055,13 @@
     "WINDOWS_SERVER_2022",
     "WINDOWS_SERVER_2025",
     "RHEL_8",
-    "ROCKY_8"
+    "ROCKY_8",
+    "UBUNTU_24_04",
+    "RHEL_9",
+    "ROCKY_9",
+    "UBUNTU_26_04",
+    "RHEL_10",
+    "ROCKY_10"
    ]
   },
   "OperatingSystemNameList": {

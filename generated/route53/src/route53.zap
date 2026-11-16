@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 71 operations — 71 with a generated method,
+# Coverage (rest-xml): 74 operations — 74 with a generated method,
 #   0 skipped (a body member is not yet serializable by the XML emitter).
-#   254 structs (plain carriers), 18 enums, 69 error variants.
-#   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
+#   266 structs (plain carriers), 18 enums, 71 error variants.
+#   0 paginators generated (9 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (1 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
@@ -517,6 +517,14 @@ struct CreateQueryLoggingConfigResponse:
     QueryLoggingConfig QueryLoggingConfig
     str Location
 
+struct CreateResourceRecordSetProtectionsRequest:
+    str HostedZoneId
+    list[ResourceRecordSetProtectionConfig] Protections
+
+struct CreateResourceRecordSetProtectionsResponse:
+    # empty shape in the model; reserved field keeps it valid
+    Optional[str] reserved
+
 struct CreateReusableDelegationSetRequest:
     str CallerReference
     Optional[str] HostedZoneId
@@ -627,6 +635,14 @@ struct DeleteQueryLoggingConfigRequest:
     str Id
 
 struct DeleteQueryLoggingConfigResponse:
+    # empty shape in the model; reserved field keeps it valid
+    Optional[str] reserved
+
+struct DeleteResourceRecordSetProtectionsRequest:
+    str HostedZoneId
+    list[ResourceRecordSetProtectionKey] Protections
+
+struct DeleteResourceRecordSetProtectionsResponse:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
@@ -947,6 +963,10 @@ struct InvalidKeySigningKeyStatus:
 struct InvalidPaginationToken:
     Optional[str] message
 
+struct InvalidResourceRecordSetProtectionBatch:
+    Optional[str] Message
+    list[ProtectionError] Errors
+
 struct InvalidSigningStatus:
     Optional[str] message
 
@@ -1093,6 +1113,17 @@ struct ListQueryLoggingConfigsRequest:
 
 struct ListQueryLoggingConfigsResponse:
     list[QueryLoggingConfig] QueryLoggingConfigs
+    Optional[str] NextToken
+
+struct ListResourceRecordSetProtectionsRequest:
+    str HostedZoneId
+    Optional[str] StartRecordName
+    Optional[str] StartRecordType
+    Optional[str] MaxResults
+    Optional[str] NextToken
+
+struct ListResourceRecordSetProtectionsResponse:
+    list[ResourceRecordSetProtection] ResourceRecordSetProtections
     Optional[str] NextToken
 
 struct ListResourceRecordSetsRequest:
@@ -1254,6 +1285,16 @@ struct NotAuthorizedException:
 struct PriorRequestNotComplete:
     Optional[str] message
 
+struct ProtectionAlreadyExists:
+    Optional[str] Message
+    list[ProtectionError] Errors
+
+struct ProtectionError:
+    str RecordName
+    str RecordType
+    str Code
+    str Message
+
 struct PublicZoneVPCAssociation:
     Optional[str] message
 
@@ -1284,6 +1325,20 @@ struct ResourceRecordSet:
     Optional[str] TrafficPolicyInstanceId
     Optional[CidrRoutingConfig] CidrRoutingConfig
     Optional[GeoProximityLocation] GeoProximityLocation
+
+struct ResourceRecordSetProtection:
+    str RecordName
+    str RecordType
+    Optional[str] Comment
+
+struct ResourceRecordSetProtectionConfig:
+    str RecordName
+    str RecordType
+    Optional[str] Comment
+
+struct ResourceRecordSetProtectionKey:
+    str RecordName
+    str RecordType
 
 struct ResourceTagSet:
     Optional[str] ResourceType
@@ -1484,6 +1539,7 @@ enum Route_53ErrorKind:
     InvalidKeySigningKeyName
     InvalidKeySigningKeyStatus
     InvalidPaginationToken
+    InvalidResourceRecordSetProtectionBatch
     InvalidSigningStatus
     InvalidTrafficPolicyDocument
     InvalidVPCId
@@ -1507,6 +1563,7 @@ enum Route_53ErrorKind:
     NoSuchTrafficPolicyInstance
     NotAuthorizedException
     PriorRequestNotComplete
+    ProtectionAlreadyExists
     PublicZoneVPCAssociation
     QueryLoggingConfigAlreadyExists
     ThrottlingException
@@ -1591,6 +1648,8 @@ def route53_error_kind(str code) -> Route_53ErrorKind:
         return Route_53ErrorKind.InvalidKeySigningKeyStatus
     if name == "InvalidPaginationToken":
         return Route_53ErrorKind.InvalidPaginationToken
+    if name == "InvalidResourceRecordSetProtectionBatch":
+        return Route_53ErrorKind.InvalidResourceRecordSetProtectionBatch
     if name == "InvalidSigningStatus":
         return Route_53ErrorKind.InvalidSigningStatus
     if name == "InvalidTrafficPolicyDocument":
@@ -1637,6 +1696,8 @@ def route53_error_kind(str code) -> Route_53ErrorKind:
         return Route_53ErrorKind.NotAuthorizedException
     if name == "PriorRequestNotComplete":
         return Route_53ErrorKind.PriorRequestNotComplete
+    if name == "ProtectionAlreadyExists":
+        return Route_53ErrorKind.ProtectionAlreadyExists
     if name == "PublicZoneVPCAssociation":
         return Route_53ErrorKind.PublicZoneVPCAssociation
     if name == "QueryLoggingConfigAlreadyExists":
@@ -1739,6 +1800,8 @@ def route53_error_name(Route_53ErrorKind k) -> str:
             return "InvalidKeySigningKeyStatus"
         case Route_53ErrorKind.InvalidPaginationToken:
             return "InvalidPaginationToken"
+        case Route_53ErrorKind.InvalidResourceRecordSetProtectionBatch:
+            return "InvalidResourceRecordSetProtectionBatch"
         case Route_53ErrorKind.InvalidSigningStatus:
             return "InvalidSigningStatus"
         case Route_53ErrorKind.InvalidTrafficPolicyDocument:
@@ -1785,6 +1848,8 @@ def route53_error_name(Route_53ErrorKind k) -> str:
             return "NotAuthorizedException"
         case Route_53ErrorKind.PriorRequestNotComplete:
             return "PriorRequestNotComplete"
+        case Route_53ErrorKind.ProtectionAlreadyExists:
+            return "ProtectionAlreadyExists"
         case Route_53ErrorKind.PublicZoneVPCAssociation:
             return "PublicZoneVPCAssociation"
         case Route_53ErrorKind.QueryLoggingConfigAlreadyExists:
@@ -1828,6 +1893,7 @@ def route53_error_name(Route_53ErrorKind k) -> str:
 #   ListHealthChecks
 #   ListHostedZones
 #   ListQueryLoggingConfigs
+#   ListResourceRecordSetProtections
 #   ListResourceRecordSets
 #   ListVPCAssociationAuthorizations
 
@@ -2154,6 +2220,25 @@ struct Route_53Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
 
+    # CreateResourceRecordSetProtections  POST /2013-04-01/hostedzone/{Id}/rrsetprotection
+    # errors: InvalidInput, InvalidResourceRecordSetProtectionBatch, LimitsExceeded, NoSuchHostedZone, PriorRequestNotComplete, ProtectionAlreadyExists
+    def create_resource_record_set_protections(self, CreateResourceRecordSetProtectionsRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/rrsetprotection", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateResourceRecordSetProtectionsRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "Protections")
+        for t1 in input.Protections:
+            auto n2 = restxml.rest_xml_struct(n0, "ResourceRecordSetProtectionConfig")
+            restxml.rest_xml_scalar(n2, "RecordName", t1.RecordName)
+            restxml.rest_xml_scalar(n2, "RecordType", t1.RecordType)
+            if t1.Comment.is_some():
+                restxml.rest_xml_scalar(n2, "Comment", t1.Comment.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
     # CreateReusableDelegationSet  POST /2013-04-01/delegationset
     # errors: DelegationSetAlreadyCreated, DelegationSetAlreadyReusable, DelegationSetNotAvailable, HostedZoneNotFound, InvalidArgument, InvalidInput, LimitsExceeded
     def create_reusable_delegation_set(self, CreateReusableDelegationSetRequest input) -> str:
@@ -2284,6 +2369,23 @@ struct Route_53Client:
         labels["Id"] = input.Id
         auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/queryloggingconfig/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
+
+    # DeleteResourceRecordSetProtections  POST /2013-04-01/hostedzone/{Id}/rrsetprotection/delete
+    # errors: InvalidInput, InvalidResourceRecordSetProtectionBatch, NoSuchHostedZone, PriorRequestNotComplete
+    def delete_resource_record_set_protections(self, DeleteResourceRecordSetProtectionsRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/rrsetprotection/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("DeleteResourceRecordSetProtectionsRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "Protections")
+        for t1 in input.Protections:
+            auto n2 = restxml.rest_xml_struct(n0, "ResourceRecordSetProtectionKey")
+            restxml.rest_xml_scalar(n2, "RecordName", t1.RecordName)
+            restxml.rest_xml_scalar(n2, "RecordType", t1.RecordType)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
 
     # DeleteReusableDelegationSet  DELETE /2013-04-01/delegationset/{Id}
     # errors: DelegationSetInUse, DelegationSetNotReusable, InvalidInput, NoSuchDelegationSet
@@ -2652,6 +2754,24 @@ struct Route_53Client:
         if input.MaxResults.is_some():
             query["maxresults"] = input.MaxResults.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/queryloggingconfig", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
+
+    # ListResourceRecordSetProtections  GET /2013-04-01/hostedzone/{Id}/rrsetprotection
+    # errors: InvalidInput, InvalidPaginationToken, NoSuchHostedZone
+    def list_resource_record_set_protections(self, ListResourceRecordSetProtectionsRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        dict[str, str] query = {}
+        if input.StartRecordName.is_some():
+            query["name"] = input.StartRecordName.unwrap_or("")
+        if input.StartRecordType.is_some():
+            query["type"] = input.StartRecordType.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxresults"] = input.MaxResults.unwrap_or("")
+        if input.NextToken.is_some():
+            query["nexttoken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/rrsetprotection", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListResourceRecordSets  GET /2013-04-01/hostedzone/{Id}/rrset

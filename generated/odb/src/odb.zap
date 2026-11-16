@@ -14,9 +14,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 81 operations — 81 with a generated method,
+# Coverage (v0, awsJson only): 86 operations — 86 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   262 structs (177 @derive(Json)), 56 enums, 7 error variants.
+#   272 structs (183 @derive(Json)), 56 enums, 7 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -586,6 +586,20 @@ struct AssociateIamRoleToResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+# no @derive(Json): member(s) dbServers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct AssociateVirtualMachinesToCloudVmClusterInput:
+    str cloudVmClusterId
+    list[str] dbServers
+
+@derive(Json)
+struct AssociateVirtualMachinesToCloudVmClusterOutput:
+    Optional[str] displayName
+    Optional[ResourceStatus] status
+    Optional[str] statusReason
+    str cloudVmClusterId
+
 @derive(Json)
 struct AssociateVirtualMachinesToExadbVmClusterInput:
     str exadbVmClusterId
@@ -991,6 +1005,7 @@ struct CloudAutonomousVmCluster:
     Optional[int64] memorySizeInGBs
     Optional[int64] nodeCount
     Optional[int64] nonProvisionableAutonomousContainerDatabases
+    Optional[int64] ocpusLowestScaledValue
     Optional[int64] provisionableAutonomousContainerDatabases
     Optional[int64] provisionedAutonomousContainerDatabases
     Optional[float64] provisionedCpus
@@ -1053,6 +1068,7 @@ struct CloudAutonomousVmClusterSummary:
     Optional[int64] memorySizeInGBs
     Optional[int64] nodeCount
     Optional[int64] nonProvisionableAutonomousContainerDatabases
+    Optional[int64] ocpusLowestScaledValue
     Optional[int64] provisionableAutonomousContainerDatabases
     Optional[int64] provisionedAutonomousContainerDatabases
     Optional[float64] provisionedCpus
@@ -1891,6 +1907,20 @@ struct DisassociateIamRoleFromResourceInput:
 struct DisassociateIamRoleFromResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
+
+# no @derive(Json): member(s) dbServers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DisassociateVirtualMachinesFromCloudVmClusterInput:
+    str cloudVmClusterId
+    list[str] dbServers
+
+@derive(Json)
+struct DisassociateVirtualMachinesFromCloudVmClusterOutput:
+    Optional[str] displayName
+    Optional[ResourceStatus] status
+    Optional[str] statusReason
+    str cloudVmClusterId
 
 # no @derive(Json): member(s) dbNodeIds: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3093,9 +3123,32 @@ struct UpdateAutonomousDatabaseOutput:
 # no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
+struct UpdateCloudAutonomousVmClusterInput:
+    str cloudAutonomousVmClusterId
+    Optional[float64] autonomousDataStorageSizeInTBs
+    Optional[int64] cpuCoreCountPerNode
+    Optional[str] description
+    Optional[str] displayName
+    Optional[LicenseModel] licenseModel
+    Optional[MaintenanceWindow] maintenanceWindow
+    Optional[int64] totalContainerDatabases
+
+@derive(Json)
+struct UpdateCloudAutonomousVmClusterOutput:
+    Optional[str] displayName
+    Optional[ResourceStatus] status
+    Optional[str] statusReason
+    str cloudAutonomousVmClusterId
+
+# no @derive(Json): member(s) maintenanceWindow: MaintenanceWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudExadataInfrastructureInput:
     str cloudExadataInfrastructureId
+    Optional[str] displayName
+    Optional[int64] computeCount
     Optional[MaintenanceWindow] maintenanceWindow
+    Optional[int64] storageCount
 
 @derive(Json)
 struct UpdateCloudExadataInfrastructureOutput:
@@ -3103,6 +3156,39 @@ struct UpdateCloudExadataInfrastructureOutput:
     Optional[ResourceStatus] status
     Optional[str] statusReason
     str cloudExadataInfrastructureId
+
+@derive(Json)
+struct UpdateCloudExadataInfrastructureStorageCapacityInput:
+    str cloudExadataInfrastructureId
+
+@derive(Json)
+struct UpdateCloudExadataInfrastructureStorageCapacityOutput:
+    Optional[str] displayName
+    Optional[ResourceStatus] status
+    Optional[str] statusReason
+    str cloudExadataInfrastructureId
+
+# no @derive(Json): member(s) sshPublicKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateCloudVmClusterInput:
+    str cloudVmClusterId
+    Optional[int64] cpuCoreCount
+    Optional[DataCollectionOptions] dataCollectionOptions
+    Optional[float64] dataStorageSizeInTBs
+    Optional[int64] dbNodeStorageSizeInGBs
+    Optional[str] displayName
+    Optional[list[str]] sshPublicKeys
+    Optional[LicenseModel] licenseModel
+    Optional[int64] memorySizeInGBs
+    Optional[int64] storageSizeInGBs
+
+@derive(Json)
+struct UpdateCloudVmClusterOutput:
+    Optional[str] displayName
+    Optional[ResourceStatus] status
+    Optional[str] statusReason
+    str cloudVmClusterId
 
 # no @derive(Json): member(s) sshPublicKeys: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3331,6 +3417,16 @@ def odb_json_ts_iso(DateTime dt) -> str:
 
 # Explicit JSON serializers for input shapes with collection/nested members
 # (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateVirtualMachinesToCloudVmClusterInput to a compact JSON object (declaration order).
+def associate_virtual_machines_to_cloud_vm_cluster_input_to_json(AssociateVirtualMachinesToCloudVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudVmClusterId\":" + odb_json_str(v.cloudVmClusterId))
+    list[str] e0 = []
+    for x0 in v.dbServers:
+        e0.append(odb_json_str(x0))
+    parts.append("\"dbServers\":" + odb_json_arr(e0))
+    return odb_json_obj(parts)
 
 # Serialize CreateAutonomousDatabaseBackupInput to a compact JSON object (declaration order).
 def create_autonomous_database_backup_input_to_json(CreateAutonomousDatabaseBackupInput v) -> str:
@@ -3845,6 +3941,16 @@ def create_odb_peering_connection_input_to_json(CreateOdbPeeringConnectionInput 
         parts.append("\"tags\":" + odb_json_obj(m7))
     return odb_json_obj(parts)
 
+# Serialize DisassociateVirtualMachinesFromCloudVmClusterInput to a compact JSON object (declaration order).
+def disassociate_virtual_machines_from_cloud_vm_cluster_input_to_json(DisassociateVirtualMachinesFromCloudVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudVmClusterId\":" + odb_json_str(v.cloudVmClusterId))
+    list[str] e0 = []
+    for x0 in v.dbServers:
+        e0.append(odb_json_str(x0))
+    parts.append("\"dbServers\":" + odb_json_arr(e0))
+    return odb_json_obj(parts)
+
 # Serialize DisassociateVirtualMachinesFromExadbVmClusterInput to a compact JSON object (declaration order).
 def disassociate_virtual_machines_from_exadb_vm_cluster_input_to_json(DisassociateVirtualMachinesFromExadbVmClusterInput v) -> str:
     list[str] parts = []
@@ -4142,13 +4248,85 @@ def update_autonomous_database_input_to_json(UpdateAutonomousDatabaseInput v) ->
         parts.append("\"adminPasswordSourceConfiguration\":" + u48.to_json())
     return odb_json_obj(parts)
 
+# Serialize UpdateCloudAutonomousVmClusterInput to a compact JSON object (declaration order).
+def update_cloud_autonomous_vm_cluster_input_to_json(UpdateCloudAutonomousVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudAutonomousVmClusterId\":" + odb_json_str(v.cloudAutonomousVmClusterId))
+    if v.autonomousDataStorageSizeInTBs.is_some():
+        auto u0 = v.autonomousDataStorageSizeInTBs.unwrap()
+        parts.append("\"autonomousDataStorageSizeInTBs\":" + str(u0))
+    if v.cpuCoreCountPerNode.is_some():
+        auto u1 = v.cpuCoreCountPerNode.unwrap()
+        parts.append("\"cpuCoreCountPerNode\":" + str(u1))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + odb_json_str(u2))
+    if v.displayName.is_some():
+        auto u3 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u3))
+    if v.licenseModel.is_some():
+        auto u4 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u4.to_json())
+    if v.maintenanceWindow.is_some():
+        auto u5 = v.maintenanceWindow.unwrap()
+        parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u5))
+    if v.totalContainerDatabases.is_some():
+        auto u6 = v.totalContainerDatabases.unwrap()
+        parts.append("\"totalContainerDatabases\":" + str(u6))
+    return odb_json_obj(parts)
+
 # Serialize UpdateCloudExadataInfrastructureInput to a compact JSON object (declaration order).
 def update_cloud_exadata_infrastructure_input_to_json(UpdateCloudExadataInfrastructureInput v) -> str:
     list[str] parts = []
     parts.append("\"cloudExadataInfrastructureId\":" + odb_json_str(v.cloudExadataInfrastructureId))
+    if v.displayName.is_some():
+        auto u0 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u0))
+    if v.computeCount.is_some():
+        auto u1 = v.computeCount.unwrap()
+        parts.append("\"computeCount\":" + str(u1))
     if v.maintenanceWindow.is_some():
-        auto u0 = v.maintenanceWindow.unwrap()
-        parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u0))
+        auto u2 = v.maintenanceWindow.unwrap()
+        parts.append("\"maintenanceWindow\":" + maintenance_window_to_json(u2))
+    if v.storageCount.is_some():
+        auto u3 = v.storageCount.unwrap()
+        parts.append("\"storageCount\":" + str(u3))
+    return odb_json_obj(parts)
+
+# Serialize UpdateCloudVmClusterInput to a compact JSON object (declaration order).
+def update_cloud_vm_cluster_input_to_json(UpdateCloudVmClusterInput v) -> str:
+    list[str] parts = []
+    parts.append("\"cloudVmClusterId\":" + odb_json_str(v.cloudVmClusterId))
+    if v.cpuCoreCount.is_some():
+        auto u0 = v.cpuCoreCount.unwrap()
+        parts.append("\"cpuCoreCount\":" + str(u0))
+    if v.dataCollectionOptions.is_some():
+        auto u1 = v.dataCollectionOptions.unwrap()
+        parts.append("\"dataCollectionOptions\":" + u1.to_json())
+    if v.dataStorageSizeInTBs.is_some():
+        auto u2 = v.dataStorageSizeInTBs.unwrap()
+        parts.append("\"dataStorageSizeInTBs\":" + str(u2))
+    if v.dbNodeStorageSizeInGBs.is_some():
+        auto u3 = v.dbNodeStorageSizeInGBs.unwrap()
+        parts.append("\"dbNodeStorageSizeInGBs\":" + str(u3))
+    if v.displayName.is_some():
+        auto u4 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + odb_json_str(u4))
+    if v.sshPublicKeys.is_some():
+        auto u5 = v.sshPublicKeys.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(odb_json_str(x6))
+        parts.append("\"sshPublicKeys\":" + odb_json_arr(e6))
+    if v.licenseModel.is_some():
+        auto u7 = v.licenseModel.unwrap()
+        parts.append("\"licenseModel\":" + u7.to_json())
+    if v.memorySizeInGBs.is_some():
+        auto u8 = v.memorySizeInGBs.unwrap()
+        parts.append("\"memorySizeInGBs\":" + str(u8))
+    if v.storageSizeInGBs.is_some():
+        auto u9 = v.storageSizeInGBs.unwrap()
+        parts.append("\"storageSizeInGBs\":" + str(u9))
     return odb_json_obj(parts)
 
 # Serialize UpdateExadbVmClusterInput to a compact JSON object (declaration order).
@@ -4282,6 +4460,12 @@ struct odbClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "AssociateIamRoleToResource", body)
 
+    # AssociateVirtualMachinesToCloudVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_virtual_machines_to_cloud_vm_cluster(self, AssociateVirtualMachinesToCloudVmClusterInput input) -> str:
+        auto body = associate_virtual_machines_to_cloud_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "AssociateVirtualMachinesToCloudVmCluster", body)
+
     # AssociateVirtualMachinesToExadbVmCluster
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def associate_virtual_machines_to_exadb_vm_cluster(self, AssociateVirtualMachinesToExadbVmClusterInput input) -> str:
@@ -4407,6 +4591,12 @@ struct odbClient:
     def disassociate_iam_role_from_resource(self, DisassociateIamRoleFromResourceInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "DisassociateIamRoleFromResource", body)
+
+    # DisassociateVirtualMachinesFromCloudVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_virtual_machines_from_cloud_vm_cluster(self, DisassociateVirtualMachinesFromCloudVmClusterInput input) -> str:
+        auto body = disassociate_virtual_machines_from_cloud_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "DisassociateVirtualMachinesFromCloudVmCluster", body)
 
     # DisassociateVirtualMachinesFromExadbVmCluster
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -4720,11 +4910,29 @@ struct odbClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateAutonomousDatabaseBackup", body)
 
+    # UpdateCloudAutonomousVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cloud_autonomous_vm_cluster(self, UpdateCloudAutonomousVmClusterInput input) -> str:
+        auto body = update_cloud_autonomous_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateCloudAutonomousVmCluster", body)
+
     # UpdateCloudExadataInfrastructure
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_cloud_exadata_infrastructure(self, UpdateCloudExadataInfrastructureInput input) -> str:
         auto body = update_cloud_exadata_infrastructure_input_to_json(input)
         return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateCloudExadataInfrastructure", body)
+
+    # UpdateCloudExadataInfrastructureStorageCapacity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cloud_exadata_infrastructure_storage_capacity(self, UpdateCloudExadataInfrastructureStorageCapacityInput input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateCloudExadataInfrastructureStorageCapacity", body)
+
+    # UpdateCloudVmCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cloud_vm_cluster(self, UpdateCloudVmClusterInput input) -> str:
+        auto body = update_cloud_vm_cluster_input_to_json(input)
+        return awsjson.awsjson_request_now(odb_protocol(), self.creds, self.region, "UpdateCloudVmCluster", body)
 
     # UpdateExadbVmCluster
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

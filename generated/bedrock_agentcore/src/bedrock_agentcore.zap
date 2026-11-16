@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 67 operations — 67 with a generated method,
+# Coverage (rest-json): 68 operations — 68 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   422 structs (277 @derive(Json)), 48 enums, 15 error variants.
+#   431 structs (282 @derive(Json)), 48 enums, 16 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1108,6 +1108,13 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+# no @derive(Json): member(s) include: list[str], exclude: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DomainFilter:
+    Optional[list[str]] include
+    Optional[list[str]] exclude
+
 @derive(Json)
 struct DuplicateIdException:
     Optional[str] message
@@ -1828,6 +1835,12 @@ struct HarnessReasoningTextBlock:
 struct HarnessRemoteMcpConfig:
     str url
     Optional[dict[str, str]] headers
+    Optional[HarnessRemoteMcpOutboundAuth] outboundAuth
+
+@derive(Json)
+struct HarnessRemoteMcpOutboundAuth:
+    Optional[IamCredentialProvider] awsIam
+    Optional[Unit] none
 
 # no @derive(Json): member(s) awsSkills: HarnessSkillAwsSkillsSource not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1939,6 +1952,11 @@ struct HarnessToolUseBlockStart:
     str name
     Optional[HarnessToolUseType] type
     Optional[str] serverName
+
+@derive(Json)
+struct IamCredentialProvider:
+    str service
+    Optional[str] region
 
 # rest-json request for IngestDataInput: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -2090,6 +2108,7 @@ struct InvokeAgentRuntimeRequest:
 @derive(Json)
 struct InvokeAgentRuntimeResponse:
     Optional[str] runtimeSessionId
+    Optional[str] sessionEndpointUrl
     Optional[str] mcpSessionId
     Optional[str] mcpProtocolVersion
     Optional[str] traceId
@@ -2171,6 +2190,20 @@ struct InvokeHarnessStreamOutput:
     Optional[ValidationException] validationException
     Optional[RuntimeClientError] runtimeClientError
     Optional[HarnessHookEvent] hookEvent
+
+# rest-json request for InvokeWebSearchInput: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct InvokeWebSearchInput:
+    str webSearchId
+    str searchQuery
+    Optional[int64] maxResults
+    Optional[WebSearchFilters] filters
+
+# no @derive(Json): member(s) results: list[WebSearchResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct InvokeWebSearchOutput:
+    list[WebSearchResult] results
 
 @derive(Json)
 struct KeyPressArguments:
@@ -2788,6 +2821,13 @@ struct ProxyConfiguration:
 struct ProxyCredentials:
     Optional[BasicAuth] basicAuth
 
+@derive(Json)
+struct PublishedDateFilter:
+    @json(timestamp="iso8601")
+    Optional[DateTime] publishedAfter
+    @json(timestamp="iso8601")
+    Optional[DateTime] publishedBefore
+
 # no @derive(Json): member(s) systemPromptRecommendationConfig: SystemPromptRecommendationConfig, toolDescriptionRecommendationConfig: ToolDescriptionRecommendationConfig not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -3005,6 +3045,11 @@ struct ServiceException:
 @derive(Json)
 struct ServiceQuotaExceededException:
     Optional[str] message
+
+@derive(Json)
+struct ServiceUnavailableException:
+    str message
+    Optional[int64] retryAfterSeconds
 
 @derive(Json)
 struct SessionFilter:
@@ -3515,6 +3560,21 @@ struct ViewPort:
     int64 width
     int64 height
 
+# no @derive(Json): member(s) domainFilter: DomainFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct WebSearchFilters:
+    Optional[DomainFilter] domainFilter
+    Optional[PublishedDateFilter] publishedDateFilter
+
+@derive(Json)
+struct WebSearchResult:
+    Optional[str] title
+    Optional[str] url
+    str text
+    @json(timestamp="iso8601")
+    Optional[DateTime] publishedAt
+
 # --- errors ----------------------------------------------------------------
 
 # Typed service errors (#361): the per-service enum + classifier + name
@@ -3537,6 +3597,7 @@ enum Bedrock_AgentCoreErrorKind:
     RuntimeClientError
     ServiceException
     ServiceQuotaExceededException
+    ServiceUnavailableException
     SubscriptionRequiredException
     ThrottledException
     ThrottlingException
@@ -3569,6 +3630,8 @@ def bedrock_agentcore_error_kind(str code) -> Bedrock_AgentCoreErrorKind:
         return Bedrock_AgentCoreErrorKind.ServiceException
     if name == "ServiceQuotaExceededException":
         return Bedrock_AgentCoreErrorKind.ServiceQuotaExceededException
+    if name == "ServiceUnavailableException":
+        return Bedrock_AgentCoreErrorKind.ServiceUnavailableException
     if name == "SubscriptionRequiredException":
         return Bedrock_AgentCoreErrorKind.SubscriptionRequiredException
     if name == "ThrottledException":
@@ -3609,6 +3672,8 @@ def bedrock_agentcore_error_name(Bedrock_AgentCoreErrorKind k) -> str:
             return "ServiceException"
         case Bedrock_AgentCoreErrorKind.ServiceQuotaExceededException:
             return "ServiceQuotaExceededException"
+        case Bedrock_AgentCoreErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
         case Bedrock_AgentCoreErrorKind.SubscriptionRequiredException:
             return "SubscriptionRequiredException"
         case Bedrock_AgentCoreErrorKind.ThrottledException:
@@ -3978,6 +4043,23 @@ def data_source_config_to_json(DataSourceConfig v) -> str:
         parts.append("\"onlineEvaluationConfigSource\":" + u1.to_json())
     return bedrock_agentcore_json_obj(parts)
 
+# Serialize DomainFilter to a compact JSON object (declaration order).
+def domain_filter_to_json(DomainFilter v) -> str:
+    list[str] parts = []
+    if v.include.is_some():
+        auto u0 = v.include.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_json_str(x1))
+        parts.append("\"include\":" + bedrock_agentcore_json_arr(e1))
+    if v.exclude.is_some():
+        auto u2 = v.exclude.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_json_str(x3))
+        parts.append("\"exclude\":" + bedrock_agentcore_json_arr(e3))
+    return bedrock_agentcore_json_obj(parts)
+
 # Serialize EmbeddedCryptoWallet to a compact JSON object (declaration order).
 def embedded_crypto_wallet_to_json(EmbeddedCryptoWallet v) -> str:
     list[str] parts = []
@@ -4182,6 +4264,9 @@ def harness_remote_mcp_config_to_json(HarnessRemoteMcpConfig v) -> str:
         for k1 in sorted(u0.keys()):
             m1.append(bedrock_agentcore_json_str(k1) + ":" + bedrock_agentcore_json_str(u0[k1]))
         parts.append("\"headers\":" + bedrock_agentcore_json_obj(m1))
+    if v.outboundAuth.is_some():
+        auto u2 = v.outboundAuth.unwrap()
+        parts.append("\"outboundAuth\":" + u2.to_json())
     return bedrock_agentcore_json_obj(parts)
 
 # Serialize HarnessSkill to a compact JSON object (declaration order).
@@ -4626,6 +4711,17 @@ def tool_description_text_input_to_json(ToolDescriptionTextInput v) -> str:
     for x0 in v.tools:
         e0.append(x0.to_json())
     parts.append("\"tools\":" + bedrock_agentcore_json_arr(e0))
+    return bedrock_agentcore_json_obj(parts)
+
+# Serialize WebSearchFilters to a compact JSON object (declaration order).
+def web_search_filters_to_json(WebSearchFilters v) -> str:
+    list[str] parts = []
+    if v.domainFilter.is_some():
+        auto u0 = v.domainFilter.unwrap()
+        parts.append("\"domainFilter\":" + domain_filter_to_json(u0))
+    if v.publishedDateFilter.is_some():
+        auto u1 = v.publishedDateFilter.unwrap()
+        parts.append("\"publishedDateFilter\":" + u1.to_json())
     return bedrock_agentcore_json_obj(parts)
 
 # A bound Bedrock_AgentCore client: credentials + region, threaded into every operation.
@@ -5351,6 +5447,24 @@ struct Bedrock_AgentCoreClient:
         if input.actorId.is_some():
             auto u13 = input.actorId.unwrap()
             parts.append("\"actorId\":" + bedrock_agentcore_json_str(u13))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
+
+    # InvokeWebSearch  POST /web-search/{webSearchId}/invoke
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def invoke_web_search(self, InvokeWebSearchInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_service(), self.region)
+        dict[str, str] labels = {}
+        labels["webSearchId"] = input.webSearchId
+        auto b = binding.HttpBinding(method="POST", path_template="/web-search/{webSearchId}/invoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"searchQuery\":" + bedrock_agentcore_json_str(input.searchQuery))
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            parts.append("\"filters\":" + web_search_filters_to_json(u1))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_service(), self.region, host)
 

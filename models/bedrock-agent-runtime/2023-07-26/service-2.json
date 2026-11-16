@@ -1600,6 +1600,9 @@
   "AgenticRetrieveAction": {
    "type": "structure",
    "members": {
+    "codeExecution": {
+     "shape": "AgenticRetrieveCodeExecutionDetails"
+    },
     "fullDocumentExpansion": {
      "shape": "AgenticRetrieveFullDocExpansionDetails"
     },
@@ -1735,6 +1738,31 @@
    "type": "list",
    "member": {
     "shape": "AgenticRetrieveCitationReference"
+   }
+  },
+  "AgenticRetrieveCodeExecutionDetails": {
+   "type": "structure",
+   "members": {
+    "documents": {
+     "shape": "AgenticRetrieveCodeExecutionDocumentList"
+    }
+   }
+  },
+  "AgenticRetrieveCodeExecutionDocument": {
+   "type": "structure",
+   "members": {
+    "documentId": {
+     "shape": "String"
+    },
+    "sourceRetriever": {
+     "shape": "AgenticRetrieveSourceRetriever"
+    }
+   }
+  },
+  "AgenticRetrieveCodeExecutionDocumentList": {
+   "type": "list",
+   "member": {
+    "shape": "AgenticRetrieveCodeExecutionDocument"
    }
   },
   "AgenticRetrieveConfiguration": {
@@ -2201,7 +2229,8 @@
     "Retrieval",
     "SpeculativeRetrieval",
     "FullDocumentExpansion",
-    "SessionHistoryLoad"
+    "SessionHistoryLoad",
+    "CodeExecution"
    ]
   },
   "AgenticRetrieveStreamRequest": {
@@ -4744,6 +4773,9 @@
      "location": "uri",
      "locationName": "knowledgeBaseId"
     },
+    "mediaId": {
+     "shape": "MediaId"
+    },
     "outputFormat": {
      "shape": "DocumentOutputFormat"
     },
@@ -6749,6 +6781,12 @@
    "box": true,
    "max": 8192,
    "min": 0
+  },
+  "MediaId": {
+   "type": "string",
+   "max": 36,
+   "min": 36,
+   "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"
   },
   "Memories": {
    "type": "list",

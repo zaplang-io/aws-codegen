@@ -4293,6 +4293,9 @@
     "codeRemediationStrategy": {
      "shape": "CodeRemediationStrategy"
     },
+    "cleanUpStrategy": {
+     "shape": "CleanUpStrategy"
+    },
     "disableManagedSkills": {
      "shape": "SkillTypeList"
     },
@@ -5730,6 +5733,17 @@
     "GROUP"
    ]
   },
+  "GroupMetadata": {
+   "type": "structure",
+   "members": {
+    "displayName": {
+     "shape": "String"
+    },
+    "description": {
+     "shape": "String"
+    }
+   }
+  },
   "HostAddress": {
    "type": "string"
   },
@@ -7041,6 +7055,9 @@
    "members": {
     "user": {
      "shape": "UserMetadata"
+    },
+    "group": {
+     "shape": "GroupMetadata"
     }
    },
    "union": true
@@ -7111,13 +7128,15 @@
   "MembershipType": {
    "type": "string",
    "enum": [
-    "USER"
+    "USER",
+    "GROUP"
    ]
   },
   "MembershipTypeFilter": {
    "type": "string",
    "enum": [
     "USER",
+    "GROUP",
     "ALL"
    ]
   },
@@ -9634,6 +9653,9 @@
     },
     "codeRemediationStrategy": {
      "shape": "CodeRemediationStrategy"
+    },
+    "cleanUpStrategy": {
+     "shape": "CleanUpStrategy"
     },
     "disableManagedSkills": {
      "shape": "SkillTypeList"

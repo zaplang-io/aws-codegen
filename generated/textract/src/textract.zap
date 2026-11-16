@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: Amazon Textract (serviceId Textract, API 2018-06-27)
-# Protocol: awsJson 1.1 (targetPrefix Textract)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service textract, service shape Textract)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 25 operations — 25 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   117 structs (65 @derive(Json)), 10 enums, 18 error variants.
-#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 25 operations — 25 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   117 structs (plain carriers), 10 enums, 18 error variants.
+#   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
+import datetime
 
-# The Textract awsJson protocol: version 1.1, API id "Textract".
-def textract_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("Textract", "textract")
+# The Textract smithy-rpc-v2-cbor protocol: SigV4 service "textract" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/Textract/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def textract_service() -> str:
+    return "textract"
 
 # --- enums -----------------------------------------------------------------
 
@@ -154,118 +159,82 @@ enum TextType:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AccessDeniedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Pages: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Adapter:
     str AdapterId
     Optional[list[str]] Pages
     str Version
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AdapterOverview:
     Optional[str] AdapterId
     Optional[str] AdapterName
     Optional[DateTime] CreationTime
-    Optional[list[FeatureType]] FeatureTypes
+    Optional[list[str]] FeatureTypes
 
-@derive(Json)
 struct AdapterVersionDatasetConfig:
     Optional[S3Object] ManifestS3Object
 
-@derive(Json)
 struct AdapterVersionEvaluationMetric:
     Optional[EvaluationMetric] Baseline
     Optional[EvaluationMetric] AdapterVersion
-    Optional[FeatureType] FeatureType
+    Optional[str] FeatureType
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AdapterVersionOverview:
     Optional[str] AdapterId
     Optional[str] AdapterVersion
     Optional[DateTime] CreationTime
-    Optional[list[FeatureType]] FeatureTypes
-    Optional[AdapterVersionStatus] Status
+    Optional[list[str]] FeatureTypes
+    Optional[str] Status
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) Adapters: list[Adapter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AdaptersConfig:
     list[Adapter] Adapters
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], HumanLoopConfig: HumanLoopConfig, QueriesConfig: QueriesConfig, AdaptersConfig: AdaptersConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AnalyzeDocumentRequest:
     Document Document
-    list[FeatureType] FeatureTypes
+    list[str] FeatureTypes
     Optional[HumanLoopConfig] HumanLoopConfig
     Optional[QueriesConfig] QueriesConfig
     Optional[AdaptersConfig] AdaptersConfig
 
-# no @derive(Json): member(s) Blocks: list[Block], HumanLoopActivationOutput: HumanLoopActivationOutput not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AnalyzeDocumentResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[list[Block]] Blocks
     Optional[HumanLoopActivationOutput] HumanLoopActivationOutput
     Optional[str] AnalyzeDocumentModelVersion
 
-@derive(Json)
 struct AnalyzeExpenseRequest:
     Document Document
 
-# no @derive(Json): member(s) ExpenseDocuments: list[ExpenseDocument] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AnalyzeExpenseResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[list[ExpenseDocument]] ExpenseDocuments
 
-@derive(Json)
 struct AnalyzeIDDetections:
     str Text
     Optional[NormalizedValue] NormalizedValue
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) DocumentPages: list[Document] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AnalyzeIDRequest:
     list[Document] DocumentPages
 
-# no @derive(Json): member(s) IdentityDocuments: list[IdentityDocument] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AnalyzeIDResponse:
     Optional[list[IdentityDocument]] IdentityDocuments
     Optional[DocumentMetadata] DocumentMetadata
     Optional[str] AnalyzeIDModelVersion
 
-@derive(Json)
 struct BadDocumentException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry, Relationships: list[Relationship], EntityTypes: list[EntityType], Query: Query not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Block:
-    Optional[BlockType] BlockType
+    Optional[str] BlockType
     Optional[float64] Confidence
     Optional[str] Text
-    Optional[TextType] TextType
+    Optional[str] TextType
     Optional[int64] RowIndex
     Optional[int64] ColumnIndex
     Optional[int64] RowSpan
@@ -273,41 +242,32 @@ struct Block:
     Optional[Geometry] Geometry
     Optional[str] Id
     Optional[list[Relationship]] Relationships
-    Optional[list[EntityType]] EntityTypes
-    Optional[SelectionStatus] SelectionStatus
+    Optional[list[str]] EntityTypes
+    Optional[str] SelectionStatus
     Optional[int64] Page
     Optional[Query] Query
 
-@derive(Json)
 struct BoundingBox:
     Optional[float64] Width
     Optional[float64] Height
     Optional[float64] Left
     Optional[float64] Top
 
-@derive(Json)
 struct ConflictException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateAdapterRequest:
     str AdapterName
     Optional[str] ClientRequestToken
     Optional[str] Description
-    list[FeatureType] FeatureTypes
-    Optional[AutoUpdate] AutoUpdate
+    list[str] FeatureTypes
+    Optional[str] AutoUpdate
     Optional[dict[str, str]] Tags
 
-@derive(Json)
 struct CreateAdapterResponse:
     Optional[str] AdapterId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateAdapterVersionRequest:
     str AdapterId
     Optional[str] ClientRequestToken
@@ -316,104 +276,76 @@ struct CreateAdapterVersionRequest:
     OutputConfig OutputConfig
     Optional[dict[str, str]] Tags
 
-@derive(Json)
 struct CreateAdapterVersionResponse:
     Optional[str] AdapterId
     Optional[str] AdapterVersion
 
-@derive(Json)
 struct DeleteAdapterRequest:
     str AdapterId
 
-@derive(Json)
 struct DeleteAdapterResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteAdapterVersionRequest:
     str AdapterId
     str AdapterVersion
 
-@derive(Json)
 struct DeleteAdapterVersionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DetectDocumentTextRequest:
     Document Document
 
-# no @derive(Json): member(s) Blocks: list[Block] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectDocumentTextResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[list[Block]] Blocks
     Optional[str] DetectDocumentTextModelVersion
 
-@derive(Json)
 struct DetectedSignature:
     Optional[int64] Page
 
-@derive(Json)
 struct Document:
     Optional[bytes] Bytes
     Optional[S3Object] S3Object
 
-# no @derive(Json): member(s) SplitDocuments: list[SplitDocument], DetectedSignatures: list[DetectedSignature], UndetectedSignatures: list[UndetectedSignature] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentGroup:
     Optional[str] Type
     Optional[list[SplitDocument]] SplitDocuments
     Optional[list[DetectedSignature]] DetectedSignatures
     Optional[list[UndetectedSignature]] UndetectedSignatures
 
-@derive(Json)
 struct DocumentLocation:
     Optional[S3Object] S3Object
 
-@derive(Json)
 struct DocumentMetadata:
     Optional[int64] Pages
 
-@derive(Json)
 struct DocumentTooLargeException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EvaluationMetric:
     Optional[float64] F1Score
     Optional[float64] Precision
     Optional[float64] Recall
 
-@derive(Json)
 struct ExpenseCurrency:
     Optional[str] Code
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExpenseDetection:
     Optional[str] Text
     Optional[Geometry] Geometry
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) SummaryFields: list[ExpenseField], LineItemGroups: list[LineItemGroup], Blocks: list[Block] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExpenseDocument:
     Optional[int64] ExpenseIndex
     Optional[list[ExpenseField]] SummaryFields
     Optional[list[LineItemGroup]] LineItemGroups
     Optional[list[Block]] Blocks
 
-# no @derive(Json): member(s) LabelDetection: ExpenseDetection, ValueDetection: ExpenseDetection, GroupProperties: list[ExpenseGroupProperty] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExpenseField:
     Optional[ExpenseType] Type
     Optional[ExpenseDetection] LabelDetection
@@ -422,64 +354,46 @@ struct ExpenseField:
     Optional[ExpenseCurrency] Currency
     Optional[list[ExpenseGroupProperty]] GroupProperties
 
-# no @derive(Json): member(s) Types: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExpenseGroupProperty:
     Optional[list[str]] Types
     Optional[str] Id
 
-@derive(Json)
 struct ExpenseType:
     Optional[str] Text
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) LendingDocument: LendingDocument, ExpenseDocument: ExpenseDocument, IdentityDocument: IdentityDocument not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Extraction:
     Optional[LendingDocument] LendingDocument
     Optional[ExpenseDocument] ExpenseDocument
     Optional[IdentityDocument] IdentityDocument
 
-# no @derive(Json): member(s) Polygon: list[Point] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Geometry:
     Optional[BoundingBox] BoundingBox
     Optional[list[Point]] Polygon
     Optional[float64] RotationAngle
 
-@derive(Json)
 struct GetAdapterRequest:
     str AdapterId
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetAdapterResponse:
     Optional[str] AdapterId
     Optional[str] AdapterName
     Optional[DateTime] CreationTime
     Optional[str] Description
-    Optional[list[FeatureType]] FeatureTypes
-    Optional[AutoUpdate] AutoUpdate
+    Optional[list[str]] FeatureTypes
+    Optional[str] AutoUpdate
     Optional[dict[str, str]] Tags
 
-@derive(Json)
 struct GetAdapterVersionRequest:
     str AdapterId
     str AdapterVersion
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], EvaluationMetrics: list[AdapterVersionEvaluationMetric], Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetAdapterVersionResponse:
     Optional[str] AdapterId
     Optional[str] AdapterVersion
     Optional[DateTime] CreationTime
-    Optional[list[FeatureType]] FeatureTypes
-    Optional[AdapterVersionStatus] Status
+    Optional[list[str]] FeatureTypes
+    Optional[str] Status
     Optional[str] StatusMessage
     Optional[AdapterVersionDatasetConfig] DatasetConfig
     Optional[str] KMSKeyId
@@ -487,222 +401,159 @@ struct GetAdapterVersionResponse:
     Optional[list[AdapterVersionEvaluationMetric]] EvaluationMetrics
     Optional[dict[str, str]] Tags
 
-@derive(Json)
 struct GetDocumentAnalysisRequest:
     str JobId
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Blocks: list[Block], Warnings: list[Warning] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDocumentAnalysisResponse:
     Optional[DocumentMetadata] DocumentMetadata
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] NextToken
     Optional[list[Block]] Blocks
     Optional[list[Warning]] Warnings
     Optional[str] StatusMessage
     Optional[str] AnalyzeDocumentModelVersion
 
-@derive(Json)
 struct GetDocumentTextDetectionRequest:
     str JobId
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Blocks: list[Block], Warnings: list[Warning] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDocumentTextDetectionResponse:
     Optional[DocumentMetadata] DocumentMetadata
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] NextToken
     Optional[list[Block]] Blocks
     Optional[list[Warning]] Warnings
     Optional[str] StatusMessage
     Optional[str] DetectDocumentTextModelVersion
 
-@derive(Json)
 struct GetExpenseAnalysisRequest:
     str JobId
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ExpenseDocuments: list[ExpenseDocument], Warnings: list[Warning] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetExpenseAnalysisResponse:
     Optional[DocumentMetadata] DocumentMetadata
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] NextToken
     Optional[list[ExpenseDocument]] ExpenseDocuments
     Optional[list[Warning]] Warnings
     Optional[str] StatusMessage
     Optional[str] AnalyzeExpenseModelVersion
 
-@derive(Json)
 struct GetLendingAnalysisRequest:
     str JobId
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[LendingResult], Warnings: list[Warning] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetLendingAnalysisResponse:
     Optional[DocumentMetadata] DocumentMetadata
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] NextToken
     Optional[list[LendingResult]] Results
     Optional[list[Warning]] Warnings
     Optional[str] StatusMessage
     Optional[str] AnalyzeLendingModelVersion
 
-@derive(Json)
 struct GetLendingAnalysisSummaryRequest:
     str JobId
 
-# no @derive(Json): member(s) Summary: LendingSummary, Warnings: list[Warning] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetLendingAnalysisSummaryResponse:
     Optional[DocumentMetadata] DocumentMetadata
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[LendingSummary] Summary
     Optional[list[Warning]] Warnings
     Optional[str] StatusMessage
     Optional[str] AnalyzeLendingModelVersion
 
-# no @derive(Json): member(s) HumanLoopActivationReasons: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HumanLoopActivationOutput:
     Optional[str] HumanLoopArn
     Optional[list[str]] HumanLoopActivationReasons
     Optional[str] HumanLoopActivationConditionsEvaluationResults
 
-# no @derive(Json): member(s) DataAttributes: HumanLoopDataAttributes not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HumanLoopConfig:
     str HumanLoopName
     str FlowDefinitionArn
     Optional[HumanLoopDataAttributes] DataAttributes
 
-# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct HumanLoopDataAttributes:
-    Optional[list[ContentClassifier]] ContentClassifiers
+    Optional[list[str]] ContentClassifiers
 
-@derive(Json)
 struct HumanLoopQuotaExceededException:
     Optional[str] ResourceType
     Optional[str] QuotaCode
     Optional[str] ServiceCode
 
-@derive(Json)
 struct IdempotentParameterMismatchException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) IdentityDocumentFields: list[IdentityDocumentField], Blocks: list[Block] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct IdentityDocument:
     Optional[int64] DocumentIndex
     Optional[list[IdentityDocumentField]] IdentityDocumentFields
     Optional[list[Block]] Blocks
 
-@derive(Json)
 struct IdentityDocumentField:
     Optional[AnalyzeIDDetections] Type
     Optional[AnalyzeIDDetections] ValueDetection
 
-@derive(Json)
 struct InternalServerError:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidJobIdException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidKMSKeyException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidParameterException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidS3ObjectException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LendingDetection:
     Optional[str] Text
-    Optional[SelectionStatus] SelectionStatus
+    Optional[str] SelectionStatus
     Optional[Geometry] Geometry
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) LendingFields: list[LendingField], SignatureDetections: list[SignatureDetection] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LendingDocument:
     Optional[list[LendingField]] LendingFields
     Optional[list[SignatureDetection]] SignatureDetections
 
-# no @derive(Json): member(s) KeyDetection: LendingDetection, ValueDetections: list[LendingDetection] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LendingField:
     Optional[str] Type
     Optional[LendingDetection] KeyDetection
     Optional[list[LendingDetection]] ValueDetections
 
-# no @derive(Json): member(s) PageClassification: PageClassification, Extractions: list[Extraction] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LendingResult:
     Optional[int64] Page
     Optional[PageClassification] PageClassification
     Optional[list[Extraction]] Extractions
 
-# no @derive(Json): member(s) DocumentGroups: list[DocumentGroup], UndetectedDocumentTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LendingSummary:
     Optional[list[DocumentGroup]] DocumentGroups
     Optional[list[str]] UndetectedDocumentTypes
 
-@derive(Json)
 struct LimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) LineItemExpenseFields: list[ExpenseField] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LineItemFields:
     Optional[list[ExpenseField]] LineItemExpenseFields
 
-# no @derive(Json): member(s) LineItems: list[LineItemFields] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LineItemGroup:
     Optional[int64] LineItemGroupIndex
     Optional[list[LineItemFields]] LineItems
 
-@derive(Json)
 struct ListAdapterVersionsRequest:
     Optional[str] AdapterId
     Optional[DateTime] AfterCreationTime
@@ -710,131 +561,90 @@ struct ListAdapterVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AdapterVersions: list[AdapterVersionOverview] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAdapterVersionsResponse:
     Optional[list[AdapterVersionOverview]] AdapterVersions
     Optional[str] NextToken
 
-@derive(Json)
 struct ListAdaptersRequest:
     Optional[DateTime] AfterCreationTime
     Optional[DateTime] BeforeCreationTime
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Adapters: list[AdapterOverview] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAdaptersResponse:
     Optional[list[AdapterOverview]] Adapters
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-@derive(Json)
 struct NormalizedValue:
     Optional[str] Value
     Optional[str] ValueType
 
-@derive(Json)
 struct NotificationChannel:
     str SNSTopicArn
     str RoleArn
 
-@derive(Json)
 struct OutputConfig:
     str S3Bucket
     Optional[str] S3Prefix
 
-# no @derive(Json): member(s) PageType: list[Prediction], PageNumber: list[Prediction] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PageClassification:
     list[Prediction] PageType
     list[Prediction] PageNumber
 
-@derive(Json)
 struct Point:
     Optional[float64] X
     Optional[float64] Y
 
-@derive(Json)
 struct Prediction:
     Optional[str] Value
     Optional[float64] Confidence
 
-@derive(Json)
 struct ProvisionedThroughputExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Queries: list[Query] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct QueriesConfig:
     list[Query] Queries
 
-# no @derive(Json): member(s) Pages: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Query:
     str Text
     Optional[str] Alias
     Optional[list[str]] Pages
 
-# no @derive(Json): member(s) Ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Relationship:
-    Optional[RelationshipType] Type
+    Optional[str] Type
     Optional[list[str]] Ids
 
-@derive(Json)
 struct ResourceNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct S3Object:
     Optional[str] Bucket
     Optional[str] Name
     Optional[str] Version
 
-@derive(Json)
 struct ServiceQuotaExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SignatureDetection:
     Optional[float64] Confidence
     Optional[Geometry] Geometry
 
-# no @derive(Json): member(s) Pages: list[int64] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SplitDocument:
     Optional[int64] Index
     Optional[list[int64]] Pages
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], QueriesConfig: QueriesConfig, AdaptersConfig: AdaptersConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartDocumentAnalysisRequest:
     DocumentLocation DocumentLocation
-    list[FeatureType] FeatureTypes
+    list[str] FeatureTypes
     Optional[str] ClientRequestToken
     Optional[str] JobTag
     Optional[NotificationChannel] NotificationChannel
@@ -843,11 +653,9 @@ struct StartDocumentAnalysisRequest:
     Optional[QueriesConfig] QueriesConfig
     Optional[AdaptersConfig] AdaptersConfig
 
-@derive(Json)
 struct StartDocumentAnalysisResponse:
     Optional[str] JobId
 
-@derive(Json)
 struct StartDocumentTextDetectionRequest:
     DocumentLocation DocumentLocation
     Optional[str] ClientRequestToken
@@ -856,11 +664,9 @@ struct StartDocumentTextDetectionRequest:
     Optional[OutputConfig] OutputConfig
     Optional[str] KMSKeyId
 
-@derive(Json)
 struct StartDocumentTextDetectionResponse:
     Optional[str] JobId
 
-@derive(Json)
 struct StartExpenseAnalysisRequest:
     DocumentLocation DocumentLocation
     Optional[str] ClientRequestToken
@@ -869,11 +675,9 @@ struct StartExpenseAnalysisRequest:
     Optional[OutputConfig] OutputConfig
     Optional[str] KMSKeyId
 
-@derive(Json)
 struct StartExpenseAnalysisResponse:
     Optional[str] JobId
 
-@derive(Json)
 struct StartLendingAnalysisRequest:
     DocumentLocation DocumentLocation
     Optional[str] ClientRequestToken
@@ -882,74 +686,54 @@ struct StartLendingAnalysisRequest:
     Optional[OutputConfig] OutputConfig
     Optional[str] KMSKeyId
 
-@derive(Json)
 struct StartLendingAnalysisResponse:
     Optional[str] JobId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     dict[str, str] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ThrottlingException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UndetectedSignature:
     Optional[int64] Page
 
-@derive(Json)
 struct UnsupportedDocumentException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateAdapterRequest:
     str AdapterId
     Optional[str] Description
     Optional[str] AdapterName
-    Optional[AutoUpdate] AutoUpdate
+    Optional[str] AutoUpdate
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateAdapterResponse:
     Optional[str] AdapterId
     Optional[str] AdapterName
     Optional[DateTime] CreationTime
     Optional[str] Description
-    Optional[list[FeatureType]] FeatureTypes
-    Optional[AutoUpdate] AutoUpdate
+    Optional[list[str]] FeatureTypes
+    Optional[str] AutoUpdate
 
-@derive(Json)
 struct ValidationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Pages: list[int64] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Warning:
     Optional[str] ErrorCode
     Optional[list[int64]] Pages
@@ -961,7 +745,7 @@ struct Warning:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -1078,226 +862,625 @@ def textract_error_name(TextractErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def textract_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListAdapterVersions
+#   ListAdapters
 
-def textract_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def textract_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize Adapter to a compact JSON object (declaration order).
-def adapter_to_json(Adapter v) -> str:
-    list[str] parts = []
-    parts.append("\"AdapterId\":" + textract_json_str(v.AdapterId))
+# Serialize Adapter to a CBOR map (member wire name -> value, model order).
+def adapter_to_cbor(Adapter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
     if v.Pages.is_some():
         auto u0 = v.Pages.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(textract_json_str(x1))
-        parts.append("\"Pages\":" + textract_json_arr(e1))
-    parts.append("\"Version\":" + textract_json_str(v.Version))
-    return textract_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Pages")
+        vals.append(cbor.cbor_list(e1))
+    keys.append("Version")
+    vals.append(cbor.cbor_text(v.Version))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AdaptersConfig to a compact JSON object (declaration order).
-def adapters_config_to_json(AdaptersConfig v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AdapterVersionDatasetConfig to a CBOR map (member wire name -> value, model order).
+def adapter_version_dataset_config_to_cbor(AdapterVersionDatasetConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ManifestS3Object.is_some():
+        auto u0 = v.ManifestS3Object.unwrap()
+        keys.append("ManifestS3Object")
+        vals.append(s3_object_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AdaptersConfig to a CBOR map (member wire name -> value, model order).
+def adapters_config_to_cbor(AdaptersConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.Adapters:
-        e0.append(adapter_to_json(x0))
-    parts.append("\"Adapters\":" + textract_json_arr(e0))
-    return textract_json_obj(parts)
+        e0.append(adapter_to_cbor(x0))
+    keys.append("Adapters")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AnalyzeDocumentRequest to a compact JSON object (declaration order).
-def analyze_document_request_to_json(AnalyzeDocumentRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Document\":" + v.Document.to_json())
-    list[str] e0 = []
+# Serialize AnalyzeDocumentRequest to a CBOR map (member wire name -> value, model order).
+def analyze_document_request_to_cbor(AnalyzeDocumentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Document")
+    vals.append(document_to_cbor(v.Document))
+    list[cbor.CborValue] e0 = []
     for x0 in v.FeatureTypes:
-        e0.append(x0.to_json())
-    parts.append("\"FeatureTypes\":" + textract_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("FeatureTypes")
+    vals.append(cbor.cbor_list(e0))
     if v.HumanLoopConfig.is_some():
         auto u1 = v.HumanLoopConfig.unwrap()
-        parts.append("\"HumanLoopConfig\":" + human_loop_config_to_json(u1))
+        keys.append("HumanLoopConfig")
+        vals.append(human_loop_config_to_cbor(u1))
     if v.QueriesConfig.is_some():
         auto u2 = v.QueriesConfig.unwrap()
-        parts.append("\"QueriesConfig\":" + queries_config_to_json(u2))
+        keys.append("QueriesConfig")
+        vals.append(queries_config_to_cbor(u2))
     if v.AdaptersConfig.is_some():
         auto u3 = v.AdaptersConfig.unwrap()
-        parts.append("\"AdaptersConfig\":" + adapters_config_to_json(u3))
-    return textract_json_obj(parts)
+        keys.append("AdaptersConfig")
+        vals.append(adapters_config_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AnalyzeIDRequest to a compact JSON object (declaration order).
-def analyze_id_request_to_json(AnalyzeIDRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AnalyzeExpenseRequest to a CBOR map (member wire name -> value, model order).
+def analyze_expense_request_to_cbor(AnalyzeExpenseRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Document")
+    vals.append(document_to_cbor(v.Document))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AnalyzeIDRequest to a CBOR map (member wire name -> value, model order).
+def analyze_id_request_to_cbor(AnalyzeIDRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.DocumentPages:
-        e0.append(x0.to_json())
-    parts.append("\"DocumentPages\":" + textract_json_arr(e0))
-    return textract_json_obj(parts)
+        e0.append(document_to_cbor(x0))
+    keys.append("DocumentPages")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateAdapterRequest to a compact JSON object (declaration order).
-def create_adapter_request_to_json(CreateAdapterRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"AdapterName\":" + textract_json_str(v.AdapterName))
+# Serialize CreateAdapterRequest to a CBOR map (member wire name -> value, model order).
+def create_adapter_request_to_cbor(CreateAdapterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterName")
+    vals.append(cbor.cbor_text(v.AdapterName))
     if v.ClientRequestToken.is_some():
         auto u0 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + textract_json_str(u0))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u0))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + textract_json_str(u1))
-    list[str] e2 = []
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    list[cbor.CborValue] e2 = []
     for x2 in v.FeatureTypes:
-        e2.append(x2.to_json())
-    parts.append("\"FeatureTypes\":" + textract_json_arr(e2))
+        e2.append(cbor.cbor_text(x2))
+    keys.append("FeatureTypes")
+    vals.append(cbor.cbor_list(e2))
     if v.AutoUpdate.is_some():
         auto u3 = v.AutoUpdate.unwrap()
-        parts.append("\"AutoUpdate\":" + u3.to_json())
+        keys.append("AutoUpdate")
+        vals.append(cbor.cbor_text(u3))
     if v.Tags.is_some():
         auto u4 = v.Tags.unwrap()
-        list[str] m5 = []
+        list[str] mk5 = []
+        list[cbor.CborValue] mv5 = []
         for k5 in sorted(u4.keys()):
-            m5.append(textract_json_str(k5) + ":" + textract_json_str(u4[k5]))
-        parts.append("\"Tags\":" + textract_json_obj(m5))
-    return textract_json_obj(parts)
+            mk5.append(k5)
+            mv5.append(cbor.cbor_text(u4[k5]))
+        keys.append("Tags")
+        vals.append(cbor.cbor_map(mk5, mv5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateAdapterVersionRequest to a compact JSON object (declaration order).
-def create_adapter_version_request_to_json(CreateAdapterVersionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"AdapterId\":" + textract_json_str(v.AdapterId))
+# Serialize CreateAdapterVersionRequest to a CBOR map (member wire name -> value, model order).
+def create_adapter_version_request_to_cbor(CreateAdapterVersionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
     if v.ClientRequestToken.is_some():
         auto u0 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + textract_json_str(u0))
-    parts.append("\"DatasetConfig\":" + v.DatasetConfig.to_json())
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DatasetConfig")
+    vals.append(adapter_version_dataset_config_to_cbor(v.DatasetConfig))
     if v.KMSKeyId.is_some():
         auto u1 = v.KMSKeyId.unwrap()
-        parts.append("\"KMSKeyId\":" + textract_json_str(u1))
-    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+        keys.append("KMSKeyId")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("OutputConfig")
+    vals.append(output_config_to_cbor(v.OutputConfig))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] m3 = []
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
         for k3 in sorted(u2.keys()):
-            m3.append(textract_json_str(k3) + ":" + textract_json_str(u2[k3]))
-        parts.append("\"Tags\":" + textract_json_obj(m3))
-    return textract_json_obj(parts)
+            mk3.append(k3)
+            mv3.append(cbor.cbor_text(u2[k3]))
+        keys.append("Tags")
+        vals.append(cbor.cbor_map(mk3, mv3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize HumanLoopConfig to a compact JSON object (declaration order).
-def human_loop_config_to_json(HumanLoopConfig v) -> str:
-    list[str] parts = []
-    parts.append("\"HumanLoopName\":" + textract_json_str(v.HumanLoopName))
-    parts.append("\"FlowDefinitionArn\":" + textract_json_str(v.FlowDefinitionArn))
+# Serialize DeleteAdapterRequest to a CBOR map (member wire name -> value, model order).
+def delete_adapter_request_to_cbor(DeleteAdapterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteAdapterVersionRequest to a CBOR map (member wire name -> value, model order).
+def delete_adapter_version_request_to_cbor(DeleteAdapterVersionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
+    keys.append("AdapterVersion")
+    vals.append(cbor.cbor_text(v.AdapterVersion))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectDocumentTextRequest to a CBOR map (member wire name -> value, model order).
+def detect_document_text_request_to_cbor(DetectDocumentTextRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Document")
+    vals.append(document_to_cbor(v.Document))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Document to a CBOR map (member wire name -> value, model order).
+def document_to_cbor(Document v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Bytes.is_some():
+        auto u0 = v.Bytes.unwrap()
+        keys.append("Bytes")
+        vals.append(cbor.cbor_blob(u0))
+    if v.S3Object.is_some():
+        auto u1 = v.S3Object.unwrap()
+        keys.append("S3Object")
+        vals.append(s3_object_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentLocation to a CBOR map (member wire name -> value, model order).
+def document_location_to_cbor(DocumentLocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.S3Object.is_some():
+        auto u0 = v.S3Object.unwrap()
+        keys.append("S3Object")
+        vals.append(s3_object_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetAdapterRequest to a CBOR map (member wire name -> value, model order).
+def get_adapter_request_to_cbor(GetAdapterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetAdapterVersionRequest to a CBOR map (member wire name -> value, model order).
+def get_adapter_version_request_to_cbor(GetAdapterVersionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
+    keys.append("AdapterVersion")
+    vals.append(cbor.cbor_text(v.AdapterVersion))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDocumentAnalysisRequest to a CBOR map (member wire name -> value, model order).
+def get_document_analysis_request_to_cbor(GetDocumentAnalysisRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDocumentTextDetectionRequest to a CBOR map (member wire name -> value, model order).
+def get_document_text_detection_request_to_cbor(GetDocumentTextDetectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetExpenseAnalysisRequest to a CBOR map (member wire name -> value, model order).
+def get_expense_analysis_request_to_cbor(GetExpenseAnalysisRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetLendingAnalysisRequest to a CBOR map (member wire name -> value, model order).
+def get_lending_analysis_request_to_cbor(GetLendingAnalysisRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetLendingAnalysisSummaryRequest to a CBOR map (member wire name -> value, model order).
+def get_lending_analysis_summary_request_to_cbor(GetLendingAnalysisSummaryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HumanLoopConfig to a CBOR map (member wire name -> value, model order).
+def human_loop_config_to_cbor(HumanLoopConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("HumanLoopName")
+    vals.append(cbor.cbor_text(v.HumanLoopName))
+    keys.append("FlowDefinitionArn")
+    vals.append(cbor.cbor_text(v.FlowDefinitionArn))
     if v.DataAttributes.is_some():
         auto u0 = v.DataAttributes.unwrap()
-        parts.append("\"DataAttributes\":" + human_loop_data_attributes_to_json(u0))
-    return textract_json_obj(parts)
+        keys.append("DataAttributes")
+        vals.append(human_loop_data_attributes_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize HumanLoopDataAttributes to a compact JSON object (declaration order).
-def human_loop_data_attributes_to_json(HumanLoopDataAttributes v) -> str:
-    list[str] parts = []
+# Serialize HumanLoopDataAttributes to a CBOR map (member wire name -> value, model order).
+def human_loop_data_attributes_to_cbor(HumanLoopDataAttributes v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ContentClassifiers.is_some():
         auto u0 = v.ContentClassifiers.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"ContentClassifiers\":" + textract_json_arr(e1))
-    return textract_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("ContentClassifiers")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize QueriesConfig to a compact JSON object (declaration order).
-def queries_config_to_json(QueriesConfig v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize ListAdapterVersionsRequest to a CBOR map (member wire name -> value, model order).
+def list_adapter_versions_request_to_cbor(ListAdapterVersionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AdapterId.is_some():
+        auto u0 = v.AdapterId.unwrap()
+        keys.append("AdapterId")
+        vals.append(cbor.cbor_text(u0))
+    if v.AfterCreationTime.is_some():
+        auto u1 = v.AfterCreationTime.unwrap()
+        keys.append("AfterCreationTime")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    if v.BeforeCreationTime.is_some():
+        auto u2 = v.BeforeCreationTime.unwrap()
+        keys.append("BeforeCreationTime")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAdaptersRequest to a CBOR map (member wire name -> value, model order).
+def list_adapters_request_to_cbor(ListAdaptersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AfterCreationTime.is_some():
+        auto u0 = v.AfterCreationTime.unwrap()
+        keys.append("AfterCreationTime")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
+    if v.BeforeCreationTime.is_some():
+        auto u1 = v.BeforeCreationTime.unwrap()
+        keys.append("BeforeCreationTime")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NotificationChannel to a CBOR map (member wire name -> value, model order).
+def notification_channel_to_cbor(NotificationChannel v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SNSTopicArn")
+    vals.append(cbor.cbor_text(v.SNSTopicArn))
+    keys.append("RoleArn")
+    vals.append(cbor.cbor_text(v.RoleArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OutputConfig to a CBOR map (member wire name -> value, model order).
+def output_config_to_cbor(OutputConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Bucket")
+    vals.append(cbor.cbor_text(v.S3Bucket))
+    if v.S3Prefix.is_some():
+        auto u0 = v.S3Prefix.unwrap()
+        keys.append("S3Prefix")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize QueriesConfig to a CBOR map (member wire name -> value, model order).
+def queries_config_to_cbor(QueriesConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.Queries:
-        e0.append(query_to_json(x0))
-    parts.append("\"Queries\":" + textract_json_arr(e0))
-    return textract_json_obj(parts)
+        e0.append(query_to_cbor(x0))
+    keys.append("Queries")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize Query to a compact JSON object (declaration order).
-def query_to_json(Query v) -> str:
-    list[str] parts = []
-    parts.append("\"Text\":" + textract_json_str(v.Text))
+# Serialize Query to a CBOR map (member wire name -> value, model order).
+def query_to_cbor(Query v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
     if v.Alias.is_some():
         auto u0 = v.Alias.unwrap()
-        parts.append("\"Alias\":" + textract_json_str(u0))
+        keys.append("Alias")
+        vals.append(cbor.cbor_text(u0))
     if v.Pages.is_some():
         auto u1 = v.Pages.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(textract_json_str(x2))
-        parts.append("\"Pages\":" + textract_json_arr(e2))
-    return textract_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("Pages")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartDocumentAnalysisRequest to a compact JSON object (declaration order).
-def start_document_analysis_request_to_json(StartDocumentAnalysisRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DocumentLocation\":" + v.DocumentLocation.to_json())
-    list[str] e0 = []
+# Serialize S3Object to a CBOR map (member wire name -> value, model order).
+def s3_object_to_cbor(S3Object v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Bucket.is_some():
+        auto u0 = v.Bucket.unwrap()
+        keys.append("Bucket")
+        vals.append(cbor.cbor_text(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u1))
+    if v.Version.is_some():
+        auto u2 = v.Version.unwrap()
+        keys.append("Version")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartDocumentAnalysisRequest to a CBOR map (member wire name -> value, model order).
+def start_document_analysis_request_to_cbor(StartDocumentAnalysisRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentLocation")
+    vals.append(document_location_to_cbor(v.DocumentLocation))
+    list[cbor.CborValue] e0 = []
     for x0 in v.FeatureTypes:
-        e0.append(x0.to_json())
-    parts.append("\"FeatureTypes\":" + textract_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("FeatureTypes")
+    vals.append(cbor.cbor_list(e0))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + textract_json_str(u1))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
     if v.JobTag.is_some():
         auto u2 = v.JobTag.unwrap()
-        parts.append("\"JobTag\":" + textract_json_str(u2))
+        keys.append("JobTag")
+        vals.append(cbor.cbor_text(u2))
     if v.NotificationChannel.is_some():
         auto u3 = v.NotificationChannel.unwrap()
-        parts.append("\"NotificationChannel\":" + u3.to_json())
+        keys.append("NotificationChannel")
+        vals.append(notification_channel_to_cbor(u3))
     if v.OutputConfig.is_some():
         auto u4 = v.OutputConfig.unwrap()
-        parts.append("\"OutputConfig\":" + u4.to_json())
+        keys.append("OutputConfig")
+        vals.append(output_config_to_cbor(u4))
     if v.KMSKeyId.is_some():
         auto u5 = v.KMSKeyId.unwrap()
-        parts.append("\"KMSKeyId\":" + textract_json_str(u5))
+        keys.append("KMSKeyId")
+        vals.append(cbor.cbor_text(u5))
     if v.QueriesConfig.is_some():
         auto u6 = v.QueriesConfig.unwrap()
-        parts.append("\"QueriesConfig\":" + queries_config_to_json(u6))
+        keys.append("QueriesConfig")
+        vals.append(queries_config_to_cbor(u6))
     if v.AdaptersConfig.is_some():
         auto u7 = v.AdaptersConfig.unwrap()
-        parts.append("\"AdaptersConfig\":" + adapters_config_to_json(u7))
-    return textract_json_obj(parts)
+        keys.append("AdaptersConfig")
+        vals.append(adapters_config_to_cbor(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceARN\":" + textract_json_str(v.ResourceARN))
-    list[str] m0 = []
+# Serialize StartDocumentTextDetectionRequest to a CBOR map (member wire name -> value, model order).
+def start_document_text_detection_request_to_cbor(StartDocumentTextDetectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentLocation")
+    vals.append(document_location_to_cbor(v.DocumentLocation))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobTag.is_some():
+        auto u1 = v.JobTag.unwrap()
+        keys.append("JobTag")
+        vals.append(cbor.cbor_text(u1))
+    if v.NotificationChannel.is_some():
+        auto u2 = v.NotificationChannel.unwrap()
+        keys.append("NotificationChannel")
+        vals.append(notification_channel_to_cbor(u2))
+    if v.OutputConfig.is_some():
+        auto u3 = v.OutputConfig.unwrap()
+        keys.append("OutputConfig")
+        vals.append(output_config_to_cbor(u3))
+    if v.KMSKeyId.is_some():
+        auto u4 = v.KMSKeyId.unwrap()
+        keys.append("KMSKeyId")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartExpenseAnalysisRequest to a CBOR map (member wire name -> value, model order).
+def start_expense_analysis_request_to_cbor(StartExpenseAnalysisRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentLocation")
+    vals.append(document_location_to_cbor(v.DocumentLocation))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobTag.is_some():
+        auto u1 = v.JobTag.unwrap()
+        keys.append("JobTag")
+        vals.append(cbor.cbor_text(u1))
+    if v.NotificationChannel.is_some():
+        auto u2 = v.NotificationChannel.unwrap()
+        keys.append("NotificationChannel")
+        vals.append(notification_channel_to_cbor(u2))
+    if v.OutputConfig.is_some():
+        auto u3 = v.OutputConfig.unwrap()
+        keys.append("OutputConfig")
+        vals.append(output_config_to_cbor(u3))
+    if v.KMSKeyId.is_some():
+        auto u4 = v.KMSKeyId.unwrap()
+        keys.append("KMSKeyId")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartLendingAnalysisRequest to a CBOR map (member wire name -> value, model order).
+def start_lending_analysis_request_to_cbor(StartLendingAnalysisRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentLocation")
+    vals.append(document_location_to_cbor(v.DocumentLocation))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobTag.is_some():
+        auto u1 = v.JobTag.unwrap()
+        keys.append("JobTag")
+        vals.append(cbor.cbor_text(u1))
+    if v.NotificationChannel.is_some():
+        auto u2 = v.NotificationChannel.unwrap()
+        keys.append("NotificationChannel")
+        vals.append(notification_channel_to_cbor(u2))
+    if v.OutputConfig.is_some():
+        auto u3 = v.OutputConfig.unwrap()
+        keys.append("OutputConfig")
+        vals.append(output_config_to_cbor(u3))
+    if v.KMSKeyId.is_some():
+        auto u4 = v.KMSKeyId.unwrap()
+        keys.append("KMSKeyId")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    list[str] mk0 = []
+    list[cbor.CborValue] mv0 = []
     for k0 in sorted(v.Tags.keys()):
-        m0.append(textract_json_str(k0) + ":" + textract_json_str(v.Tags[k0]))
-    parts.append("\"Tags\":" + textract_json_obj(m0))
-    return textract_json_obj(parts)
+        mk0.append(k0)
+        mv0.append(cbor.cbor_text(v.Tags[k0]))
+    keys.append("Tags")
+    vals.append(cbor.cbor_map(mk0, mv0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceARN\":" + textract_json_str(v.ResourceARN))
-    list[str] e0 = []
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(textract_json_str(x0))
-    parts.append("\"TagKeys\":" + textract_json_arr(e0))
-    return textract_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateAdapterRequest to a CBOR map (member wire name -> value, model order).
+def update_adapter_request_to_cbor(UpdateAdapterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AdapterId")
+    vals.append(cbor.cbor_text(v.AdapterId))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.AdapterName.is_some():
+        auto u1 = v.AdapterName.unwrap()
+        keys.append("AdapterName")
+        vals.append(cbor.cbor_text(u1))
+    if v.AutoUpdate.is_some():
+        auto u2 = v.AutoUpdate.unwrap()
+        keys.append("AutoUpdate")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Textract client: credentials + region, threaded into every operation.
 struct TextractClient:
@@ -1306,181 +1489,228 @@ struct TextractClient:
 
     # AnalyzeDocument
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, HumanLoopQuotaExceededException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def analyze_document(self, AnalyzeDocumentRequest input) -> str:
-        auto body = analyze_document_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "AnalyzeDocument", body)
+    def analyze_document(self, AnalyzeDocumentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(analyze_document_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "AnalyzeDocument", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AnalyzeExpense
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def analyze_expense(self, AnalyzeExpenseRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "AnalyzeExpense", body)
+    def analyze_expense(self, AnalyzeExpenseRequest input) -> bytes:
+        auto body = cbor.cbor_encode(analyze_expense_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "AnalyzeExpense", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AnalyzeID
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def analyze_id(self, AnalyzeIDRequest input) -> str:
-        auto body = analyze_id_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "AnalyzeID", body)
+    def analyze_id(self, AnalyzeIDRequest input) -> bytes:
+        auto body = cbor.cbor_encode(analyze_id_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "AnalyzeID", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateAdapter
     # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ServiceQuotaExceededException, ThrottlingException, ValidationException
-    def create_adapter(self, CreateAdapterRequest input) -> str:
-        auto body = create_adapter_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "CreateAdapter", body)
+    def create_adapter(self, CreateAdapterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_adapter_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "CreateAdapter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateAdapterVersion
     # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
-    def create_adapter_version(self, CreateAdapterVersionRequest input) -> str:
-        auto body = create_adapter_version_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "CreateAdapterVersion", body)
+    def create_adapter_version(self, CreateAdapterVersionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_adapter_version_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "CreateAdapterVersion", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteAdapter
     # errors: AccessDeniedException, ConflictException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def delete_adapter(self, DeleteAdapterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "DeleteAdapter", body)
+    def delete_adapter(self, DeleteAdapterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_adapter_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "DeleteAdapter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteAdapterVersion
     # errors: AccessDeniedException, ConflictException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def delete_adapter_version(self, DeleteAdapterVersionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "DeleteAdapterVersion", body)
+    def delete_adapter_version(self, DeleteAdapterVersionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_adapter_version_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "DeleteAdapterVersion", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectDocumentText
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def detect_document_text(self, DetectDocumentTextRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "DetectDocumentText", body)
+    def detect_document_text(self, DetectDocumentTextRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_document_text_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "DetectDocumentText", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetAdapter
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def get_adapter(self, GetAdapterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetAdapter", body)
+    def get_adapter(self, GetAdapterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_adapter_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetAdapter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetAdapterVersion
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def get_adapter_version(self, GetAdapterVersionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetAdapterVersion", body)
+    def get_adapter_version(self, GetAdapterVersionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_adapter_version_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetAdapterVersion", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDocumentAnalysis
     # errors: AccessDeniedException, InternalServerError, InvalidJobIdException, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
-    def get_document_analysis(self, GetDocumentAnalysisRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetDocumentAnalysis", body)
+    def get_document_analysis(self, GetDocumentAnalysisRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_document_analysis_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetDocumentAnalysis", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDocumentTextDetection
     # errors: AccessDeniedException, InternalServerError, InvalidJobIdException, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
-    def get_document_text_detection(self, GetDocumentTextDetectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetDocumentTextDetection", body)
+    def get_document_text_detection(self, GetDocumentTextDetectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_document_text_detection_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetDocumentTextDetection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetExpenseAnalysis
     # errors: AccessDeniedException, InternalServerError, InvalidJobIdException, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
-    def get_expense_analysis(self, GetExpenseAnalysisRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetExpenseAnalysis", body)
+    def get_expense_analysis(self, GetExpenseAnalysisRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_expense_analysis_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetExpenseAnalysis", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetLendingAnalysis
     # errors: AccessDeniedException, InternalServerError, InvalidJobIdException, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
-    def get_lending_analysis(self, GetLendingAnalysisRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetLendingAnalysis", body)
+    def get_lending_analysis(self, GetLendingAnalysisRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_lending_analysis_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetLendingAnalysis", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetLendingAnalysisSummary
     # errors: AccessDeniedException, InternalServerError, InvalidJobIdException, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
-    def get_lending_analysis_summary(self, GetLendingAnalysisSummaryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "GetLendingAnalysisSummary", body)
+    def get_lending_analysis_summary(self, GetLendingAnalysisSummaryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_lending_analysis_summary_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "GetLendingAnalysisSummary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAdapterVersions
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def list_adapter_versions(self, ListAdapterVersionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "ListAdapterVersions", body)
+    def list_adapter_versions(self, ListAdapterVersionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_adapter_versions_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "ListAdapterVersions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAdapters
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ThrottlingException, ValidationException
-    def list_adapters(self, ListAdaptersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "ListAdapters", body)
+    def list_adapters(self, ListAdaptersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_adapters_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "ListAdapters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartDocumentAnalysis
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def start_document_analysis(self, StartDocumentAnalysisRequest input) -> str:
-        auto body = start_document_analysis_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "StartDocumentAnalysis", body)
+    def start_document_analysis(self, StartDocumentAnalysisRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_document_analysis_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "StartDocumentAnalysis", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartDocumentTextDetection
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def start_document_text_detection(self, StartDocumentTextDetectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "StartDocumentTextDetection", body)
+    def start_document_text_detection(self, StartDocumentTextDetectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_document_text_detection_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "StartDocumentTextDetection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartExpenseAnalysis
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def start_expense_analysis(self, StartExpenseAnalysisRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "StartExpenseAnalysis", body)
+    def start_expense_analysis(self, StartExpenseAnalysisRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_expense_analysis_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "StartExpenseAnalysis", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartLendingAnalysis
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
-    def start_lending_analysis(self, StartLendingAnalysisRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "StartLendingAnalysis", body)
+    def start_lending_analysis(self, StartLendingAnalysisRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_lending_analysis_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "StartLendingAnalysis", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateAdapter
     # errors: AccessDeniedException, ConflictException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
-    def update_adapter(self, UpdateAdapterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "UpdateAdapter", body)
-
-    # Paginator for ListAdapterVersions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: AdapterVersions).
-    def paginate_list_adapter_versions(self, ListAdapterVersionsRequest input):
-        auto host = endpoints.regional_host(textract_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "ListAdapterVersions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListAdapters — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Adapters).
-    def paginate_list_adapters(self, ListAdaptersRequest input):
-        auto host = endpoints.regional_host(textract_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "ListAdapters", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_adapter(self, UpdateAdapterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_adapter_request_to_cbor(input))
+        auto host = endpoints.regional_host(textract_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(textract_service(), self.region, host, "Textract", "UpdateAdapter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a TextractClient bound to credentials + region.
 def textract_client(core.Credentials creds, str region) -> TextractClient:

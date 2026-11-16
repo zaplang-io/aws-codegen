@@ -3013,6 +3013,30 @@
     "shape": "EksContainerEnvironmentVariable"
    }
   },
+  "EksContainerLinuxCapabilities": {
+   "type": "structure",
+   "members": {
+    "add": {
+     "shape": "EksContainerLinuxCapabilityList"
+    },
+    "drop": {
+     "shape": "EksContainerLinuxCapabilityList"
+    }
+   }
+  },
+  "EksContainerLinuxCapability": {
+   "type": "string",
+   "max": 128,
+   "min": 1
+  },
+  "EksContainerLinuxCapabilityList": {
+   "type": "list",
+   "member": {
+    "shape": "EksContainerLinuxCapability"
+   },
+   "max": 64,
+   "min": 0
+  },
   "EksContainerOverride": {
    "type": "structure",
    "members": {
@@ -3073,6 +3097,12 @@
     },
     "runAsNonRoot": {
      "shape": "Boolean"
+    },
+    "capabilities": {
+     "shape": "EksContainerLinuxCapabilities"
+    },
+    "seccompProfile": {
+     "shape": "EksSeccompProfile"
     }
    }
   },
@@ -3199,6 +3229,9 @@
     },
     "shareProcessNamespace": {
      "shape": "Boolean"
+    },
+    "securityContext": {
+     "shape": "EksPodSecurityContext"
     }
    }
   },
@@ -3237,6 +3270,9 @@
     },
     "shareProcessNamespace": {
      "shape": "Boolean"
+    },
+    "securityContext": {
+     "shape": "EksPodSecurityContext"
     }
    }
   },
@@ -3251,6 +3287,26 @@
     },
     "metadata": {
      "shape": "EksMetadata"
+    }
+   }
+  },
+  "EksPodSecurityContext": {
+   "type": "structure",
+   "members": {
+    "runAsUser": {
+     "shape": "Long"
+    },
+    "runAsGroup": {
+     "shape": "Long"
+    },
+    "runAsNonRoot": {
+     "shape": "Boolean"
+    },
+    "seccompProfile": {
+     "shape": "EksSeccompProfile"
+    },
+    "fsGroup": {
+     "shape": "Long"
     }
    }
   },
@@ -3286,6 +3342,33 @@
    "value": {
     "shape": "Quantity"
    }
+  },
+  "EksSeccompLocalhostProfile": {
+   "type": "string",
+   "max": 4095,
+   "min": 1
+  },
+  "EksSeccompProfile": {
+   "type": "structure",
+   "required": [
+    "type"
+   ],
+   "members": {
+    "type": {
+     "shape": "EksSeccompProfileType"
+    },
+    "localhostProfile": {
+     "shape": "EksSeccompLocalhostProfile"
+    }
+   }
+  },
+  "EksSeccompProfileType": {
+   "type": "string",
+   "enum": [
+    "RuntimeDefault",
+    "Localhost",
+    "Unconfined"
+   ]
   },
   "EksSecret": {
    "type": "structure",

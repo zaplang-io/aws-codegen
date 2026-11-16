@@ -52,6 +52,7 @@ enum AcceleratorName:
     l4
     l40s
     rtx_pro_server_6000
+    rtx_pro_4500
     Unknown(str value)
 
 @derive(Json)

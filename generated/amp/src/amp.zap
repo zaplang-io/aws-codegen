@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 44 operations — 43 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   130 structs (81 @derive(Json)), 12 enums, 7 error variants.
+#   131 structs (82 @derive(Json)), 12 enums, 7 error variants.
 #   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
 #   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -552,6 +552,7 @@ struct EksConfiguration:
 @derive(Json)
 struct ExporterConfiguration:
     Optional[OpenSearchExporterConfiguration] openSearchConfiguration
+    Optional[KafkaExporterConfiguration] kafkaConfiguration
 
 # rest-json request for GetDefaultScraperConfigurationRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -572,6 +573,12 @@ struct IgnoreNearExpected:
 struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
+
+@derive(Json)
+struct KafkaExporterConfiguration:
+    str clusterArn
+    Optional[str] topicFilter
+    Optional[str] consumerGroupFilter
 
 # no @derive(Json): member(s) labelSet: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`

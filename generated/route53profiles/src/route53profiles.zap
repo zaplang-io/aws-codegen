@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 16 with a generated method,
+# Coverage (rest-json): 17 operations — 17 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   47 structs (39 @derive(Json)), 2 enums, 10 error variants.
+#   49 structs (41 @derive(Json)), 2 enums, 10 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -70,10 +70,11 @@ struct AccessDeniedException:
 # rest-json request for AssociateProfileRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct AssociateProfileRequest:
-    str Name
     str ProfileId
     str ResourceId
+    str Name
     Optional[list[Tag]] Tags
+    Optional[int64] Priority
 
 @derive(Json)
 struct AssociateProfileResponse:
@@ -82,9 +83,9 @@ struct AssociateProfileResponse:
 # rest-json request for AssociateResourceToProfileRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct AssociateResourceToProfileRequest:
-    str Name
     str ProfileId
     str ResourceArn
+    str Name
     Optional[str] ResourceProperties
 
 @derive(Json)
@@ -98,8 +99,8 @@ struct ConflictException:
 # rest-json request for CreateProfileRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct CreateProfileRequest:
-    str ClientToken
     str Name
+    str ClientToken
     Optional[list[Tag]] Tags
 
 @derive(Json)
@@ -172,8 +173,8 @@ struct InvalidNextTokenException:
 
 @derive(Json)
 struct InvalidParameterException:
-    Optional[str] FieldName
     str Message
+    Optional[str] FieldName
 
 @derive(Json)
 struct LimitExceededException:
@@ -183,32 +184,33 @@ struct LimitExceededException:
 # rest-json request for ListProfileAssociationsRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct ListProfileAssociationsRequest:
+    Optional[str] ResourceId
+    Optional[str] ProfileId
     Optional[int64] MaxResults
     Optional[str] NextToken
-    Optional[str] ProfileId
-    Optional[str] ResourceId
 
 # no @derive(Json): member(s) ProfileAssociations: list[ProfileAssociation] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ListProfileAssociationsResponse:
-    Optional[str] NextToken
     Optional[list[ProfileAssociation]] ProfileAssociations
+    Optional[str] NextToken
 
 # rest-json request for ListProfileResourceAssociationsRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct ListProfileResourceAssociationsRequest:
-    Optional[int64] MaxResults
-    Optional[str] NextToken
     str ProfileId
     Optional[str] ResourceType
+    Optional[str] ResourceArn
+    Optional[int64] MaxResults
+    Optional[str] NextToken
 
 # no @derive(Json): member(s) ProfileResourceAssociations: list[ProfileResourceAssociation] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ListProfileResourceAssociationsResponse:
-    Optional[str] NextToken
     Optional[list[ProfileResourceAssociation]] ProfileResourceAssociations
+    Optional[str] NextToken
 
 # rest-json request for ListProfilesRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -220,8 +222,8 @@ struct ListProfilesRequest:
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ListProfilesResponse:
-    Optional[str] NextToken
     Optional[list[ProfileSummary]] ProfileSummaries
+    Optional[str] NextToken
 
 # rest-json request for ListTagsForResourceRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -236,47 +238,48 @@ struct ListTagsForResourceResponse:
 
 @derive(Json)
 struct Profile:
-    Optional[str] Arn
-    Optional[str] ClientToken
-    Optional[DateTime] CreationTime
     Optional[str] Id
-    Optional[DateTime] ModificationTime
+    Optional[str] Arn
     Optional[str] Name
     Optional[str] OwnerId
-    Optional[ShareStatus] ShareStatus
     Optional[ProfileStatus] Status
     Optional[str] StatusMessage
+    Optional[ShareStatus] ShareStatus
+    Optional[DateTime] CreationTime
+    Optional[DateTime] ModificationTime
+    Optional[str] ClientToken
 
 @derive(Json)
 struct ProfileAssociation:
-    Optional[DateTime] CreationTime
     Optional[str] Id
-    Optional[DateTime] ModificationTime
     Optional[str] Name
     Optional[str] OwnerId
     Optional[str] ProfileId
     Optional[str] ResourceId
     Optional[ProfileStatus] Status
     Optional[str] StatusMessage
+    Optional[DateTime] CreationTime
+    Optional[DateTime] ModificationTime
+    Optional[int64] Priority
 
 @derive(Json)
 struct ProfileResourceAssociation:
-    Optional[DateTime] CreationTime
     Optional[str] Id
-    Optional[DateTime] ModificationTime
     Optional[str] Name
     Optional[str] OwnerId
     Optional[str] ProfileId
     Optional[str] ResourceArn
-    Optional[str] ResourceProperties
     Optional[str] ResourceType
+    Optional[str] ResourceProperties
     Optional[ProfileStatus] Status
     Optional[str] StatusMessage
+    Optional[DateTime] CreationTime
+    Optional[DateTime] ModificationTime
 
 @derive(Json)
 struct ProfileSummary:
-    Optional[str] Arn
     Optional[str] Id
+    Optional[str] Arn
     Optional[str] Name
     Optional[ShareStatus] ShareStatus
 
@@ -321,11 +324,22 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+# rest-json request for UpdateProfileAssociationRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateProfileAssociationRequest:
+    str ProfileAssociationId
+    Optional[str] Name
+    Optional[int64] Priority
+
+@derive(Json)
+struct UpdateProfileAssociationResponse:
+    ProfileAssociation ProfileAssociation
+
 # rest-json request for UpdateProfileResourceAssociationRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct UpdateProfileResourceAssociationRequest:
-    Optional[str] Name
     str ProfileResourceAssociationId
+    Optional[str] Name
     Optional[str] ResourceProperties
 
 @derive(Json)
@@ -426,10 +440,16 @@ def route53profiles_error_name(Route53ProfilesErrorKind k) -> str:
 @derive(Json)
 struct AssociateResourceToProfileDocument:
     # document members of AssociateResourceToProfile
-    str Name
     str ProfileId
     str ResourceArn
+    str Name
     Optional[str] ResourceProperties
+
+@derive(Json)
+struct UpdateProfileAssociationDocument:
+    # document members of UpdateProfileAssociation
+    Optional[str] Name
+    Optional[int64] Priority
 
 @derive(Json)
 struct UpdateProfileResourceAssociationDocument:
@@ -448,15 +468,18 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/profileassociation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
-        parts.append("\"Name\":" + route53profiles_json_str(input.Name))
         parts.append("\"ProfileId\":" + route53profiles_json_str(input.ProfileId))
         parts.append("\"ResourceId\":" + route53profiles_json_str(input.ResourceId))
+        parts.append("\"Name\":" + route53profiles_json_str(input.Name))
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
             list[str] e1 = []
             for x1 in u0:
                 e1.append(x1.to_json())
             parts.append("\"Tags\":" + route53profiles_json_arr(e1))
+        if input.Priority.is_some():
+            auto u2 = input.Priority.unwrap()
+            parts.append("\"Priority\":" + str(u2))
         auto bp = restjson.rest_json_document(b, route53profiles_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53profiles_service(), self.region, host)
 
@@ -465,7 +488,7 @@ struct Route53ProfilesClient:
     def associate_resource_to_profile(self, AssociateResourceToProfileRequest input) -> str:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/profileresourceassociation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = AssociateResourceToProfileDocument(Name=input.Name, ProfileId=input.ProfileId, ResourceArn=input.ResourceArn, ResourceProperties=input.ResourceProperties)
+        auto doc = AssociateResourceToProfileDocument(ProfileId=input.ProfileId, ResourceArn=input.ResourceArn, Name=input.Name, ResourceProperties=input.ResourceProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53profiles_service(), self.region, host)
 
@@ -475,8 +498,8 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/profile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
-        parts.append("\"ClientToken\":" + route53profiles_json_str(input.ClientToken))
         parts.append("\"Name\":" + route53profiles_json_str(input.Name))
+        parts.append("\"ClientToken\":" + route53profiles_json_str(input.ClientToken))
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
             list[str] e1 = []
@@ -547,14 +570,14 @@ struct Route53ProfilesClient:
     def list_profile_associations(self, ListProfileAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] query = {}
+        if input.ResourceId.is_some():
+            query["resourceId"] = input.ResourceId.unwrap_or("")
+        if input.ProfileId.is_some():
+            query["profileId"] = input.ProfileId.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        if input.ProfileId.is_some():
-            query["profileId"] = input.ProfileId.unwrap_or("")
-        if input.ResourceId.is_some():
-            query["resourceId"] = input.ResourceId.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/profileassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
@@ -565,12 +588,14 @@ struct Route53ProfilesClient:
         dict[str, str] labels = {}
         labels["ProfileId"] = input.ProfileId
         dict[str, str] query = {}
+        if input.ResourceType.is_some():
+            query["resourceType"] = input.ResourceType.unwrap_or("")
+        if input.ResourceArn.is_some():
+            query["resourceArn"] = input.ResourceArn.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        if input.ResourceType.is_some():
-            query["resourceType"] = input.ResourceType.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/profileresourceassociations/profileid/{ProfileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
@@ -620,6 +645,17 @@ struct Route53ProfilesClient:
         multi_query["tagKeys"] = input.TagKeys
         auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
+
+    # UpdateProfileAssociation  PATCH /profileassociation/{ProfileAssociationId}
+    # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, InvalidParameterException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_profile_association(self, UpdateProfileAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(route53profiles_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ProfileAssociationId"] = input.ProfileAssociationId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/profileassociation/{ProfileAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateProfileAssociationDocument(Name=input.Name, Priority=input.Priority)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, route53profiles_service(), self.region, host)
 
     # UpdateProfileResourceAssociation  PATCH /profileresourceassociation/{ProfileResourceAssociationId}
     # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, InvalidParameterException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException

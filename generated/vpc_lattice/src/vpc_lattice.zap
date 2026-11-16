@@ -1812,6 +1812,7 @@ struct UpdateResourceConfigurationResponse:
 struct UpdateResourceGatewayRequest:
     str resourceGatewayIdentifier
     Optional[list[str]] securityGroupIds
+    Optional[ResourceConfigDnsResolution] resourceConfigDnsResolution
 
 # no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1825,6 +1826,7 @@ struct UpdateResourceGatewayResponse:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
     Optional[IpAddressType] ipAddressType
+    Optional[ResourceConfigDnsResolution] resourceConfigDnsResolution
 
 # rest-json request for UpdateRuleRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -3202,6 +3204,9 @@ struct VPC_LatticeClient:
             for x1 in u0:
                 e1.append(vpc_lattice_json_str(x1))
             parts.append("\"securityGroupIds\":" + vpc_lattice_json_arr(e1))
+        if input.resourceConfigDnsResolution.is_some():
+            auto u2 = input.resourceConfigDnsResolution.unwrap()
+            parts.append("\"resourceConfigDnsResolution\":" + u2.to_json())
         auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 

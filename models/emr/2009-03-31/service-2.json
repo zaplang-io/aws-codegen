@@ -5753,6 +5753,20 @@
     },
     "EncryptionKeyArn": {
      "shape": "String"
+    },
+    "AdditionalInfo": {
+     "shape": "StepAdditionalInfo"
+    }
+   }
+  },
+  "StepAdditionalInfo": {
+   "type": "structure",
+   "members": {
+    "ResourceManagerApplicationIds": {
+     "shape": "StringList"
+    },
+    "ResourceManager": {
+     "shape": "String"
     }
    }
   },
@@ -5939,6 +5953,9 @@
     },
     "EncryptionKeyArn": {
      "shape": "String"
+    },
+    "AdditionalInfo": {
+     "shape": "StepAdditionalInfo"
     }
    }
   },

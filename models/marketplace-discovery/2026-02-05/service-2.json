@@ -2703,7 +2703,9 @@
   "ReviewSourceId": {
    "type": "string",
    "enum": [
-    "AWS_MARKETPLACE"
+    "AWS_MARKETPLACE",
+    "G2",
+    "PEERSPOT"
    ]
   },
   "ReviewSourceSummary": {

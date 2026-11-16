@@ -1401,6 +1401,9 @@
    },
    "errors": [
     {
+     "shape": "RuntimeAliasDeletedException"
+    },
+    {
      "shape": "CodeArtifactUserDeletedException"
     },
     {
@@ -1474,6 +1477,9 @@
     },
     {
      "shape": "ResourceConflictException"
+    },
+    {
+     "shape": "RuntimeVersionDeletedException"
     },
     {
      "shape": "ENILimitReachedException"
@@ -1650,6 +1656,9 @@
    },
    "errors": [
     {
+     "shape": "RuntimeAliasDeletedException"
+    },
+    {
      "shape": "CodeArtifactUserDeletedException"
     },
     {
@@ -1723,6 +1732,9 @@
     },
     {
      "shape": "ResourceConflictException"
+    },
+    {
+     "shape": "RuntimeVersionDeletedException"
     },
     {
      "shape": "ENILimitReachedException"
@@ -2536,6 +2548,9 @@
      "shape": "InvalidParameterValueException"
     },
     {
+     "shape": "ResourceConflictException"
+    },
+    {
      "shape": "ServiceException"
     },
     {
@@ -3118,7 +3133,7 @@
    ],
    "members": {
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -4406,6 +4421,9 @@
     },
     "DurableConfig": {
      "shape": "DurableConfig"
+    },
+    "RuntimeConfig": {
+     "shape": "FunctionRuntimeConfig"
     }
    }
   },
@@ -4653,7 +4671,7 @@
    ],
    "members": {
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -5831,6 +5849,9 @@
     },
     "DurableConfig": {
      "shape": "DurableConfig"
+    },
+    "RuntimeConfig": {
+     "shape": "FunctionRuntimeConfig"
     }
    }
   },
@@ -5885,6 +5906,32 @@
    },
    "max": 1,
    "min": 0
+  },
+  "FunctionRuntimeAlias": {
+   "type": "string",
+   "max": 128,
+   "min": 1
+  },
+  "FunctionRuntimeArn": {
+   "type": "string",
+   "max": 2048,
+   "min": 48,
+   "pattern": "arn:[a-z-]+:lambda:[a-z0-9-]+:\\d{12}:runtime/.+"
+  },
+  "FunctionRuntimeConfig": {
+   "type": "structure",
+   "required": [
+    "RuntimeArn",
+    "RuntimeAlias"
+   ],
+   "members": {
+    "RuntimeArn": {
+     "shape": "FunctionRuntimeArn"
+    },
+    "RuntimeAlias": {
+     "shape": "FunctionRuntimeAlias"
+    }
+   }
   },
   "FunctionScalingConfig": {
    "type": "structure",
@@ -6520,7 +6567,7 @@
    ],
    "members": {
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -6550,7 +6597,7 @@
    ],
    "members": {
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -7265,6 +7312,13 @@
    "exception": true,
    "fault": true
   },
+  "KafkaEventSourceMappingConsumptionMode": {
+   "type": "string",
+   "enum": [
+    "Stream",
+    "Queue"
+   ]
+  },
   "KafkaSchemaRegistryAccessConfig": {
    "type": "structure",
    "members": {
@@ -7432,6 +7486,12 @@
    "max": 140,
    "min": 1,
    "pattern": "(arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
+  },
+  "LayerNameOrArn": {
+   "type": "string",
+   "max": 2048,
+   "min": 1,
+   "pattern": "(arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]{1,140}|[a-zA-Z0-9-_]{1,140})"
   },
   "LayerPermissionAllowedAction": {
    "type": "string",
@@ -7959,7 +8019,7 @@
      "locationName": "CompatibleRuntime"
     },
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -8585,9 +8645,9 @@
   },
   "PolicyResourceArn": {
    "type": "string",
-   "max": 256,
+   "max": 512,
    "min": 0,
-   "pattern": "arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(runtime/|function:)[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?"
+   "pattern": "arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?|runtime/[a-zA-Z0-9-_./]+)"
   },
   "PositiveInteger": {
    "type": "integer",
@@ -8751,7 +8811,7 @@
    ],
    "members": {
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -9138,7 +9198,7 @@
    ],
    "members": {
     "LayerName": {
-     "shape": "LayerName",
+     "shape": "LayerNameOrArn",
      "location": "uri",
      "locationName": "LayerName"
     },
@@ -9396,8 +9456,25 @@
     "python3.15",
     "java8.al2023",
     "java11.al2023",
-    "java17.al2023"
+    "java17.al2023",
+    "custom"
    ]
+  },
+  "RuntimeAliasDeletedException": {
+   "type": "structure",
+   "members": {
+    "Type": {
+     "shape": "String"
+    },
+    "message": {
+     "shape": "String"
+    }
+   },
+   "error": {
+    "httpStatusCode": 409,
+    "senderFault": true
+   },
+   "exception": true
   },
   "RuntimeVersionArn": {
    "type": "string",
@@ -9415,6 +9492,22 @@
      "shape": "RuntimeVersionError"
     }
    }
+  },
+  "RuntimeVersionDeletedException": {
+   "type": "structure",
+   "members": {
+    "Type": {
+     "shape": "String"
+    },
+    "message": {
+     "shape": "String"
+    }
+   },
+   "error": {
+    "httpStatusCode": 409,
+    "senderFault": true
+   },
+   "exception": true
   },
   "RuntimeVersionError": {
    "type": "structure",
@@ -9559,6 +9652,9 @@
     },
     "SchemaRegistryConfig": {
      "shape": "KafkaSchemaRegistryConfig"
+    },
+    "ConsumptionMode": {
+     "shape": "KafkaEventSourceMappingConsumptionMode"
     }
    }
   },
@@ -10613,6 +10709,9 @@
     },
     "DurableConfig": {
      "shape": "DurableConfig"
+    },
+    "RuntimeConfig": {
+     "shape": "FunctionRuntimeConfig"
     }
    }
   },

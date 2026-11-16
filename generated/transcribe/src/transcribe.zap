@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: Amazon Transcribe Service (serviceId Transcribe, API 2017-10-26)
-# Protocol: awsJson 1.1 (targetPrefix Transcribe)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service transcribe, service shape Transcribe)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 44 operations — 42 with a generated method,
-#   2 skipped (input has a non-string-keyed map or free-form document member).
-#   132 structs (75 @derive(Json)), 22 enums, 5 error variants.
+# Coverage (smithy-rpc-v2-cbor): 44 operations — 44 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   132 structs (plain carriers), 22 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   7 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+#   0 waiters generated (7 skipped) from waiters-2.json.
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import aws_core.waiters
+import aws_core.cbor
 
-# The Transcribe awsJson protocol: version 1.1, API id "Transcribe".
-def transcribe_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("Transcribe", "transcribe")
+# The Transcribe smithy-rpc-v2-cbor protocol: SigV4 service "transcribe" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/Transcribe/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def transcribe_service() -> str:
+    return "transcribe"
 
 # --- enums -----------------------------------------------------------------
 
@@ -366,27 +369,22 @@ enum VocabularyState:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AbsoluteTimeRange:
     Optional[int64] StartTime
     Optional[int64] EndTime
     Optional[int64] First
     Optional[int64] Last
 
-@derive(Json)
 struct BadRequestException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CallAnalyticsJobDetails: CallAnalyticsJobDetails, Settings: CallAnalyticsJobSettings, ChannelDefinitions: list[ChannelDefinition], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CallAnalyticsJob:
     Optional[str] CallAnalyticsJobName
-    Optional[CallAnalyticsJobStatus] CallAnalyticsJobStatus
+    Optional[str] CallAnalyticsJobStatus
     Optional[CallAnalyticsJobDetails] CallAnalyticsJobDetails
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[int64] MediaSampleRateHertz
-    Optional[MediaFormat] MediaFormat
+    Optional[str] MediaFormat
     Optional[Media] Media
     Optional[Transcript] Transcript
     Optional[DateTime] StartTime
@@ -399,536 +397,391 @@ struct CallAnalyticsJob:
     Optional[list[ChannelDefinition]] ChannelDefinitions
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Skipped: list[CallAnalyticsSkippedFeature] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CallAnalyticsJobDetails:
     Optional[list[CallAnalyticsSkippedFeature]] Skipped
 
-# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], LanguageIdSettings: dict[LanguageCode, LanguageIdSettings] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CallAnalyticsJobSettings:
     Optional[str] VocabularyName
     Optional[str] VocabularyFilterName
-    Optional[VocabularyFilterMethod] VocabularyFilterMethod
+    Optional[str] VocabularyFilterMethod
     Optional[str] LanguageModelName
     Optional[ContentRedaction] ContentRedaction
-    Optional[list[LanguageCode]] LanguageOptions
-    Optional[dict[LanguageCode, LanguageIdSettings]] LanguageIdSettings
+    Optional[list[str]] LanguageOptions
+    Optional[dict[str, LanguageIdSettings]] LanguageIdSettings
     Optional[Summarization] Summarization
 
-# no @derive(Json): member(s) CallAnalyticsJobDetails: CallAnalyticsJobDetails not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CallAnalyticsJobSummary:
     Optional[str] CallAnalyticsJobName
     Optional[DateTime] CreationTime
     Optional[DateTime] StartTime
     Optional[DateTime] CompletionTime
-    Optional[LanguageCode] LanguageCode
-    Optional[CallAnalyticsJobStatus] CallAnalyticsJobStatus
+    Optional[str] LanguageCode
+    Optional[str] CallAnalyticsJobStatus
     Optional[CallAnalyticsJobDetails] CallAnalyticsJobDetails
     Optional[str] FailureReason
 
-@derive(Json)
 struct CallAnalyticsSkippedFeature:
     Optional[str] Feature
-    Optional[CallAnalyticsSkippedReasonCode] ReasonCode
+    Optional[str] ReasonCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CategoryProperties:
     Optional[str] CategoryName
     Optional[list[Rule]] Rules
     Optional[DateTime] CreateTime
     Optional[DateTime] LastUpdateTime
     Optional[list[Tag]] Tags
-    Optional[InputType] InputType
+    Optional[str] InputType
 
-@derive(Json)
 struct ChannelDefinition:
     Optional[int64] ChannelId
-    Optional[ParticipantRole] ParticipantRole
+    Optional[str] ParticipantRole
 
-@derive(Json)
 struct ClinicalNoteGenerationSettings:
-    Optional[MedicalScribeNoteTemplate] NoteTemplate
+    Optional[str] NoteTemplate
 
-@derive(Json)
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) PiiEntityTypes: list[PiiEntityType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ContentRedaction:
     str RedactionType
-    RedactionOutput RedactionOutput
-    Optional[list[PiiEntityType]] PiiEntityTypes
+    str RedactionOutput
+    Optional[list[str]] PiiEntityTypes
 
-# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateCallAnalyticsCategoryRequest:
     str CategoryName
     list[Rule] Rules
     Optional[list[Tag]] Tags
-    Optional[InputType] InputType
+    Optional[str] InputType
 
-# no @derive(Json): member(s) CategoryProperties: CategoryProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateCallAnalyticsCategoryResponse:
     Optional[CategoryProperties] CategoryProperties
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLanguageModelRequest:
-    CLMLanguageCode LanguageCode
-    BaseModelName BaseModelName
+    str LanguageCode
+    str BaseModelName
     str ModelName
     InputDataConfig InputDataConfig
     Optional[EncryptionConfiguration] EncryptionConfiguration
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateLanguageModelResponse:
-    Optional[CLMLanguageCode] LanguageCode
-    Optional[BaseModelName] BaseModelName
+    Optional[str] LanguageCode
+    Optional[str] BaseModelName
     Optional[str] ModelName
     Optional[InputDataConfig] InputDataConfig
-    Optional[ModelStatus] ModelStatus
+    Optional[str] ModelStatus
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateMedicalVocabularyRequest:
     str VocabularyName
-    LanguageCode LanguageCode
+    str LanguageCode
     str VocabularyFileUri
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateMedicalVocabularyResponse:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
-    Optional[VocabularyState] VocabularyState
+    Optional[str] LanguageCode
+    Optional[str] VocabularyState
     Optional[DateTime] LastModifiedTime
     Optional[str] FailureReason
 
-# no @derive(Json): member(s) Words: list[str], Tags: list[Tag], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateVocabularyFilterRequest:
     str VocabularyFilterName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[list[str]] Words
     Optional[str] VocabularyFilterFileUri
     Optional[list[Tag]] Tags
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct CreateVocabularyFilterResponse:
     Optional[str] VocabularyFilterName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) Phrases: list[str], Tags: list[Tag], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateVocabularyRequest:
     str VocabularyName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[list[str]] Phrases
     Optional[str] VocabularyFileUri
     Optional[list[Tag]] Tags
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct CreateVocabularyResponse:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
-    Optional[VocabularyState] VocabularyState
+    Optional[str] LanguageCode
+    Optional[str] VocabularyState
     Optional[DateTime] LastModifiedTime
     Optional[str] FailureReason
 
-@derive(Json)
 struct DeleteCallAnalyticsCategoryRequest:
     str CategoryName
 
-@derive(Json)
 struct DeleteCallAnalyticsCategoryResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteCallAnalyticsJobRequest:
     str CallAnalyticsJobName
 
-@derive(Json)
 struct DeleteCallAnalyticsJobResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteLanguageModelRequest:
     str ModelName
 
-@derive(Json)
 struct DeleteMedicalScribeJobRequest:
     str MedicalScribeJobName
 
-@derive(Json)
 struct DeleteMedicalTranscriptionJobRequest:
     str MedicalTranscriptionJobName
 
-@derive(Json)
 struct DeleteMedicalVocabularyRequest:
     str VocabularyName
 
-@derive(Json)
 struct DeleteTranscriptionJobRequest:
     str TranscriptionJobName
 
-@derive(Json)
 struct DeleteVocabularyFilterRequest:
     str VocabularyFilterName
 
-@derive(Json)
 struct DeleteVocabularyRequest:
     str VocabularyName
 
-@derive(Json)
 struct DescribeLanguageModelRequest:
     str ModelName
 
-# no @derive(Json): member(s) LanguageModel: LanguageModel not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLanguageModelResponse:
     Optional[LanguageModel] LanguageModel
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EncryptionConfiguration:
     Optional[dict[str, str]] KMSEncryptionContext
     str KMSKey
 
-@derive(Json)
 struct GetCallAnalyticsCategoryRequest:
     str CategoryName
 
-# no @derive(Json): member(s) CategoryProperties: CategoryProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetCallAnalyticsCategoryResponse:
     Optional[CategoryProperties] CategoryProperties
 
-@derive(Json)
 struct GetCallAnalyticsJobRequest:
     str CallAnalyticsJobName
 
-# no @derive(Json): member(s) CallAnalyticsJob: CallAnalyticsJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetCallAnalyticsJobResponse:
     Optional[CallAnalyticsJob] CallAnalyticsJob
 
-@derive(Json)
 struct GetMedicalScribeJobRequest:
     str MedicalScribeJobName
 
-# no @derive(Json): member(s) MedicalScribeJob: MedicalScribeJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetMedicalScribeJobResponse:
     Optional[MedicalScribeJob] MedicalScribeJob
 
-@derive(Json)
 struct GetMedicalTranscriptionJobRequest:
     str MedicalTranscriptionJobName
 
-# no @derive(Json): member(s) MedicalTranscriptionJob: MedicalTranscriptionJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetMedicalTranscriptionJobResponse:
     Optional[MedicalTranscriptionJob] MedicalTranscriptionJob
 
-@derive(Json)
 struct GetMedicalVocabularyRequest:
     str VocabularyName
 
-@derive(Json)
 struct GetMedicalVocabularyResponse:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
-    Optional[VocabularyState] VocabularyState
+    Optional[str] LanguageCode
+    Optional[str] VocabularyState
     Optional[DateTime] LastModifiedTime
     Optional[str] FailureReason
     Optional[str] DownloadUri
 
-@derive(Json)
 struct GetTranscriptionJobRequest:
     str TranscriptionJobName
 
-# no @derive(Json): member(s) TranscriptionJob: TranscriptionJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetTranscriptionJobResponse:
     Optional[TranscriptionJob] TranscriptionJob
 
-@derive(Json)
 struct GetVocabularyFilterRequest:
     str VocabularyFilterName
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetVocabularyFilterResponse:
     Optional[str] VocabularyFilterName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
     Optional[str] DownloadUri
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct GetVocabularyRequest:
     str VocabularyName
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetVocabularyResponse:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
-    Optional[VocabularyState] VocabularyState
+    Optional[str] LanguageCode
+    Optional[str] VocabularyState
     Optional[DateTime] LastModifiedTime
     Optional[str] FailureReason
     Optional[str] DownloadUri
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct InputDataConfig:
     str S3Uri
     Optional[str] TuningDataS3Uri
     str DataAccessRoleArn
 
-@derive(Json)
 struct InternalFailureException:
     Optional[str] Message
 
-@derive(Json)
 struct InterruptionFilter:
     Optional[int64] Threshold
-    Optional[ParticipantRole] ParticipantRole
+    Optional[str] ParticipantRole
     Optional[AbsoluteTimeRange] AbsoluteTimeRange
     Optional[RelativeTimeRange] RelativeTimeRange
     Optional[bool] Negate
 
-@derive(Json)
 struct JobExecutionSettings:
     Optional[bool] AllowDeferredExecution
     Optional[str] DataAccessRoleArn
 
-@derive(Json)
 struct LanguageCodeItem:
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[float64] DurationInSeconds
 
-@derive(Json)
 struct LanguageIdSettings:
     Optional[str] VocabularyName
     Optional[str] VocabularyFilterName
     Optional[str] LanguageModelName
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LanguageModel:
     Optional[str] ModelName
     Optional[DateTime] CreateTime
     Optional[DateTime] LastModifiedTime
-    Optional[CLMLanguageCode] LanguageCode
-    Optional[BaseModelName] BaseModelName
-    Optional[ModelStatus] ModelStatus
+    Optional[str] LanguageCode
+    Optional[str] BaseModelName
+    Optional[str] ModelStatus
     Optional[bool] UpgradeAvailability
     Optional[str] FailureReason
     Optional[InputDataConfig] InputDataConfig
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct LimitExceededException:
     Optional[str] Message
 
-@derive(Json)
 struct ListCallAnalyticsCategoriesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Categories: list[CategoryProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListCallAnalyticsCategoriesResponse:
     Optional[str] NextToken
     Optional[list[CategoryProperties]] Categories
 
-@derive(Json)
 struct ListCallAnalyticsJobsRequest:
-    Optional[CallAnalyticsJobStatus] Status
+    Optional[str] Status
     Optional[str] JobNameContains
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CallAnalyticsJobSummaries: list[CallAnalyticsJobSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListCallAnalyticsJobsResponse:
-    Optional[CallAnalyticsJobStatus] Status
+    Optional[str] Status
     Optional[str] NextToken
     Optional[list[CallAnalyticsJobSummary]] CallAnalyticsJobSummaries
 
-@derive(Json)
 struct ListLanguageModelsRequest:
-    Optional[ModelStatus] StatusEquals
+    Optional[str] StatusEquals
     Optional[str] NameContains
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Models: list[LanguageModel] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListLanguageModelsResponse:
     Optional[str] NextToken
     Optional[list[LanguageModel]] Models
 
-@derive(Json)
 struct ListMedicalScribeJobsRequest:
-    Optional[MedicalScribeJobStatus] Status
+    Optional[str] Status
     Optional[str] JobNameContains
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MedicalScribeJobSummaries: list[MedicalScribeJobSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListMedicalScribeJobsResponse:
-    Optional[MedicalScribeJobStatus] Status
+    Optional[str] Status
     Optional[str] NextToken
     Optional[list[MedicalScribeJobSummary]] MedicalScribeJobSummaries
 
-@derive(Json)
 struct ListMedicalTranscriptionJobsRequest:
-    Optional[TranscriptionJobStatus] Status
+    Optional[str] Status
     Optional[str] JobNameContains
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MedicalTranscriptionJobSummaries: list[MedicalTranscriptionJobSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListMedicalTranscriptionJobsResponse:
-    Optional[TranscriptionJobStatus] Status
+    Optional[str] Status
     Optional[str] NextToken
     Optional[list[MedicalTranscriptionJobSummary]] MedicalTranscriptionJobSummaries
 
-@derive(Json)
 struct ListMedicalVocabulariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
-    Optional[VocabularyState] StateEquals
+    Optional[str] StateEquals
     Optional[str] NameContains
 
-# no @derive(Json): member(s) Vocabularies: list[VocabularyInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListMedicalVocabulariesResponse:
-    Optional[VocabularyState] Status
+    Optional[str] Status
     Optional[str] NextToken
     Optional[list[VocabularyInfo]] Vocabularies
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] ResourceArn
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct ListTranscriptionJobsRequest:
-    Optional[TranscriptionJobStatus] Status
+    Optional[str] Status
     Optional[str] JobNameContains
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TranscriptionJobSummaries: list[TranscriptionJobSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTranscriptionJobsResponse:
-    Optional[TranscriptionJobStatus] Status
+    Optional[str] Status
     Optional[str] NextToken
     Optional[list[TranscriptionJobSummary]] TranscriptionJobSummaries
 
-@derive(Json)
 struct ListVocabulariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
-    Optional[VocabularyState] StateEquals
+    Optional[str] StateEquals
     Optional[str] NameContains
 
-# no @derive(Json): member(s) Vocabularies: list[VocabularyInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVocabulariesResponse:
-    Optional[VocabularyState] Status
+    Optional[str] Status
     Optional[str] NextToken
     Optional[list[VocabularyInfo]] Vocabularies
 
-@derive(Json)
 struct ListVocabularyFiltersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[str] NameContains
 
-# no @derive(Json): member(s) VocabularyFilters: list[VocabularyFilterInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVocabularyFiltersResponse:
     Optional[str] NextToken
     Optional[list[VocabularyFilterInfo]] VocabularyFilters
 
-@derive(Json)
 struct Media:
     Optional[str] MediaFileUri
     Optional[str] RedactedMediaFileUri
 
-@derive(Json)
 struct MedicalScribeChannelDefinition:
     int64 ChannelId
-    MedicalScribeParticipantRole ParticipantRole
+    str ParticipantRole
 
-@derive(Json)
 struct MedicalScribeContext:
     Optional[MedicalScribePatientContext] PatientContext
 
-# no @derive(Json): member(s) ChannelDefinitions: list[MedicalScribeChannelDefinition], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct MedicalScribeJob:
     Optional[str] MedicalScribeJobName
-    Optional[MedicalScribeJobStatus] MedicalScribeJobStatus
+    Optional[str] MedicalScribeJobStatus
     Optional[str] LanguageCode
     Optional[Media] Media
     Optional[MedicalScribeOutput] MedicalScribeOutput
@@ -942,48 +795,40 @@ struct MedicalScribeJob:
     Optional[bool] MedicalScribeContextProvided
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct MedicalScribeJobSummary:
     Optional[str] MedicalScribeJobName
     Optional[DateTime] CreationTime
     Optional[DateTime] StartTime
     Optional[DateTime] CompletionTime
     Optional[str] LanguageCode
-    Optional[MedicalScribeJobStatus] MedicalScribeJobStatus
+    Optional[str] MedicalScribeJobStatus
     Optional[str] FailureReason
 
-@derive(Json)
 struct MedicalScribeOutput:
     str TranscriptFileUri
     str ClinicalDocumentUri
 
-@derive(Json)
 struct MedicalScribePatientContext:
-    Optional[Pronouns] Pronouns
+    Optional[str] Pronouns
 
-@derive(Json)
 struct MedicalScribeSettings:
     Optional[bool] ShowSpeakerLabels
     Optional[int64] MaxSpeakerLabels
     Optional[bool] ChannelIdentification
     Optional[str] VocabularyName
     Optional[str] VocabularyFilterName
-    Optional[VocabularyFilterMethod] VocabularyFilterMethod
+    Optional[str] VocabularyFilterMethod
     Optional[ClinicalNoteGenerationSettings] ClinicalNoteGenerationSettings
 
-@derive(Json)
 struct MedicalTranscript:
     Optional[str] TranscriptFileUri
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct MedicalTranscriptionJob:
     Optional[str] MedicalTranscriptionJobName
-    Optional[TranscriptionJobStatus] TranscriptionJobStatus
-    Optional[LanguageCode] LanguageCode
+    Optional[str] TranscriptionJobStatus
+    Optional[str] LanguageCode
     Optional[int64] MediaSampleRateHertz
-    Optional[MediaFormat] MediaFormat
+    Optional[str] MediaFormat
     Optional[Media] Media
     Optional[MedicalTranscript] Transcript
     Optional[DateTime] StartTime
@@ -993,24 +838,22 @@ struct MedicalTranscriptionJob:
     Optional[MedicalTranscriptionSetting] Settings
     Optional[str] ContentIdentificationType
     Optional[str] Specialty
-    Optional[Type] Type
+    Optional[str] Type
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct MedicalTranscriptionJobSummary:
     Optional[str] MedicalTranscriptionJobName
     Optional[DateTime] CreationTime
     Optional[DateTime] StartTime
     Optional[DateTime] CompletionTime
-    Optional[LanguageCode] LanguageCode
-    Optional[TranscriptionJobStatus] TranscriptionJobStatus
+    Optional[str] LanguageCode
+    Optional[str] TranscriptionJobStatus
     Optional[str] FailureReason
-    Optional[OutputLocationType] OutputLocationType
+    Optional[str] OutputLocationType
     Optional[str] Specialty
     Optional[str] ContentIdentificationType
-    Optional[Type] Type
+    Optional[str] Type
 
-@derive(Json)
 struct MedicalTranscriptionSetting:
     Optional[bool] ShowSpeakerLabels
     Optional[int64] MaxSpeakerLabels
@@ -1019,48 +862,37 @@ struct MedicalTranscriptionSetting:
     Optional[int64] MaxAlternatives
     Optional[str] VocabularyName
 
-@derive(Json)
 struct ModelSettings:
     Optional[str] LanguageModelName
 
-@derive(Json)
 struct NonTalkTimeFilter:
     Optional[int64] Threshold
     Optional[AbsoluteTimeRange] AbsoluteTimeRange
     Optional[RelativeTimeRange] RelativeTimeRange
     Optional[bool] Negate
 
-@derive(Json)
 struct NotFoundException:
     Optional[str] Message
 
-@derive(Json)
 struct RelativeTimeRange:
     Optional[int64] StartPercentage
     Optional[int64] EndPercentage
     Optional[int64] First
     Optional[int64] Last
 
-# no @derive(Json): member(s) TranscriptFilter: TranscriptFilter, SentimentFilter: SentimentFilter not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Rule:
     Optional[NonTalkTimeFilter] NonTalkTimeFilter
     Optional[InterruptionFilter] InterruptionFilter
     Optional[TranscriptFilter] TranscriptFilter
     Optional[SentimentFilter] SentimentFilter
 
-# no @derive(Json): member(s) Sentiments: list[SentimentValue] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SentimentFilter:
-    list[SentimentValue] Sentiments
+    list[str] Sentiments
     Optional[AbsoluteTimeRange] AbsoluteTimeRange
     Optional[RelativeTimeRange] RelativeTimeRange
-    Optional[ParticipantRole] ParticipantRole
+    Optional[str] ParticipantRole
     Optional[bool] Negate
 
-@derive(Json)
 struct Settings:
     Optional[str] VocabularyName
     Optional[bool] ShowSpeakerLabels
@@ -1069,11 +901,8 @@ struct Settings:
     Optional[bool] ShowAlternatives
     Optional[int64] MaxAlternatives
     Optional[str] VocabularyFilterName
-    Optional[VocabularyFilterMethod] VocabularyFilterMethod
+    Optional[str] VocabularyFilterMethod
 
-# no @derive(Json): member(s) Settings: CallAnalyticsJobSettings, Tags: list[Tag], ChannelDefinitions: list[ChannelDefinition] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartCallAnalyticsJobRequest:
     str CallAnalyticsJobName
     Media Media
@@ -1084,15 +913,9 @@ struct StartCallAnalyticsJobRequest:
     Optional[list[Tag]] Tags
     Optional[list[ChannelDefinition]] ChannelDefinitions
 
-# no @derive(Json): member(s) CallAnalyticsJob: CallAnalyticsJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartCallAnalyticsJobResponse:
     Optional[CallAnalyticsJob] CallAnalyticsJob
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], ChannelDefinitions: list[MedicalScribeChannelDefinition], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartMedicalScribeJobRequest:
     str MedicalScribeJobName
     Media Media
@@ -1105,20 +928,14 @@ struct StartMedicalScribeJobRequest:
     Optional[list[Tag]] Tags
     Optional[MedicalScribeContext] MedicalScribeContext
 
-# no @derive(Json): member(s) MedicalScribeJob: MedicalScribeJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartMedicalScribeJobResponse:
     Optional[MedicalScribeJob] MedicalScribeJob
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartMedicalTranscriptionJobRequest:
     str MedicalTranscriptionJobName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[int64] MediaSampleRateHertz
-    Optional[MediaFormat] MediaFormat
+    Optional[str] MediaFormat
     Media Media
     str OutputBucketName
     Optional[str] OutputKey
@@ -1127,23 +944,17 @@ struct StartMedicalTranscriptionJobRequest:
     Optional[MedicalTranscriptionSetting] Settings
     Optional[str] ContentIdentificationType
     str Specialty
-    Type Type
+    str Type
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MedicalTranscriptionJob: MedicalTranscriptionJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartMedicalTranscriptionJobResponse:
     Optional[MedicalTranscriptionJob] MedicalTranscriptionJob
 
-# no @derive(Json): member(s) KMSEncryptionContext: dict[str, str], ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], Subtitles: Subtitles, Tags: list[Tag], LanguageIdSettings: dict[LanguageCode, LanguageIdSettings], ToxicityDetection: list[ToxicityDetectionSettings] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartTranscriptionJobRequest:
     str TranscriptionJobName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[int64] MediaSampleRateHertz
-    Optional[MediaFormat] MediaFormat
+    Optional[str] MediaFormat
     Media Media
     Optional[str] OutputBucketName
     Optional[str] OutputKey
@@ -1155,85 +966,60 @@ struct StartTranscriptionJobRequest:
     Optional[ContentRedaction] ContentRedaction
     Optional[bool] IdentifyLanguage
     Optional[bool] IdentifyMultipleLanguages
-    Optional[list[LanguageCode]] LanguageOptions
+    Optional[list[str]] LanguageOptions
     Optional[Subtitles] Subtitles
     Optional[list[Tag]] Tags
-    Optional[dict[LanguageCode, LanguageIdSettings]] LanguageIdSettings
+    Optional[dict[str, LanguageIdSettings]] LanguageIdSettings
     Optional[list[ToxicityDetectionSettings]] ToxicityDetection
 
-# no @derive(Json): member(s) TranscriptionJob: TranscriptionJob not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartTranscriptionJobResponse:
     Optional[TranscriptionJob] TranscriptionJob
 
-# no @derive(Json): member(s) Formats: list[SubtitleFormat] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Subtitles:
-    Optional[list[SubtitleFormat]] Formats
+    Optional[list[str]] Formats
     Optional[int64] OutputStartIndex
 
-# no @derive(Json): member(s) Formats: list[SubtitleFormat], SubtitleFileUris: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SubtitlesOutput:
-    Optional[list[SubtitleFormat]] Formats
+    Optional[list[str]] Formats
     Optional[list[str]] SubtitleFileUris
     Optional[int64] OutputStartIndex
 
-@derive(Json)
 struct Summarization:
     bool GenerateAbstractiveSummary
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ToxicityCategories: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ToxicityDetectionSettings:
     list[str] ToxicityCategories
 
-@derive(Json)
 struct Transcript:
     Optional[str] TranscriptFileUri
     Optional[str] RedactedTranscriptFileUri
 
-# no @derive(Json): member(s) Targets: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TranscriptFilter:
     str TranscriptFilterType
     Optional[AbsoluteTimeRange] AbsoluteTimeRange
     Optional[RelativeTimeRange] RelativeTimeRange
-    Optional[ParticipantRole] ParticipantRole
+    Optional[str] ParticipantRole
     Optional[bool] Negate
     list[str] Targets
 
-# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageOptions: list[LanguageCode], LanguageCodes: list[LanguageCodeItem], Tags: list[Tag], Subtitles: SubtitlesOutput, LanguageIdSettings: dict[LanguageCode, LanguageIdSettings], ToxicityDetection: list[ToxicityDetectionSettings] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TranscriptionJob:
     Optional[str] TranscriptionJobName
-    Optional[TranscriptionJobStatus] TranscriptionJobStatus
-    Optional[LanguageCode] LanguageCode
+    Optional[str] TranscriptionJobStatus
+    Optional[str] LanguageCode
     Optional[int64] MediaSampleRateHertz
-    Optional[MediaFormat] MediaFormat
+    Optional[str] MediaFormat
     Optional[Media] Media
     Optional[Transcript] Transcript
     Optional[DateTime] StartTime
@@ -1246,26 +1032,23 @@ struct TranscriptionJob:
     Optional[ContentRedaction] ContentRedaction
     Optional[bool] IdentifyLanguage
     Optional[bool] IdentifyMultipleLanguages
-    Optional[list[LanguageCode]] LanguageOptions
+    Optional[list[str]] LanguageOptions
     Optional[float64] IdentifiedLanguageScore
     Optional[list[LanguageCodeItem]] LanguageCodes
     Optional[list[Tag]] Tags
     Optional[SubtitlesOutput] Subtitles
-    Optional[dict[LanguageCode, LanguageIdSettings]] LanguageIdSettings
+    Optional[dict[str, LanguageIdSettings]] LanguageIdSettings
     Optional[list[ToxicityDetectionSettings]] ToxicityDetection
 
-# no @derive(Json): member(s) ContentRedaction: ContentRedaction, LanguageCodes: list[LanguageCodeItem], ToxicityDetection: list[ToxicityDetectionSettings] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TranscriptionJobSummary:
     Optional[str] TranscriptionJobName
     Optional[DateTime] CreationTime
     Optional[DateTime] StartTime
     Optional[DateTime] CompletionTime
-    Optional[LanguageCode] LanguageCode
-    Optional[TranscriptionJobStatus] TranscriptionJobStatus
+    Optional[str] LanguageCode
+    Optional[str] TranscriptionJobStatus
     Optional[str] FailureReason
-    Optional[OutputLocationType] OutputLocationType
+    Optional[str] OutputLocationType
     Optional[ContentRedaction] ContentRedaction
     Optional[ModelSettings] ModelSettings
     Optional[bool] IdentifyLanguage
@@ -1274,62 +1057,43 @@ struct TranscriptionJobSummary:
     Optional[list[LanguageCodeItem]] LanguageCodes
     Optional[list[ToxicityDetectionSettings]] ToxicityDetection
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Rules: list[Rule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateCallAnalyticsCategoryRequest:
     str CategoryName
     list[Rule] Rules
-    Optional[InputType] InputType
+    Optional[str] InputType
 
-# no @derive(Json): member(s) CategoryProperties: CategoryProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateCallAnalyticsCategoryResponse:
     Optional[CategoryProperties] CategoryProperties
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLanguageModelRequest:
     str ModelName
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct UpdateLanguageModelResponse:
     Optional[str] ModelName
-    Optional[ModelStatus] ModelStatus
+    Optional[str] ModelStatus
     Optional[DateTime] LastModifiedTime
 
-@derive(Json)
 struct UpdateMedicalVocabularyRequest:
     str VocabularyName
-    LanguageCode LanguageCode
+    str LanguageCode
     str VocabularyFileUri
 
-@derive(Json)
 struct UpdateMedicalVocabularyResponse:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
-    Optional[VocabularyState] VocabularyState
+    Optional[str] VocabularyState
 
-# no @derive(Json): member(s) Words: list[str], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateVocabularyFilterRequest:
     str VocabularyFilterName
     Optional[list[str]] Words
@@ -1337,42 +1101,35 @@ struct UpdateVocabularyFilterRequest:
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct UpdateVocabularyFilterResponse:
     Optional[str] VocabularyFilterName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) Phrases: list[str], EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateVocabularyRequest:
     str VocabularyName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[list[str]] Phrases
     Optional[str] VocabularyFileUri
     Optional[str] DataAccessRoleArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-@derive(Json)
 struct UpdateVocabularyResponse:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
-    Optional[VocabularyState] VocabularyState
+    Optional[str] VocabularyState
 
-@derive(Json)
 struct VocabularyFilterInfo:
     Optional[str] VocabularyFilterName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
 
-@derive(Json)
 struct VocabularyInfo:
     Optional[str] VocabularyName
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[DateTime] LastModifiedTime
-    Optional[VocabularyState] VocabularyState
+    Optional[str] VocabularyState
 
 # --- errors ----------------------------------------------------------------
 
@@ -1381,7 +1138,7 @@ struct VocabularyInfo:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -1433,382 +1190,1392 @@ def transcribe_error_name(TranscribeErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable — a map
-# with a non-string key, or a free-form document member):
-#   StartCallAnalyticsJob (input StartCallAnalyticsJobRequest)
-#   StartTranscriptionJob (input StartTranscriptionJobRequest)
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   CallAnalyticsJobCompleted
+#   LanguageModelCompleted
+#   MedicalScribeJobCompleted
+#   MedicalTranscriptionJobCompleted
+#   MedicalVocabularyReady
+#   TranscriptionJobCompleted
+#   VocabularyReady
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def transcribe_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def transcribe_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# Serialize AbsoluteTimeRange to a CBOR map (member wire name -> value, model order).
+def absolute_time_range_to_cbor(AbsoluteTimeRange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.StartTime.is_some():
+        auto u0 = v.StartTime.unwrap()
+        keys.append("StartTime")
+        vals.append(cbor.cbor_int(u0))
+    if v.EndTime.is_some():
+        auto u1 = v.EndTime.unwrap()
+        keys.append("EndTime")
+        vals.append(cbor.cbor_int(u1))
+    if v.First.is_some():
+        auto u2 = v.First.unwrap()
+        keys.append("First")
+        vals.append(cbor.cbor_int(u2))
+    if v.Last.is_some():
+        auto u3 = v.Last.unwrap()
+        keys.append("Last")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-def transcribe_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize CallAnalyticsJobSettings to a CBOR map (member wire name -> value, model order).
+def call_analytics_job_settings_to_cbor(CallAnalyticsJobSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.VocabularyName.is_some():
+        auto u0 = v.VocabularyName.unwrap()
+        keys.append("VocabularyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.VocabularyFilterName.is_some():
+        auto u1 = v.VocabularyFilterName.unwrap()
+        keys.append("VocabularyFilterName")
+        vals.append(cbor.cbor_text(u1))
+    if v.VocabularyFilterMethod.is_some():
+        auto u2 = v.VocabularyFilterMethod.unwrap()
+        keys.append("VocabularyFilterMethod")
+        vals.append(cbor.cbor_text(u2))
+    if v.LanguageModelName.is_some():
+        auto u3 = v.LanguageModelName.unwrap()
+        keys.append("LanguageModelName")
+        vals.append(cbor.cbor_text(u3))
+    if v.ContentRedaction.is_some():
+        auto u4 = v.ContentRedaction.unwrap()
+        keys.append("ContentRedaction")
+        vals.append(content_redaction_to_cbor(u4))
+    if v.LanguageOptions.is_some():
+        auto u5 = v.LanguageOptions.unwrap()
+        list[cbor.CborValue] e6 = []
+        for x6 in u5:
+            e6.append(cbor.cbor_text(x6))
+        keys.append("LanguageOptions")
+        vals.append(cbor.cbor_list(e6))
+    if v.LanguageIdSettings.is_some():
+        auto u7 = v.LanguageIdSettings.unwrap()
+        list[str] mk8 = []
+        list[cbor.CborValue] mv8 = []
+        for k8 in sorted(u7.keys()):
+            mk8.append(k8)
+            mv8.append(language_id_settings_to_cbor(u7[k8]))
+        keys.append("LanguageIdSettings")
+        vals.append(cbor.cbor_map(mk8, mv8))
+    if v.Summarization.is_some():
+        auto u9 = v.Summarization.unwrap()
+        keys.append("Summarization")
+        vals.append(summarization_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize ChannelDefinition to a CBOR map (member wire name -> value, model order).
+def channel_definition_to_cbor(ChannelDefinition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ChannelId.is_some():
+        auto u0 = v.ChannelId.unwrap()
+        keys.append("ChannelId")
+        vals.append(cbor.cbor_int(u0))
+    if v.ParticipantRole.is_some():
+        auto u1 = v.ParticipantRole.unwrap()
+        keys.append("ParticipantRole")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateCallAnalyticsCategoryRequest to a compact JSON object (declaration order).
-def create_call_analytics_category_request_to_json(CreateCallAnalyticsCategoryRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"CategoryName\":" + transcribe_json_str(v.CategoryName))
-    list[str] e0 = []
+# Serialize ClinicalNoteGenerationSettings to a CBOR map (member wire name -> value, model order).
+def clinical_note_generation_settings_to_cbor(ClinicalNoteGenerationSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NoteTemplate.is_some():
+        auto u0 = v.NoteTemplate.unwrap()
+        keys.append("NoteTemplate")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ContentRedaction to a CBOR map (member wire name -> value, model order).
+def content_redaction_to_cbor(ContentRedaction v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RedactionType")
+    vals.append(cbor.cbor_text(v.RedactionType))
+    keys.append("RedactionOutput")
+    vals.append(cbor.cbor_text(v.RedactionOutput))
+    if v.PiiEntityTypes.is_some():
+        auto u0 = v.PiiEntityTypes.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("PiiEntityTypes")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateCallAnalyticsCategoryRequest to a CBOR map (member wire name -> value, model order).
+def create_call_analytics_category_request_to_cbor(CreateCallAnalyticsCategoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CategoryName")
+    vals.append(cbor.cbor_text(v.CategoryName))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Rules:
-        e0.append(rule_to_json(x0))
-    parts.append("\"Rules\":" + transcribe_json_arr(e0))
+        e0.append(rule_to_cbor(x0))
+    keys.append("Rules")
+    vals.append(cbor.cbor_list(e0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e2))
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
     if v.InputType.is_some():
         auto u3 = v.InputType.unwrap()
-        parts.append("\"InputType\":" + u3.to_json())
-    return transcribe_json_obj(parts)
+        keys.append("InputType")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateLanguageModelRequest to a compact JSON object (declaration order).
-def create_language_model_request_to_json(CreateLanguageModelRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    parts.append("\"BaseModelName\":" + v.BaseModelName.to_json())
-    parts.append("\"ModelName\":" + transcribe_json_str(v.ModelName))
-    parts.append("\"InputDataConfig\":" + v.InputDataConfig.to_json())
+# Serialize CreateLanguageModelRequest to a CBOR map (member wire name -> value, model order).
+def create_language_model_request_to_cbor(CreateLanguageModelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    keys.append("BaseModelName")
+    vals.append(cbor.cbor_text(v.BaseModelName))
+    keys.append("ModelName")
+    vals.append(cbor.cbor_text(v.ModelName))
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
     if v.EncryptionConfiguration.is_some():
         auto u0 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u0))
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e2))
-    return transcribe_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateMedicalVocabularyRequest to a compact JSON object (declaration order).
-def create_medical_vocabulary_request_to_json(CreateMedicalVocabularyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"VocabularyName\":" + transcribe_json_str(v.VocabularyName))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    parts.append("\"VocabularyFileUri\":" + transcribe_json_str(v.VocabularyFileUri))
+# Serialize CreateMedicalVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def create_medical_vocabulary_request_to_cbor(CreateMedicalVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    keys.append("VocabularyFileUri")
+    vals.append(cbor.cbor_text(v.VocabularyFileUri))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e1))
-    return transcribe_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateVocabularyFilterRequest to a compact JSON object (declaration order).
-def create_vocabulary_filter_request_to_json(CreateVocabularyFilterRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"VocabularyFilterName\":" + transcribe_json_str(v.VocabularyFilterName))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+# Serialize CreateVocabularyFilterRequest to a CBOR map (member wire name -> value, model order).
+def create_vocabulary_filter_request_to_cbor(CreateVocabularyFilterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyFilterName")
+    vals.append(cbor.cbor_text(v.VocabularyFilterName))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.Words.is_some():
         auto u0 = v.Words.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(transcribe_json_str(x1))
-        parts.append("\"Words\":" + transcribe_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Words")
+        vals.append(cbor.cbor_list(e1))
     if v.VocabularyFilterFileUri.is_some():
         auto u2 = v.VocabularyFilterFileUri.unwrap()
-        parts.append("\"VocabularyFilterFileUri\":" + transcribe_json_str(u2))
+        keys.append("VocabularyFilterFileUri")
+        vals.append(cbor.cbor_text(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e4))
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
     if v.DataAccessRoleArn.is_some():
         auto u5 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u5))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u5))
     if v.EncryptionConfiguration.is_some():
         auto u6 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u6))
-    return transcribe_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateVocabularyRequest to a compact JSON object (declaration order).
-def create_vocabulary_request_to_json(CreateVocabularyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"VocabularyName\":" + transcribe_json_str(v.VocabularyName))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+# Serialize CreateVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def create_vocabulary_request_to_cbor(CreateVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.Phrases.is_some():
         auto u0 = v.Phrases.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(transcribe_json_str(x1))
-        parts.append("\"Phrases\":" + transcribe_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Phrases")
+        vals.append(cbor.cbor_list(e1))
     if v.VocabularyFileUri.is_some():
         auto u2 = v.VocabularyFileUri.unwrap()
-        parts.append("\"VocabularyFileUri\":" + transcribe_json_str(u2))
+        keys.append("VocabularyFileUri")
+        vals.append(cbor.cbor_text(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e4))
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
     if v.DataAccessRoleArn.is_some():
         auto u5 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u5))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u5))
     if v.EncryptionConfiguration.is_some():
         auto u6 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u6))
-    return transcribe_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize EncryptionConfiguration to a compact JSON object (declaration order).
-def encryption_configuration_to_json(EncryptionConfiguration v) -> str:
-    list[str] parts = []
+# Serialize DeleteCallAnalyticsCategoryRequest to a CBOR map (member wire name -> value, model order).
+def delete_call_analytics_category_request_to_cbor(DeleteCallAnalyticsCategoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CategoryName")
+    vals.append(cbor.cbor_text(v.CategoryName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteCallAnalyticsJobRequest to a CBOR map (member wire name -> value, model order).
+def delete_call_analytics_job_request_to_cbor(DeleteCallAnalyticsJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CallAnalyticsJobName")
+    vals.append(cbor.cbor_text(v.CallAnalyticsJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteLanguageModelRequest to a CBOR map (member wire name -> value, model order).
+def delete_language_model_request_to_cbor(DeleteLanguageModelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ModelName")
+    vals.append(cbor.cbor_text(v.ModelName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteMedicalScribeJobRequest to a CBOR map (member wire name -> value, model order).
+def delete_medical_scribe_job_request_to_cbor(DeleteMedicalScribeJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MedicalScribeJobName")
+    vals.append(cbor.cbor_text(v.MedicalScribeJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteMedicalTranscriptionJobRequest to a CBOR map (member wire name -> value, model order).
+def delete_medical_transcription_job_request_to_cbor(DeleteMedicalTranscriptionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MedicalTranscriptionJobName")
+    vals.append(cbor.cbor_text(v.MedicalTranscriptionJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteMedicalVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def delete_medical_vocabulary_request_to_cbor(DeleteMedicalVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTranscriptionJobRequest to a CBOR map (member wire name -> value, model order).
+def delete_transcription_job_request_to_cbor(DeleteTranscriptionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TranscriptionJobName")
+    vals.append(cbor.cbor_text(v.TranscriptionJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteVocabularyFilterRequest to a CBOR map (member wire name -> value, model order).
+def delete_vocabulary_filter_request_to_cbor(DeleteVocabularyFilterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyFilterName")
+    vals.append(cbor.cbor_text(v.VocabularyFilterName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def delete_vocabulary_request_to_cbor(DeleteVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLanguageModelRequest to a CBOR map (member wire name -> value, model order).
+def describe_language_model_request_to_cbor(DescribeLanguageModelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ModelName")
+    vals.append(cbor.cbor_text(v.ModelName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EncryptionConfiguration to a CBOR map (member wire name -> value, model order).
+def encryption_configuration_to_cbor(EncryptionConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.KMSEncryptionContext.is_some():
         auto u0 = v.KMSEncryptionContext.unwrap()
-        list[str] m1 = []
+        list[str] mk1 = []
+        list[cbor.CborValue] mv1 = []
         for k1 in sorted(u0.keys()):
-            m1.append(transcribe_json_str(k1) + ":" + transcribe_json_str(u0[k1]))
-        parts.append("\"KMSEncryptionContext\":" + transcribe_json_obj(m1))
-    parts.append("\"KMSKey\":" + transcribe_json_str(v.KMSKey))
-    return transcribe_json_obj(parts)
+            mk1.append(k1)
+            mv1.append(cbor.cbor_text(u0[k1]))
+        keys.append("KMSEncryptionContext")
+        vals.append(cbor.cbor_map(mk1, mv1))
+    keys.append("KMSKey")
+    vals.append(cbor.cbor_text(v.KMSKey))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize Rule to a compact JSON object (declaration order).
-def rule_to_json(Rule v) -> str:
-    list[str] parts = []
-    if v.NonTalkTimeFilter.is_some():
-        auto u0 = v.NonTalkTimeFilter.unwrap()
-        parts.append("\"NonTalkTimeFilter\":" + u0.to_json())
-    if v.InterruptionFilter.is_some():
-        auto u1 = v.InterruptionFilter.unwrap()
-        parts.append("\"InterruptionFilter\":" + u1.to_json())
-    if v.TranscriptFilter.is_some():
-        auto u2 = v.TranscriptFilter.unwrap()
-        parts.append("\"TranscriptFilter\":" + transcript_filter_to_json(u2))
-    if v.SentimentFilter.is_some():
-        auto u3 = v.SentimentFilter.unwrap()
-        parts.append("\"SentimentFilter\":" + sentiment_filter_to_json(u3))
-    return transcribe_json_obj(parts)
+# Serialize GetCallAnalyticsCategoryRequest to a CBOR map (member wire name -> value, model order).
+def get_call_analytics_category_request_to_cbor(GetCallAnalyticsCategoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CategoryName")
+    vals.append(cbor.cbor_text(v.CategoryName))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize SentimentFilter to a compact JSON object (declaration order).
-def sentiment_filter_to_json(SentimentFilter v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.Sentiments:
-        e0.append(x0.to_json())
-    parts.append("\"Sentiments\":" + transcribe_json_arr(e0))
-    if v.AbsoluteTimeRange.is_some():
-        auto u1 = v.AbsoluteTimeRange.unwrap()
-        parts.append("\"AbsoluteTimeRange\":" + u1.to_json())
-    if v.RelativeTimeRange.is_some():
-        auto u2 = v.RelativeTimeRange.unwrap()
-        parts.append("\"RelativeTimeRange\":" + u2.to_json())
+# Serialize GetCallAnalyticsJobRequest to a CBOR map (member wire name -> value, model order).
+def get_call_analytics_job_request_to_cbor(GetCallAnalyticsJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CallAnalyticsJobName")
+    vals.append(cbor.cbor_text(v.CallAnalyticsJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetMedicalScribeJobRequest to a CBOR map (member wire name -> value, model order).
+def get_medical_scribe_job_request_to_cbor(GetMedicalScribeJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MedicalScribeJobName")
+    vals.append(cbor.cbor_text(v.MedicalScribeJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetMedicalTranscriptionJobRequest to a CBOR map (member wire name -> value, model order).
+def get_medical_transcription_job_request_to_cbor(GetMedicalTranscriptionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MedicalTranscriptionJobName")
+    vals.append(cbor.cbor_text(v.MedicalTranscriptionJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetMedicalVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def get_medical_vocabulary_request_to_cbor(GetMedicalVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetTranscriptionJobRequest to a CBOR map (member wire name -> value, model order).
+def get_transcription_job_request_to_cbor(GetTranscriptionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TranscriptionJobName")
+    vals.append(cbor.cbor_text(v.TranscriptionJobName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetVocabularyFilterRequest to a CBOR map (member wire name -> value, model order).
+def get_vocabulary_filter_request_to_cbor(GetVocabularyFilterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyFilterName")
+    vals.append(cbor.cbor_text(v.VocabularyFilterName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def get_vocabulary_request_to_cbor(GetVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize InputDataConfig to a CBOR map (member wire name -> value, model order).
+def input_data_config_to_cbor(InputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    if v.TuningDataS3Uri.is_some():
+        auto u0 = v.TuningDataS3Uri.unwrap()
+        keys.append("TuningDataS3Uri")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize InterruptionFilter to a CBOR map (member wire name -> value, model order).
+def interruption_filter_to_cbor(InterruptionFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Threshold.is_some():
+        auto u0 = v.Threshold.unwrap()
+        keys.append("Threshold")
+        vals.append(cbor.cbor_int(u0))
     if v.ParticipantRole.is_some():
-        auto u3 = v.ParticipantRole.unwrap()
-        parts.append("\"ParticipantRole\":" + u3.to_json())
+        auto u1 = v.ParticipantRole.unwrap()
+        keys.append("ParticipantRole")
+        vals.append(cbor.cbor_text(u1))
+    if v.AbsoluteTimeRange.is_some():
+        auto u2 = v.AbsoluteTimeRange.unwrap()
+        keys.append("AbsoluteTimeRange")
+        vals.append(absolute_time_range_to_cbor(u2))
+    if v.RelativeTimeRange.is_some():
+        auto u3 = v.RelativeTimeRange.unwrap()
+        keys.append("RelativeTimeRange")
+        vals.append(relative_time_range_to_cbor(u3))
     if v.Negate.is_some():
         auto u4 = v.Negate.unwrap()
-        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u4)))
-    return transcribe_json_obj(parts)
+        keys.append("Negate")
+        vals.append(cbor.cbor_bool(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartMedicalScribeJobRequest to a compact JSON object (declaration order).
-def start_medical_scribe_job_request_to_json(StartMedicalScribeJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"MedicalScribeJobName\":" + transcribe_json_str(v.MedicalScribeJobName))
-    parts.append("\"Media\":" + v.Media.to_json())
-    parts.append("\"OutputBucketName\":" + transcribe_json_str(v.OutputBucketName))
-    if v.OutputEncryptionKMSKeyId.is_some():
-        auto u0 = v.OutputEncryptionKMSKeyId.unwrap()
-        parts.append("\"OutputEncryptionKMSKeyId\":" + transcribe_json_str(u0))
-    if v.KMSEncryptionContext.is_some():
-        auto u1 = v.KMSEncryptionContext.unwrap()
-        list[str] m2 = []
-        for k2 in sorted(u1.keys()):
-            m2.append(transcribe_json_str(k2) + ":" + transcribe_json_str(u1[k2]))
-        parts.append("\"KMSEncryptionContext\":" + transcribe_json_obj(m2))
-    parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(v.DataAccessRoleArn))
-    parts.append("\"Settings\":" + v.Settings.to_json())
-    if v.ChannelDefinitions.is_some():
-        auto u3 = v.ChannelDefinitions.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"ChannelDefinitions\":" + transcribe_json_arr(e4))
-    if v.Tags.is_some():
-        auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
-        for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e6))
-    if v.MedicalScribeContext.is_some():
-        auto u7 = v.MedicalScribeContext.unwrap()
-        parts.append("\"MedicalScribeContext\":" + u7.to_json())
-    return transcribe_json_obj(parts)
+# Serialize JobExecutionSettings to a CBOR map (member wire name -> value, model order).
+def job_execution_settings_to_cbor(JobExecutionSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AllowDeferredExecution.is_some():
+        auto u0 = v.AllowDeferredExecution.unwrap()
+        keys.append("AllowDeferredExecution")
+        vals.append(cbor.cbor_bool(u0))
+    if v.DataAccessRoleArn.is_some():
+        auto u1 = v.DataAccessRoleArn.unwrap()
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartMedicalTranscriptionJobRequest to a compact JSON object (declaration order).
-def start_medical_transcription_job_request_to_json(StartMedicalTranscriptionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"MedicalTranscriptionJobName\":" + transcribe_json_str(v.MedicalTranscriptionJobName))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    if v.MediaSampleRateHertz.is_some():
-        auto u0 = v.MediaSampleRateHertz.unwrap()
-        parts.append("\"MediaSampleRateHertz\":" + str(u0))
-    if v.MediaFormat.is_some():
-        auto u1 = v.MediaFormat.unwrap()
-        parts.append("\"MediaFormat\":" + u1.to_json())
-    parts.append("\"Media\":" + v.Media.to_json())
-    parts.append("\"OutputBucketName\":" + transcribe_json_str(v.OutputBucketName))
-    if v.OutputKey.is_some():
-        auto u2 = v.OutputKey.unwrap()
-        parts.append("\"OutputKey\":" + transcribe_json_str(u2))
-    if v.OutputEncryptionKMSKeyId.is_some():
-        auto u3 = v.OutputEncryptionKMSKeyId.unwrap()
-        parts.append("\"OutputEncryptionKMSKeyId\":" + transcribe_json_str(u3))
-    if v.KMSEncryptionContext.is_some():
-        auto u4 = v.KMSEncryptionContext.unwrap()
-        list[str] m5 = []
-        for k5 in sorted(u4.keys()):
-            m5.append(transcribe_json_str(k5) + ":" + transcribe_json_str(u4[k5]))
-        parts.append("\"KMSEncryptionContext\":" + transcribe_json_obj(m5))
-    if v.Settings.is_some():
-        auto u6 = v.Settings.unwrap()
-        parts.append("\"Settings\":" + u6.to_json())
-    if v.ContentIdentificationType.is_some():
-        auto u7 = v.ContentIdentificationType.unwrap()
-        parts.append("\"ContentIdentificationType\":" + transcribe_json_str(u7))
-    parts.append("\"Specialty\":" + transcribe_json_str(v.Specialty))
-    parts.append("\"Type\":" + v.Type.to_json())
-    if v.Tags.is_some():
-        auto u8 = v.Tags.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"Tags\":" + transcribe_json_arr(e9))
-    return transcribe_json_obj(parts)
+# Serialize LanguageIdSettings to a CBOR map (member wire name -> value, model order).
+def language_id_settings_to_cbor(LanguageIdSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.VocabularyName.is_some():
+        auto u0 = v.VocabularyName.unwrap()
+        keys.append("VocabularyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.VocabularyFilterName.is_some():
+        auto u1 = v.VocabularyFilterName.unwrap()
+        keys.append("VocabularyFilterName")
+        vals.append(cbor.cbor_text(u1))
+    if v.LanguageModelName.is_some():
+        auto u2 = v.LanguageModelName.unwrap()
+        keys.append("LanguageModelName")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + transcribe_json_str(v.ResourceArn))
-    list[str] e0 = []
-    for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + transcribe_json_arr(e0))
-    return transcribe_json_obj(parts)
+# Serialize ListCallAnalyticsCategoriesRequest to a CBOR map (member wire name -> value, model order).
+def list_call_analytics_categories_request_to_cbor(ListCallAnalyticsCategoriesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TranscriptFilter to a compact JSON object (declaration order).
-def transcript_filter_to_json(TranscriptFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"TranscriptFilterType\":" + transcribe_json_str(v.TranscriptFilterType))
+# Serialize ListCallAnalyticsJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_call_analytics_jobs_request_to_cbor(ListCallAnalyticsJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobNameContains.is_some():
+        auto u1 = v.JobNameContains.unwrap()
+        keys.append("JobNameContains")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListLanguageModelsRequest to a CBOR map (member wire name -> value, model order).
+def list_language_models_request_to_cbor(ListLanguageModelsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.StatusEquals.is_some():
+        auto u0 = v.StatusEquals.unwrap()
+        keys.append("StatusEquals")
+        vals.append(cbor.cbor_text(u0))
+    if v.NameContains.is_some():
+        auto u1 = v.NameContains.unwrap()
+        keys.append("NameContains")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListMedicalScribeJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_medical_scribe_jobs_request_to_cbor(ListMedicalScribeJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobNameContains.is_some():
+        auto u1 = v.JobNameContains.unwrap()
+        keys.append("JobNameContains")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListMedicalTranscriptionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_medical_transcription_jobs_request_to_cbor(ListMedicalTranscriptionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobNameContains.is_some():
+        auto u1 = v.JobNameContains.unwrap()
+        keys.append("JobNameContains")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListMedicalVocabulariesRequest to a CBOR map (member wire name -> value, model order).
+def list_medical_vocabularies_request_to_cbor(ListMedicalVocabulariesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.StateEquals.is_some():
+        auto u2 = v.StateEquals.unwrap()
+        keys.append("StateEquals")
+        vals.append(cbor.cbor_text(u2))
+    if v.NameContains.is_some():
+        auto u3 = v.NameContains.unwrap()
+        keys.append("NameContains")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTranscriptionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_transcription_jobs_request_to_cbor(ListTranscriptionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobNameContains.is_some():
+        auto u1 = v.JobNameContains.unwrap()
+        keys.append("JobNameContains")
+        vals.append(cbor.cbor_text(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListVocabulariesRequest to a CBOR map (member wire name -> value, model order).
+def list_vocabularies_request_to_cbor(ListVocabulariesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.StateEquals.is_some():
+        auto u2 = v.StateEquals.unwrap()
+        keys.append("StateEquals")
+        vals.append(cbor.cbor_text(u2))
+    if v.NameContains.is_some():
+        auto u3 = v.NameContains.unwrap()
+        keys.append("NameContains")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListVocabularyFiltersRequest to a CBOR map (member wire name -> value, model order).
+def list_vocabulary_filters_request_to_cbor(ListVocabularyFiltersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NameContains.is_some():
+        auto u2 = v.NameContains.unwrap()
+        keys.append("NameContains")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Media to a CBOR map (member wire name -> value, model order).
+def media_to_cbor(Media v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MediaFileUri.is_some():
+        auto u0 = v.MediaFileUri.unwrap()
+        keys.append("MediaFileUri")
+        vals.append(cbor.cbor_text(u0))
+    if v.RedactedMediaFileUri.is_some():
+        auto u1 = v.RedactedMediaFileUri.unwrap()
+        keys.append("RedactedMediaFileUri")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MedicalScribeChannelDefinition to a CBOR map (member wire name -> value, model order).
+def medical_scribe_channel_definition_to_cbor(MedicalScribeChannelDefinition v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ChannelId")
+    vals.append(cbor.cbor_int(v.ChannelId))
+    keys.append("ParticipantRole")
+    vals.append(cbor.cbor_text(v.ParticipantRole))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MedicalScribeContext to a CBOR map (member wire name -> value, model order).
+def medical_scribe_context_to_cbor(MedicalScribeContext v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.PatientContext.is_some():
+        auto u0 = v.PatientContext.unwrap()
+        keys.append("PatientContext")
+        vals.append(medical_scribe_patient_context_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MedicalScribePatientContext to a CBOR map (member wire name -> value, model order).
+def medical_scribe_patient_context_to_cbor(MedicalScribePatientContext v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Pronouns.is_some():
+        auto u0 = v.Pronouns.unwrap()
+        keys.append("Pronouns")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MedicalScribeSettings to a CBOR map (member wire name -> value, model order).
+def medical_scribe_settings_to_cbor(MedicalScribeSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ShowSpeakerLabels.is_some():
+        auto u0 = v.ShowSpeakerLabels.unwrap()
+        keys.append("ShowSpeakerLabels")
+        vals.append(cbor.cbor_bool(u0))
+    if v.MaxSpeakerLabels.is_some():
+        auto u1 = v.MaxSpeakerLabels.unwrap()
+        keys.append("MaxSpeakerLabels")
+        vals.append(cbor.cbor_int(u1))
+    if v.ChannelIdentification.is_some():
+        auto u2 = v.ChannelIdentification.unwrap()
+        keys.append("ChannelIdentification")
+        vals.append(cbor.cbor_bool(u2))
+    if v.VocabularyName.is_some():
+        auto u3 = v.VocabularyName.unwrap()
+        keys.append("VocabularyName")
+        vals.append(cbor.cbor_text(u3))
+    if v.VocabularyFilterName.is_some():
+        auto u4 = v.VocabularyFilterName.unwrap()
+        keys.append("VocabularyFilterName")
+        vals.append(cbor.cbor_text(u4))
+    if v.VocabularyFilterMethod.is_some():
+        auto u5 = v.VocabularyFilterMethod.unwrap()
+        keys.append("VocabularyFilterMethod")
+        vals.append(cbor.cbor_text(u5))
+    if v.ClinicalNoteGenerationSettings.is_some():
+        auto u6 = v.ClinicalNoteGenerationSettings.unwrap()
+        keys.append("ClinicalNoteGenerationSettings")
+        vals.append(clinical_note_generation_settings_to_cbor(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MedicalTranscriptionSetting to a CBOR map (member wire name -> value, model order).
+def medical_transcription_setting_to_cbor(MedicalTranscriptionSetting v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ShowSpeakerLabels.is_some():
+        auto u0 = v.ShowSpeakerLabels.unwrap()
+        keys.append("ShowSpeakerLabels")
+        vals.append(cbor.cbor_bool(u0))
+    if v.MaxSpeakerLabels.is_some():
+        auto u1 = v.MaxSpeakerLabels.unwrap()
+        keys.append("MaxSpeakerLabels")
+        vals.append(cbor.cbor_int(u1))
+    if v.ChannelIdentification.is_some():
+        auto u2 = v.ChannelIdentification.unwrap()
+        keys.append("ChannelIdentification")
+        vals.append(cbor.cbor_bool(u2))
+    if v.ShowAlternatives.is_some():
+        auto u3 = v.ShowAlternatives.unwrap()
+        keys.append("ShowAlternatives")
+        vals.append(cbor.cbor_bool(u3))
+    if v.MaxAlternatives.is_some():
+        auto u4 = v.MaxAlternatives.unwrap()
+        keys.append("MaxAlternatives")
+        vals.append(cbor.cbor_int(u4))
+    if v.VocabularyName.is_some():
+        auto u5 = v.VocabularyName.unwrap()
+        keys.append("VocabularyName")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModelSettings to a CBOR map (member wire name -> value, model order).
+def model_settings_to_cbor(ModelSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.LanguageModelName.is_some():
+        auto u0 = v.LanguageModelName.unwrap()
+        keys.append("LanguageModelName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NonTalkTimeFilter to a CBOR map (member wire name -> value, model order).
+def non_talk_time_filter_to_cbor(NonTalkTimeFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Threshold.is_some():
+        auto u0 = v.Threshold.unwrap()
+        keys.append("Threshold")
+        vals.append(cbor.cbor_int(u0))
     if v.AbsoluteTimeRange.is_some():
-        auto u0 = v.AbsoluteTimeRange.unwrap()
-        parts.append("\"AbsoluteTimeRange\":" + u0.to_json())
+        auto u1 = v.AbsoluteTimeRange.unwrap()
+        keys.append("AbsoluteTimeRange")
+        vals.append(absolute_time_range_to_cbor(u1))
     if v.RelativeTimeRange.is_some():
-        auto u1 = v.RelativeTimeRange.unwrap()
-        parts.append("\"RelativeTimeRange\":" + u1.to_json())
-    if v.ParticipantRole.is_some():
-        auto u2 = v.ParticipantRole.unwrap()
-        parts.append("\"ParticipantRole\":" + u2.to_json())
+        auto u2 = v.RelativeTimeRange.unwrap()
+        keys.append("RelativeTimeRange")
+        vals.append(relative_time_range_to_cbor(u2))
     if v.Negate.is_some():
         auto u3 = v.Negate.unwrap()
-        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u3)))
-    list[str] e4 = []
+        keys.append("Negate")
+        vals.append(cbor.cbor_bool(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RelativeTimeRange to a CBOR map (member wire name -> value, model order).
+def relative_time_range_to_cbor(RelativeTimeRange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.StartPercentage.is_some():
+        auto u0 = v.StartPercentage.unwrap()
+        keys.append("StartPercentage")
+        vals.append(cbor.cbor_int(u0))
+    if v.EndPercentage.is_some():
+        auto u1 = v.EndPercentage.unwrap()
+        keys.append("EndPercentage")
+        vals.append(cbor.cbor_int(u1))
+    if v.First.is_some():
+        auto u2 = v.First.unwrap()
+        keys.append("First")
+        vals.append(cbor.cbor_int(u2))
+    if v.Last.is_some():
+        auto u3 = v.Last.unwrap()
+        keys.append("Last")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Rule to a CBOR map (member wire name -> value, model order).
+def rule_to_cbor(Rule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NonTalkTimeFilter.is_some():
+        auto u0 = v.NonTalkTimeFilter.unwrap()
+        keys.append("NonTalkTimeFilter")
+        vals.append(non_talk_time_filter_to_cbor(u0))
+    if v.InterruptionFilter.is_some():
+        auto u1 = v.InterruptionFilter.unwrap()
+        keys.append("InterruptionFilter")
+        vals.append(interruption_filter_to_cbor(u1))
+    if v.TranscriptFilter.is_some():
+        auto u2 = v.TranscriptFilter.unwrap()
+        keys.append("TranscriptFilter")
+        vals.append(transcript_filter_to_cbor(u2))
+    if v.SentimentFilter.is_some():
+        auto u3 = v.SentimentFilter.unwrap()
+        keys.append("SentimentFilter")
+        vals.append(sentiment_filter_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SentimentFilter to a CBOR map (member wire name -> value, model order).
+def sentiment_filter_to_cbor(SentimentFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Sentiments:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Sentiments")
+    vals.append(cbor.cbor_list(e0))
+    if v.AbsoluteTimeRange.is_some():
+        auto u1 = v.AbsoluteTimeRange.unwrap()
+        keys.append("AbsoluteTimeRange")
+        vals.append(absolute_time_range_to_cbor(u1))
+    if v.RelativeTimeRange.is_some():
+        auto u2 = v.RelativeTimeRange.unwrap()
+        keys.append("RelativeTimeRange")
+        vals.append(relative_time_range_to_cbor(u2))
+    if v.ParticipantRole.is_some():
+        auto u3 = v.ParticipantRole.unwrap()
+        keys.append("ParticipantRole")
+        vals.append(cbor.cbor_text(u3))
+    if v.Negate.is_some():
+        auto u4 = v.Negate.unwrap()
+        keys.append("Negate")
+        vals.append(cbor.cbor_bool(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Settings to a CBOR map (member wire name -> value, model order).
+def settings_to_cbor(Settings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.VocabularyName.is_some():
+        auto u0 = v.VocabularyName.unwrap()
+        keys.append("VocabularyName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ShowSpeakerLabels.is_some():
+        auto u1 = v.ShowSpeakerLabels.unwrap()
+        keys.append("ShowSpeakerLabels")
+        vals.append(cbor.cbor_bool(u1))
+    if v.MaxSpeakerLabels.is_some():
+        auto u2 = v.MaxSpeakerLabels.unwrap()
+        keys.append("MaxSpeakerLabels")
+        vals.append(cbor.cbor_int(u2))
+    if v.ChannelIdentification.is_some():
+        auto u3 = v.ChannelIdentification.unwrap()
+        keys.append("ChannelIdentification")
+        vals.append(cbor.cbor_bool(u3))
+    if v.ShowAlternatives.is_some():
+        auto u4 = v.ShowAlternatives.unwrap()
+        keys.append("ShowAlternatives")
+        vals.append(cbor.cbor_bool(u4))
+    if v.MaxAlternatives.is_some():
+        auto u5 = v.MaxAlternatives.unwrap()
+        keys.append("MaxAlternatives")
+        vals.append(cbor.cbor_int(u5))
+    if v.VocabularyFilterName.is_some():
+        auto u6 = v.VocabularyFilterName.unwrap()
+        keys.append("VocabularyFilterName")
+        vals.append(cbor.cbor_text(u6))
+    if v.VocabularyFilterMethod.is_some():
+        auto u7 = v.VocabularyFilterMethod.unwrap()
+        keys.append("VocabularyFilterMethod")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartCallAnalyticsJobRequest to a CBOR map (member wire name -> value, model order).
+def start_call_analytics_job_request_to_cbor(StartCallAnalyticsJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CallAnalyticsJobName")
+    vals.append(cbor.cbor_text(v.CallAnalyticsJobName))
+    keys.append("Media")
+    vals.append(media_to_cbor(v.Media))
+    if v.OutputLocation.is_some():
+        auto u0 = v.OutputLocation.unwrap()
+        keys.append("OutputLocation")
+        vals.append(cbor.cbor_text(u0))
+    if v.OutputEncryptionKMSKeyId.is_some():
+        auto u1 = v.OutputEncryptionKMSKeyId.unwrap()
+        keys.append("OutputEncryptionKMSKeyId")
+        vals.append(cbor.cbor_text(u1))
+    if v.DataAccessRoleArn.is_some():
+        auto u2 = v.DataAccessRoleArn.unwrap()
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.Settings.is_some():
+        auto u3 = v.Settings.unwrap()
+        keys.append("Settings")
+        vals.append(call_analytics_job_settings_to_cbor(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    if v.ChannelDefinitions.is_some():
+        auto u6 = v.ChannelDefinitions.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(channel_definition_to_cbor(x7))
+        keys.append("ChannelDefinitions")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartMedicalScribeJobRequest to a CBOR map (member wire name -> value, model order).
+def start_medical_scribe_job_request_to_cbor(StartMedicalScribeJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MedicalScribeJobName")
+    vals.append(cbor.cbor_text(v.MedicalScribeJobName))
+    keys.append("Media")
+    vals.append(media_to_cbor(v.Media))
+    keys.append("OutputBucketName")
+    vals.append(cbor.cbor_text(v.OutputBucketName))
+    if v.OutputEncryptionKMSKeyId.is_some():
+        auto u0 = v.OutputEncryptionKMSKeyId.unwrap()
+        keys.append("OutputEncryptionKMSKeyId")
+        vals.append(cbor.cbor_text(u0))
+    if v.KMSEncryptionContext.is_some():
+        auto u1 = v.KMSEncryptionContext.unwrap()
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
+        for k2 in sorted(u1.keys()):
+            mk2.append(k2)
+            mv2.append(cbor.cbor_text(u1[k2]))
+        keys.append("KMSEncryptionContext")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
+    keys.append("Settings")
+    vals.append(medical_scribe_settings_to_cbor(v.Settings))
+    if v.ChannelDefinitions.is_some():
+        auto u3 = v.ChannelDefinitions.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(medical_scribe_channel_definition_to_cbor(x4))
+        keys.append("ChannelDefinitions")
+        vals.append(cbor.cbor_list(e4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[cbor.CborValue] e6 = []
+        for x6 in u5:
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
+    if v.MedicalScribeContext.is_some():
+        auto u7 = v.MedicalScribeContext.unwrap()
+        keys.append("MedicalScribeContext")
+        vals.append(medical_scribe_context_to_cbor(u7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartMedicalTranscriptionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_medical_transcription_job_request_to_cbor(StartMedicalTranscriptionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MedicalTranscriptionJobName")
+    vals.append(cbor.cbor_text(v.MedicalTranscriptionJobName))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    if v.MediaSampleRateHertz.is_some():
+        auto u0 = v.MediaSampleRateHertz.unwrap()
+        keys.append("MediaSampleRateHertz")
+        vals.append(cbor.cbor_int(u0))
+    if v.MediaFormat.is_some():
+        auto u1 = v.MediaFormat.unwrap()
+        keys.append("MediaFormat")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("Media")
+    vals.append(media_to_cbor(v.Media))
+    keys.append("OutputBucketName")
+    vals.append(cbor.cbor_text(v.OutputBucketName))
+    if v.OutputKey.is_some():
+        auto u2 = v.OutputKey.unwrap()
+        keys.append("OutputKey")
+        vals.append(cbor.cbor_text(u2))
+    if v.OutputEncryptionKMSKeyId.is_some():
+        auto u3 = v.OutputEncryptionKMSKeyId.unwrap()
+        keys.append("OutputEncryptionKMSKeyId")
+        vals.append(cbor.cbor_text(u3))
+    if v.KMSEncryptionContext.is_some():
+        auto u4 = v.KMSEncryptionContext.unwrap()
+        list[str] mk5 = []
+        list[cbor.CborValue] mv5 = []
+        for k5 in sorted(u4.keys()):
+            mk5.append(k5)
+            mv5.append(cbor.cbor_text(u4[k5]))
+        keys.append("KMSEncryptionContext")
+        vals.append(cbor.cbor_map(mk5, mv5))
+    if v.Settings.is_some():
+        auto u6 = v.Settings.unwrap()
+        keys.append("Settings")
+        vals.append(medical_transcription_setting_to_cbor(u6))
+    if v.ContentIdentificationType.is_some():
+        auto u7 = v.ContentIdentificationType.unwrap()
+        keys.append("ContentIdentificationType")
+        vals.append(cbor.cbor_text(u7))
+    keys.append("Specialty")
+    vals.append(cbor.cbor_text(v.Specialty))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(tag_to_cbor(x9))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e9))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartTranscriptionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_transcription_job_request_to_cbor(StartTranscriptionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TranscriptionJobName")
+    vals.append(cbor.cbor_text(v.TranscriptionJobName))
+    if v.LanguageCode.is_some():
+        auto u0 = v.LanguageCode.unwrap()
+        keys.append("LanguageCode")
+        vals.append(cbor.cbor_text(u0))
+    if v.MediaSampleRateHertz.is_some():
+        auto u1 = v.MediaSampleRateHertz.unwrap()
+        keys.append("MediaSampleRateHertz")
+        vals.append(cbor.cbor_int(u1))
+    if v.MediaFormat.is_some():
+        auto u2 = v.MediaFormat.unwrap()
+        keys.append("MediaFormat")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("Media")
+    vals.append(media_to_cbor(v.Media))
+    if v.OutputBucketName.is_some():
+        auto u3 = v.OutputBucketName.unwrap()
+        keys.append("OutputBucketName")
+        vals.append(cbor.cbor_text(u3))
+    if v.OutputKey.is_some():
+        auto u4 = v.OutputKey.unwrap()
+        keys.append("OutputKey")
+        vals.append(cbor.cbor_text(u4))
+    if v.OutputEncryptionKMSKeyId.is_some():
+        auto u5 = v.OutputEncryptionKMSKeyId.unwrap()
+        keys.append("OutputEncryptionKMSKeyId")
+        vals.append(cbor.cbor_text(u5))
+    if v.KMSEncryptionContext.is_some():
+        auto u6 = v.KMSEncryptionContext.unwrap()
+        list[str] mk7 = []
+        list[cbor.CborValue] mv7 = []
+        for k7 in sorted(u6.keys()):
+            mk7.append(k7)
+            mv7.append(cbor.cbor_text(u6[k7]))
+        keys.append("KMSEncryptionContext")
+        vals.append(cbor.cbor_map(mk7, mv7))
+    if v.Settings.is_some():
+        auto u8 = v.Settings.unwrap()
+        keys.append("Settings")
+        vals.append(settings_to_cbor(u8))
+    if v.ModelSettings.is_some():
+        auto u9 = v.ModelSettings.unwrap()
+        keys.append("ModelSettings")
+        vals.append(model_settings_to_cbor(u9))
+    if v.JobExecutionSettings.is_some():
+        auto u10 = v.JobExecutionSettings.unwrap()
+        keys.append("JobExecutionSettings")
+        vals.append(job_execution_settings_to_cbor(u10))
+    if v.ContentRedaction.is_some():
+        auto u11 = v.ContentRedaction.unwrap()
+        keys.append("ContentRedaction")
+        vals.append(content_redaction_to_cbor(u11))
+    if v.IdentifyLanguage.is_some():
+        auto u12 = v.IdentifyLanguage.unwrap()
+        keys.append("IdentifyLanguage")
+        vals.append(cbor.cbor_bool(u12))
+    if v.IdentifyMultipleLanguages.is_some():
+        auto u13 = v.IdentifyMultipleLanguages.unwrap()
+        keys.append("IdentifyMultipleLanguages")
+        vals.append(cbor.cbor_bool(u13))
+    if v.LanguageOptions.is_some():
+        auto u14 = v.LanguageOptions.unwrap()
+        list[cbor.CborValue] e15 = []
+        for x15 in u14:
+            e15.append(cbor.cbor_text(x15))
+        keys.append("LanguageOptions")
+        vals.append(cbor.cbor_list(e15))
+    if v.Subtitles.is_some():
+        auto u16 = v.Subtitles.unwrap()
+        keys.append("Subtitles")
+        vals.append(subtitles_to_cbor(u16))
+    if v.Tags.is_some():
+        auto u17 = v.Tags.unwrap()
+        list[cbor.CborValue] e18 = []
+        for x18 in u17:
+            e18.append(tag_to_cbor(x18))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e18))
+    if v.LanguageIdSettings.is_some():
+        auto u19 = v.LanguageIdSettings.unwrap()
+        list[str] mk20 = []
+        list[cbor.CborValue] mv20 = []
+        for k20 in sorted(u19.keys()):
+            mk20.append(k20)
+            mv20.append(language_id_settings_to_cbor(u19[k20]))
+        keys.append("LanguageIdSettings")
+        vals.append(cbor.cbor_map(mk20, mv20))
+    if v.ToxicityDetection.is_some():
+        auto u21 = v.ToxicityDetection.unwrap()
+        list[cbor.CborValue] e22 = []
+        for x22 in u21:
+            e22.append(toxicity_detection_settings_to_cbor(x22))
+        keys.append("ToxicityDetection")
+        vals.append(cbor.cbor_list(e22))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Subtitles to a CBOR map (member wire name -> value, model order).
+def subtitles_to_cbor(Subtitles v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Formats.is_some():
+        auto u0 = v.Formats.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Formats")
+        vals.append(cbor.cbor_list(e1))
+    if v.OutputStartIndex.is_some():
+        auto u2 = v.OutputStartIndex.unwrap()
+        keys.append("OutputStartIndex")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Summarization to a CBOR map (member wire name -> value, model order).
+def summarization_to_cbor(Summarization v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("GenerateAbstractiveSummary")
+    vals.append(cbor.cbor_bool(v.GenerateAbstractiveSummary))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Tags:
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ToxicityDetectionSettings to a CBOR map (member wire name -> value, model order).
+def toxicity_detection_settings_to_cbor(ToxicityDetectionSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.ToxicityCategories:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ToxicityCategories")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TranscriptFilter to a CBOR map (member wire name -> value, model order).
+def transcript_filter_to_cbor(TranscriptFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TranscriptFilterType")
+    vals.append(cbor.cbor_text(v.TranscriptFilterType))
+    if v.AbsoluteTimeRange.is_some():
+        auto u0 = v.AbsoluteTimeRange.unwrap()
+        keys.append("AbsoluteTimeRange")
+        vals.append(absolute_time_range_to_cbor(u0))
+    if v.RelativeTimeRange.is_some():
+        auto u1 = v.RelativeTimeRange.unwrap()
+        keys.append("RelativeTimeRange")
+        vals.append(relative_time_range_to_cbor(u1))
+    if v.ParticipantRole.is_some():
+        auto u2 = v.ParticipantRole.unwrap()
+        keys.append("ParticipantRole")
+        vals.append(cbor.cbor_text(u2))
+    if v.Negate.is_some():
+        auto u3 = v.Negate.unwrap()
+        keys.append("Negate")
+        vals.append(cbor.cbor_bool(u3))
+    list[cbor.CborValue] e4 = []
     for x4 in v.Targets:
-        e4.append(transcribe_json_str(x4))
-    parts.append("\"Targets\":" + transcribe_json_arr(e4))
-    return transcribe_json_obj(parts)
+        e4.append(cbor.cbor_text(x4))
+    keys.append("Targets")
+    vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + transcribe_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(transcribe_json_str(x0))
-    parts.append("\"TagKeys\":" + transcribe_json_arr(e0))
-    return transcribe_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateCallAnalyticsCategoryRequest to a compact JSON object (declaration order).
-def update_call_analytics_category_request_to_json(UpdateCallAnalyticsCategoryRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"CategoryName\":" + transcribe_json_str(v.CategoryName))
-    list[str] e0 = []
+# Serialize UpdateCallAnalyticsCategoryRequest to a CBOR map (member wire name -> value, model order).
+def update_call_analytics_category_request_to_cbor(UpdateCallAnalyticsCategoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CategoryName")
+    vals.append(cbor.cbor_text(v.CategoryName))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Rules:
-        e0.append(rule_to_json(x0))
-    parts.append("\"Rules\":" + transcribe_json_arr(e0))
+        e0.append(rule_to_cbor(x0))
+    keys.append("Rules")
+    vals.append(cbor.cbor_list(e0))
     if v.InputType.is_some():
         auto u1 = v.InputType.unwrap()
-        parts.append("\"InputType\":" + u1.to_json())
-    return transcribe_json_obj(parts)
+        keys.append("InputType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateLanguageModelRequest to a compact JSON object (declaration order).
-def update_language_model_request_to_json(UpdateLanguageModelRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ModelName\":" + transcribe_json_str(v.ModelName))
+# Serialize UpdateLanguageModelRequest to a CBOR map (member wire name -> value, model order).
+def update_language_model_request_to_cbor(UpdateLanguageModelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ModelName")
+    vals.append(cbor.cbor_text(v.ModelName))
     if v.DataAccessRoleArn.is_some():
         auto u0 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u0))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u0))
     if v.EncryptionConfiguration.is_some():
         auto u1 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u1))
-    return transcribe_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateVocabularyFilterRequest to a compact JSON object (declaration order).
-def update_vocabulary_filter_request_to_json(UpdateVocabularyFilterRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"VocabularyFilterName\":" + transcribe_json_str(v.VocabularyFilterName))
+# Serialize UpdateMedicalVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def update_medical_vocabulary_request_to_cbor(UpdateMedicalVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    keys.append("VocabularyFileUri")
+    vals.append(cbor.cbor_text(v.VocabularyFileUri))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateVocabularyFilterRequest to a CBOR map (member wire name -> value, model order).
+def update_vocabulary_filter_request_to_cbor(UpdateVocabularyFilterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyFilterName")
+    vals.append(cbor.cbor_text(v.VocabularyFilterName))
     if v.Words.is_some():
         auto u0 = v.Words.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(transcribe_json_str(x1))
-        parts.append("\"Words\":" + transcribe_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Words")
+        vals.append(cbor.cbor_list(e1))
     if v.VocabularyFilterFileUri.is_some():
         auto u2 = v.VocabularyFilterFileUri.unwrap()
-        parts.append("\"VocabularyFilterFileUri\":" + transcribe_json_str(u2))
+        keys.append("VocabularyFilterFileUri")
+        vals.append(cbor.cbor_text(u2))
     if v.DataAccessRoleArn.is_some():
         auto u3 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u3))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u3))
     if v.EncryptionConfiguration.is_some():
         auto u4 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u4))
-    return transcribe_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateVocabularyRequest to a compact JSON object (declaration order).
-def update_vocabulary_request_to_json(UpdateVocabularyRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"VocabularyName\":" + transcribe_json_str(v.VocabularyName))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+# Serialize UpdateVocabularyRequest to a CBOR map (member wire name -> value, model order).
+def update_vocabulary_request_to_cbor(UpdateVocabularyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("VocabularyName")
+    vals.append(cbor.cbor_text(v.VocabularyName))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.Phrases.is_some():
         auto u0 = v.Phrases.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(transcribe_json_str(x1))
-        parts.append("\"Phrases\":" + transcribe_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Phrases")
+        vals.append(cbor.cbor_list(e1))
     if v.VocabularyFileUri.is_some():
         auto u2 = v.VocabularyFileUri.unwrap()
-        parts.append("\"VocabularyFileUri\":" + transcribe_json_str(u2))
+        keys.append("VocabularyFileUri")
+        vals.append(cbor.cbor_text(u2))
     if v.DataAccessRoleArn.is_some():
         auto u3 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + transcribe_json_str(u3))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u3))
     if v.EncryptionConfiguration.is_some():
         auto u4 = v.EncryptionConfiguration.unwrap()
-        parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(u4))
-    return transcribe_json_obj(parts)
+        keys.append("EncryptionConfiguration")
+        vals.append(encryption_configuration_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Transcribe client: credentials + region, threaded into every operation.
 struct TranscribeClient:
@@ -1817,416 +2584,399 @@ struct TranscribeClient:
 
     # CreateCallAnalyticsCategory
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def create_call_analytics_category(self, CreateCallAnalyticsCategoryRequest input) -> str:
-        auto body = create_call_analytics_category_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateCallAnalyticsCategory", body)
+    def create_call_analytics_category(self, CreateCallAnalyticsCategoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_call_analytics_category_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "CreateCallAnalyticsCategory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLanguageModel
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def create_language_model(self, CreateLanguageModelRequest input) -> str:
-        auto body = create_language_model_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateLanguageModel", body)
+    def create_language_model(self, CreateLanguageModelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_language_model_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "CreateLanguageModel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateMedicalVocabulary
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def create_medical_vocabulary(self, CreateMedicalVocabularyRequest input) -> str:
-        auto body = create_medical_vocabulary_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateMedicalVocabulary", body)
+    def create_medical_vocabulary(self, CreateMedicalVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_medical_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "CreateMedicalVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateVocabulary
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def create_vocabulary(self, CreateVocabularyRequest input) -> str:
-        auto body = create_vocabulary_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateVocabulary", body)
+    def create_vocabulary(self, CreateVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "CreateVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateVocabularyFilter
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def create_vocabulary_filter(self, CreateVocabularyFilterRequest input) -> str:
-        auto body = create_vocabulary_filter_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "CreateVocabularyFilter", body)
+    def create_vocabulary_filter(self, CreateVocabularyFilterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_vocabulary_filter_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "CreateVocabularyFilter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteCallAnalyticsCategory
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def delete_call_analytics_category(self, DeleteCallAnalyticsCategoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteCallAnalyticsCategory", body)
+    def delete_call_analytics_category(self, DeleteCallAnalyticsCategoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_call_analytics_category_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteCallAnalyticsCategory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteCallAnalyticsJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def delete_call_analytics_job(self, DeleteCallAnalyticsJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteCallAnalyticsJob", body)
+    def delete_call_analytics_job(self, DeleteCallAnalyticsJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_call_analytics_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteCallAnalyticsJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteLanguageModel
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def delete_language_model(self, DeleteLanguageModelRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteLanguageModel", body)
+    def delete_language_model(self, DeleteLanguageModelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_language_model_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteLanguageModel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteMedicalScribeJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def delete_medical_scribe_job(self, DeleteMedicalScribeJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteMedicalScribeJob", body)
+    def delete_medical_scribe_job(self, DeleteMedicalScribeJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_medical_scribe_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteMedicalScribeJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteMedicalTranscriptionJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def delete_medical_transcription_job(self, DeleteMedicalTranscriptionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteMedicalTranscriptionJob", body)
+    def delete_medical_transcription_job(self, DeleteMedicalTranscriptionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_medical_transcription_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteMedicalTranscriptionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteMedicalVocabulary
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def delete_medical_vocabulary(self, DeleteMedicalVocabularyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteMedicalVocabulary", body)
+    def delete_medical_vocabulary(self, DeleteMedicalVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_medical_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteMedicalVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTranscriptionJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def delete_transcription_job(self, DeleteTranscriptionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteTranscriptionJob", body)
+    def delete_transcription_job(self, DeleteTranscriptionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_transcription_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteTranscriptionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteVocabulary
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def delete_vocabulary(self, DeleteVocabularyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteVocabulary", body)
+    def delete_vocabulary(self, DeleteVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteVocabularyFilter
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def delete_vocabulary_filter(self, DeleteVocabularyFilterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DeleteVocabularyFilter", body)
+    def delete_vocabulary_filter(self, DeleteVocabularyFilterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_vocabulary_filter_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DeleteVocabularyFilter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLanguageModel
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def describe_language_model(self, DescribeLanguageModelRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "DescribeLanguageModel", body)
+    def describe_language_model(self, DescribeLanguageModelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_language_model_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "DescribeLanguageModel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetCallAnalyticsCategory
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_call_analytics_category(self, GetCallAnalyticsCategoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetCallAnalyticsCategory", body)
+    def get_call_analytics_category(self, GetCallAnalyticsCategoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_call_analytics_category_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetCallAnalyticsCategory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetCallAnalyticsJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_call_analytics_job(self, GetCallAnalyticsJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetCallAnalyticsJob", body)
+    def get_call_analytics_job(self, GetCallAnalyticsJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_call_analytics_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetCallAnalyticsJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetMedicalScribeJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_medical_scribe_job(self, GetMedicalScribeJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetMedicalScribeJob", body)
+    def get_medical_scribe_job(self, GetMedicalScribeJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_medical_scribe_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetMedicalScribeJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetMedicalTranscriptionJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_medical_transcription_job(self, GetMedicalTranscriptionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetMedicalTranscriptionJob", body)
+    def get_medical_transcription_job(self, GetMedicalTranscriptionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_medical_transcription_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetMedicalTranscriptionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetMedicalVocabulary
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_medical_vocabulary(self, GetMedicalVocabularyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetMedicalVocabulary", body)
+    def get_medical_vocabulary(self, GetMedicalVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_medical_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetMedicalVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetTranscriptionJob
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_transcription_job(self, GetTranscriptionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetTranscriptionJob", body)
+    def get_transcription_job(self, GetTranscriptionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_transcription_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetTranscriptionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetVocabulary
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_vocabulary(self, GetVocabularyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetVocabulary", body)
+    def get_vocabulary(self, GetVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetVocabularyFilter
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def get_vocabulary_filter(self, GetVocabularyFilterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "GetVocabularyFilter", body)
+    def get_vocabulary_filter(self, GetVocabularyFilterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_vocabulary_filter_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "GetVocabularyFilter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListCallAnalyticsCategories
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_call_analytics_categories(self, ListCallAnalyticsCategoriesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListCallAnalyticsCategories", body)
+    def list_call_analytics_categories(self, ListCallAnalyticsCategoriesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_call_analytics_categories_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListCallAnalyticsCategories", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListCallAnalyticsJobs
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_call_analytics_jobs(self, ListCallAnalyticsJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListCallAnalyticsJobs", body)
+    def list_call_analytics_jobs(self, ListCallAnalyticsJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_call_analytics_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListCallAnalyticsJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListLanguageModels
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_language_models(self, ListLanguageModelsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListLanguageModels", body)
+    def list_language_models(self, ListLanguageModelsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_language_models_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListLanguageModels", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListMedicalScribeJobs
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_medical_scribe_jobs(self, ListMedicalScribeJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListMedicalScribeJobs", body)
+    def list_medical_scribe_jobs(self, ListMedicalScribeJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_medical_scribe_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListMedicalScribeJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListMedicalTranscriptionJobs
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_medical_transcription_jobs(self, ListMedicalTranscriptionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListMedicalTranscriptionJobs", body)
+    def list_medical_transcription_jobs(self, ListMedicalTranscriptionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_medical_transcription_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListMedicalTranscriptionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListMedicalVocabularies
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_medical_vocabularies(self, ListMedicalVocabulariesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListMedicalVocabularies", body)
+    def list_medical_vocabularies(self, ListMedicalVocabulariesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_medical_vocabularies_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListMedicalVocabularies", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTranscriptionJobs
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_transcription_jobs(self, ListTranscriptionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListTranscriptionJobs", body)
+    def list_transcription_jobs(self, ListTranscriptionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_transcription_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListTranscriptionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListVocabularies
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_vocabularies(self, ListVocabulariesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListVocabularies", body)
+    def list_vocabularies(self, ListVocabulariesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_vocabularies_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListVocabularies", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListVocabularyFilters
     # errors: BadRequestException, InternalFailureException, LimitExceededException
-    def list_vocabulary_filters(self, ListVocabularyFiltersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "ListVocabularyFilters", body)
+    def list_vocabulary_filters(self, ListVocabularyFiltersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_vocabulary_filters_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "ListVocabularyFilters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # StartCallAnalyticsJob
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def start_call_analytics_job(self, StartCallAnalyticsJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_call_analytics_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "StartCallAnalyticsJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartMedicalScribeJob
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def start_medical_scribe_job(self, StartMedicalScribeJobRequest input) -> str:
-        auto body = start_medical_scribe_job_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "StartMedicalScribeJob", body)
+    def start_medical_scribe_job(self, StartMedicalScribeJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_medical_scribe_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "StartMedicalScribeJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartMedicalTranscriptionJob
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
-    def start_medical_transcription_job(self, StartMedicalTranscriptionJobRequest input) -> str:
-        auto body = start_medical_transcription_job_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "StartMedicalTranscriptionJob", body)
+    def start_medical_transcription_job(self, StartMedicalTranscriptionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_medical_transcription_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "StartMedicalTranscriptionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # StartTranscriptionJob
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException
+    def start_transcription_job(self, StartTranscriptionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_transcription_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "StartTranscriptionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateCallAnalyticsCategory
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def update_call_analytics_category(self, UpdateCallAnalyticsCategoryRequest input) -> str:
-        auto body = update_call_analytics_category_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateCallAnalyticsCategory", body)
+    def update_call_analytics_category(self, UpdateCallAnalyticsCategoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_call_analytics_category_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "UpdateCallAnalyticsCategory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLanguageModel
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def update_language_model(self, UpdateLanguageModelRequest input) -> str:
-        auto body = update_language_model_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateLanguageModel", body)
+    def update_language_model(self, UpdateLanguageModelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_language_model_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "UpdateLanguageModel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateMedicalVocabulary
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def update_medical_vocabulary(self, UpdateMedicalVocabularyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateMedicalVocabulary", body)
+    def update_medical_vocabulary(self, UpdateMedicalVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_medical_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "UpdateMedicalVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateVocabulary
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def update_vocabulary(self, UpdateVocabularyRequest input) -> str:
-        auto body = update_vocabulary_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateVocabulary", body)
+    def update_vocabulary(self, UpdateVocabularyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_vocabulary_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "UpdateVocabulary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateVocabularyFilter
     # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
-    def update_vocabulary_filter(self, UpdateVocabularyFilterRequest input) -> str:
-        auto body = update_vocabulary_filter_request_to_json(input)
-        return awsjson.awsjson_request_now(transcribe_protocol(), self.creds, self.region, "UpdateVocabularyFilter", body)
-
-    # One poll of GetCallAnalyticsJob for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_call_analytics_job(self, GetCallAnalyticsJobRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.get_call_analytics_job(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of DescribeLanguageModel for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_describe_language_model(self, DescribeLanguageModelRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.describe_language_model(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetMedicalScribeJob for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_medical_scribe_job(self, GetMedicalScribeJobRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.get_medical_scribe_job(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetMedicalTranscriptionJob for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_medical_transcription_job(self, GetMedicalTranscriptionJobRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.get_medical_transcription_job(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetMedicalVocabulary for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_medical_vocabulary(self, GetMedicalVocabularyRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.get_medical_vocabulary(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetTranscriptionJob for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_transcription_job(self, GetTranscriptionJobRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.get_transcription_job(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetVocabulary for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_vocabulary(self, GetVocabularyRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(transcribe_protocol().service, self.region)
-        auto resp = core.send(host, self.get_vocabulary(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # Waiter CallAnalyticsJobCompleted — polls GetCallAnalyticsJob until a success acceptor fires (delay 10s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_call_analytics_job_completed.
-    def wait_call_analytics_job_completed(self, GetCallAnalyticsJobRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="CallAnalyticsJobCompleted",
-            delay=10,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "CallAnalyticsJob.CallAnalyticsJobStatus", "COMPLETED"),
-                waiters.acceptor_path(waiters.state_failure(), "CallAnalyticsJob.CallAnalyticsJobStatus", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_call_analytics_job(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter LanguageModelCompleted — polls DescribeLanguageModel until a success acceptor fires (delay 120s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_language_model_completed.
-    def wait_language_model_completed(self, DescribeLanguageModelRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="LanguageModelCompleted",
-            delay=120,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "LanguageModel.ModelStatus", "COMPLETED"),
-                waiters.acceptor_path(waiters.state_failure(), "LanguageModel.ModelStatus", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_language_model(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter MedicalScribeJobCompleted — polls GetMedicalScribeJob until a success acceptor fires (delay 10s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_medical_scribe_job_completed.
-    def wait_medical_scribe_job_completed(self, GetMedicalScribeJobRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="MedicalScribeJobCompleted",
-            delay=10,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "MedicalScribeJob.MedicalScribeJobStatus", "COMPLETED"),
-                waiters.acceptor_path(waiters.state_failure(), "MedicalScribeJob.MedicalScribeJobStatus", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_medical_scribe_job(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter MedicalTranscriptionJobCompleted — polls GetMedicalTranscriptionJob until a success acceptor fires (delay 10s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_medical_transcription_job_completed.
-    def wait_medical_transcription_job_completed(self, GetMedicalTranscriptionJobRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="MedicalTranscriptionJobCompleted",
-            delay=10,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "MedicalTranscriptionJob.TranscriptionJobStatus", "COMPLETED"),
-                waiters.acceptor_path(waiters.state_failure(), "MedicalTranscriptionJob.TranscriptionJobStatus", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_medical_transcription_job(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter MedicalVocabularyReady — polls GetMedicalVocabulary until a success acceptor fires (delay 10s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_medical_vocabulary_ready.
-    def wait_medical_vocabulary_ready(self, GetMedicalVocabularyRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="MedicalVocabularyReady",
-            delay=10,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "VocabularyState", "READY"),
-                waiters.acceptor_path(waiters.state_failure(), "VocabularyState", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_medical_vocabulary(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter TranscriptionJobCompleted — polls GetTranscriptionJob until a success acceptor fires (delay 10s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_transcription_job_completed.
-    def wait_transcription_job_completed(self, GetTranscriptionJobRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="TranscriptionJobCompleted",
-            delay=10,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "TranscriptionJob.TranscriptionJobStatus", "COMPLETED"),
-                waiters.acceptor_path(waiters.state_failure(), "TranscriptionJob.TranscriptionJobStatus", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_transcription_job(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter VocabularyReady — polls GetVocabulary until a success acceptor fires (delay 10s,
-    # max 180 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_vocabulary_ready.
-    def wait_vocabulary_ready(self, GetVocabularyRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="VocabularyReady",
-            delay=10,
-            max_attempts=180,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "VocabularyState", "READY"),
-                waiters.acceptor_path(waiters.state_failure(), "VocabularyState", "FAILED")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_vocabulary(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
+    def update_vocabulary_filter(self, UpdateVocabularyFilterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_vocabulary_filter_request_to_cbor(input))
+        auto host = endpoints.regional_host(transcribe_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(transcribe_service(), self.region, host, "Transcribe", "UpdateVocabularyFilter", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a TranscribeClient bound to credentials + region.
 def transcribe_client(core.Credentials creds, str region) -> TranscribeClient:

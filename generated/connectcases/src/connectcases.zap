@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 43 operations — 42 with a generated method,
+# Coverage (rest-json): 47 operations — 46 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   174 structs (93 @derive(Json)), 10 enums, 7 error variants.
+#   195 structs (107 @derive(Json)), 11 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -50,6 +50,7 @@ enum AuditEventType:
     RelatedItem_Created
     RelatedItem_Deleted
     RelatedItem_Updated
+    Case_Merged
     Unknown(str value)
 
 @derive(Json)
@@ -77,6 +78,13 @@ enum FieldType:
     SingleSelect
     Url
     User
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MergeStatus:
+    IN_PROGRESS
+    COMPLETED
     Unknown(str value)
 
 @derive(Json)
@@ -144,6 +152,7 @@ struct AuditEvent:
     DateTime performedTime
     list[AuditEventField] fields
     Optional[AuditEventPerformedBy] performedBy
+    Optional[AuditMergeMetadata] mergeMetadata
 
 @derive(Json)
 struct AuditEventField:
@@ -164,12 +173,50 @@ struct AuditEventPerformedBy:
     Optional[UserUnion] user
     str iamPrincipalArn
 
+@derive(Json)
+struct AuditMergeMetadata:
+    str mergeEventId
+    str primaryCaseId
+    str secondaryCaseId
+
 # no @derive(Json): member(s) topPanel: LayoutSections, moreInfo: LayoutSections not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct BasicLayout:
     Optional[LayoutSections] topPanel
     Optional[LayoutSections] moreInfo
+
+@derive(Json)
+struct BatchCreateRelatedItemErrorEntry:
+    CaseIdentifier caseIdentifier
+    str errorCode
+    str errorMessage
+
+@derive(Json)
+struct BatchCreateRelatedItemIdentifier:
+    CaseIdentifierUnion caseIdentifier
+
+# rest-json request for BatchCreateRelatedItemRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct BatchCreateRelatedItemRequest:
+    str domainId
+    RelatedItemInputContent content
+    list[BatchCreateRelatedItemIdentifier] cases
+    Optional[UserUnion] performedBy
+    Optional[str] clientToken
+
+# no @derive(Json): member(s) successfulItems: list[BatchCreateRelatedItemSuccessEntry], failedItems: list[BatchCreateRelatedItemErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct BatchCreateRelatedItemResponse:
+    list[BatchCreateRelatedItemSuccessEntry] successfulItems
+    list[BatchCreateRelatedItemErrorEntry] failedItems
+
+@derive(Json)
+struct BatchCreateRelatedItemSuccessEntry:
+    CaseIdentifier caseIdentifier
+    str relatedItemId
+    str relatedItemArn
 
 # rest-json request for BatchGetCaseRuleRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -211,6 +258,39 @@ struct BatchPutFieldOptionsRequest:
 struct BatchPutFieldOptionsResponse:
     Optional[list[FieldOptionError]] errors
 
+@derive(Json)
+struct BatchUpdateCaseErrorEntry:
+    CaseIdentifier caseIdentifier
+    str errorCode
+    str errorMessage
+
+@derive(Json)
+struct BatchUpdateCaseIdentifier:
+    CaseIdentifierUnion caseIdentifier
+
+# rest-json request for BatchUpdateCaseRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct BatchUpdateCaseRequest:
+    str domainId
+    list[BatchUpdateCaseIdentifier] cases
+    list[FieldValueInput] fields
+    Optional[UserUnion] performedBy
+    Optional[str] title
+    Optional[str] status
+    Optional[str] customerId
+    Optional[str] clientToken
+
+# no @derive(Json): member(s) successfulCases: list[BatchUpdateCaseSuccessEntry], failedCases: list[BatchUpdateCaseErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct BatchUpdateCaseResponse:
+    list[BatchUpdateCaseSuccessEntry] successfulCases
+    list[BatchUpdateCaseErrorEntry] failedCases
+
+@derive(Json)
+struct BatchUpdateCaseSuccessEntry:
+    CaseIdentifier caseIdentifier
+
 # no @derive(Json): member(s) andAll: CompoundCondition, orAll: CompoundCondition not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -242,6 +322,17 @@ struct CaseFilter:
     Optional[TagFilter] tag
     Optional[list[CaseFilter]] andAll
     Optional[list[CaseFilter]] orAll
+
+@derive(Json)
+struct CaseIdentifier:
+    Optional[str] caseId
+    Optional[str] referenceNumber
+    Optional[str] referenceId
+
+@derive(Json)
+struct CaseIdentifierUnion:
+    Optional[str] caseId
+    Optional[str] referenceId
 
 # no @derive(Json): member(s) required: RequiredCaseRule, fieldOptions: FieldOptionsCaseRule, hidden: HiddenCaseRule not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -599,6 +690,11 @@ struct FieldIdentifier:
     str id
 
 @derive(Json)
+struct FieldIdentifierUnion:
+    Optional[str] id
+    Optional[str] name
+
+@derive(Json)
 struct FieldItem:
     str id
 
@@ -637,12 +733,24 @@ struct FieldValue:
     FieldValueUnion value
 
 @derive(Json)
+struct FieldValueInput:
+    FieldIdentifierUnion fieldIdentifier
+    FieldValueUnion value
+
+@derive(Json)
 struct FieldValueUnion:
     Optional[str] stringValue
     Optional[float64] doubleValue
     Optional[bool] booleanValue
     Optional[EmptyFieldValue] emptyValue
     Optional[str] userArnValue
+
+# no @derive(Json): member(s) fieldIds: list[FieldIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct FieldsConfiguration:
+    list[FieldIdentifier] fieldIds
+    str sourceCaseId
 
 @derive(Json)
 struct FileContent:
@@ -759,6 +867,20 @@ struct GetLayoutResponse:
     Optional[bool] deleted
     Optional[DateTime] createdTime
     Optional[DateTime] lastModifiedTime
+
+# rest-json request for GetMergeCasesStatusRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetMergeCasesStatusRequest:
+    str domainId
+    str caseId
+
+# no @derive(Json): member(s) secondaryCaseIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetMergeCasesStatusResponse:
+    MergeStatus status
+    Optional[str] primaryCaseId
+    Optional[list[str]] secondaryCaseIds
 
 # rest-json request for GetTemplateRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1003,6 +1125,13 @@ struct RelatedItemUpdateContent:
     Optional[CommentUpdateContent] comment
     Optional[CustomUpdateContent] custom
 
+@derive(Json)
+struct RelatedItemsConfiguration:
+    Optional[bool] comment
+    Optional[bool] connectCase
+    Optional[bool] contact
+    Optional[bool] custom
+
 # no @derive(Json): member(s) conditions: list[BooleanCondition] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1161,6 +1290,21 @@ struct SlaInputContent:
 struct Sort:
     str fieldId
     Order sortOrder
+
+# rest-json request for StartMergeCasesRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct StartMergeCasesRequest:
+    str domainId
+    str caseId
+    list[str] secondaryCaseIds
+    Optional[list[FieldsConfiguration]] fieldsConfiguration
+    Optional[RelatedItemsConfiguration] relatedItemsConfiguration
+    Optional[UserUnion] performedBy
+
+@derive(Json)
+struct StartMergeCasesResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 @derive(Json)
 struct TagFilter:
@@ -1652,6 +1796,16 @@ def field_options_case_rule_to_json(FieldOptionsCaseRule v) -> str:
     parts.append("\"parentChildFieldOptionsMappings\":" + cases_json_arr(e2))
     return cases_json_obj(parts)
 
+# Serialize FieldsConfiguration to a compact JSON object (declaration order).
+def fields_configuration_to_json(FieldsConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fieldIds:
+        e0.append(x0.to_json())
+    parts.append("\"fieldIds\":" + cases_json_arr(e0))
+    parts.append("\"sourceCaseId\":" + cases_json_str(v.sourceCaseId))
+    return cases_json_obj(parts)
+
 # Serialize HiddenCaseRule to a compact JSON object (declaration order).
 def hidden_case_rule_to_json(HiddenCaseRule v) -> str:
     list[str] parts = []
@@ -1806,6 +1960,27 @@ struct ConnectCasesClient:
     core.Credentials creds
     str region
 
+    # BatchCreateRelatedItem  POST /cases:batchCreateRelatedItem
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_related_item(self, BatchCreateRelatedItemRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cases:batchCreateRelatedItem", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainId\":" + cases_json_str(input.domainId))
+        parts.append("\"content\":" + related_item_input_content_to_json(input.content))
+        list[str] e0 = []
+        for x0 in input.cases:
+            e0.append(x0.to_json())
+        parts.append("\"cases\":" + cases_json_arr(e0))
+        if input.performedBy.is_some():
+            auto u1 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u1.to_json())
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + cases_json_str(u2))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
     # BatchGetCaseRule  POST /domains/{domainId}/rules-batch
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_case_rule(self, BatchGetCaseRuleRequest input) -> str:
@@ -1849,6 +2024,39 @@ struct ConnectCasesClient:
         for x0 in input.options:
             e0.append(x0.to_json())
         parts.append("\"options\":" + cases_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
+    # BatchUpdateCase  PUT /cases:batchUpdateCase
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_case(self, BatchUpdateCaseRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/cases:batchUpdateCase", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainId\":" + cases_json_str(input.domainId))
+        list[str] e0 = []
+        for x0 in input.cases:
+            e0.append(x0.to_json())
+        parts.append("\"cases\":" + cases_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.fields:
+            e1.append(x1.to_json())
+        parts.append("\"fields\":" + cases_json_arr(e1))
+        if input.performedBy.is_some():
+            auto u2 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u2.to_json())
+        if input.title.is_some():
+            auto u3 = input.title.unwrap()
+            parts.append("\"title\":" + cases_json_str(u3))
+        if input.status.is_some():
+            auto u4 = input.status.unwrap()
+            parts.append("\"status\":" + cases_json_str(u4))
+        if input.customerId.is_some():
+            auto u5 = input.customerId.unwrap()
+            parts.append("\"customerId\":" + cases_json_str(u5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + cases_json_str(u6))
         auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
@@ -1930,7 +2138,7 @@ struct ConnectCasesClient:
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
     # CreateRelatedItem  POST /domains/{domainId}/cases/{caseId}/related-items/
-    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_related_item(self, CreateRelatedItemRequest input) -> str:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
@@ -1986,7 +2194,7 @@ struct ConnectCasesClient:
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
     # DeleteCase  DELETE /domains/{domainId}/cases/{caseId}
-    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_case(self, DeleteCaseRequest input) -> str:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
@@ -2035,7 +2243,7 @@ struct ConnectCasesClient:
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteRelatedItem  DELETE /domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}
-    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_related_item(self, DeleteRelatedItemRequest input) -> str:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
@@ -2112,6 +2320,16 @@ struct ConnectCasesClient:
         labels["domainId"] = input.domainId
         labels["layoutId"] = input.layoutId
         auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
+
+    # GetMergeCasesStatus  POST /domains/{domainId}/cases/{caseId}/merge-status
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_merge_cases_status(self, GetMergeCasesStatusRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseId"] = input.caseId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/merge-status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # GetTemplate  POST /domains/{domainId}/templates/{templateId}
@@ -2316,6 +2534,34 @@ struct ConnectCasesClient:
         auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
+    # StartMergeCases  POST /domains/{domainId}/cases/{caseId}/merge
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_merge_cases(self, StartMergeCasesRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["caseId"] = input.caseId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/merge", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.secondaryCaseIds:
+            e0.append(cases_json_str(x0))
+        parts.append("\"secondaryCaseIds\":" + cases_json_arr(e0))
+        if input.fieldsConfiguration.is_some():
+            auto u1 = input.fieldsConfiguration.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(fields_configuration_to_json(x2))
+            parts.append("\"fieldsConfiguration\":" + cases_json_arr(e2))
+        if input.relatedItemsConfiguration.is_some():
+            auto u3 = input.relatedItemsConfiguration.unwrap()
+            parts.append("\"relatedItemsConfiguration\":" + u3.to_json())
+        if input.performedBy.is_some():
+            auto u4 = input.performedBy.unwrap()
+            parts.append("\"performedBy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
+
     # TagResource  POST /tags/{arn}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
@@ -2343,7 +2589,7 @@ struct ConnectCasesClient:
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # UpdateCase  PUT /domains/{domainId}/cases/{caseId}
-    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_case(self, UpdateCaseRequest input) -> str:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
@@ -2413,7 +2659,7 @@ struct ConnectCasesClient:
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
     # UpdateRelatedItem  PUT /domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}
-    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_related_item(self, UpdateRelatedItemRequest input) -> str:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}

@@ -4,8 +4,9 @@
   "apiVersion": "2017-03-14",
   "endpointPrefix": "servicediscovery",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceAbbreviation": "ServiceDiscovery",
@@ -943,6 +944,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 404
+   },
    "exception": true
   },
   "CustomHealthStatus": {
@@ -1171,6 +1175,9 @@
     "DuplicateOperationId": {
      "shape": "OperationId"
     }
+   },
+   "error": {
+    "httpStatusCode": 409
    },
    "exception": true
   },
@@ -1483,6 +1490,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 404
+   },
    "exception": true
   },
   "InstanceSummary": {
@@ -1511,6 +1521,9 @@
     "Message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -1695,6 +1708,9 @@
      "shape": "ResourceId"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "NamespaceFilter": {
@@ -1756,6 +1772,9 @@
     "Message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 404
    },
    "exception": true
   },
@@ -1896,6 +1915,9 @@
     "Message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 404
    },
    "exception": true
   },
@@ -2115,6 +2137,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 429
+   },
    "exception": true
   },
   "ResourceCount": {
@@ -2135,6 +2160,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 409
+   },
    "exception": true
   },
   "ResourceLimitExceeded": {
@@ -2144,6 +2172,9 @@
      "shape": "ErrorMessage"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "ResourceNotFoundException": {
@@ -2152,6 +2183,9 @@
     "Message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 404
    },
    "exception": true
   },
@@ -2254,6 +2288,9 @@
      "shape": "Arn"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "ServiceAttributeKey": {
@@ -2292,6 +2329,9 @@
     "Message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -2361,6 +2401,9 @@
     "Message": {
      "shape": "ErrorMessage"
     }
+   },
+   "error": {
+    "httpStatusCode": 404
    },
    "exception": true
   },
@@ -2497,6 +2540,9 @@
     "ResourceName": {
      "shape": "AmazonResourceName"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },

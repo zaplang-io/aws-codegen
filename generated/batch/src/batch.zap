@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 48 operations — 48 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   245 structs (124 @derive(Json)), 35 enums, 2 error variants.
+#   248 structs (125 @derive(Json)), 36 enums, 2 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -155,6 +155,14 @@ enum EksAccessEntryDesiredState:
 enum EksAccessEntryStatus:
     ACTIVE
     INACTIVE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum EksSeccompProfileType:
+    RuntimeDefault
+    Localhost
+    Unconfined
     Unknown(str value)
 
 @derive(Json)
@@ -1061,7 +1069,7 @@ struct EksConfiguration:
 struct EksConfigurationUpdate:
     Optional[EksAccessEntry] accessEntry
 
-# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount] not derivable (list/map collections);
+# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount], securityContext: EksContainerSecurityContext not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct EksContainer:
@@ -1075,7 +1083,7 @@ struct EksContainer:
     Optional[list[EksContainerVolumeMount]] volumeMounts
     Optional[EksContainerSecurityContext] securityContext
 
-# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount] not derivable (list/map collections);
+# no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements, volumeMounts: list[EksContainerVolumeMount], securityContext: EksContainerSecurityContext not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct EksContainerDetail:
@@ -1096,6 +1104,13 @@ struct EksContainerEnvironmentVariable:
     str name
     Optional[str] value
 
+# no @derive(Json): member(s) add: list[str], drop: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct EksContainerLinuxCapabilities:
+    Optional[list[str]] add
+    Optional[list[str]] drop
+
 # no @derive(Json): member(s) command: list[str], args: list[str], env: list[EksContainerEnvironmentVariable], resources: EksContainerResourceRequirements not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1114,7 +1129,9 @@ struct EksContainerResourceRequirements:
     Optional[dict[str, str]] limits
     Optional[dict[str, str]] requests
 
-@derive(Json)
+# no @derive(Json): member(s) capabilities: EksContainerLinuxCapabilities not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksContainerSecurityContext:
     Optional[int64] runAsUser
     Optional[int64] runAsGroup
@@ -1122,6 +1139,8 @@ struct EksContainerSecurityContext:
     Optional[bool] allowPrivilegeEscalation
     Optional[bool] readOnlyRootFilesystem
     Optional[bool] runAsNonRoot
+    Optional[EksContainerLinuxCapabilities] capabilities
+    Optional[EksSeccompProfile] seccompProfile
 
 @derive(Json)
 struct EksContainerVolumeMount:
@@ -1165,6 +1184,7 @@ struct EksPodProperties:
     Optional[list[EksVolume]] volumes
     Optional[EksMetadata] metadata
     Optional[bool] shareProcessNamespace
+    Optional[EksPodSecurityContext] securityContext
 
 # no @derive(Json): member(s) imagePullSecrets: list[ImagePullSecret], containers: list[EksContainerDetail], initContainers: list[EksContainerDetail], volumes: list[EksVolume], metadata: EksMetadata not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1181,6 +1201,7 @@ struct EksPodPropertiesDetail:
     Optional[str] nodeName
     Optional[EksMetadata] metadata
     Optional[bool] shareProcessNamespace
+    Optional[EksPodSecurityContext] securityContext
 
 # no @derive(Json): member(s) containers: list[EksContainerOverride], initContainers: list[EksContainerOverride], metadata: EksMetadata not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1189,6 +1210,14 @@ struct EksPodPropertiesOverride:
     Optional[list[EksContainerOverride]] containers
     Optional[list[EksContainerOverride]] initContainers
     Optional[EksMetadata] metadata
+
+@derive(Json)
+struct EksPodSecurityContext:
+    Optional[int64] runAsUser
+    Optional[int64] runAsGroup
+    Optional[bool] runAsNonRoot
+    Optional[EksSeccompProfile] seccompProfile
+    Optional[int64] fsGroup
 
 # no @derive(Json): member(s) podProperties: EksPodProperties not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1207,6 +1236,11 @@ struct EksPropertiesDetail:
 # (zaplang-io/zap#424).
 struct EksPropertiesOverride:
     Optional[EksPodPropertiesOverride] podProperties
+
+@derive(Json)
+struct EksSeccompProfile:
+    EksSeccompProfileType type
+    Optional[str] localhostProfile
 
 @derive(Json)
 struct EksSecret:
@@ -2902,7 +2936,24 @@ def eks_container_to_json(EksContainer v) -> str:
         parts.append("\"volumeMounts\":" + batch_json_arr(e10))
     if v.securityContext.is_some():
         auto u11 = v.securityContext.unwrap()
-        parts.append("\"securityContext\":" + u11.to_json())
+        parts.append("\"securityContext\":" + eks_container_security_context_to_json(u11))
+    return batch_json_obj(parts)
+
+# Serialize EksContainerLinuxCapabilities to a compact JSON object (declaration order).
+def eks_container_linux_capabilities_to_json(EksContainerLinuxCapabilities v) -> str:
+    list[str] parts = []
+    if v.add.is_some():
+        auto u0 = v.add.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(batch_json_str(x1))
+        parts.append("\"add\":" + batch_json_arr(e1))
+    if v.drop.is_some():
+        auto u2 = v.drop.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(batch_json_str(x3))
+        parts.append("\"drop\":" + batch_json_arr(e3))
     return batch_json_obj(parts)
 
 # Serialize EksContainerOverride to a compact JSON object (declaration order).
@@ -2952,6 +3003,35 @@ def eks_container_resource_requirements_to_json(EksContainerResourceRequirements
         for k3 in sorted(u2.keys()):
             m3.append(batch_json_str(k3) + ":" + batch_json_str(u2[k3]))
         parts.append("\"requests\":" + batch_json_obj(m3))
+    return batch_json_obj(parts)
+
+# Serialize EksContainerSecurityContext to a compact JSON object (declaration order).
+def eks_container_security_context_to_json(EksContainerSecurityContext v) -> str:
+    list[str] parts = []
+    if v.runAsUser.is_some():
+        auto u0 = v.runAsUser.unwrap()
+        parts.append("\"runAsUser\":" + str(u0))
+    if v.runAsGroup.is_some():
+        auto u1 = v.runAsGroup.unwrap()
+        parts.append("\"runAsGroup\":" + str(u1))
+    if v.privileged.is_some():
+        auto u2 = v.privileged.unwrap()
+        parts.append("\"privileged\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.allowPrivilegeEscalation.is_some():
+        auto u3 = v.allowPrivilegeEscalation.unwrap()
+        parts.append("\"allowPrivilegeEscalation\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.readOnlyRootFilesystem.is_some():
+        auto u4 = v.readOnlyRootFilesystem.unwrap()
+        parts.append("\"readOnlyRootFilesystem\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.runAsNonRoot.is_some():
+        auto u5 = v.runAsNonRoot.unwrap()
+        parts.append("\"runAsNonRoot\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.capabilities.is_some():
+        auto u6 = v.capabilities.unwrap()
+        parts.append("\"capabilities\":" + eks_container_linux_capabilities_to_json(u6))
+    if v.seccompProfile.is_some():
+        auto u7 = v.seccompProfile.unwrap()
+        parts.append("\"seccompProfile\":" + u7.to_json())
     return batch_json_obj(parts)
 
 # Serialize EksMetadata to a compact JSON object (declaration order).
@@ -3016,6 +3096,9 @@ def eks_pod_properties_to_json(EksPodProperties v) -> str:
     if v.shareProcessNamespace.is_some():
         auto u12 = v.shareProcessNamespace.unwrap()
         parts.append("\"shareProcessNamespace\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.securityContext.is_some():
+        auto u13 = v.securityContext.unwrap()
+        parts.append("\"securityContext\":" + u13.to_json())
     return batch_json_obj(parts)
 
 # Serialize EksPodPropertiesOverride to a compact JSON object (declaration order).

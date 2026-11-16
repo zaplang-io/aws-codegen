@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 172 operations — 172 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   786 structs (459 @derive(Json)), 102 enums, 16 error variants.
+#   796 structs (468 @derive(Json)), 102 enums, 16 error variants.
 #   39 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1077,6 +1077,11 @@ struct AgentSkillsDescriptor:
     Optional[SkillMdDefinition] skillMd
     Optional[SkillDefinition] skillDefinition
 
+@derive(Json)
+struct AllowedPort:
+    Optional[int64] port
+    Optional[PortRange] portRange
+
 # no @derive(Json): member(s) hostingEnvironments: list[HostingEnvironment], workloadIdentities: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -1244,6 +1249,10 @@ struct BrowserSummary:
     DateTime createdAt
     @json(timestamp="iso8601")
     Optional[DateTime] lastUpdatedAt
+
+@derive(Json)
+struct BuildLifecycleHooks:
+    Optional[LifecycleHook] warmup
 
 @derive(Json)
 struct CapacityProviderConfiguration:
@@ -1548,11 +1557,14 @@ struct CreateAgentRuntimeRequest:
     Optional[RequestHeaderConfiguration] requestHeaderConfiguration
     Optional[ProtocolConfiguration] protocolConfiguration
     Optional[LifecycleConfiguration] lifecycleConfiguration
+    Optional[RuntimeHooksConfiguration] hooksConfiguration
     Optional[dict[str, str]] environmentVariables
     Optional[list[FilesystemConfiguration]] filesystemConfigurations
     Optional[CapacityProviderConfiguration] capacityProviderConfiguration
     Optional[dict[str, str]] tags
     Optional[str] platformVersion
+    Optional[list[AllowedPort]] allowedPorts
+    Optional[list[ResourceConfiguration]] resourceConfigurations
 
 @derive(Json)
 struct CreateAgentRuntimeResponse:
@@ -1793,8 +1805,9 @@ struct CreateGatewayRequest:
     Optional[GatewayPolicyEngineConfiguration] policyEngineConfiguration
     Optional[str] exceptionLevel
     Optional[dict[str, str]] tags
+    Optional[DomainOverride] domainOverride
 
-# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not derivable (list/map collections);
+# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration], domainOverride: DomainOverride not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CreateGatewayResponse:
@@ -1820,6 +1833,7 @@ struct CreateGatewayResponse:
     Optional[str] exceptionLevel
     Optional[str] webAclArn
     Optional[WafConfiguration] wafConfiguration
+    Optional[DomainOverride] domainOverride
 
 # rest-json request for CreateGatewayRuleRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -2229,7 +2243,7 @@ struct CustomExtractionConfigurationInput:
     Optional[UserPreferenceOverrideExtractionConfigurationInput] userPreferenceExtractionOverride
     Optional[EpisodicOverrideExtractionConfigurationInput] episodicExtractionOverride
 
-# no @derive(Json): member(s) allowedAudience: list[str], allowedClients: list[str], allowedScopes: list[str], advertisedScopeMapping: dict[str, str], customClaims: list[CustomClaimValidationType], privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], allowedWorkloadConfiguration: AllowedWorkloadConfiguration not derivable (list/map collections);
+# no @derive(Json): member(s) allowedAudience: list[str], allowedClients: list[str], allowedScopes: list[str], advertisedScopeMapping: dict[str, str], customClaims: list[CustomClaimValidationType], privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], certificateConfigurations: list[CertificateConfiguration], allowedWorkloadConfiguration: AllowedWorkloadConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CustomJWTAuthorizerConfiguration:
@@ -2241,6 +2255,7 @@ struct CustomJWTAuthorizerConfiguration:
     Optional[list[CustomClaimValidationType]] customClaims
     Optional[PrivateEndpoint] privateEndpoint
     Optional[list[PrivateEndpointOverride]] privateEndpointOverrides
+    Optional[list[CertificateConfiguration]] certificateConfigurations
     Optional[AllowedWorkloadConfiguration] allowedWorkloadConfiguration
 
 # no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], configuration: CustomConfigurationInput, memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
@@ -2255,7 +2270,7 @@ struct CustomMemoryStrategyInput:
     Optional[MemoryRecordSchema] memoryRecordSchema
     Optional[RecordExpirySpecification] recordExpirySpecification
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateKeyJwtConfig: PrivateKeyJwtConfig, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride] not derivable (list/map collections);
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateKeyJwtConfig: PrivateKeyJwtConfig, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], certificateConfigurations: list[CertificateConfiguration] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CustomOauth2ProviderConfigInput:
@@ -2269,8 +2284,9 @@ struct CustomOauth2ProviderConfigInput:
     Optional[PrivateKeyJwtConfig] privateKeyJwtConfig
     Optional[PrivateEndpoint] privateEndpoint
     Optional[list[PrivateEndpointOverride]] privateEndpointOverrides
+    Optional[list[CertificateConfiguration]] certificateConfigurations
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], privateKeyJwtConfig: PrivateKeyJwtConfig not derivable (list/map collections);
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], certificateConfigurations: list[CertificateConfiguration], privateKeyJwtConfig: PrivateKeyJwtConfig not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CustomOauth2ProviderConfigOutput:
@@ -2280,6 +2296,7 @@ struct CustomOauth2ProviderConfigOutput:
     Optional[ClientAuthenticationMethodType] clientAuthenticationMethod
     Optional[PrivateEndpoint] privateEndpoint
     Optional[list[PrivateEndpointOverride]] privateEndpointOverrides
+    Optional[list[CertificateConfiguration]] certificateConfigurations
     Optional[PrivateKeyJwtConfig] privateKeyJwtConfig
 
 # no @derive(Json): member(s) episodicReflectionOverride: EpisodicReflectionOverride not derivable (list/map collections);
@@ -2735,6 +2752,13 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+# no @derive(Json): member(s) alternateDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DomainOverride:
+    str defaultDomain
+    Optional[list[str]] alternateDomains
+
 @derive(Json)
 struct EbsVolumeConfiguration:
     str name
@@ -3083,7 +3107,7 @@ struct GetAgentRuntimeRequest:
     str agentRuntimeId
     Optional[str] agentRuntimeVersion
 
-# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, agentRuntimeArtifact: AgentRuntimeArtifact, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, requestHeaderConfiguration: RequestHeaderConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not derivable (list/map collections);
+# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, agentRuntimeArtifact: AgentRuntimeArtifact, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, requestHeaderConfiguration: RequestHeaderConfiguration, filesystemConfigurations: list[FilesystemConfiguration], allowedPorts: list[AllowedPort], resourceConfigurations: list[ResourceConfiguration] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct GetAgentRuntimeResponse:
@@ -3097,6 +3121,7 @@ struct GetAgentRuntimeResponse:
     Optional[NetworkConfiguration] networkConfiguration
     AgentRuntimeStatus status
     LifecycleConfiguration lifecycleConfiguration
+    Optional[RuntimeHooksConfiguration] hooksConfiguration
     Optional[str] failureReason
     Optional[str] description
     Optional[WorkloadIdentityDetails] workloadIdentityDetails
@@ -3109,6 +3134,8 @@ struct GetAgentRuntimeResponse:
     Optional[list[FilesystemConfiguration]] filesystemConfigurations
     Optional[CapacityProviderConfiguration] capacityProviderConfiguration
     Optional[str] platformVersion
+    Optional[list[AllowedPort]] allowedPorts
+    Optional[list[ResourceConfiguration]] resourceConfigurations
 
 # rest-json request for GetApiKeyCredentialProviderRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -3354,7 +3381,7 @@ struct GetGatewayRateLimitResponse:
 struct GetGatewayRequest:
     str gatewayIdentifier
 
-# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not derivable (list/map collections);
+# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration], domainOverride: DomainOverride not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct GetGatewayResponse:
@@ -3380,6 +3407,7 @@ struct GetGatewayResponse:
     Optional[str] exceptionLevel
     Optional[str] webAclArn
     Optional[WafConfiguration] wafConfiguration
+    Optional[DomainOverride] domainOverride
 
 # rest-json request for GetGatewayRuleRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -4048,6 +4076,12 @@ struct HarnessOpenAiModelConfig:
 struct HarnessRemoteMcpConfig:
     str url
     Optional[dict[str, str]] headers
+    Optional[HarnessRemoteMcpOutboundAuth] outboundAuth
+
+@derive(Json)
+struct HarnessRemoteMcpOutboundAuth:
+    Optional[IamCredentialProvider] awsIam
+    Optional[Unit] none
 
 # no @derive(Json): member(s) awsSkills: HarnessSkillAwsSkillsSource not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -4164,6 +4198,11 @@ struct HttpConnectorSource:
 struct HttpConnectorTargetConfiguration:
     HttpConnectorSource source
     Optional[dict[str, str]] parameters
+
+@derive(Json)
+struct HttpPostLifecycleHookAction:
+    str path
+    Optional[int64] port
 
 # no @derive(Json): member(s) passthrough: PassthroughTargetConfiguration, connector: HttpConnectorTargetConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -4359,6 +4398,14 @@ struct LicenseSpecification:
 struct LifecycleConfiguration:
     Optional[int64] idleRuntimeSessionTimeout
     Optional[int64] maxLifetime
+
+@derive(Json)
+struct LifecycleHook:
+    LifecycleHookAction action
+
+@derive(Json)
+struct LifecycleHookAction:
+    Optional[HttpPostLifecycleHookAction] httpPost
 
 # no @derive(Json): member(s) dimensions: dict[str, str], requests: list[RateConfig], tokens: list[RateConfig], connections: list[RateConfig] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -5526,6 +5573,11 @@ struct PolicySummary:
     PolicyStatus status
     Optional[EnforcementMode] enforcementMode
 
+@derive(Json)
+struct PortRange:
+    int64 from
+    int64 to
+
 # no @derive(Json): member(s) managedVpcResource: ManagedVpcResource not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -5556,6 +5608,8 @@ struct PrivateKeySource:
 @derive(Json)
 struct ProtocolConfiguration:
     ServerProtocol serverProtocol
+    Optional[int64] port
+    Optional[str] path
 
 @derive(Json)
 struct ProviderPrefix:
@@ -5686,6 +5740,10 @@ struct Resource:
     Optional[str] arn
 
 @derive(Json)
+struct ResourceConfiguration:
+    int64 minimumMemoryInMiB
+
+@derive(Json)
 struct ResourceLimitExceededException:
     Optional[str] message
 
@@ -5740,6 +5798,10 @@ struct Rule:
     SamplingConfig samplingConfig
     Optional[list[Filter]] filters
     Optional[SessionConfig] sessionConfig
+
+@derive(Json)
+struct RuntimeHooksConfiguration:
+    Optional[BuildLifecycleHooks] build
 
 @derive(Json)
 struct RuntimeMetadataConfiguration:
@@ -6302,11 +6364,14 @@ struct UpdateAgentRuntimeRequest:
     Optional[RequestHeaderConfiguration] requestHeaderConfiguration
     Optional[ProtocolConfiguration] protocolConfiguration
     Optional[LifecycleConfiguration] lifecycleConfiguration
+    Optional[RuntimeHooksConfiguration] hooksConfiguration
     Optional[RuntimeMetadataConfiguration] metadataConfiguration
     Optional[dict[str, str]] environmentVariables
     Optional[list[FilesystemConfiguration]] filesystemConfigurations
     Optional[CapacityProviderConfiguration] capacityProviderConfiguration
     Optional[str] platformVersion
+    Optional[list[AllowedPort]] allowedPorts
+    Optional[list[ResourceConfiguration]] resourceConfigurations
     Optional[str] clientToken
 
 @derive(Json)
@@ -6486,8 +6551,9 @@ struct UpdateGatewayRequest:
     Optional[GatewayPolicyEngineConfiguration] policyEngineConfiguration
     Optional[str] exceptionLevel
     Optional[WafConfiguration] wafConfiguration
+    Optional[DomainOverride] domainOverride
 
-# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not derivable (list/map collections);
+# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration], domainOverride: DomainOverride not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct UpdateGatewayResponse:
@@ -6513,6 +6579,7 @@ struct UpdateGatewayResponse:
     Optional[str] exceptionLevel
     Optional[str] webAclArn
     Optional[WafConfiguration] wafConfiguration
+    Optional[DomainOverride] domainOverride
 
 # rest-json request for UpdateGatewayRuleRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -7821,9 +7888,15 @@ def custom_jwt_authorizer_configuration_to_json(CustomJWTAuthorizerConfiguration
         for x12 in u11:
             e12.append(private_endpoint_override_to_json(x12))
         parts.append("\"privateEndpointOverrides\":" + bedrock_agentcore_control_json_arr(e12))
+    if v.certificateConfigurations.is_some():
+        auto u13 = v.certificateConfigurations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"certificateConfigurations\":" + bedrock_agentcore_control_json_arr(e14))
     if v.allowedWorkloadConfiguration.is_some():
-        auto u13 = v.allowedWorkloadConfiguration.unwrap()
-        parts.append("\"allowedWorkloadConfiguration\":" + allowed_workload_configuration_to_json(u13))
+        auto u15 = v.allowedWorkloadConfiguration.unwrap()
+        parts.append("\"allowedWorkloadConfiguration\":" + allowed_workload_configuration_to_json(u15))
     return bedrock_agentcore_control_json_obj(parts)
 
 # Serialize CustomMemoryStrategyInput to a compact JSON object (declaration order).
@@ -7890,6 +7963,12 @@ def custom_oauth2_provider_config_input_to_json(CustomOauth2ProviderConfigInput 
         for x9 in u8:
             e9.append(private_endpoint_override_to_json(x9))
         parts.append("\"privateEndpointOverrides\":" + bedrock_agentcore_control_json_arr(e9))
+    if v.certificateConfigurations.is_some():
+        auto u10 = v.certificateConfigurations.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"certificateConfigurations\":" + bedrock_agentcore_control_json_arr(e11))
     return bedrock_agentcore_control_json_obj(parts)
 
 # Serialize CustomReflectionConfigurationInput to a compact JSON object (declaration order).
@@ -7941,6 +8020,18 @@ def dimension_rating_scale_to_json(DimensionRatingScale v) -> str:
         for x3 in u2:
             e3.append(x3.to_json())
         parts.append("\"categorical\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize DomainOverride to a compact JSON object (declaration order).
+def domain_override_to_json(DomainOverride v) -> str:
+    list[str] parts = []
+    parts.append("\"default\":" + bedrock_agentcore_control_json_str(v.defaultDomain))
+    if v.alternateDomains.is_some():
+        auto u0 = v.alternateDomains.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"alternateDomains\":" + bedrock_agentcore_control_json_arr(e1))
     return bedrock_agentcore_control_json_obj(parts)
 
 # Serialize Ec2Configuration to a compact JSON object (declaration order).
@@ -8282,6 +8373,9 @@ def harness_remote_mcp_config_to_json(HarnessRemoteMcpConfig v) -> str:
         for k1 in sorted(u0.keys()):
             m1.append(bedrock_agentcore_control_json_str(k1) + ":" + bedrock_agentcore_control_json_str(u0[k1]))
         parts.append("\"headers\":" + bedrock_agentcore_control_json_obj(m1))
+    if v.outboundAuth.is_some():
+        auto u2 = v.outboundAuth.unwrap()
+        parts.append("\"outboundAuth\":" + u2.to_json())
     return bedrock_agentcore_control_json_obj(parts)
 
 # Serialize HarnessSkill to a compact JSON object (declaration order).
@@ -9581,30 +9675,45 @@ struct Bedrock_AgentCore_ControlClient:
         if input.lifecycleConfiguration.is_some():
             auto u6 = input.lifecycleConfiguration.unwrap()
             parts.append("\"lifecycleConfiguration\":" + u6.to_json())
+        if input.hooksConfiguration.is_some():
+            auto u7 = input.hooksConfiguration.unwrap()
+            parts.append("\"hooksConfiguration\":" + u7.to_json())
         if input.environmentVariables.is_some():
-            auto u7 = input.environmentVariables.unwrap()
-            list[str] m8 = []
-            for k8 in sorted(u7.keys()):
-                m8.append(bedrock_agentcore_control_json_str(k8) + ":" + bedrock_agentcore_control_json_str(u7[k8]))
-            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m8))
+            auto u8 = input.environmentVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(bedrock_agentcore_control_json_str(k9) + ":" + bedrock_agentcore_control_json_str(u8[k9]))
+            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m9))
         if input.filesystemConfigurations.is_some():
-            auto u9 = input.filesystemConfigurations.unwrap()
-            list[str] e10 = []
-            for x10 in u9:
-                e10.append(x10.to_json())
-            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e10))
+            auto u10 = input.filesystemConfigurations.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e11))
         if input.capacityProviderConfiguration.is_some():
-            auto u11 = input.capacityProviderConfiguration.unwrap()
-            parts.append("\"capacityProviderConfiguration\":" + u11.to_json())
+            auto u12 = input.capacityProviderConfiguration.unwrap()
+            parts.append("\"capacityProviderConfiguration\":" + u12.to_json())
         if input.tags.is_some():
-            auto u12 = input.tags.unwrap()
-            list[str] m13 = []
-            for k13 in sorted(u12.keys()):
-                m13.append(bedrock_agentcore_control_json_str(k13) + ":" + bedrock_agentcore_control_json_str(u12[k13]))
-            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m13))
+            auto u13 = input.tags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(bedrock_agentcore_control_json_str(k14) + ":" + bedrock_agentcore_control_json_str(u13[k14]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m14))
         if input.platformVersion.is_some():
-            auto u14 = input.platformVersion.unwrap()
-            parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u14))
+            auto u15 = input.platformVersion.unwrap()
+            parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u15))
+        if input.allowedPorts.is_some():
+            auto u16 = input.allowedPorts.unwrap()
+            list[str] e17 = []
+            for x17 in u16:
+                e17.append(x17.to_json())
+            parts.append("\"allowedPorts\":" + bedrock_agentcore_control_json_arr(e17))
+        if input.resourceConfigurations.is_some():
+            auto u18 = input.resourceConfigurations.unwrap()
+            list[str] e19 = []
+            for x19 in u18:
+                e19.append(x19.to_json())
+            parts.append("\"resourceConfigurations\":" + bedrock_agentcore_control_json_arr(e19))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
@@ -9967,6 +10076,9 @@ struct Bedrock_AgentCore_ControlClient:
             for k11 in sorted(u10.keys()):
                 m11.append(bedrock_agentcore_control_json_str(k11) + ":" + bedrock_agentcore_control_json_str(u10[k11]))
             parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m11))
+        if input.domainOverride.is_some():
+            auto u12 = input.domainOverride.unwrap()
+            parts.append("\"domainOverride\":" + domain_override_to_json(u12))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
@@ -11803,30 +11915,45 @@ struct Bedrock_AgentCore_ControlClient:
         if input.lifecycleConfiguration.is_some():
             auto u5 = input.lifecycleConfiguration.unwrap()
             parts.append("\"lifecycleConfiguration\":" + u5.to_json())
+        if input.hooksConfiguration.is_some():
+            auto u6 = input.hooksConfiguration.unwrap()
+            parts.append("\"hooksConfiguration\":" + u6.to_json())
         if input.metadataConfiguration.is_some():
-            auto u6 = input.metadataConfiguration.unwrap()
-            parts.append("\"metadataConfiguration\":" + u6.to_json())
+            auto u7 = input.metadataConfiguration.unwrap()
+            parts.append("\"metadataConfiguration\":" + u7.to_json())
         if input.environmentVariables.is_some():
-            auto u7 = input.environmentVariables.unwrap()
-            list[str] m8 = []
-            for k8 in sorted(u7.keys()):
-                m8.append(bedrock_agentcore_control_json_str(k8) + ":" + bedrock_agentcore_control_json_str(u7[k8]))
-            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m8))
+            auto u8 = input.environmentVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(bedrock_agentcore_control_json_str(k9) + ":" + bedrock_agentcore_control_json_str(u8[k9]))
+            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m9))
         if input.filesystemConfigurations.is_some():
-            auto u9 = input.filesystemConfigurations.unwrap()
-            list[str] e10 = []
-            for x10 in u9:
-                e10.append(x10.to_json())
-            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e10))
+            auto u10 = input.filesystemConfigurations.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e11))
         if input.capacityProviderConfiguration.is_some():
-            auto u11 = input.capacityProviderConfiguration.unwrap()
-            parts.append("\"capacityProviderConfiguration\":" + u11.to_json())
+            auto u12 = input.capacityProviderConfiguration.unwrap()
+            parts.append("\"capacityProviderConfiguration\":" + u12.to_json())
         if input.platformVersion.is_some():
-            auto u12 = input.platformVersion.unwrap()
-            parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u12))
+            auto u13 = input.platformVersion.unwrap()
+            parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u13))
+        if input.allowedPorts.is_some():
+            auto u14 = input.allowedPorts.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(x15.to_json())
+            parts.append("\"allowedPorts\":" + bedrock_agentcore_control_json_arr(e15))
+        if input.resourceConfigurations.is_some():
+            auto u16 = input.resourceConfigurations.unwrap()
+            list[str] e17 = []
+            for x17 in u16:
+                e17.append(x17.to_json())
+            parts.append("\"resourceConfigurations\":" + bedrock_agentcore_control_json_arr(e17))
         if input.clientToken.is_some():
-            auto u13 = input.clientToken.unwrap()
-            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u13))
+            auto u18 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u18))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
@@ -12020,6 +12147,9 @@ struct Bedrock_AgentCore_ControlClient:
         if input.wafConfiguration.is_some():
             auto u10 = input.wafConfiguration.unwrap()
             parts.append("\"wafConfiguration\":" + u10.to_json())
+        if input.domainOverride.is_some():
+            auto u11 = input.domainOverride.unwrap()
+            parts.append("\"domainOverride\":" + domain_override_to_json(u11))
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 

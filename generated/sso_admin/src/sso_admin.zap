@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 79 operations — 79 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   208 structs (160 @derive(Json)), 17 enums, 7 error variants.
+#   209 structs (159 @derive(Json)), 17 enums, 7 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -604,7 +604,7 @@ struct DescribeInstanceAccessControlAttributeConfigurationResponse:
 struct DescribeInstanceRequest:
     str InstanceArn
 
-# no @derive(Json): member(s) Regions: list[RegionMetadata] not derivable (list/map collections);
+# no @derive(Json): member(s) Regions: list[RegionMetadata], NetworkConfigurationDetails: NetworkConfigurationInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct DescribeInstanceResponse:
@@ -619,6 +619,7 @@ struct DescribeInstanceResponse:
     Optional[str] PrimaryRegion
     Optional[list[RegionMetadata]] Regions
     Optional[EncryptionConfigurationDetails] EncryptionConfigurationDetails
+    Optional[NetworkConfigurationInfo] NetworkConfigurationDetails
     Optional[bool] PermissionSetsEnabled
 
 @derive(Json)
@@ -1120,6 +1121,15 @@ struct ListTrustedTokenIssuersResponse:
     Optional[list[TrustedTokenIssuerMetadata]] TrustedTokenIssuers
     Optional[str] NextToken
 
+# no @derive(Json): member(s) RestrictSourceVpcs: list[str], AllowSourceIps: list[str], ExcludeApplicationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct NetworkConfigurationInfo:
+    bool VpceAccessRequired
+    Optional[list[str]] RestrictSourceVpcs
+    Optional[list[str]] AllowSourceIps
+    Optional[list[str]] ExcludeApplicationArns
+
 @derive(Json)
 struct OidcJwtConfiguration:
     str IssuerUrl
@@ -1383,12 +1393,15 @@ struct UpdateInstanceAccessControlAttributeConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-@derive(Json)
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfigurationInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInstanceRequest:
     Optional[str] Name
     str InstanceArn
     Optional[EncryptionConfiguration] EncryptionConfiguration
     Optional[bool] PermissionSetsEnabled
+    Optional[NetworkConfigurationInfo] NetworkConfiguration
 
 @derive(Json)
 struct UpdateInstanceResponse:
@@ -1691,6 +1704,30 @@ def jwt_bearer_grant_to_json(JwtBearerGrant v) -> str:
         parts.append("\"AuthorizedTokenIssuers\":" + sso_json_arr(e1))
     return sso_json_obj(parts)
 
+# Serialize NetworkConfigurationInfo to a compact JSON object (declaration order).
+def network_configuration_info_to_json(NetworkConfigurationInfo v) -> str:
+    list[str] parts = []
+    parts.append("\"VpceAccessRequired\":" + json.dumps(JsonValue.Bool(v.VpceAccessRequired)))
+    if v.RestrictSourceVpcs.is_some():
+        auto u0 = v.RestrictSourceVpcs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sso_json_str(x1))
+        parts.append("\"RestrictSourceVpcs\":" + sso_json_arr(e1))
+    if v.AllowSourceIps.is_some():
+        auto u2 = v.AllowSourceIps.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sso_json_str(x3))
+        parts.append("\"AllowSourceIps\":" + sso_json_arr(e3))
+    if v.ExcludeApplicationArns.is_some():
+        auto u4 = v.ExcludeApplicationArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(sso_json_str(x5))
+        parts.append("\"ExcludeApplicationArns\":" + sso_json_arr(e5))
+    return sso_json_obj(parts)
+
 # Serialize PutApplicationAccessScopeRequest to a compact JSON object (declaration order).
 def put_application_access_scope_request_to_json(PutApplicationAccessScopeRequest v) -> str:
     list[str] parts = []
@@ -1743,6 +1780,24 @@ def update_instance_access_control_attribute_configuration_request_to_json(Updat
     list[str] parts = []
     parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
     parts.append("\"InstanceAccessControlAttributeConfiguration\":" + instance_access_control_attribute_configuration_to_json(v.InstanceAccessControlAttributeConfiguration))
+    return sso_json_obj(parts)
+
+# Serialize UpdateInstanceRequest to a compact JSON object (declaration order).
+def update_instance_request_to_json(UpdateInstanceRequest v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + sso_json_str(u0))
+    parts.append("\"InstanceArn\":" + sso_json_str(v.InstanceArn))
+    if v.EncryptionConfiguration.is_some():
+        auto u1 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u1.to_json())
+    if v.PermissionSetsEnabled.is_some():
+        auto u2 = v.PermissionSetsEnabled.unwrap()
+        parts.append("\"PermissionSetsEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.NetworkConfiguration.is_some():
+        auto u3 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_info_to_json(u3))
     return sso_json_obj(parts)
 
 # A bound SSO_Admin client: credentials + region, threaded into every operation.
@@ -2203,7 +2258,7 @@ struct SSO_AdminClient:
     # UpdateInstance
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_instance(self, UpdateInstanceRequest input) -> str:
-        auto body = input.to_json()
+        auto body = update_instance_request_to_json(input)
         return awsjson.awsjson_request_now(sso_protocol(), self.creds, self.region, "UpdateInstance", body)
 
     # UpdateInstanceAccessControlAttributeConfiguration

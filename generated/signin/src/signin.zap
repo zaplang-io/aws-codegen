@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 12 with a generated method,
+# Coverage (rest-json): 13 operations — 13 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   40 structs (35 @derive(Json)), 1 enums, 10 error variants.
+#   42 structs (37 @derive(Json)), 1 enums, 10 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -80,6 +80,19 @@ struct AccessToken:
 struct ConflictException:
     OAuth2ErrorCode error
     str message
+
+# rest-json request for CreateBearerTokenRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct CreateBearerTokenRequest:
+    str grantType
+    str resource
+    Optional[int64] durationSeconds
+
+@derive(Json)
+struct CreateBearerTokenResponse:
+    str accessToken
+    str tokenType
+    int64 expiresIn
 
 # rest-json request for CreateOAuth2TokenRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -409,6 +422,13 @@ def signin_error_name(SigninErrorKind k) -> str:
 # operation's input, serialized with @derive(Json)).
 
 @derive(Json)
+struct CreateBearerTokenDocument:
+    # document members of CreateBearerToken
+    str grantType
+    str resource
+    Optional[int64] durationSeconds
+
+@derive(Json)
 struct CreateOAuth2TokenWithIAMDocument:
     # document members of CreateOAuth2TokenWithIAM
     str grantType
@@ -477,6 +497,15 @@ struct RevokeOAuth2TokenWithIAMDocument:
 struct SigninClient:
     core.Credentials creds
     str region
+
+    # CreateBearerToken  POST /v1/token?x-amz-token-request-type=bearer
+    # errors: AccessDeniedException, InternalServerException, TooManyRequestsError, ValidationException
+    def create_bearer_token(self, CreateBearerTokenRequest input) -> str:
+        auto host = endpoints.regional_host(signin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/token?x-amz-token-request-type=bearer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CreateBearerTokenDocument(grantType=input.grantType, resource=input.resource, durationSeconds=input.durationSeconds)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
 
     # CreateOAuth2Token  POST /v1/token
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsError, ValidationException

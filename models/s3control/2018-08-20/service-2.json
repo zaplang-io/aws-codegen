@@ -4757,6 +4757,11 @@
      "shape": "AuditContext",
      "location": "querystring",
      "locationName": "auditContext"
+    },
+    "InstanceScope": {
+     "shape": "InstanceScope",
+     "location": "querystring",
+     "locationName": "instanceScope"
     }
    }
   },
@@ -4771,6 +4776,9 @@
     },
     "Grantee": {
      "shape": "Grantee"
+    },
+    "MatchedInstanceArn": {
+     "shape": "AccessGrantsInstanceArn"
     }
    }
   },
@@ -5130,6 +5138,13 @@
      "shape": "Regions"
     }
    }
+  },
+  "InstanceScope": {
+   "type": "string",
+   "enum": [
+    "SELF",
+    "ALL"
+   ]
   },
   "InternalServiceException": {
    "type": "structure",
@@ -6120,6 +6135,9 @@
     },
     "ApplicationArn": {
      "shape": "IdentityCenterApplicationArn"
+    },
+    "AccessGrantsInstanceArn": {
+     "shape": "AccessGrantsInstanceArn"
     }
    }
   },
@@ -6157,6 +6175,11 @@
      "shape": "Boolean",
      "location": "querystring",
      "locationName": "allowedByApplication"
+    },
+    "InstanceScope": {
+     "shape": "InstanceScope",
+     "location": "querystring",
+     "locationName": "instanceScope"
     }
    }
   },

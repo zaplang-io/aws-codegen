@@ -138,6 +138,7 @@ struct MeterUsageRequest:
     DateTime Timestamp
     str UsageDimension
     Optional[int64] UsageQuantity
+    Optional[str] UsageQuantityAsDecimal
     Optional[bool] DryRun
     Optional[list[UsageAllocation]] UsageAllocations
     Optional[str] ClientToken
@@ -190,7 +191,8 @@ struct TimestampOutOfBoundsException:
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct UsageAllocation:
-    int64 AllocatedUsageQuantity
+    Optional[int64] AllocatedUsageQuantity
+    Optional[str] AllocatedUsageQuantityAsDecimal
     Optional[list[Tag]] Tags
 
 # no @derive(Json): member(s) UsageAllocations: list[UsageAllocation] not derivable (list/map collections);
@@ -201,6 +203,7 @@ struct UsageRecord:
     Optional[str] CustomerIdentifier
     str Dimension
     Optional[int64] Quantity
+    Optional[str] QuantityAsDecimal
     Optional[list[UsageAllocation]] UsageAllocations
     Optional[str] CustomerAWSAccountId
     Optional[str] LicenseArn
@@ -393,30 +396,38 @@ def meter_usage_request_to_json(MeterUsageRequest v) -> str:
     if v.UsageQuantity.is_some():
         auto u0 = v.UsageQuantity.unwrap()
         parts.append("\"UsageQuantity\":" + str(u0))
+    if v.UsageQuantityAsDecimal.is_some():
+        auto u1 = v.UsageQuantityAsDecimal.unwrap()
+        parts.append("\"UsageQuantityAsDecimal\":" + metering_marketplace_json_str(u1))
     if v.DryRun.is_some():
-        auto u1 = v.DryRun.unwrap()
-        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u1)))
+        auto u2 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u2)))
     if v.UsageAllocations.is_some():
-        auto u2 = v.UsageAllocations.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(usage_allocation_to_json(x3))
-        parts.append("\"UsageAllocations\":" + metering_marketplace_json_arr(e3))
+        auto u3 = v.UsageAllocations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(usage_allocation_to_json(x4))
+        parts.append("\"UsageAllocations\":" + metering_marketplace_json_arr(e4))
     if v.ClientToken.is_some():
-        auto u4 = v.ClientToken.unwrap()
-        parts.append("\"ClientToken\":" + metering_marketplace_json_str(u4))
+        auto u5 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + metering_marketplace_json_str(u5))
     return metering_marketplace_json_obj(parts)
 
 # Serialize UsageAllocation to a compact JSON object (declaration order).
 def usage_allocation_to_json(UsageAllocation v) -> str:
     list[str] parts = []
-    parts.append("\"AllocatedUsageQuantity\":" + str(v.AllocatedUsageQuantity))
+    if v.AllocatedUsageQuantity.is_some():
+        auto u0 = v.AllocatedUsageQuantity.unwrap()
+        parts.append("\"AllocatedUsageQuantity\":" + str(u0))
+    if v.AllocatedUsageQuantityAsDecimal.is_some():
+        auto u1 = v.AllocatedUsageQuantityAsDecimal.unwrap()
+        parts.append("\"AllocatedUsageQuantityAsDecimal\":" + metering_marketplace_json_str(u1))
     if v.Tags.is_some():
-        auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + metering_marketplace_json_arr(e1))
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + metering_marketplace_json_arr(e3))
     return metering_marketplace_json_obj(parts)
 
 # Serialize UsageRecord to a compact JSON object (declaration order).
@@ -430,18 +441,21 @@ def usage_record_to_json(UsageRecord v) -> str:
     if v.Quantity.is_some():
         auto u1 = v.Quantity.unwrap()
         parts.append("\"Quantity\":" + str(u1))
+    if v.QuantityAsDecimal.is_some():
+        auto u2 = v.QuantityAsDecimal.unwrap()
+        parts.append("\"QuantityAsDecimal\":" + metering_marketplace_json_str(u2))
     if v.UsageAllocations.is_some():
-        auto u2 = v.UsageAllocations.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(usage_allocation_to_json(x3))
-        parts.append("\"UsageAllocations\":" + metering_marketplace_json_arr(e3))
+        auto u3 = v.UsageAllocations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(usage_allocation_to_json(x4))
+        parts.append("\"UsageAllocations\":" + metering_marketplace_json_arr(e4))
     if v.CustomerAWSAccountId.is_some():
-        auto u4 = v.CustomerAWSAccountId.unwrap()
-        parts.append("\"CustomerAWSAccountId\":" + metering_marketplace_json_str(u4))
+        auto u5 = v.CustomerAWSAccountId.unwrap()
+        parts.append("\"CustomerAWSAccountId\":" + metering_marketplace_json_str(u5))
     if v.LicenseArn.is_some():
-        auto u5 = v.LicenseArn.unwrap()
-        parts.append("\"LicenseArn\":" + metering_marketplace_json_str(u5))
+        auto u6 = v.LicenseArn.unwrap()
+        parts.append("\"LicenseArn\":" + metering_marketplace_json_str(u6))
     return metering_marketplace_json_obj(parts)
 
 # A bound Marketplace_Metering client: credentials + region, threaded into every operation.

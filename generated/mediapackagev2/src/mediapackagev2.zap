@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 30 operations — 30 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   115 structs (67 @derive(Json)), 33 enums, 7 error variants.
+#   115 structs (67 @derive(Json)), 34 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   1 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -105,6 +105,13 @@ enum CustomAdType:
 enum DashAudioTimelinePattern:
     NONE
     PATTERNED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DashBandwidthReportingMode:
+    AVERAGE
+    MAX
     Unknown(str value)
 
 @derive(Json)
@@ -601,6 +608,7 @@ struct CreateDashManifestConfiguration:
     Optional[DashProgramInformation] ProgramInformation
     Optional[DashDvbSettings] DvbSettings
     Optional[DashCompactness] Compactness
+    Optional[DashBandwidthReportingMode] BandwidthReportingMode
     Optional[DashAudioTimelinePattern] AudioTimelinePattern
     Optional[DashSubtitleConfiguration] SubtitleConfiguration
     Optional[UriPathType] UriPathType
@@ -949,6 +957,7 @@ struct GetDashManifestConfiguration:
     Optional[DashProgramInformation] ProgramInformation
     Optional[DashDvbSettings] DvbSettings
     Optional[DashCompactness] Compactness
+    Optional[DashBandwidthReportingMode] BandwidthReportingMode
     Optional[DashAudioTimelinePattern] AudioTimelinePattern
     Optional[DashSubtitleConfiguration] SubtitleConfiguration
     Optional[UriPathType] UriPathType
@@ -1672,18 +1681,21 @@ def create_dash_manifest_configuration_to_json(CreateDashManifestConfiguration v
     if v.Compactness.is_some():
         auto u17 = v.Compactness.unwrap()
         parts.append("\"Compactness\":" + u17.to_json())
+    if v.BandwidthReportingMode.is_some():
+        auto u18 = v.BandwidthReportingMode.unwrap()
+        parts.append("\"BandwidthReportingMode\":" + u18.to_json())
     if v.AudioTimelinePattern.is_some():
-        auto u18 = v.AudioTimelinePattern.unwrap()
-        parts.append("\"AudioTimelinePattern\":" + u18.to_json())
+        auto u19 = v.AudioTimelinePattern.unwrap()
+        parts.append("\"AudioTimelinePattern\":" + u19.to_json())
     if v.SubtitleConfiguration.is_some():
-        auto u19 = v.SubtitleConfiguration.unwrap()
-        parts.append("\"SubtitleConfiguration\":" + u19.to_json())
+        auto u20 = v.SubtitleConfiguration.unwrap()
+        parts.append("\"SubtitleConfiguration\":" + u20.to_json())
     if v.UriPathType.is_some():
-        auto u20 = v.UriPathType.unwrap()
-        parts.append("\"UriPathType\":" + u20.to_json())
+        auto u21 = v.UriPathType.unwrap()
+        parts.append("\"UriPathType\":" + u21.to_json())
     if v.AvailabilityStartTimeConfiguration.is_some():
-        auto u21 = v.AvailabilityStartTimeConfiguration.unwrap()
-        parts.append("\"AvailabilityStartTimeConfiguration\":" + u21.to_json())
+        auto u22 = v.AvailabilityStartTimeConfiguration.unwrap()
+        parts.append("\"AvailabilityStartTimeConfiguration\":" + u22.to_json())
     return mediapackagev2_json_obj(parts)
 
 # Serialize CreateHlsManifestConfiguration to a compact JSON object (declaration order).

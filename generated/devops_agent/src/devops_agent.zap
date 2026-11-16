@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 63 operations — 61 with a generated method,
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   290 structs (201 @derive(Json)), 34 enums, 10 error variants.
+#   291 structs (202 @derive(Json)), 34 enums, 10 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1520,6 +1520,11 @@ struct MCPToolDetail:
     Optional[ToolClassification] toolClassification
 
 @derive(Json)
+struct MSTeamsBidirectionalConfiguration:
+    str roleArn
+    Optional[bool] enabled
+
+@derive(Json)
 struct MSTeamsChannel:
     str channelName
     str channelId
@@ -1529,6 +1534,7 @@ struct MSTeamsConfiguration:
     str teamId
     str teamName
     MSTeamsTransmissionTarget transmissionTarget
+    Optional[MSTeamsBidirectionalConfiguration] bidirectional
 
 @derive(Json)
 struct MSTeamsTransmissionTarget:

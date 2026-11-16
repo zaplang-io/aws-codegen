@@ -18,7 +18,7 @@
 #
 # Coverage (smithy-rpc-v2-cbor): 120 operations — 120 with a generated method,
 #   0 skipped (input has a non-text-keyed map member).
-#   343 structs (plain carriers), 57 enums, 16 error variants.
+#   345 structs (plain carriers), 58 enums, 16 error variants.
 #   0 paginators generated (26 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1081,6 +1081,14 @@ enum LocationFilter:
 
 @derive(Json)
 @json(open)
+enum LogDeliveryDestinationType:
+    CLOUDWATCH
+    S3
+    FIREHOSE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum LogDestination:
     NONE
     CLOUDWATCH
@@ -1551,6 +1559,7 @@ struct CreateGameSessionQueueInput:
     Optional[str] CustomEventData
     Optional[str] NotificationTarget
     Optional[list[Tag]] Tags
+    Optional[GameSessionQueueLogConfiguration] LogConfiguration
 
 struct CreateGameSessionQueueOutput:
     Optional[GameSessionQueue] GameSessionQueue
@@ -2269,9 +2278,13 @@ struct GameSessionQueue:
     Optional[PriorityConfiguration] PriorityConfiguration
     Optional[str] CustomEventData
     Optional[str] NotificationTarget
+    Optional[GameSessionQueueLogConfiguration] LogConfiguration
 
 struct GameSessionQueueDestination:
     Optional[str] DestinationArn
+
+struct GameSessionQueueLogConfiguration:
+    list[LogDeliveryDestination] DeliveryDestinations
 
 struct GetComputeAccessInput:
     str FleetId
@@ -2521,6 +2534,10 @@ struct LogConfiguration:
     Optional[str] LogDestination
     Optional[str] S3BucketName
     Optional[str] LogGroupArn
+
+struct LogDeliveryDestination:
+    str LogDestination
+    Optional[str] DestinationArn
 
 struct ManagedCapacityConfiguration:
     Optional[str] ZeroCapacityStrategy
@@ -3026,6 +3043,8 @@ struct UpdateGameSessionQueueInput:
     Optional[PriorityConfiguration] PriorityConfiguration
     Optional[str] CustomEventData
     Optional[str] NotificationTarget
+    Optional[list[LogDeliveryDestination]] AddLogDeliveryDestinations
+    Optional[list[LogDeliveryDestination]] RemoveLogDeliveryDestinations
 
 struct UpdateGameSessionQueueOutput:
     Optional[GameSessionQueue] GameSessionQueue
@@ -3878,6 +3897,10 @@ def create_game_session_queue_input_to_cbor(CreateGameSessionQueueInput v) -> cb
             e10.append(tag_to_cbor(x10))
         keys.append("Tags")
         vals.append(cbor.cbor_list(e10))
+    if v.LogConfiguration.is_some():
+        auto u11 = v.LogConfiguration.unwrap()
+        keys.append("LogConfiguration")
+        vals.append(game_session_queue_log_configuration_to_cbor(u11))
     return cbor.cbor_map(keys, vals)
 
 # Serialize CreateLocationInput to a CBOR map (member wire name -> value, model order).
@@ -4908,6 +4931,17 @@ def game_session_queue_destination_to_cbor(GameSessionQueueDestination v) -> cbo
         vals.append(cbor.cbor_text(u0))
     return cbor.cbor_map(keys, vals)
 
+# Serialize GameSessionQueueLogConfiguration to a CBOR map (member wire name -> value, model order).
+def game_session_queue_log_configuration_to_cbor(GameSessionQueueLogConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.DeliveryDestinations:
+        e0.append(log_delivery_destination_to_cbor(x0))
+    keys.append("DeliveryDestinations")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
 # Serialize GetComputeAccessInput to a CBOR map (member wire name -> value, model order).
 def get_compute_access_input_to_cbor(GetComputeAccessInput v) -> cbor.CborValue:
     list[str] keys = []
@@ -5277,6 +5311,18 @@ def log_configuration_to_cbor(LogConfiguration v) -> cbor.CborValue:
         auto u2 = v.LogGroupArn.unwrap()
         keys.append("LogGroupArn")
         vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LogDeliveryDestination to a CBOR map (member wire name -> value, model order).
+def log_delivery_destination_to_cbor(LogDeliveryDestination v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LogDestination")
+    vals.append(cbor.cbor_text(v.LogDestination))
+    if v.DestinationArn.is_some():
+        auto u0 = v.DestinationArn.unwrap()
+        keys.append("DestinationArn")
+        vals.append(cbor.cbor_text(u0))
     return cbor.cbor_map(keys, vals)
 
 # Serialize ManagedCapacityConfiguration to a CBOR map (member wire name -> value, model order).
@@ -6262,6 +6308,20 @@ def update_game_session_queue_input_to_cbor(UpdateGameSessionQueueInput v) -> cb
         auto u8 = v.NotificationTarget.unwrap()
         keys.append("NotificationTarget")
         vals.append(cbor.cbor_text(u8))
+    if v.AddLogDeliveryDestinations.is_some():
+        auto u9 = v.AddLogDeliveryDestinations.unwrap()
+        list[cbor.CborValue] e10 = []
+        for x10 in u9:
+            e10.append(log_delivery_destination_to_cbor(x10))
+        keys.append("AddLogDeliveryDestinations")
+        vals.append(cbor.cbor_list(e10))
+    if v.RemoveLogDeliveryDestinations.is_some():
+        auto u11 = v.RemoveLogDeliveryDestinations.unwrap()
+        list[cbor.CborValue] e12 = []
+        for x12 in u11:
+            e12.append(log_delivery_destination_to_cbor(x12))
+        keys.append("RemoveLogDeliveryDestinations")
+        vals.append(cbor.cbor_list(e12))
     return cbor.cbor_map(keys, vals)
 
 # Serialize UpdateMatchmakingConfigurationInput to a CBOR map (member wire name -> value, model order).

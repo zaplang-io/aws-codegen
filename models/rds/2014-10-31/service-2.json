@@ -5868,6 +5868,9 @@
     },
     "SnapshotAvailabilityZone": {
      "shape": "String"
+    },
+    "TagSpecifications": {
+     "shape": "TagSpecificationList"
     }
    }
   },
@@ -14387,6 +14390,9 @@
     },
     "CopyTimestamp": {
      "shape": "TStamp"
+    },
+    "SourceRegion": {
+     "shape": "String"
     }
    },
    "wrapper": true
@@ -14481,6 +14487,9 @@
      "shape": "OptionGroupOptionVersionsList"
     },
     "CopyableCrossAccount": {
+     "shape": "BooleanOptional"
+    },
+    "CopyableCrossRegion": {
      "shape": "BooleanOptional"
     }
    }

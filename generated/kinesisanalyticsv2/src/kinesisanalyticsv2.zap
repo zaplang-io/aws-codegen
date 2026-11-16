@@ -14,10 +14,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 33 operations — 33 with a generated method,
+# Coverage (v0, awsJson only): 41 operations — 41 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   209 structs (157 @derive(Json)), 15 enums, 13 error variants.
-#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   241 structs (185 @derive(Json)), 20 enums, 13 error variants.
+#   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -156,6 +156,47 @@ enum RuntimeEnvironment:
     FLINK_1_20
     FLINK_2_2
     FLINK_2_3
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SnapshotInitiator:
+    USER
+    SYSTEM
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SnapshotInitiatorOperation:
+    CreateSnapshot
+    ImportSnapshot
+    SystemCreateSnapshot
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SnapshotMode:
+    APPLICATION_SNAPSHOTS_LEGACY
+    ENHANCED_SNAPSHOTS
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SnapshotOperation:
+    CreateSnapshot
+    DeleteSnapshot
+    ImportSnapshot
+    ExportSnapshot
+    SystemCreateSnapshot
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SnapshotOperationStatus:
+    IN_PROGRESS
+    SUCCESSFUL
+    FAILED
+    CANCELLED
     Unknown(str value)
 
 @derive(Json)
@@ -376,6 +417,11 @@ struct ApplicationMaintenanceConfigurationUpdate:
     str ApplicationMaintenanceWindowStartTimeUpdate
 
 @derive(Json)
+struct ApplicationOperationDescription:
+    Optional[str] ApplicationOperationId
+    Optional[str] ApplicationName
+
+@derive(Json)
 struct ApplicationOperationInfo:
     Optional[str] Operation
     Optional[str] OperationId
@@ -396,18 +442,22 @@ struct ApplicationOperationInfoDetails:
 struct ApplicationRestoreConfiguration:
     ApplicationRestoreType ApplicationRestoreType
     Optional[str] SnapshotName
+    Optional[str] SnapshotArn
 
 @derive(Json)
 struct ApplicationSnapshotConfiguration:
     bool SnapshotsEnabled
+    Optional[SnapshotMode] SnapshotMode
 
 @derive(Json)
 struct ApplicationSnapshotConfigurationDescription:
     bool SnapshotsEnabled
+    Optional[SnapshotMode] SnapshotMode
 
 @derive(Json)
 struct ApplicationSnapshotConfigurationUpdate:
     bool SnapshotsEnabledUpdate
+    Optional[SnapshotMode] SnapshotModeUpdate
 
 @derive(Json)
 struct ApplicationSummary:
@@ -559,6 +609,22 @@ struct CreateApplicationSnapshotResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateSnapshotRequest:
+    str ApplicationName
+    str SnapshotName
+    Optional[str] SnapshotDescription
+    Optional[list[Tag]] Tags
+
+@derive(Json)
+struct CreateSnapshotResponse:
+    str SnapshotArn
+    SnapshotStatus SnapshotStatus
+    str SnapshotOperationId
+    SnapshotOperationStatus SnapshotOperationStatus
+
 @derive(Json)
 struct CustomArtifactConfiguration:
     ArtifactType ArtifactType
@@ -655,6 +721,18 @@ struct DeleteApplicationVpcConfigurationResponse:
     Optional[str] OperationId
 
 @derive(Json)
+struct DeleteSnapshotRequest:
+    str SnapshotName
+    DateTime SnapshotCreationTimestamp
+
+@derive(Json)
+struct DeleteSnapshotResponse:
+    str SnapshotArn
+    SnapshotStatus SnapshotStatus
+    str SnapshotOperationId
+    SnapshotOperationStatus SnapshotOperationStatus
+
+@derive(Json)
 struct DeployAsApplicationConfiguration:
     S3ContentBaseLocation S3ContentLocation
 
@@ -707,6 +785,23 @@ struct DescribeApplicationVersionResponse:
     Optional[ApplicationDetail] ApplicationVersionDetail
 
 @derive(Json)
+struct DescribeSnapshotOperationRequest:
+    str SnapshotName
+    str SnapshotOperationId
+
+@derive(Json)
+struct DescribeSnapshotOperationResponse:
+    SnapshotOperationInfoDetails SnapshotOperationInfoDetails
+
+@derive(Json)
+struct DescribeSnapshotRequest:
+    str SnapshotName
+
+@derive(Json)
+struct DescribeSnapshotResponse:
+    SnapshotInfoDetails SnapshotInfoDetails
+
+@derive(Json)
 struct DestinationSchema:
     RecordFormatType RecordFormatType
 
@@ -726,6 +821,11 @@ struct DiscoverInputSchemaResponse:
     Optional[list[list[str]]] ParsedInputRecords
     Optional[list[str]] ProcessedInputRecords
     Optional[list[str]] RawInputRecords
+
+@derive(Json)
+struct EncryptionConfigurationDescription:
+    Optional[str] KeyId
+    KeyType KeyType
 
 # no @derive(Json): member(s) PropertyGroups: list[PropertyGroup] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -748,6 +848,23 @@ struct EnvironmentPropertyUpdates:
 @derive(Json)
 struct ErrorInfo:
     Optional[str] ErrorString
+
+@derive(Json)
+struct ExportDestinationConfiguration:
+    str DestinationType
+    str ExportRoleArn
+    Optional[SnapshotEncryptionConfiguration] DestinationEncryptionConfiguration
+    S3PrefixLocation DestinationS3PrefixLocation
+
+@derive(Json)
+struct ExportSnapshotRequest:
+    str SnapshotName
+    ExportDestinationConfiguration ExportDestinationConfiguration
+
+@derive(Json)
+struct ExportSnapshotResponse:
+    str SnapshotOperationId
+    SnapshotOperationStatus SnapshotOperationStatus
 
 @derive(Json)
 struct FlinkApplicationConfiguration:
@@ -783,6 +900,31 @@ struct GlueDataCatalogConfigurationDescription:
 @derive(Json)
 struct GlueDataCatalogConfigurationUpdate:
     str DatabaseARNUpdate
+
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ImportSnapshotRequest:
+    str SnapshotName
+    ImportSourceConfiguration ImportSourceConfiguration
+    Optional[SnapshotEncryptionConfiguration] DestinationEncryptionConfiguration
+    Optional[str] SnapshotDescription
+    Optional[str] SnapshotFormat
+    Optional[list[Tag]] Tags
+
+@derive(Json)
+struct ImportSnapshotResponse:
+    str SnapshotArn
+    SnapshotStatus SnapshotStatus
+    str SnapshotOperationId
+    SnapshotOperationStatus SnapshotOperationStatus
+
+@derive(Json)
+struct ImportSourceConfiguration:
+    str SourceType
+    str ImportRoleArn
+    Optional[SnapshotEncryptionConfiguration] SourceEncryptionConfiguration
+    S3PrefixLocation SourceS3PrefixLocation
 
 # no @derive(Json): member(s) InputSchema: SourceSchema not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1005,6 +1147,37 @@ struct ListApplicationsResponse:
     Optional[str] NextToken
 
 @derive(Json)
+struct ListSnapshotOperationsRequest:
+    str SnapshotName
+    Optional[SnapshotOperation] SnapshotOperation
+    Optional[SnapshotOperationStatus] SnapshotOperationStatus
+    Optional[int64] Limit
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) SnapshotOperationInfoList: list[SnapshotOperationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListSnapshotOperationsResponse:
+    list[SnapshotOperationInfo] SnapshotOperationInfoList
+    Optional[str] NextToken
+
+@derive(Json)
+struct ListSnapshotsRequest:
+    Optional[str] SourceApplicationName
+    Optional[SnapshotInitiator] SnapshotInitiator
+    Optional[SnapshotInitiatorOperation] SnapshotInitiatorOperation
+    Optional[SnapshotStatus] SnapshotStatus
+    Optional[int64] Limit
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) SnapshotInfoList: list[SnapshotInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListSnapshotsResponse:
+    list[SnapshotInfo] SnapshotInfoList
+    Optional[str] NextToken
+
+@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceARN
 
@@ -1221,6 +1394,11 @@ struct S3ContentLocationUpdate:
     Optional[str] ObjectVersionUpdate
 
 @derive(Json)
+struct S3PrefixLocation:
+    str BucketARN
+    str KeyPrefix
+
+@derive(Json)
 struct S3ReferenceDataSource:
     Optional[str] BucketARN
     Optional[str] FileKey
@@ -1248,6 +1426,91 @@ struct SnapshotDetails:
     Optional[DateTime] SnapshotCreationTimestamp
     Optional[RuntimeEnvironment] RuntimeEnvironment
     Optional[ApplicationEncryptionConfigurationDescription] ApplicationEncryptionConfigurationDescription
+
+@derive(Json)
+struct SnapshotEncryptionConfiguration:
+    Optional[str] KeyId
+    KeyType KeyType
+
+@derive(Json)
+struct SnapshotErrorInfo:
+    Optional[str] ErrorCode
+    Optional[str] ErrorString
+
+@derive(Json)
+struct SnapshotInfo:
+    str SnapshotName
+    str SnapshotArn
+    SnapshotStatus SnapshotStatus
+    DateTime SnapshotCreationTimestamp
+    SnapshotInitiator SnapshotInitiator
+    SnapshotInitiatorOperation SnapshotInitiatorOperation
+    Optional[str] SourceApplicationName
+    str SnapshotFormat
+
+@derive(Json)
+struct SnapshotInfoDetails:
+    str SnapshotName
+    str SnapshotArn
+    Optional[str] SnapshotDescription
+    SnapshotStatus SnapshotStatus
+    DateTime SnapshotCreationTimestamp
+    Optional[RuntimeEnvironment] RuntimeEnvironment
+    Optional[int64] SnapshotSizeInBytes
+    Optional[SnapshotEncryptionConfiguration] SnapshotEncryptionConfigurationDescription
+    SnapshotInitiator SnapshotInitiator
+    SnapshotInitiatorOperation SnapshotInitiatorOperation
+    SnapshotSourceDescription SnapshotSourceDescription
+    str SnapshotFormat
+
+@derive(Json)
+struct SnapshotOperationFailureDetails:
+    Optional[SnapshotErrorInfo] ErrorInfo
+
+@derive(Json)
+struct SnapshotOperationInfo:
+    str SnapshotOperationId
+    SnapshotOperation SnapshotOperation
+    SnapshotOperationStatus SnapshotOperationStatus
+    Optional[DateTime] StartTime
+    Optional[DateTime] EndTime
+
+@derive(Json)
+struct SnapshotOperationInfoDetails:
+    str SnapshotOperationId
+    SnapshotOperation SnapshotOperation
+    SnapshotOperationStatus SnapshotOperationStatus
+    str SnapshotArn
+    Optional[EncryptionConfigurationDescription] SourceEncryptionConfigurationDescription
+    Optional[EncryptionConfigurationDescription] DestinationEncryptionConfigurationDescription
+    Optional[SnapshotOperationLocationDescription] SnapshotSourceLocationDescription
+    Optional[SnapshotOperationLocationDescription] SnapshotDestinationLocationDescription
+    Optional[ApplicationOperationDescription] ApplicationOperationDescription
+    Optional[DateTime] StartTime
+    Optional[DateTime] EndTime
+    Optional[SnapshotOperationFailureDetails] SnapshotOperationFailureDetails
+
+@derive(Json)
+struct SnapshotOperationLocationDescription:
+    str LocationType
+    SnapshotOperationS3PrefixLocation S3PrefixLocation
+
+@derive(Json)
+struct SnapshotOperationS3PrefixLocation:
+    str BucketARN
+    str KeyPrefix
+    Optional[str] ExportedPrefix
+
+@derive(Json)
+struct SnapshotSourceDescription:
+    Optional[S3PrefixLocation] S3PrefixLocation
+    Optional[SourceApplicationDescription] SourceApplicationDescription
+
+@derive(Json)
+struct SourceApplicationDescription:
+    str ApplicationName
+    DateTime ApplicationCreationTimestamp
+    int64 ApplicationVersionId
 
 # no @derive(Json): member(s) RecordColumns: list[RecordColumn] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1701,6 +1964,22 @@ def create_application_request_to_json(CreateApplicationRequest v) -> str:
         parts.append("\"ApplicationMode\":" + u6.to_json())
     return kinesisanalytics_json_obj(parts)
 
+# Serialize CreateSnapshotRequest to a compact JSON object (declaration order).
+def create_snapshot_request_to_json(CreateSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    parts.append("\"SnapshotName\":" + kinesisanalytics_json_str(v.SnapshotName))
+    if v.SnapshotDescription.is_some():
+        auto u0 = v.SnapshotDescription.unwrap()
+        parts.append("\"SnapshotDescription\":" + kinesisanalytics_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + kinesisanalytics_json_arr(e2))
+    return kinesisanalytics_json_obj(parts)
+
 # Serialize EnvironmentProperties to a compact JSON object (declaration order).
 def environment_properties_to_json(EnvironmentProperties v) -> str:
     list[str] parts = []
@@ -1717,6 +1996,28 @@ def environment_property_updates_to_json(EnvironmentPropertyUpdates v) -> str:
     for x0 in v.PropertyGroups:
         e0.append(property_group_to_json(x0))
     parts.append("\"PropertyGroups\":" + kinesisanalytics_json_arr(e0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ImportSnapshotRequest to a compact JSON object (declaration order).
+def import_snapshot_request_to_json(ImportSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SnapshotName\":" + kinesisanalytics_json_str(v.SnapshotName))
+    parts.append("\"ImportSourceConfiguration\":" + v.ImportSourceConfiguration.to_json())
+    if v.DestinationEncryptionConfiguration.is_some():
+        auto u0 = v.DestinationEncryptionConfiguration.unwrap()
+        parts.append("\"DestinationEncryptionConfiguration\":" + u0.to_json())
+    if v.SnapshotDescription.is_some():
+        auto u1 = v.SnapshotDescription.unwrap()
+        parts.append("\"SnapshotDescription\":" + kinesisanalytics_json_str(u1))
+    if v.SnapshotFormat.is_some():
+        auto u2 = v.SnapshotFormat.unwrap()
+        parts.append("\"SnapshotFormat\":" + kinesisanalytics_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + kinesisanalytics_json_arr(e4))
     return kinesisanalytics_json_obj(parts)
 
 # Serialize Input to a compact JSON object (declaration order).
@@ -2079,6 +2380,12 @@ struct Kinesis_Analytics_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "CreateApplicationSnapshot", body)
 
+    # CreateSnapshot
+    # errors: ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, LimitExceededException, ResourceInUseException, TooManyTagsException, UnsupportedOperationException
+    def create_snapshot(self, CreateSnapshotRequest input) -> str:
+        auto body = create_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "CreateSnapshot", body)
+
     # DeleteApplication
     # errors: ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
     def delete_application(self, DeleteApplicationRequest input) -> str:
@@ -2121,6 +2428,12 @@ struct Kinesis_Analytics_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "DeleteApplicationVpcConfiguration", body)
 
+    # DeleteSnapshot
+    # errors: ConcurrentModificationException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, UnsupportedOperationException
+    def delete_snapshot(self, DeleteSnapshotRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "DeleteSnapshot", body)
+
     # DescribeApplication
     # errors: InvalidArgumentException, InvalidRequestException, ResourceNotFoundException
     def describe_application(self, DescribeApplicationRequest input) -> str:
@@ -2145,11 +2458,35 @@ struct Kinesis_Analytics_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "DescribeApplicationVersion", body)
 
+    # DescribeSnapshot
+    # errors: InvalidArgumentException, ResourceNotFoundException, UnsupportedOperationException
+    def describe_snapshot(self, DescribeSnapshotRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "DescribeSnapshot", body)
+
+    # DescribeSnapshotOperation
+    # errors: InvalidArgumentException, ResourceNotFoundException, UnsupportedOperationException
+    def describe_snapshot_operation(self, DescribeSnapshotOperationRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "DescribeSnapshotOperation", body)
+
     # DiscoverInputSchema
     # errors: InvalidArgumentException, InvalidRequestException, ResourceProvisionedThroughputExceededException, ServiceUnavailableException, UnableToDetectSchemaException, UnsupportedOperationException
     def discover_input_schema(self, DiscoverInputSchemaRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "DiscoverInputSchema", body)
+
+    # ExportSnapshot
+    # errors: ConcurrentModificationException, InvalidArgumentException, LimitExceededException, ResourceInUseException, ResourceNotFoundException, UnsupportedOperationException
+    def export_snapshot(self, ExportSnapshotRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ExportSnapshot", body)
+
+    # ImportSnapshot
+    # errors: ConcurrentModificationException, InvalidArgumentException, LimitExceededException, ResourceInUseException, TooManyTagsException, UnsupportedOperationException
+    def import_snapshot(self, ImportSnapshotRequest input) -> str:
+        auto body = import_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ImportSnapshot", body)
 
     # ListApplicationOperations
     # errors: InvalidArgumentException, ResourceNotFoundException, UnsupportedOperationException
@@ -2175,6 +2512,18 @@ struct Kinesis_Analytics_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ListApplications", body)
 
+    # ListSnapshotOperations
+    # errors: InvalidArgumentException, ResourceNotFoundException, UnsupportedOperationException
+    def list_snapshot_operations(self, ListSnapshotOperationsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ListSnapshotOperations", body)
+
+    # ListSnapshots
+    # errors: InvalidArgumentException, UnsupportedOperationException
+    def list_snapshots(self, ListSnapshotsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ListSnapshots", body)
+
     # ListTagsForResource
     # errors: ConcurrentModificationException, InvalidArgumentException, ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -2188,7 +2537,7 @@ struct Kinesis_Analytics_V2Client:
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "RollbackApplication", body)
 
     # StartApplication
-    # errors: InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
+    # errors: InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, UnsupportedOperationException
     def start_application(self, StartApplicationRequest input) -> str:
         auto body = start_application_request_to_json(input)
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "StartApplication", body)
@@ -2212,7 +2561,7 @@ struct Kinesis_Analytics_V2Client:
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateApplication
-    # errors: CodeValidationException, ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    # errors: CodeValidationException, ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, LimitExceededException, ResourceInUseException, ResourceNotFoundException, UnsupportedOperationException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto body = update_application_request_to_json(input)
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "UpdateApplication", body)
@@ -2272,6 +2621,34 @@ struct Kinesis_Analytics_V2Client:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ListApplications", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSnapshotOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SnapshotOperationInfoList).
+    def paginate_list_snapshot_operations(self, ListSnapshotOperationsRequest input):
+        auto host = endpoints.regional_host(kinesisanalytics_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ListSnapshotOperations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSnapshots — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SnapshotInfoList).
+    def paginate_list_snapshots(self, ListSnapshotsRequest input):
+        auto host = endpoints.regional_host(kinesisanalytics_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "ListSnapshots", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

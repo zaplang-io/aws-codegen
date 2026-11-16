@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Certificate Manager Private Certificate Authority (serviceId ACM PCA, API 2017-08-22)
-# Protocol: awsJson 1.1 (targetPrefix ACMPrivateCA)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service acm-pca, service shape ACMPrivateCA)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 23 operations — 23 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   79 structs (60 @derive(Json)), 17 enums, 19 error variants.
-#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   3 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Coverage (smithy-rpc-v2-cbor): 23 operations — 23 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   79 structs (plain carriers), 17 enums, 19 error variants.
+#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (3 skipped) from waiters-2.json.
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,13 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import aws_core.waiters
-import base64
+import aws_core.cbor
 
-# The ACM_PCA awsJson protocol: version 1.1, API id "ACMPrivateCA".
-def acm_pca_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("ACMPrivateCA", "acm-pca")
+# The ACM_PCA smithy-rpc-v2-cbor protocol: SigV4 service "acm-pca" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/ACMPrivateCA/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def acm_pca_service() -> str:
+    return "acm-pca"
 
 # --- enums -----------------------------------------------------------------
 
@@ -206,9 +208,6 @@ enum ValidityPeriodType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) CustomAttributes: list[CustomAttribute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ASN1Subject:
     Optional[str] Country
     Optional[str] Organization
@@ -226,181 +225,136 @@ struct ASN1Subject:
     Optional[str] GenerationQualifier
     Optional[list[CustomAttribute]] CustomAttributes
 
-# no @derive(Json): member(s) AccessLocation: GeneralName not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AccessDescription:
     AccessMethod AccessMethod
     GeneralName AccessLocation
 
-@derive(Json)
 struct AccessMethod:
     Optional[str] CustomObjectIdentifier
-    Optional[AccessMethodType] AccessMethodType
+    Optional[str] AccessMethodType
 
-# no @derive(Json): member(s) Extensions: Extensions, Subject: ASN1Subject not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ApiPassthrough:
     Optional[Extensions] Extensions
     Optional[ASN1Subject] Subject
 
-# no @derive(Json): member(s) CertificateAuthorityConfiguration: CertificateAuthorityConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CertificateAuthority:
     Optional[str] Arn
     Optional[str] OwnerAccount
     Optional[DateTime] CreatedAt
     Optional[DateTime] LastStateChangeAt
-    Optional[CertificateAuthorityType] Type
+    Optional[str] Type
     Optional[str] Serial
-    Optional[CertificateAuthorityStatus] Status
+    Optional[str] Status
     Optional[DateTime] NotBefore
     Optional[DateTime] NotAfter
-    Optional[FailureReason] FailureReason
+    Optional[str] FailureReason
     Optional[CertificateAuthorityConfiguration] CertificateAuthorityConfiguration
     Optional[RevocationConfiguration] RevocationConfiguration
     Optional[DateTime] RestorableUntil
-    Optional[KeyStorageSecurityStandard] KeyStorageSecurityStandard
-    Optional[CertificateAuthorityUsageMode] UsageMode
+    Optional[str] KeyStorageSecurityStandard
+    Optional[str] UsageMode
 
-# no @derive(Json): member(s) Subject: ASN1Subject, CsrExtensions: CsrExtensions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CertificateAuthorityConfiguration:
-    KeyAlgorithm KeyAlgorithm
-    SigningAlgorithm SigningAlgorithm
+    str KeyAlgorithm
+    str SigningAlgorithm
     ASN1Subject Subject
     Optional[CsrExtensions] CsrExtensions
 
-@derive(Json)
 struct CertificateMismatchException:
     Optional[str] message
 
-@derive(Json)
 struct ConcurrentModificationException:
     Optional[str] message
 
-@derive(Json)
 struct CreateCertificateAuthorityAuditReportRequest:
     str CertificateAuthorityArn
     str S3BucketName
-    AuditReportResponseFormat AuditReportResponseFormat
+    str AuditReportResponseFormat
 
-@derive(Json)
 struct CreateCertificateAuthorityAuditReportResponse:
     Optional[str] AuditReportId
     Optional[str] S3Key
 
-# no @derive(Json): member(s) CertificateAuthorityConfiguration: CertificateAuthorityConfiguration, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateCertificateAuthorityRequest:
     CertificateAuthorityConfiguration CertificateAuthorityConfiguration
     Optional[RevocationConfiguration] RevocationConfiguration
-    CertificateAuthorityType CertificateAuthorityType
+    str CertificateAuthorityType
     Optional[str] IdempotencyToken
-    Optional[KeyStorageSecurityStandard] KeyStorageSecurityStandard
+    Optional[str] KeyStorageSecurityStandard
     Optional[list[Tag]] Tags
-    Optional[CertificateAuthorityUsageMode] UsageMode
+    Optional[str] UsageMode
 
-@derive(Json)
 struct CreateCertificateAuthorityResponse:
     Optional[str] CertificateAuthorityArn
 
-# no @derive(Json): member(s) Actions: list[ActionType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePermissionRequest:
     str CertificateAuthorityArn
     str Principal
     Optional[str] SourceAccount
-    list[ActionType] Actions
+    list[str] Actions
 
-@derive(Json)
 struct CrlConfiguration:
     bool Enabled
     Optional[int64] ExpirationInDays
     Optional[str] CustomCname
     Optional[str] S3BucketName
-    Optional[S3ObjectAcl] S3ObjectAcl
+    Optional[str] S3ObjectAcl
     Optional[CrlDistributionPointExtensionConfiguration] CrlDistributionPointExtensionConfiguration
-    Optional[CrlType] CrlType
+    Optional[str] CrlType
     Optional[str] CustomPath
 
-@derive(Json)
 struct CrlDistributionPointExtensionConfiguration:
     bool OmitExtension
 
-# no @derive(Json): member(s) SubjectInformationAccess: list[AccessDescription] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CsrExtensions:
     Optional[KeyUsage] KeyUsage
     Optional[list[AccessDescription]] SubjectInformationAccess
 
-@derive(Json)
 struct CustomAttribute:
     str ObjectIdentifier
     str Value
 
-@derive(Json)
 struct CustomExtension:
     str ObjectIdentifier
     str Value
     Optional[bool] Critical
 
-@derive(Json)
 struct DeleteCertificateAuthorityRequest:
     str CertificateAuthorityArn
     Optional[int64] PermanentDeletionTimeInDays
 
-@derive(Json)
 struct DeletePermissionRequest:
     str CertificateAuthorityArn
     str Principal
     Optional[str] SourceAccount
 
-@derive(Json)
 struct DeletePolicyRequest:
     str ResourceArn
 
-@derive(Json)
 struct DescribeCertificateAuthorityAuditReportRequest:
     str CertificateAuthorityArn
     str AuditReportId
 
-@derive(Json)
 struct DescribeCertificateAuthorityAuditReportResponse:
-    Optional[AuditReportStatus] AuditReportStatus
+    Optional[str] AuditReportStatus
     Optional[str] S3BucketName
     Optional[str] S3Key
     Optional[DateTime] CreatedAt
 
-@derive(Json)
 struct DescribeCertificateAuthorityRequest:
     str CertificateAuthorityArn
 
-# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeCertificateAuthorityResponse:
     Optional[CertificateAuthority] CertificateAuthority
 
-@derive(Json)
 struct EdiPartyName:
     str PartyName
     Optional[str] NameAssigner
 
-@derive(Json)
 struct ExtendedKeyUsage:
-    Optional[ExtendedKeyUsageType] ExtendedKeyUsageType
+    Optional[str] ExtendedKeyUsageType
     Optional[str] ExtendedKeyUsageObjectIdentifier
 
-# no @derive(Json): member(s) CertificatePolicies: list[PolicyInformation], ExtendedKeyUsage: list[ExtendedKeyUsage], SubjectAlternativeNames: list[GeneralName], CustomExtensions: list[CustomExtension] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Extensions:
     Optional[list[PolicyInformation]] CertificatePolicies
     Optional[list[ExtendedKeyUsage]] ExtendedKeyUsage
@@ -408,9 +362,6 @@ struct Extensions:
     Optional[list[GeneralName]] SubjectAlternativeNames
     Optional[list[CustomExtension]] CustomExtensions
 
-# no @derive(Json): member(s) DirectoryName: ASN1Subject not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GeneralName:
     Optional[OtherName] OtherName
     Optional[str] Rfc822Name
@@ -421,93 +372,72 @@ struct GeneralName:
     Optional[str] IpAddress
     Optional[str] RegisteredId
 
-@derive(Json)
 struct GetCertificateAuthorityCertificateRequest:
     str CertificateAuthorityArn
 
-@derive(Json)
 struct GetCertificateAuthorityCertificateResponse:
     Optional[str] Certificate
     Optional[str] CertificateChain
 
-@derive(Json)
 struct GetCertificateAuthorityCsrRequest:
     str CertificateAuthorityArn
 
-@derive(Json)
 struct GetCertificateAuthorityCsrResponse:
     Optional[str] Csr
 
-@derive(Json)
 struct GetCertificateRequest:
     str CertificateAuthorityArn
     str CertificateArn
 
-@derive(Json)
 struct GetCertificateResponse:
     Optional[str] Certificate
     Optional[str] CertificateChain
 
-@derive(Json)
 struct GetPolicyRequest:
     str ResourceArn
 
-@derive(Json)
 struct GetPolicyResponse:
     Optional[str] Policy
 
-@derive(Json)
 struct ImportCertificateAuthorityCertificateRequest:
     str CertificateAuthorityArn
     bytes Certificate
     Optional[bytes] CertificateChain
 
-@derive(Json)
 struct InvalidArgsException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidArnException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidNextTokenException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidPolicyException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidRequestException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidStateException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidTagException:
     Optional[str] message
 
-# no @derive(Json): member(s) ApiPassthrough: ApiPassthrough not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct IssueCertificateRequest:
     Optional[ApiPassthrough] ApiPassthrough
     str CertificateAuthorityArn
     bytes Csr
-    SigningAlgorithm SigningAlgorithm
+    str SigningAlgorithm
     Optional[str] TemplateArn
     Validity Validity
     Optional[Validity] ValidityNotBefore
     Optional[str] IdempotencyToken
 
-@derive(Json)
 struct IssueCertificateResponse:
     Optional[str] CertificateArn
 
-@derive(Json)
 struct KeyUsage:
     Optional[bool] DigitalSignature
     Optional[bool] NonRepudiation
@@ -519,171 +449,126 @@ struct KeyUsage:
     Optional[bool] EncipherOnly
     Optional[bool] DecipherOnly
 
-@derive(Json)
 struct LimitExceededException:
     Optional[str] message
 
-@derive(Json)
 struct ListCertificateAuthoritiesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
-    Optional[ResourceOwner] ResourceOwner
+    Optional[str] ResourceOwner
 
-# no @derive(Json): member(s) CertificateAuthorities: list[CertificateAuthority] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListCertificateAuthoritiesResponse:
     Optional[str] NextToken
     Optional[list[CertificateAuthority]] CertificateAuthorities
 
-@derive(Json)
 struct ListPermissionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     str CertificateAuthorityArn
 
-# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPermissionsResponse:
     Optional[str] NextToken
     Optional[list[Permission]] Permissions
 
-@derive(Json)
 struct ListTagsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     str CertificateAuthorityArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[str] NextToken
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct LockoutPreventedException:
     Optional[str] message
 
-@derive(Json)
 struct MalformedCSRException:
     Optional[str] message
 
-@derive(Json)
 struct MalformedCertificateException:
     Optional[str] message
 
-@derive(Json)
 struct OcspConfiguration:
     bool Enabled
     Optional[str] OcspCustomCname
 
-@derive(Json)
 struct OtherName:
     str TypeId
     str Value
 
-# no @derive(Json): member(s) Actions: list[ActionType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Permission:
     Optional[str] CertificateAuthorityArn
     Optional[DateTime] CreatedAt
     Optional[str] Principal
     Optional[str] SourceAccount
-    Optional[list[ActionType]] Actions
+    Optional[list[str]] Actions
     Optional[str] Policy
 
-@derive(Json)
 struct PermissionAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) PolicyQualifiers: list[PolicyQualifierInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PolicyInformation:
     str CertPolicyId
     Optional[list[PolicyQualifierInfo]] PolicyQualifiers
 
-@derive(Json)
 struct PolicyQualifierInfo:
     str PolicyQualifierId
     Qualifier Qualifier
 
-@derive(Json)
 struct PutPolicyRequest:
     str ResourceArn
     str Policy
 
-@derive(Json)
 struct Qualifier:
     str CpsUri
 
-@derive(Json)
 struct RequestAlreadyProcessedException:
     Optional[str] message
 
-@derive(Json)
 struct RequestFailedException:
     Optional[str] message
 
-@derive(Json)
 struct RequestInProgressException:
     Optional[str] message
 
-@derive(Json)
 struct ResourceNotFoundException:
     Optional[str] message
 
-@derive(Json)
 struct RestoreCertificateAuthorityRequest:
     str CertificateAuthorityArn
 
-@derive(Json)
 struct RevocationConfiguration:
     Optional[CrlConfiguration] CrlConfiguration
     Optional[OcspConfiguration] OcspConfiguration
 
-@derive(Json)
 struct RevokeCertificateRequest:
     str CertificateAuthorityArn
     str CertificateSerial
-    RevocationReason RevocationReason
+    str RevocationReason
 
-@derive(Json)
 struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagCertificateAuthorityRequest:
     str CertificateAuthorityArn
     list[Tag] Tags
 
-@derive(Json)
 struct TooManyTagsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagCertificateAuthorityRequest:
     str CertificateAuthorityArn
     list[Tag] Tags
 
-@derive(Json)
 struct UpdateCertificateAuthorityRequest:
     str CertificateAuthorityArn
     Optional[RevocationConfiguration] RevocationConfiguration
-    Optional[CertificateAuthorityStatus] Status
+    Optional[str] Status
 
-@derive(Json)
 struct Validity:
     int64 Value
-    ValidityPeriodType Type
+    str Type
 
 # --- errors ----------------------------------------------------------------
 
@@ -692,7 +577,7 @@ struct Validity:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -814,284 +699,780 @@ def acm_pca_error_name(ACM_PCAErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def acm_pca_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListCertificateAuthorities
+#   ListPermissions
+#   ListTags
 
-def acm_pca_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   AuditReportCreated
+#   CertificateAuthorityCSRCreated
+#   CertificateIssued
 
-def acm_pca_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize ASN1Subject to a compact JSON object (declaration order).
-def asn1_subject_to_json(ASN1Subject v) -> str:
-    list[str] parts = []
+# Serialize ASN1Subject to a CBOR map (member wire name -> value, model order).
+def asn1_subject_to_cbor(ASN1Subject v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Country.is_some():
         auto u0 = v.Country.unwrap()
-        parts.append("\"Country\":" + acm_pca_json_str(u0))
+        keys.append("Country")
+        vals.append(cbor.cbor_text(u0))
     if v.Organization.is_some():
         auto u1 = v.Organization.unwrap()
-        parts.append("\"Organization\":" + acm_pca_json_str(u1))
+        keys.append("Organization")
+        vals.append(cbor.cbor_text(u1))
     if v.OrganizationalUnit.is_some():
         auto u2 = v.OrganizationalUnit.unwrap()
-        parts.append("\"OrganizationalUnit\":" + acm_pca_json_str(u2))
+        keys.append("OrganizationalUnit")
+        vals.append(cbor.cbor_text(u2))
     if v.DistinguishedNameQualifier.is_some():
         auto u3 = v.DistinguishedNameQualifier.unwrap()
-        parts.append("\"DistinguishedNameQualifier\":" + acm_pca_json_str(u3))
+        keys.append("DistinguishedNameQualifier")
+        vals.append(cbor.cbor_text(u3))
     if v.State.is_some():
         auto u4 = v.State.unwrap()
-        parts.append("\"State\":" + acm_pca_json_str(u4))
+        keys.append("State")
+        vals.append(cbor.cbor_text(u4))
     if v.CommonName.is_some():
         auto u5 = v.CommonName.unwrap()
-        parts.append("\"CommonName\":" + acm_pca_json_str(u5))
+        keys.append("CommonName")
+        vals.append(cbor.cbor_text(u5))
     if v.SerialNumber.is_some():
         auto u6 = v.SerialNumber.unwrap()
-        parts.append("\"SerialNumber\":" + acm_pca_json_str(u6))
+        keys.append("SerialNumber")
+        vals.append(cbor.cbor_text(u6))
     if v.Locality.is_some():
         auto u7 = v.Locality.unwrap()
-        parts.append("\"Locality\":" + acm_pca_json_str(u7))
+        keys.append("Locality")
+        vals.append(cbor.cbor_text(u7))
     if v.Title.is_some():
         auto u8 = v.Title.unwrap()
-        parts.append("\"Title\":" + acm_pca_json_str(u8))
+        keys.append("Title")
+        vals.append(cbor.cbor_text(u8))
     if v.Surname.is_some():
         auto u9 = v.Surname.unwrap()
-        parts.append("\"Surname\":" + acm_pca_json_str(u9))
+        keys.append("Surname")
+        vals.append(cbor.cbor_text(u9))
     if v.GivenName.is_some():
         auto u10 = v.GivenName.unwrap()
-        parts.append("\"GivenName\":" + acm_pca_json_str(u10))
+        keys.append("GivenName")
+        vals.append(cbor.cbor_text(u10))
     if v.Initials.is_some():
         auto u11 = v.Initials.unwrap()
-        parts.append("\"Initials\":" + acm_pca_json_str(u11))
+        keys.append("Initials")
+        vals.append(cbor.cbor_text(u11))
     if v.Pseudonym.is_some():
         auto u12 = v.Pseudonym.unwrap()
-        parts.append("\"Pseudonym\":" + acm_pca_json_str(u12))
+        keys.append("Pseudonym")
+        vals.append(cbor.cbor_text(u12))
     if v.GenerationQualifier.is_some():
         auto u13 = v.GenerationQualifier.unwrap()
-        parts.append("\"GenerationQualifier\":" + acm_pca_json_str(u13))
+        keys.append("GenerationQualifier")
+        vals.append(cbor.cbor_text(u13))
     if v.CustomAttributes.is_some():
         auto u14 = v.CustomAttributes.unwrap()
-        list[str] e15 = []
+        list[cbor.CborValue] e15 = []
         for x15 in u14:
-            e15.append(x15.to_json())
-        parts.append("\"CustomAttributes\":" + acm_pca_json_arr(e15))
-    return acm_pca_json_obj(parts)
+            e15.append(custom_attribute_to_cbor(x15))
+        keys.append("CustomAttributes")
+        vals.append(cbor.cbor_list(e15))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AccessDescription to a compact JSON object (declaration order).
-def access_description_to_json(AccessDescription v) -> str:
-    list[str] parts = []
-    parts.append("\"AccessMethod\":" + v.AccessMethod.to_json())
-    parts.append("\"AccessLocation\":" + general_name_to_json(v.AccessLocation))
-    return acm_pca_json_obj(parts)
+# Serialize AccessDescription to a CBOR map (member wire name -> value, model order).
+def access_description_to_cbor(AccessDescription v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AccessMethod")
+    vals.append(access_method_to_cbor(v.AccessMethod))
+    keys.append("AccessLocation")
+    vals.append(general_name_to_cbor(v.AccessLocation))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ApiPassthrough to a compact JSON object (declaration order).
-def api_passthrough_to_json(ApiPassthrough v) -> str:
-    list[str] parts = []
+# Serialize AccessMethod to a CBOR map (member wire name -> value, model order).
+def access_method_to_cbor(AccessMethod v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.CustomObjectIdentifier.is_some():
+        auto u0 = v.CustomObjectIdentifier.unwrap()
+        keys.append("CustomObjectIdentifier")
+        vals.append(cbor.cbor_text(u0))
+    if v.AccessMethodType.is_some():
+        auto u1 = v.AccessMethodType.unwrap()
+        keys.append("AccessMethodType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ApiPassthrough to a CBOR map (member wire name -> value, model order).
+def api_passthrough_to_cbor(ApiPassthrough v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Extensions.is_some():
         auto u0 = v.Extensions.unwrap()
-        parts.append("\"Extensions\":" + extensions_to_json(u0))
+        keys.append("Extensions")
+        vals.append(extensions_to_cbor(u0))
     if v.Subject.is_some():
         auto u1 = v.Subject.unwrap()
-        parts.append("\"Subject\":" + asn1_subject_to_json(u1))
-    return acm_pca_json_obj(parts)
+        keys.append("Subject")
+        vals.append(asn1_subject_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CertificateAuthorityConfiguration to a compact JSON object (declaration order).
-def certificate_authority_configuration_to_json(CertificateAuthorityConfiguration v) -> str:
-    list[str] parts = []
-    parts.append("\"KeyAlgorithm\":" + v.KeyAlgorithm.to_json())
-    parts.append("\"SigningAlgorithm\":" + v.SigningAlgorithm.to_json())
-    parts.append("\"Subject\":" + asn1_subject_to_json(v.Subject))
+# Serialize CertificateAuthorityConfiguration to a CBOR map (member wire name -> value, model order).
+def certificate_authority_configuration_to_cbor(CertificateAuthorityConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("KeyAlgorithm")
+    vals.append(cbor.cbor_text(v.KeyAlgorithm))
+    keys.append("SigningAlgorithm")
+    vals.append(cbor.cbor_text(v.SigningAlgorithm))
+    keys.append("Subject")
+    vals.append(asn1_subject_to_cbor(v.Subject))
     if v.CsrExtensions.is_some():
         auto u0 = v.CsrExtensions.unwrap()
-        parts.append("\"CsrExtensions\":" + csr_extensions_to_json(u0))
-    return acm_pca_json_obj(parts)
+        keys.append("CsrExtensions")
+        vals.append(csr_extensions_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateCertificateAuthorityRequest to a compact JSON object (declaration order).
-def create_certificate_authority_request_to_json(CreateCertificateAuthorityRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"CertificateAuthorityConfiguration\":" + certificate_authority_configuration_to_json(v.CertificateAuthorityConfiguration))
+# Serialize CreateCertificateAuthorityAuditReportRequest to a CBOR map (member wire name -> value, model order).
+def create_certificate_authority_audit_report_request_to_cbor(CreateCertificateAuthorityAuditReportRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("S3BucketName")
+    vals.append(cbor.cbor_text(v.S3BucketName))
+    keys.append("AuditReportResponseFormat")
+    vals.append(cbor.cbor_text(v.AuditReportResponseFormat))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def create_certificate_authority_request_to_cbor(CreateCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityConfiguration")
+    vals.append(certificate_authority_configuration_to_cbor(v.CertificateAuthorityConfiguration))
     if v.RevocationConfiguration.is_some():
         auto u0 = v.RevocationConfiguration.unwrap()
-        parts.append("\"RevocationConfiguration\":" + u0.to_json())
-    parts.append("\"CertificateAuthorityType\":" + v.CertificateAuthorityType.to_json())
+        keys.append("RevocationConfiguration")
+        vals.append(revocation_configuration_to_cbor(u0))
+    keys.append("CertificateAuthorityType")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityType))
     if v.IdempotencyToken.is_some():
         auto u1 = v.IdempotencyToken.unwrap()
-        parts.append("\"IdempotencyToken\":" + acm_pca_json_str(u1))
+        keys.append("IdempotencyToken")
+        vals.append(cbor.cbor_text(u1))
     if v.KeyStorageSecurityStandard.is_some():
         auto u2 = v.KeyStorageSecurityStandard.unwrap()
-        parts.append("\"KeyStorageSecurityStandard\":" + u2.to_json())
+        keys.append("KeyStorageSecurityStandard")
+        vals.append(cbor.cbor_text(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + acm_pca_json_arr(e4))
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
     if v.UsageMode.is_some():
         auto u5 = v.UsageMode.unwrap()
-        parts.append("\"UsageMode\":" + u5.to_json())
-    return acm_pca_json_obj(parts)
+        keys.append("UsageMode")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreatePermissionRequest to a compact JSON object (declaration order).
-def create_permission_request_to_json(CreatePermissionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
-    parts.append("\"Principal\":" + acm_pca_json_str(v.Principal))
+# Serialize CreatePermissionRequest to a CBOR map (member wire name -> value, model order).
+def create_permission_request_to_cbor(CreatePermissionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("Principal")
+    vals.append(cbor.cbor_text(v.Principal))
     if v.SourceAccount.is_some():
         auto u0 = v.SourceAccount.unwrap()
-        parts.append("\"SourceAccount\":" + acm_pca_json_str(u0))
-    list[str] e1 = []
+        keys.append("SourceAccount")
+        vals.append(cbor.cbor_text(u0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.Actions:
-        e1.append(x1.to_json())
-    parts.append("\"Actions\":" + acm_pca_json_arr(e1))
-    return acm_pca_json_obj(parts)
+        e1.append(cbor.cbor_text(x1))
+    keys.append("Actions")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CsrExtensions to a compact JSON object (declaration order).
-def csr_extensions_to_json(CsrExtensions v) -> str:
-    list[str] parts = []
+# Serialize CrlConfiguration to a CBOR map (member wire name -> value, model order).
+def crl_configuration_to_cbor(CrlConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Enabled")
+    vals.append(cbor.cbor_bool(v.Enabled))
+    if v.ExpirationInDays.is_some():
+        auto u0 = v.ExpirationInDays.unwrap()
+        keys.append("ExpirationInDays")
+        vals.append(cbor.cbor_int(u0))
+    if v.CustomCname.is_some():
+        auto u1 = v.CustomCname.unwrap()
+        keys.append("CustomCname")
+        vals.append(cbor.cbor_text(u1))
+    if v.S3BucketName.is_some():
+        auto u2 = v.S3BucketName.unwrap()
+        keys.append("S3BucketName")
+        vals.append(cbor.cbor_text(u2))
+    if v.S3ObjectAcl.is_some():
+        auto u3 = v.S3ObjectAcl.unwrap()
+        keys.append("S3ObjectAcl")
+        vals.append(cbor.cbor_text(u3))
+    if v.CrlDistributionPointExtensionConfiguration.is_some():
+        auto u4 = v.CrlDistributionPointExtensionConfiguration.unwrap()
+        keys.append("CrlDistributionPointExtensionConfiguration")
+        vals.append(crl_distribution_point_extension_configuration_to_cbor(u4))
+    if v.CrlType.is_some():
+        auto u5 = v.CrlType.unwrap()
+        keys.append("CrlType")
+        vals.append(cbor.cbor_text(u5))
+    if v.CustomPath.is_some():
+        auto u6 = v.CustomPath.unwrap()
+        keys.append("CustomPath")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CrlDistributionPointExtensionConfiguration to a CBOR map (member wire name -> value, model order).
+def crl_distribution_point_extension_configuration_to_cbor(CrlDistributionPointExtensionConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("OmitExtension")
+    vals.append(cbor.cbor_bool(v.OmitExtension))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CsrExtensions to a CBOR map (member wire name -> value, model order).
+def csr_extensions_to_cbor(CsrExtensions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.KeyUsage.is_some():
         auto u0 = v.KeyUsage.unwrap()
-        parts.append("\"KeyUsage\":" + u0.to_json())
+        keys.append("KeyUsage")
+        vals.append(key_usage_to_cbor(u0))
     if v.SubjectInformationAccess.is_some():
         auto u1 = v.SubjectInformationAccess.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(access_description_to_json(x2))
-        parts.append("\"SubjectInformationAccess\":" + acm_pca_json_arr(e2))
-    return acm_pca_json_obj(parts)
+            e2.append(access_description_to_cbor(x2))
+        keys.append("SubjectInformationAccess")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize Extensions to a compact JSON object (declaration order).
-def extensions_to_json(Extensions v) -> str:
-    list[str] parts = []
+# Serialize CustomAttribute to a CBOR map (member wire name -> value, model order).
+def custom_attribute_to_cbor(CustomAttribute v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ObjectIdentifier")
+    vals.append(cbor.cbor_text(v.ObjectIdentifier))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CustomExtension to a CBOR map (member wire name -> value, model order).
+def custom_extension_to_cbor(CustomExtension v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ObjectIdentifier")
+    vals.append(cbor.cbor_text(v.ObjectIdentifier))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    if v.Critical.is_some():
+        auto u0 = v.Critical.unwrap()
+        keys.append("Critical")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def delete_certificate_authority_request_to_cbor(DeleteCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    if v.PermanentDeletionTimeInDays.is_some():
+        auto u0 = v.PermanentDeletionTimeInDays.unwrap()
+        keys.append("PermanentDeletionTimeInDays")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeletePermissionRequest to a CBOR map (member wire name -> value, model order).
+def delete_permission_request_to_cbor(DeletePermissionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("Principal")
+    vals.append(cbor.cbor_text(v.Principal))
+    if v.SourceAccount.is_some():
+        auto u0 = v.SourceAccount.unwrap()
+        keys.append("SourceAccount")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeletePolicyRequest to a CBOR map (member wire name -> value, model order).
+def delete_policy_request_to_cbor(DeletePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeCertificateAuthorityAuditReportRequest to a CBOR map (member wire name -> value, model order).
+def describe_certificate_authority_audit_report_request_to_cbor(DescribeCertificateAuthorityAuditReportRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("AuditReportId")
+    vals.append(cbor.cbor_text(v.AuditReportId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def describe_certificate_authority_request_to_cbor(DescribeCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EdiPartyName to a CBOR map (member wire name -> value, model order).
+def edi_party_name_to_cbor(EdiPartyName v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PartyName")
+    vals.append(cbor.cbor_text(v.PartyName))
+    if v.NameAssigner.is_some():
+        auto u0 = v.NameAssigner.unwrap()
+        keys.append("NameAssigner")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ExtendedKeyUsage to a CBOR map (member wire name -> value, model order).
+def extended_key_usage_to_cbor(ExtendedKeyUsage v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ExtendedKeyUsageType.is_some():
+        auto u0 = v.ExtendedKeyUsageType.unwrap()
+        keys.append("ExtendedKeyUsageType")
+        vals.append(cbor.cbor_text(u0))
+    if v.ExtendedKeyUsageObjectIdentifier.is_some():
+        auto u1 = v.ExtendedKeyUsageObjectIdentifier.unwrap()
+        keys.append("ExtendedKeyUsageObjectIdentifier")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Extensions to a CBOR map (member wire name -> value, model order).
+def extensions_to_cbor(Extensions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.CertificatePolicies.is_some():
         auto u0 = v.CertificatePolicies.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(policy_information_to_json(x1))
-        parts.append("\"CertificatePolicies\":" + acm_pca_json_arr(e1))
+            e1.append(policy_information_to_cbor(x1))
+        keys.append("CertificatePolicies")
+        vals.append(cbor.cbor_list(e1))
     if v.ExtendedKeyUsage.is_some():
         auto u2 = v.ExtendedKeyUsage.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"ExtendedKeyUsage\":" + acm_pca_json_arr(e3))
+            e3.append(extended_key_usage_to_cbor(x3))
+        keys.append("ExtendedKeyUsage")
+        vals.append(cbor.cbor_list(e3))
     if v.KeyUsage.is_some():
         auto u4 = v.KeyUsage.unwrap()
-        parts.append("\"KeyUsage\":" + u4.to_json())
+        keys.append("KeyUsage")
+        vals.append(key_usage_to_cbor(u4))
     if v.SubjectAlternativeNames.is_some():
         auto u5 = v.SubjectAlternativeNames.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(general_name_to_json(x6))
-        parts.append("\"SubjectAlternativeNames\":" + acm_pca_json_arr(e6))
+            e6.append(general_name_to_cbor(x6))
+        keys.append("SubjectAlternativeNames")
+        vals.append(cbor.cbor_list(e6))
     if v.CustomExtensions.is_some():
         auto u7 = v.CustomExtensions.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"CustomExtensions\":" + acm_pca_json_arr(e8))
-    return acm_pca_json_obj(parts)
+            e8.append(custom_extension_to_cbor(x8))
+        keys.append("CustomExtensions")
+        vals.append(cbor.cbor_list(e8))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GeneralName to a compact JSON object (declaration order).
-def general_name_to_json(GeneralName v) -> str:
-    list[str] parts = []
+# Serialize GeneralName to a CBOR map (member wire name -> value, model order).
+def general_name_to_cbor(GeneralName v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.OtherName.is_some():
         auto u0 = v.OtherName.unwrap()
-        parts.append("\"OtherName\":" + u0.to_json())
+        keys.append("OtherName")
+        vals.append(other_name_to_cbor(u0))
     if v.Rfc822Name.is_some():
         auto u1 = v.Rfc822Name.unwrap()
-        parts.append("\"Rfc822Name\":" + acm_pca_json_str(u1))
+        keys.append("Rfc822Name")
+        vals.append(cbor.cbor_text(u1))
     if v.DnsName.is_some():
         auto u2 = v.DnsName.unwrap()
-        parts.append("\"DnsName\":" + acm_pca_json_str(u2))
+        keys.append("DnsName")
+        vals.append(cbor.cbor_text(u2))
     if v.DirectoryName.is_some():
         auto u3 = v.DirectoryName.unwrap()
-        parts.append("\"DirectoryName\":" + asn1_subject_to_json(u3))
+        keys.append("DirectoryName")
+        vals.append(asn1_subject_to_cbor(u3))
     if v.EdiPartyName.is_some():
         auto u4 = v.EdiPartyName.unwrap()
-        parts.append("\"EdiPartyName\":" + u4.to_json())
+        keys.append("EdiPartyName")
+        vals.append(edi_party_name_to_cbor(u4))
     if v.UniformResourceIdentifier.is_some():
         auto u5 = v.UniformResourceIdentifier.unwrap()
-        parts.append("\"UniformResourceIdentifier\":" + acm_pca_json_str(u5))
+        keys.append("UniformResourceIdentifier")
+        vals.append(cbor.cbor_text(u5))
     if v.IpAddress.is_some():
         auto u6 = v.IpAddress.unwrap()
-        parts.append("\"IpAddress\":" + acm_pca_json_str(u6))
+        keys.append("IpAddress")
+        vals.append(cbor.cbor_text(u6))
     if v.RegisteredId.is_some():
         auto u7 = v.RegisteredId.unwrap()
-        parts.append("\"RegisteredId\":" + acm_pca_json_str(u7))
-    return acm_pca_json_obj(parts)
+        keys.append("RegisteredId")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize IssueCertificateRequest to a compact JSON object (declaration order).
-def issue_certificate_request_to_json(IssueCertificateRequest v) -> str:
-    list[str] parts = []
+# Serialize GetCertificateAuthorityCertificateRequest to a CBOR map (member wire name -> value, model order).
+def get_certificate_authority_certificate_request_to_cbor(GetCertificateAuthorityCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetCertificateAuthorityCsrRequest to a CBOR map (member wire name -> value, model order).
+def get_certificate_authority_csr_request_to_cbor(GetCertificateAuthorityCsrRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetCertificateRequest to a CBOR map (member wire name -> value, model order).
+def get_certificate_request_to_cbor(GetCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("CertificateArn")
+    vals.append(cbor.cbor_text(v.CertificateArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetPolicyRequest to a CBOR map (member wire name -> value, model order).
+def get_policy_request_to_cbor(GetPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImportCertificateAuthorityCertificateRequest to a CBOR map (member wire name -> value, model order).
+def import_certificate_authority_certificate_request_to_cbor(ImportCertificateAuthorityCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("Certificate")
+    vals.append(cbor.cbor_blob(v.Certificate))
+    if v.CertificateChain.is_some():
+        auto u0 = v.CertificateChain.unwrap()
+        keys.append("CertificateChain")
+        vals.append(cbor.cbor_blob(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize IssueCertificateRequest to a CBOR map (member wire name -> value, model order).
+def issue_certificate_request_to_cbor(IssueCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ApiPassthrough.is_some():
         auto u0 = v.ApiPassthrough.unwrap()
-        parts.append("\"ApiPassthrough\":" + api_passthrough_to_json(u0))
-    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
-    parts.append("\"Csr\":" + acm_pca_json_str(base64.encode(v.Csr)))
-    parts.append("\"SigningAlgorithm\":" + v.SigningAlgorithm.to_json())
+        keys.append("ApiPassthrough")
+        vals.append(api_passthrough_to_cbor(u0))
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("Csr")
+    vals.append(cbor.cbor_blob(v.Csr))
+    keys.append("SigningAlgorithm")
+    vals.append(cbor.cbor_text(v.SigningAlgorithm))
     if v.TemplateArn.is_some():
         auto u1 = v.TemplateArn.unwrap()
-        parts.append("\"TemplateArn\":" + acm_pca_json_str(u1))
-    parts.append("\"Validity\":" + v.Validity.to_json())
+        keys.append("TemplateArn")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("Validity")
+    vals.append(validity_to_cbor(v.Validity))
     if v.ValidityNotBefore.is_some():
         auto u2 = v.ValidityNotBefore.unwrap()
-        parts.append("\"ValidityNotBefore\":" + u2.to_json())
+        keys.append("ValidityNotBefore")
+        vals.append(validity_to_cbor(u2))
     if v.IdempotencyToken.is_some():
         auto u3 = v.IdempotencyToken.unwrap()
-        parts.append("\"IdempotencyToken\":" + acm_pca_json_str(u3))
-    return acm_pca_json_obj(parts)
+        keys.append("IdempotencyToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PolicyInformation to a compact JSON object (declaration order).
-def policy_information_to_json(PolicyInformation v) -> str:
-    list[str] parts = []
-    parts.append("\"CertPolicyId\":" + acm_pca_json_str(v.CertPolicyId))
+# Serialize KeyUsage to a CBOR map (member wire name -> value, model order).
+def key_usage_to_cbor(KeyUsage v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DigitalSignature.is_some():
+        auto u0 = v.DigitalSignature.unwrap()
+        keys.append("DigitalSignature")
+        vals.append(cbor.cbor_bool(u0))
+    if v.NonRepudiation.is_some():
+        auto u1 = v.NonRepudiation.unwrap()
+        keys.append("NonRepudiation")
+        vals.append(cbor.cbor_bool(u1))
+    if v.KeyEncipherment.is_some():
+        auto u2 = v.KeyEncipherment.unwrap()
+        keys.append("KeyEncipherment")
+        vals.append(cbor.cbor_bool(u2))
+    if v.DataEncipherment.is_some():
+        auto u3 = v.DataEncipherment.unwrap()
+        keys.append("DataEncipherment")
+        vals.append(cbor.cbor_bool(u3))
+    if v.KeyAgreement.is_some():
+        auto u4 = v.KeyAgreement.unwrap()
+        keys.append("KeyAgreement")
+        vals.append(cbor.cbor_bool(u4))
+    if v.KeyCertSign.is_some():
+        auto u5 = v.KeyCertSign.unwrap()
+        keys.append("KeyCertSign")
+        vals.append(cbor.cbor_bool(u5))
+    if v.CRLSign.is_some():
+        auto u6 = v.CRLSign.unwrap()
+        keys.append("CRLSign")
+        vals.append(cbor.cbor_bool(u6))
+    if v.EncipherOnly.is_some():
+        auto u7 = v.EncipherOnly.unwrap()
+        keys.append("EncipherOnly")
+        vals.append(cbor.cbor_bool(u7))
+    if v.DecipherOnly.is_some():
+        auto u8 = v.DecipherOnly.unwrap()
+        keys.append("DecipherOnly")
+        vals.append(cbor.cbor_bool(u8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListCertificateAuthoritiesRequest to a CBOR map (member wire name -> value, model order).
+def list_certificate_authorities_request_to_cbor(ListCertificateAuthoritiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.ResourceOwner.is_some():
+        auto u2 = v.ResourceOwner.unwrap()
+        keys.append("ResourceOwner")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPermissionsRequest to a CBOR map (member wire name -> value, model order).
+def list_permissions_request_to_cbor(ListPermissionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_request_to_cbor(ListTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OcspConfiguration to a CBOR map (member wire name -> value, model order).
+def ocsp_configuration_to_cbor(OcspConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Enabled")
+    vals.append(cbor.cbor_bool(v.Enabled))
+    if v.OcspCustomCname.is_some():
+        auto u0 = v.OcspCustomCname.unwrap()
+        keys.append("OcspCustomCname")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OtherName to a CBOR map (member wire name -> value, model order).
+def other_name_to_cbor(OtherName v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TypeId")
+    vals.append(cbor.cbor_text(v.TypeId))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PolicyInformation to a CBOR map (member wire name -> value, model order).
+def policy_information_to_cbor(PolicyInformation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertPolicyId")
+    vals.append(cbor.cbor_text(v.CertPolicyId))
     if v.PolicyQualifiers.is_some():
         auto u0 = v.PolicyQualifiers.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"PolicyQualifiers\":" + acm_pca_json_arr(e1))
-    return acm_pca_json_obj(parts)
+            e1.append(policy_qualifier_info_to_cbor(x1))
+        keys.append("PolicyQualifiers")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagCertificateAuthorityRequest to a compact JSON object (declaration order).
-def tag_certificate_authority_request_to_json(TagCertificateAuthorityRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
-    list[str] e0 = []
-    for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + acm_pca_json_arr(e0))
-    return acm_pca_json_obj(parts)
+# Serialize PolicyQualifierInfo to a CBOR map (member wire name -> value, model order).
+def policy_qualifier_info_to_cbor(PolicyQualifierInfo v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PolicyQualifierId")
+    vals.append(cbor.cbor_text(v.PolicyQualifierId))
+    keys.append("Qualifier")
+    vals.append(qualifier_to_cbor(v.Qualifier))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagCertificateAuthorityRequest to a compact JSON object (declaration order).
-def untag_certificate_authority_request_to_json(UntagCertificateAuthorityRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"CertificateAuthorityArn\":" + acm_pca_json_str(v.CertificateAuthorityArn))
-    list[str] e0 = []
+# Serialize PutPolicyRequest to a CBOR map (member wire name -> value, model order).
+def put_policy_request_to_cbor(PutPolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    keys.append("Policy")
+    vals.append(cbor.cbor_text(v.Policy))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Qualifier to a CBOR map (member wire name -> value, model order).
+def qualifier_to_cbor(Qualifier v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CpsUri")
+    vals.append(cbor.cbor_text(v.CpsUri))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RestoreCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def restore_certificate_authority_request_to_cbor(RestoreCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RevocationConfiguration to a CBOR map (member wire name -> value, model order).
+def revocation_configuration_to_cbor(RevocationConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.CrlConfiguration.is_some():
+        auto u0 = v.CrlConfiguration.unwrap()
+        keys.append("CrlConfiguration")
+        vals.append(crl_configuration_to_cbor(u0))
+    if v.OcspConfiguration.is_some():
+        auto u1 = v.OcspConfiguration.unwrap()
+        keys.append("OcspConfiguration")
+        vals.append(ocsp_configuration_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RevokeCertificateRequest to a CBOR map (member wire name -> value, model order).
+def revoke_certificate_request_to_cbor(RevokeCertificateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    keys.append("CertificateSerial")
+    vals.append(cbor.cbor_text(v.CertificateSerial))
+    keys.append("RevocationReason")
+    vals.append(cbor.cbor_text(v.RevocationReason))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def tag_certificate_authority_request_to_cbor(TagCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + acm_pca_json_arr(e0))
-    return acm_pca_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UntagCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def untag_certificate_authority_request_to_cbor(UntagCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Tags:
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateCertificateAuthorityRequest to a CBOR map (member wire name -> value, model order).
+def update_certificate_authority_request_to_cbor(UpdateCertificateAuthorityRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("CertificateAuthorityArn")
+    vals.append(cbor.cbor_text(v.CertificateAuthorityArn))
+    if v.RevocationConfiguration.is_some():
+        auto u0 = v.RevocationConfiguration.unwrap()
+        keys.append("RevocationConfiguration")
+        vals.append(revocation_configuration_to_cbor(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Validity to a CBOR map (member wire name -> value, model order).
+def validity_to_cbor(Validity v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Value")
+    vals.append(cbor.cbor_int(v.Value))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
 
 # A bound ACM_PCA client: credentials + region, threaded into every operation.
 struct ACM_PCAClient:
@@ -1100,255 +1481,210 @@ struct ACM_PCAClient:
 
     # CreateCertificateAuthority
     # errors: InvalidArgsException, InvalidPolicyException, InvalidTagException, LimitExceededException
-    def create_certificate_authority(self, CreateCertificateAuthorityRequest input) -> str:
-        auto body = create_certificate_authority_request_to_json(input)
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "CreateCertificateAuthority", body)
+    def create_certificate_authority(self, CreateCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "CreateCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateCertificateAuthorityAuditReport
     # errors: InvalidArgsException, InvalidArnException, InvalidStateException, RequestFailedException, RequestInProgressException, ResourceNotFoundException
-    def create_certificate_authority_audit_report(self, CreateCertificateAuthorityAuditReportRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "CreateCertificateAuthorityAuditReport", body)
+    def create_certificate_authority_audit_report(self, CreateCertificateAuthorityAuditReportRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_certificate_authority_audit_report_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "CreateCertificateAuthorityAuditReport", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePermission
     # errors: InvalidArnException, InvalidStateException, LimitExceededException, PermissionAlreadyExistsException, RequestFailedException, ResourceNotFoundException
-    def create_permission(self, CreatePermissionRequest input) -> str:
-        auto body = create_permission_request_to_json(input)
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "CreatePermission", body)
+    def create_permission(self, CreatePermissionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_permission_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "CreatePermission", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteCertificateAuthority
     # errors: ConcurrentModificationException, InvalidArnException, InvalidStateException, ResourceNotFoundException
-    def delete_certificate_authority(self, DeleteCertificateAuthorityRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "DeleteCertificateAuthority", body)
+    def delete_certificate_authority(self, DeleteCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "DeleteCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeletePermission
     # errors: InvalidArnException, InvalidStateException, RequestFailedException, ResourceNotFoundException
-    def delete_permission(self, DeletePermissionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "DeletePermission", body)
+    def delete_permission(self, DeletePermissionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_permission_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "DeletePermission", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeletePolicy
     # errors: ConcurrentModificationException, InvalidArnException, InvalidStateException, LockoutPreventedException, RequestFailedException, ResourceNotFoundException
-    def delete_policy(self, DeletePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "DeletePolicy", body)
+    def delete_policy(self, DeletePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "DeletePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCertificateAuthority
     # errors: InvalidArnException, ResourceNotFoundException
-    def describe_certificate_authority(self, DescribeCertificateAuthorityRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "DescribeCertificateAuthority", body)
+    def describe_certificate_authority(self, DescribeCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "DescribeCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCertificateAuthorityAuditReport
     # errors: InvalidArgsException, InvalidArnException, ResourceNotFoundException
-    def describe_certificate_authority_audit_report(self, DescribeCertificateAuthorityAuditReportRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "DescribeCertificateAuthorityAuditReport", body)
+    def describe_certificate_authority_audit_report(self, DescribeCertificateAuthorityAuditReportRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_certificate_authority_audit_report_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "DescribeCertificateAuthorityAuditReport", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetCertificate
     # errors: InvalidArnException, InvalidStateException, RequestFailedException, RequestInProgressException, ResourceNotFoundException
-    def get_certificate(self, GetCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "GetCertificate", body)
+    def get_certificate(self, GetCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "GetCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetCertificateAuthorityCertificate
     # errors: InvalidArnException, InvalidStateException, ResourceNotFoundException
-    def get_certificate_authority_certificate(self, GetCertificateAuthorityCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "GetCertificateAuthorityCertificate", body)
+    def get_certificate_authority_certificate(self, GetCertificateAuthorityCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_certificate_authority_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "GetCertificateAuthorityCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetCertificateAuthorityCsr
     # errors: InvalidArnException, InvalidStateException, RequestFailedException, RequestInProgressException, ResourceNotFoundException
-    def get_certificate_authority_csr(self, GetCertificateAuthorityCsrRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "GetCertificateAuthorityCsr", body)
+    def get_certificate_authority_csr(self, GetCertificateAuthorityCsrRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_certificate_authority_csr_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "GetCertificateAuthorityCsr", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetPolicy
     # errors: InvalidArnException, InvalidStateException, RequestFailedException, ResourceNotFoundException
-    def get_policy(self, GetPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "GetPolicy", body)
+    def get_policy(self, GetPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "GetPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportCertificateAuthorityCertificate
     # errors: CertificateMismatchException, ConcurrentModificationException, InvalidArnException, InvalidRequestException, InvalidStateException, MalformedCertificateException, RequestFailedException, RequestInProgressException, ResourceNotFoundException
-    def import_certificate_authority_certificate(self, ImportCertificateAuthorityCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ImportCertificateAuthorityCertificate", body)
+    def import_certificate_authority_certificate(self, ImportCertificateAuthorityCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(import_certificate_authority_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "ImportCertificateAuthorityCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # IssueCertificate
     # errors: InvalidArgsException, InvalidArnException, InvalidStateException, LimitExceededException, MalformedCSRException, ResourceNotFoundException
-    def issue_certificate(self, IssueCertificateRequest input) -> str:
-        auto body = issue_certificate_request_to_json(input)
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "IssueCertificate", body)
+    def issue_certificate(self, IssueCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(issue_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "IssueCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListCertificateAuthorities
     # errors: InvalidNextTokenException
-    def list_certificate_authorities(self, ListCertificateAuthoritiesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ListCertificateAuthorities", body)
+    def list_certificate_authorities(self, ListCertificateAuthoritiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_certificate_authorities_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "ListCertificateAuthorities", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPermissions
     # errors: InvalidArnException, InvalidNextTokenException, InvalidStateException, RequestFailedException, ResourceNotFoundException
-    def list_permissions(self, ListPermissionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ListPermissions", body)
+    def list_permissions(self, ListPermissionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_permissions_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "ListPermissions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTags
     # errors: InvalidArnException, InvalidStateException, RequestFailedException, ResourceNotFoundException
-    def list_tags(self, ListTagsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ListTags", body)
+    def list_tags(self, ListTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "ListTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutPolicy
     # errors: ConcurrentModificationException, InvalidArnException, InvalidPolicyException, InvalidStateException, LockoutPreventedException, RequestFailedException, ResourceNotFoundException
-    def put_policy(self, PutPolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "PutPolicy", body)
+    def put_policy(self, PutPolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(put_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "PutPolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RestoreCertificateAuthority
     # errors: InvalidArnException, InvalidStateException, ResourceNotFoundException
-    def restore_certificate_authority(self, RestoreCertificateAuthorityRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "RestoreCertificateAuthority", body)
+    def restore_certificate_authority(self, RestoreCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(restore_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "RestoreCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RevokeCertificate
     # errors: ConcurrentModificationException, InvalidArnException, InvalidRequestException, InvalidStateException, LimitExceededException, RequestAlreadyProcessedException, RequestFailedException, RequestInProgressException, ResourceNotFoundException
-    def revoke_certificate(self, RevokeCertificateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "RevokeCertificate", body)
+    def revoke_certificate(self, RevokeCertificateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(revoke_certificate_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "RevokeCertificate", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagCertificateAuthority
     # errors: InvalidArnException, InvalidStateException, InvalidTagException, ResourceNotFoundException, TooManyTagsException
-    def tag_certificate_authority(self, TagCertificateAuthorityRequest input) -> str:
-        auto body = tag_certificate_authority_request_to_json(input)
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "TagCertificateAuthority", body)
+    def tag_certificate_authority(self, TagCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "TagCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagCertificateAuthority
     # errors: InvalidArnException, InvalidStateException, InvalidTagException, ResourceNotFoundException
-    def untag_certificate_authority(self, UntagCertificateAuthorityRequest input) -> str:
-        auto body = untag_certificate_authority_request_to_json(input)
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "UntagCertificateAuthority", body)
+    def untag_certificate_authority(self, UntagCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "UntagCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateCertificateAuthority
     # errors: ConcurrentModificationException, InvalidArgsException, InvalidArnException, InvalidPolicyException, InvalidStateException, ResourceNotFoundException
-    def update_certificate_authority(self, UpdateCertificateAuthorityRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "UpdateCertificateAuthority", body)
-
-    # Paginator for ListCertificateAuthorities — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: CertificateAuthorities).
-    def paginate_list_certificate_authorities(self, ListCertificateAuthoritiesRequest input):
-        auto host = endpoints.regional_host(acm_pca_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ListCertificateAuthorities", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListPermissions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Permissions).
-    def paginate_list_permissions(self, ListPermissionsRequest input):
-        auto host = endpoints.regional_host(acm_pca_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ListPermissions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTags — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Tags).
-    def paginate_list_tags(self, ListTagsRequest input):
-        auto host = endpoints.regional_host(acm_pca_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(acm_pca_protocol(), self.creds, self.region, "ListTags", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # One poll of DescribeCertificateAuthorityAuditReport for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_describe_certificate_authority_audit_report(self, DescribeCertificateAuthorityAuditReportRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(acm_pca_protocol().service, self.region)
-        auto resp = core.send(host, self.describe_certificate_authority_audit_report(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetCertificateAuthorityCsr for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_certificate_authority_csr(self, GetCertificateAuthorityCsrRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(acm_pca_protocol().service, self.region)
-        auto resp = core.send(host, self.get_certificate_authority_csr(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # One poll of GetCertificate for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_certificate(self, GetCertificateRequest input) -> waiters.Poll:
-        auto host = endpoints.regional_host(acm_pca_protocol().service, self.region)
-        auto resp = core.send(host, self.get_certificate(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # Waiter AuditReportCreated — polls DescribeCertificateAuthorityAuditReport until a success acceptor fires (delay 3s,
-    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_audit_report_created.
-    def wait_audit_report_created(self, DescribeCertificateAuthorityAuditReportRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="AuditReportCreated",
-            delay=3,
-            max_attempts=60,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "AuditReportStatus", "SUCCESS"),
-                waiters.acceptor_path(waiters.state_failure(), "AuditReportStatus", "FAILED"),
-                waiters.acceptor_error(waiters.state_failure(), "AccessDeniedException")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_describe_certificate_authority_audit_report(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter CertificateAuthorityCSRCreated — polls GetCertificateAuthorityCsr until a success acceptor fires (delay 3s,
-    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_certificate_authority_csr_created.
-    def wait_certificate_authority_csr_created(self, GetCertificateAuthorityCsrRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="CertificateAuthorityCSRCreated",
-            delay=3,
-            max_attempts=60,
-            acceptors=[
-                waiters.acceptor_error(waiters.state_success(), "false"),
-                waiters.acceptor_error(waiters.state_retry(), "RequestInProgressException"),
-                waiters.acceptor_error(waiters.state_failure(), "AccessDeniedException")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_certificate_authority_csr(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
-
-    # Waiter CertificateIssued — polls GetCertificate until a success acceptor fires (delay 1s,
-    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_certificate_issued.
-    def wait_certificate_issued(self, GetCertificateRequest input):
-        auto cfg = waiters.WaiterConfig(
-            name="CertificateIssued",
-            delay=1,
-            max_attempts=60,
-            acceptors=[
-                waiters.acceptor_error(waiters.state_success(), "false"),
-                waiters.acceptor_error(waiters.state_retry(), "RequestInProgressException"),
-                waiters.acceptor_error(waiters.state_failure(), "AccessDeniedException")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_certificate(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
+    def update_certificate_authority(self, UpdateCertificateAuthorityRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_certificate_authority_request_to_cbor(input))
+        auto host = endpoints.regional_host(acm_pca_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(acm_pca_service(), self.region, host, "ACMPrivateCA", "UpdateCertificateAuthority", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a ACM_PCAClient bound to credentials + region.
 def acm_pca_client(core.Credentials creds, str region) -> ACM_PCAClient:

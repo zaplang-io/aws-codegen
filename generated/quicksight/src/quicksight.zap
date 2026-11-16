@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 299 operations — 297 with a generated method,
+# Coverage (rest-json): 301 operations — 299 with a generated method,
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   1772 structs (1078 @derive(Json)), 287 enums, 23 error variants.
+#   1776 structs (1082 @derive(Json)), 288 enums, 23 error variants.
 #   49 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2066,6 +2066,13 @@ enum SelfUpgradeRequestStatus:
 enum SelfUpgradeStatus:
     AUTO_APPROVAL
     ADMIN_APPROVAL
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ServiceRoleType:
+    QUICKSIGHT_MANAGED
+    CUSTOMER_MANAGED
     Unknown(str value)
 
 @derive(Json)
@@ -8028,6 +8035,18 @@ struct DescribeRefreshScheduleResponse:
     Optional[int64] Status
     Optional[str] RequestId
     Optional[str] Arn
+
+# rest-json request for DescribeResourcePermissionsRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct DescribeResourcePermissionsRequest:
+    str AwsAccountId
+
+@derive(Json)
+struct DescribeResourcePermissionsResponse:
+    Optional[ServiceRoleType] RoleType
+    Optional[str] CustomerManagedRoleArn
+    Optional[str] RequestId
+    Optional[int64] Status
 
 # rest-json request for DescribeRoleCustomPermissionRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -15753,6 +15772,20 @@ struct UpdateRefreshScheduleResponse:
     Optional[str] ScheduleId
     Optional[str] Arn
 
+# rest-json request for UpdateResourcePermissionsRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateResourcePermissionsRequest:
+    str AwsAccountId
+    ServiceRoleType RoleType
+    str CustomerManagedRoleArn
+
+@derive(Json)
+struct UpdateResourcePermissionsResponse:
+    Optional[ServiceRoleType] RoleType
+    Optional[str] CustomerManagedRoleArn
+    Optional[str] RequestId
+    Optional[int64] Status
+
 # rest-json request for UpdateRoleCustomPermissionRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct UpdateRoleCustomPermissionRequest:
@@ -16818,6 +16851,12 @@ struct UpdateQuickSightQSearchConfigurationDocument:
 struct UpdateRefreshScheduleDocument:
     # document members of UpdateRefreshSchedule
     RefreshSchedule Schedule
+
+@derive(Json)
+struct UpdateResourcePermissionsDocument:
+    # document members of UpdateResourcePermissions
+    ServiceRoleType RoleType
+    str CustomerManagedRoleArn
 
 @derive(Json)
 struct UpdateRoleCustomPermissionDocument:
@@ -27252,6 +27291,15 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
+    # DescribeResourcePermissions  GET /accounts/{AwsAccountId}/account-resource-permissions
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def describe_resource_permissions(self, DescribeResourcePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/account-resource-permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
     # DescribeRoleCustomPermission  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, PreconditionNotMetException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
     def describe_role_custom_permission(self, DescribeRoleCustomPermissionRequest input) -> str:
@@ -29708,6 +29756,17 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRefreshScheduleDocument(Schedule=input.Schedule)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateResourcePermissions  PUT /accounts/{AwsAccountId}/account-resource-permissions
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def update_resource_permissions(self, UpdateResourcePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/account-resource-permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateResourcePermissionsDocument(RoleType=input.RoleType, CustomerManagedRoleArn=input.CustomerManagedRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 

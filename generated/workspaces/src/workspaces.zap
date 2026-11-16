@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: Amazon WorkSpaces (serviceId WorkSpaces, API 2015-04-08)
-# Protocol: awsJson 1.1 (targetPrefix WorkspacesService)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service workspaces, service shape WorkspacesService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 91 operations — 91 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   285 structs (181 @derive(Json)), 64 enums, 23 error variants.
-#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 91 operations — 91 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   285 structs (plain carriers), 64 enums, 23 error variants.
+#   0 paginators generated (9 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import base64
+import aws_core.cbor
 
-# The WorkSpaces awsJson protocol: version 1.1, API id "WorkspacesService".
-def workspaces_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("WorkspacesService", "workspaces")
+# The WorkSpaces smithy-rpc-v2-cbor protocol: SigV4 service "workspaces" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/WorkspacesService/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def workspaces_service() -> str:
+    return "workspaces"
 
 # --- enums -----------------------------------------------------------------
 
@@ -374,6 +377,12 @@ enum OperatingSystemName:
     WINDOWS_SERVER_2025
     RHEL_8
     ROCKY_8
+    UBUNTU_24_04
+    RHEL_9
+    ROCKY_9
+    UBUNTU_26_04
+    RHEL_10
+    ROCKY_10
     Unknown(str value)
 
 @derive(Json)
@@ -698,207 +707,162 @@ enum WorkspacesPoolState:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AcceptAccountLinkInvitationRequest:
     str LinkId
     Optional[str] ClientToken
 
-@derive(Json)
 struct AcceptAccountLinkInvitationResult:
     Optional[AccountLink] AccountLink
 
-@derive(Json)
 struct AccessDeniedException:
     Optional[str] message
 
-@derive(Json)
 struct AccessEndpoint:
     Optional[str] AccessEndpointType
     Optional[str] VpcEndpointId
 
-# no @derive(Json): member(s) AccessEndpoints: list[AccessEndpoint], InternetFallbackProtocols: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AccessEndpointConfig:
     list[AccessEndpoint] AccessEndpoints
     Optional[list[str]] InternetFallbackProtocols
 
-@derive(Json)
 struct AccountLink:
     Optional[str] AccountLinkId
-    Optional[AccountLinkStatusEnum] AccountLinkStatus
+    Optional[str] AccountLinkStatus
     Optional[str] SourceAccountId
     Optional[str] TargetAccountId
 
-@derive(Json)
 struct AccountModification:
-    Optional[DedicatedTenancyModificationStateEnum] ModificationState
-    Optional[DedicatedTenancySupportResultEnum] DedicatedTenancySupport
+    Optional[str] ModificationState
+    Optional[str] DedicatedTenancySupport
     Optional[str] DedicatedTenancyManagementCidrRange
     Optional[DateTime] StartTime
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct ActiveDirectoryConfig:
     str DomainName
     str ServiceAccountSecretArn
 
-@derive(Json)
 struct ApplicationNotSupportedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ApplicationResourceAssociation:
     Optional[str] ApplicationId
     Optional[str] AssociatedResourceId
-    Optional[ApplicationAssociatedResourceType] AssociatedResourceType
+    Optional[str] AssociatedResourceType
     Optional[DateTime] Created
     Optional[DateTime] LastUpdatedTime
-    Optional[AssociationState] State
+    Optional[str] State
     Optional[AssociationStateReason] StateReason
 
-@derive(Json)
 struct ApplicationSettingsRequest:
-    ApplicationSettingsStatusEnum Status
+    str Status
     Optional[str] SettingsGroup
 
-@derive(Json)
 struct ApplicationSettingsResponse:
-    ApplicationSettingsStatusEnum Status
+    str Status
     Optional[str] SettingsGroup
     Optional[str] S3BucketName
 
-@derive(Json)
 struct AssociateConnectionAliasRequest:
     str AliasId
     str ResourceId
 
-@derive(Json)
 struct AssociateConnectionAliasResult:
     Optional[str] ConnectionIdentifier
 
-# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateIpGroupsRequest:
     str DirectoryId
     list[str] GroupIds
 
-@derive(Json)
 struct AssociateIpGroupsResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociateWorkspaceApplicationRequest:
     str WorkspaceId
     str ApplicationId
 
-@derive(Json)
 struct AssociateWorkspaceApplicationResult:
     Optional[WorkspaceResourceAssociation] Association
 
-@derive(Json)
 struct AssociationStateReason:
-    Optional[AssociationErrorCode] ErrorCode
+    Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) UserRules: list[IpRuleItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AuthorizeIpRulesRequest:
     str GroupId
     list[IpRuleItem] UserRules
 
-@derive(Json)
 struct AuthorizeIpRulesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct BundleResourceAssociation:
     Optional[str] AssociatedResourceId
     Optional[str] AssociatedResourceType
     Optional[str] BundleId
     Optional[DateTime] Created
     Optional[DateTime] LastUpdatedTime
-    Optional[AssociationState] State
+    Optional[str] State
     Optional[AssociationStateReason] StateReason
 
-@derive(Json)
 struct Capacity:
     int64 DesiredUserSessions
 
-@derive(Json)
 struct CapacityStatus:
     int64 AvailableUserSessions
     int64 DesiredUserSessions
     int64 ActualUserSessions
     int64 ActiveUserSessions
 
-@derive(Json)
 struct CertificateBasedAuthProperties:
-    Optional[CertificateBasedAuthStatusEnum] Status
+    Optional[str] Status
     Optional[str] CertificateAuthorityArn
 
-@derive(Json)
 struct ClientProperties:
-    Optional[ReconnectEnum] ReconnectEnabled
-    Optional[LogUploadEnum] LogUploadEnabled
+    Optional[str] ReconnectEnabled
+    Optional[str] LogUploadEnabled
     Optional[str] ClientExperiencePolicy
 
-@derive(Json)
 struct ClientPropertiesResult:
     Optional[str] ResourceId
     Optional[ClientProperties] ClientProperties
 
-@derive(Json)
 struct ComputeNotCompatibleException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ComputeType:
-    Optional[Compute] Name
+    Optional[str] Name
 
-@derive(Json)
 struct ConflictException:
     Optional[str] message
 
-@derive(Json)
 struct ConnectClientAddIn:
     Optional[str] AddInId
     Optional[str] ResourceId
     Optional[str] Name
     Optional[str] URL
 
-# no @derive(Json): member(s) Associations: list[ConnectionAliasAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ConnectionAlias:
     Optional[str] ConnectionString
     Optional[str] AliasId
-    Optional[ConnectionAliasState] State
+    Optional[str] State
     Optional[str] OwnerAccountId
     Optional[list[ConnectionAliasAssociation]] Associations
 
-@derive(Json)
 struct ConnectionAliasAssociation:
-    Optional[AssociationStatus] AssociationStatus
+    Optional[str] AssociationStatus
     Optional[str] AssociatedAccountId
     Optional[str] ResourceId
     Optional[str] ConnectionIdentifier
 
-@derive(Json)
 struct ConnectionAliasPermission:
     str SharedAccountId
     bool AllowAssociation
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CopyWorkspaceImageRequest:
     str Name
     Optional[str] Description
@@ -906,95 +870,65 @@ struct CopyWorkspaceImageRequest:
     str SourceRegion
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CopyWorkspaceImageResult:
     Optional[str] ImageId
 
-@derive(Json)
 struct CreateAccountLinkInvitationRequest:
     str TargetAccountId
     Optional[str] ClientToken
 
-@derive(Json)
 struct CreateAccountLinkInvitationResult:
     Optional[AccountLink] AccountLink
 
-@derive(Json)
 struct CreateConnectClientAddInRequest:
     str ResourceId
     str Name
     str URL
 
-@derive(Json)
 struct CreateConnectClientAddInResult:
     Optional[str] AddInId
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateConnectionAliasRequest:
     str ConnectionString
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateConnectionAliasResult:
     Optional[str] AliasId
 
-# no @derive(Json): member(s) UserRules: list[IpRuleItem], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateIpGroupRequest:
     str GroupName
     Optional[str] GroupDesc
     Optional[list[IpRuleItem]] UserRules
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateIpGroupResult:
     Optional[str] GroupId
 
-# no @derive(Json): member(s) StandbyWorkspaces: list[StandbyWorkspace] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateStandbyWorkspacesRequest:
     str PrimaryRegion
     list[StandbyWorkspace] StandbyWorkspaces
 
-# no @derive(Json): member(s) FailedStandbyRequests: list[FailedCreateStandbyWorkspacesRequest], PendingStandbyRequests: list[PendingCreateStandbyWorkspacesRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateStandbyWorkspacesResult:
     Optional[list[FailedCreateStandbyWorkspacesRequest]] FailedStandbyRequests
     Optional[list[PendingCreateStandbyWorkspacesRequest]] PendingStandbyRequests
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTagsRequest:
     str ResourceId
     list[Tag] Tags
 
-@derive(Json)
 struct CreateTagsResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateUpdatedWorkspaceImageRequest:
     str Name
     str Description
     str SourceImageId
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateUpdatedWorkspaceImageResult:
     Optional[str] ImageId
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWorkspaceBundleRequest:
     str BundleName
     str BundleDescription
@@ -1004,33 +938,25 @@ struct CreateWorkspaceBundleRequest:
     Optional[RootStorage] RootStorage
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateWorkspaceBundleResult:
     Optional[WorkspaceBundle] WorkspaceBundle
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWorkspaceImageRequest:
     str Name
     str Description
     str WorkspaceId
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateWorkspaceImageResult:
     Optional[str] ImageId
     Optional[str] Name
     Optional[str] Description
     Optional[OperatingSystem] OperatingSystem
-    Optional[WorkspaceImageState] State
-    Optional[WorkspaceImageRequiredTenancy] RequiredTenancy
+    Optional[str] State
+    Optional[str] RequiredTenancy
     Optional[DateTime] Created
     Optional[str] OwnerAccountId
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWorkspacesPoolRequest:
     str PoolName
     str Description
@@ -1040,40 +966,26 @@ struct CreateWorkspacesPoolRequest:
     Optional[list[Tag]] Tags
     Optional[ApplicationSettingsRequest] ApplicationSettings
     Optional[TimeoutSettings] TimeoutSettings
-    Optional[PoolsRunningMode] RunningMode
+    Optional[str] RunningMode
 
-# no @derive(Json): member(s) WorkspacesPool: WorkspacesPool not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWorkspacesPoolResult:
     Optional[WorkspacesPool] WorkspacesPool
 
-# no @derive(Json): member(s) Workspaces: list[WorkspaceRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWorkspacesRequest:
     list[WorkspaceRequest] Workspaces
 
-# no @derive(Json): member(s) FailedRequests: list[FailedCreateWorkspaceRequest], PendingRequests: list[Workspace] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateWorkspacesResult:
     Optional[list[FailedCreateWorkspaceRequest]] FailedRequests
     Optional[list[Workspace]] PendingRequests
 
-@derive(Json)
 struct CustomWorkspaceImageImportErrorDetails:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct DataReplicationSettings:
-    Optional[DataReplication] DataReplication
+    Optional[str] DataReplication
     Optional[DateTime] RecoverySnapshotTime
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DefaultClientBrandingAttributes:
     Optional[str] LogoUrl
     Optional[str] SupportEmail
@@ -1081,9 +993,6 @@ struct DefaultClientBrandingAttributes:
     Optional[str] ForgotPasswordLink
     Optional[dict[str, str]] LoginMessage
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DefaultImportClientBrandingAttributes:
     Optional[bytes] Logo
     Optional[str] SupportEmail
@@ -1091,7 +1000,6 @@ struct DefaultImportClientBrandingAttributes:
     Optional[str] ForgotPasswordLink
     Optional[dict[str, str]] LoginMessage
 
-@derive(Json)
 struct DefaultWorkspaceCreationProperties:
     Optional[bool] EnableInternetAccess
     Optional[str] DefaultOu
@@ -1100,183 +1008,129 @@ struct DefaultWorkspaceCreationProperties:
     Optional[bool] EnableMaintenanceMode
     Optional[str] InstanceIamRoleArn
 
-@derive(Json)
 struct DeleteAccountLinkInvitationRequest:
     str LinkId
     Optional[str] ClientToken
 
-@derive(Json)
 struct DeleteAccountLinkInvitationResult:
     Optional[AccountLink] AccountLink
 
-# no @derive(Json): member(s) Platforms: list[ClientDeviceType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteClientBrandingRequest:
     str ResourceId
-    list[ClientDeviceType] Platforms
+    list[str] Platforms
 
-@derive(Json)
 struct DeleteClientBrandingResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteConnectClientAddInRequest:
     str AddInId
     str ResourceId
 
-@derive(Json)
 struct DeleteConnectClientAddInResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteConnectionAliasRequest:
     str AliasId
 
-@derive(Json)
 struct DeleteConnectionAliasResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteIpGroupRequest:
     str GroupId
 
-@derive(Json)
 struct DeleteIpGroupResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteTagsRequest:
     str ResourceId
     list[str] TagKeys
 
-@derive(Json)
 struct DeleteTagsResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteWorkspaceBundleRequest:
     Optional[str] BundleId
 
-@derive(Json)
 struct DeleteWorkspaceBundleResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteWorkspaceImageRequest:
     str ImageId
 
-@derive(Json)
 struct DeleteWorkspaceImageResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeployWorkspaceApplicationsRequest:
     str WorkspaceId
     Optional[bool] Force
 
-# no @derive(Json): member(s) Deployment: WorkSpaceApplicationDeployment not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeployWorkspaceApplicationsResult:
     Optional[WorkSpaceApplicationDeployment] Deployment
 
-@derive(Json)
 struct DeregisterWorkspaceDirectoryRequest:
     str DirectoryId
 
-@derive(Json)
 struct DeregisterWorkspaceDirectoryResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeAccountModificationsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AccountModifications: list[AccountModification] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeAccountModificationsResult:
     Optional[list[AccountModification]] AccountModifications
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeAccountRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeAccountResult:
-    Optional[DedicatedTenancySupportResultEnum] DedicatedTenancySupport
+    Optional[str] DedicatedTenancySupport
     Optional[str] DedicatedTenancyManagementCidrRange
-    Optional[DedicatedTenancyAccountType] DedicatedTenancyAccountType
+    Optional[str] DedicatedTenancyAccountType
     Optional[str] Message
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[ApplicationAssociatedResourceType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeApplicationAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     str ApplicationId
-    list[ApplicationAssociatedResourceType] AssociatedResourceTypes
+    list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[ApplicationResourceAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeApplicationAssociationsResult:
     Optional[list[ApplicationResourceAssociation]] Associations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationIds: list[str], ComputeTypeNames: list[Compute], OperatingSystemNames: list[OperatingSystemName] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeApplicationsRequest:
     Optional[list[str]] ApplicationIds
-    Optional[list[Compute]] ComputeTypeNames
-    Optional[WorkSpaceApplicationLicenseType] LicenseType
-    Optional[list[OperatingSystemName]] OperatingSystemNames
+    Optional[list[str]] ComputeTypeNames
+    Optional[str] LicenseType
+    Optional[list[str]] OperatingSystemNames
     Optional[str] Owner
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Applications: list[WorkSpaceApplication] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeApplicationsResult:
     Optional[list[WorkSpaceApplication]] Applications
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeBundleAssociationsRequest:
     str BundleId
     list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[BundleResourceAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeBundleAssociationsResult:
     Optional[list[BundleResourceAssociation]] Associations
 
-@derive(Json)
 struct DescribeClientBrandingRequest:
     str ResourceId
 
-# no @derive(Json): member(s) DeviceTypeWindows: DefaultClientBrandingAttributes, DeviceTypeOsx: DefaultClientBrandingAttributes, DeviceTypeAndroid: DefaultClientBrandingAttributes, DeviceTypeIos: IosClientBrandingAttributes, DeviceTypeLinux: DefaultClientBrandingAttributes, DeviceTypeWeb: DefaultClientBrandingAttributes not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeWindows
     Optional[DefaultClientBrandingAttributes] DeviceTypeOsx
@@ -1285,72 +1139,48 @@ struct DescribeClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeLinux
     Optional[DefaultClientBrandingAttributes] DeviceTypeWeb
 
-# no @derive(Json): member(s) ResourceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClientPropertiesRequest:
     list[str] ResourceIds
 
-# no @derive(Json): member(s) ClientPropertiesList: list[ClientPropertiesResult] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClientPropertiesResult:
     Optional[list[ClientPropertiesResult]] ClientPropertiesList
 
-@derive(Json)
 struct DescribeConnectClientAddInsRequest:
     str ResourceId
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AddIns: list[ConnectClientAddIn] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeConnectClientAddInsResult:
     Optional[list[ConnectClientAddIn]] AddIns
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeConnectionAliasPermissionsRequest:
     str AliasId
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ConnectionAliasPermissions: list[ConnectionAliasPermission] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeConnectionAliasPermissionsResult:
     Optional[str] AliasId
     Optional[list[ConnectionAliasPermission]] ConnectionAliasPermissions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AliasIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeConnectionAliasesRequest:
     Optional[list[str]] AliasIds
     Optional[str] ResourceId
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectionAliases: list[ConnectionAlias] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeConnectionAliasesResult:
     Optional[list[ConnectionAlias]] ConnectionAliases
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeCustomWorkspaceImageImportRequest:
     str ImageId
 
-# no @derive(Json): member(s) ErrorDetails: list[CustomWorkspaceImageImportErrorDetails] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeCustomWorkspaceImageImportResult:
     Optional[str] ImageId
     Optional[str] InfrastructureConfigurationArn
-    Optional[CustomWorkspaceImageImportState] State
+    Optional[str] State
     Optional[str] StateMessage
     Optional[int64] ProgressPercentage
     Optional[DateTime] Created
@@ -1359,82 +1189,48 @@ struct DescribeCustomWorkspaceImageImportResult:
     Optional[str] ImageBuilderInstanceId
     Optional[list[CustomWorkspaceImageImportErrorDetails]] ErrorDetails
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeImageAssociationsRequest:
     str ImageId
     list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[ImageResourceAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeImageAssociationsResult:
     Optional[list[ImageResourceAssociation]] Associations
 
-# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeIpGroupsRequest:
     Optional[list[str]] GroupIds
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Result: list[WorkspacesIpGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeIpGroupsResult:
     Optional[list[WorkspacesIpGroup]] Result
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeTagsRequest:
     str ResourceId
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTagsResult:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) AssociatedResourceTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceAssociationsRequest:
     str WorkspaceId
     list[str] AssociatedResourceTypes
 
-# no @derive(Json): member(s) Associations: list[WorkspaceResourceAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceAssociationsResult:
     Optional[list[WorkspaceResourceAssociation]] Associations
 
-# no @derive(Json): member(s) BundleIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceBundlesRequest:
     Optional[list[str]] BundleIds
     Optional[str] Owner
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Bundles: list[WorkspaceBundle] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceBundlesResult:
     Optional[list[WorkspaceBundle]] Bundles
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceDirectoriesFilter:
-    DescribeWorkspaceDirectoriesFilterName Name
+    str Name
     list[str] Values
 
-# no @derive(Json): member(s) DirectoryIds: list[str], WorkspaceDirectoryNames: list[str], Filters: list[DescribeWorkspaceDirectoriesFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceDirectoriesRequest:
     Optional[list[str]] DirectoryIds
     Optional[list[str]] WorkspaceDirectoryNames
@@ -1442,109 +1238,70 @@ struct DescribeWorkspaceDirectoriesRequest:
     Optional[str] NextToken
     Optional[list[DescribeWorkspaceDirectoriesFilter]] Filters
 
-# no @derive(Json): member(s) Directories: list[WorkspaceDirectory] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceDirectoriesResult:
     Optional[list[WorkspaceDirectory]] Directories
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeWorkspaceImagePermissionsRequest:
     str ImageId
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ImagePermissions: list[ImagePermission] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceImagePermissionsResult:
     Optional[str] ImageId
     Optional[list[ImagePermission]] ImagePermissions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ImageIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceImagesRequest:
     Optional[list[str]] ImageIds
-    Optional[ImageType] ImageType
+    Optional[str] ImageType
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Images: list[WorkspaceImage] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceImagesResult:
     Optional[list[WorkspaceImage]] Images
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeWorkspaceSnapshotsRequest:
     str WorkspaceId
 
-# no @derive(Json): member(s) RebuildSnapshots: list[Snapshot], RestoreSnapshots: list[Snapshot] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspaceSnapshotsResult:
     Optional[list[Snapshot]] RebuildSnapshots
     Optional[list[Snapshot]] RestoreSnapshots
 
-# no @derive(Json): member(s) WorkspaceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesConnectionStatusRequest:
     Optional[list[str]] WorkspaceIds
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WorkspacesConnectionStatus: list[WorkspaceConnectionStatus] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesConnectionStatusResult:
     Optional[list[WorkspaceConnectionStatus]] WorkspacesConnectionStatus
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeWorkspacesPoolSessionsRequest:
     str PoolId
     Optional[str] UserId
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Sessions: list[WorkspacesPoolSession] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolSessionsResult:
     Optional[list[WorkspacesPoolSession]] Sessions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolsFilter:
     str Name
     list[str] Values
-    DescribeWorkspacesPoolsFilterOperator Operator
+    str Operator
 
-# no @derive(Json): member(s) PoolIds: list[str], Filters: list[DescribeWorkspacesPoolsFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolsRequest:
     Optional[list[str]] PoolIds
     Optional[list[DescribeWorkspacesPoolsFilter]] Filters
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WorkspacesPools: list[WorkspacesPool] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesPoolsResult:
     Optional[list[WorkspacesPool]] WorkspacesPools
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WorkspaceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesRequest:
     Optional[list[str]] WorkspaceIds
     Optional[str] DirectoryId
@@ -1554,117 +1311,87 @@ struct DescribeWorkspacesRequest:
     Optional[str] NextToken
     Optional[str] WorkspaceName
 
-# no @derive(Json): member(s) Workspaces: list[Workspace] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeWorkspacesResult:
     Optional[list[Workspace]] Workspaces
     Optional[str] NextToken
 
-@derive(Json)
 struct DisassociateConnectionAliasRequest:
     str AliasId
 
-@derive(Json)
 struct DisassociateConnectionAliasResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) GroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateIpGroupsRequest:
     str DirectoryId
     list[str] GroupIds
 
-@derive(Json)
 struct DisassociateIpGroupsResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateWorkspaceApplicationRequest:
     str WorkspaceId
     str ApplicationId
 
-@derive(Json)
 struct DisassociateWorkspaceApplicationResult:
     Optional[WorkspaceResourceAssociation] Association
 
-@derive(Json)
 struct ErrorDetails:
-    Optional[WorkspaceImageErrorDetailCode] ErrorCode
+    Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) StandbyWorkspaceRequest: StandbyWorkspace not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FailedCreateStandbyWorkspacesRequest:
     Optional[StandbyWorkspace] StandbyWorkspaceRequest
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) WorkspaceRequest: WorkspaceRequest not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FailedCreateWorkspaceRequest:
     Optional[WorkspaceRequest] WorkspaceRequest
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct FailedWorkspaceChangeRequest:
     Optional[str] WorkspaceId
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct GetAccountLinkRequest:
     Optional[str] LinkId
     Optional[str] LinkedAccountId
 
-@derive(Json)
 struct GetAccountLinkResult:
     Optional[AccountLink] AccountLink
 
-@derive(Json)
 struct GlobalAcceleratorForDirectory:
-    AGAModeForDirectoryEnum Mode
-    Optional[AGAPreferredProtocolForDirectory] PreferredProtocol
+    str Mode
+    Optional[str] PreferredProtocol
 
-@derive(Json)
 struct GlobalAcceleratorForWorkSpace:
-    AGAModeForWorkSpaceEnum Mode
-    Optional[AGAPreferredProtocolForWorkSpace] PreferredProtocol
+    str Mode
+    Optional[str] PreferredProtocol
 
-@derive(Json)
 struct IDCConfig:
     Optional[str] InstanceArn
     Optional[str] ApplicationArn
 
-@derive(Json)
 struct ImagePermission:
     Optional[str] SharedAccountId
 
-@derive(Json)
 struct ImageResourceAssociation:
     Optional[str] AssociatedResourceId
     Optional[str] AssociatedResourceType
     Optional[DateTime] Created
     Optional[DateTime] LastUpdatedTime
     Optional[str] ImageId
-    Optional[AssociationState] State
+    Optional[str] State
     Optional[AssociationStateReason] StateReason
 
-@derive(Json)
 struct ImageSourceIdentifier:
     Optional[str] Ec2ImportTaskId
     Optional[str] ImageBuildVersionArn
     Optional[str] Ec2ImageId
 
-# no @derive(Json): member(s) DeviceTypeWindows: DefaultImportClientBrandingAttributes, DeviceTypeOsx: DefaultImportClientBrandingAttributes, DeviceTypeAndroid: DefaultImportClientBrandingAttributes, DeviceTypeIos: IosImportClientBrandingAttributes, DeviceTypeLinux: DefaultImportClientBrandingAttributes, DeviceTypeWeb: DefaultImportClientBrandingAttributes not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ImportClientBrandingRequest:
     str ResourceId
     Optional[DefaultImportClientBrandingAttributes] DeviceTypeWindows
@@ -1674,9 +1401,6 @@ struct ImportClientBrandingRequest:
     Optional[DefaultImportClientBrandingAttributes] DeviceTypeLinux
     Optional[DefaultImportClientBrandingAttributes] DeviceTypeWeb
 
-# no @derive(Json): member(s) DeviceTypeWindows: DefaultClientBrandingAttributes, DeviceTypeOsx: DefaultClientBrandingAttributes, DeviceTypeAndroid: DefaultClientBrandingAttributes, DeviceTypeIos: IosClientBrandingAttributes, DeviceTypeLinux: DefaultClientBrandingAttributes, DeviceTypeWeb: DefaultClientBrandingAttributes not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ImportClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeWindows
     Optional[DefaultClientBrandingAttributes] DeviceTypeOsx
@@ -1685,65 +1409,49 @@ struct ImportClientBrandingResult:
     Optional[DefaultClientBrandingAttributes] DeviceTypeLinux
     Optional[DefaultClientBrandingAttributes] DeviceTypeWeb
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ImportCustomWorkspaceImageRequest:
     str ImageName
     str ImageDescription
-    ImageComputeType ComputeType
-    CustomImageProtocol Protocol
+    str ComputeType
+    str Protocol
     ImageSourceIdentifier ImageSource
     str InfrastructureConfigurationArn
     str Platform
-    OSVersion OsVersion
+    str OsVersion
     Optional[list[Tag]] Tags
-    Optional[ImageValidationMode] ImageValidationMode
+    Optional[str] ImageValidationMode
 
-@derive(Json)
 struct ImportCustomWorkspaceImageResult:
     Optional[str] ImageId
-    Optional[CustomWorkspaceImageImportState] State
+    Optional[str] State
 
-# no @derive(Json): member(s) Tags: list[Tag], Applications: list[Application] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ImportWorkspaceImageRequest:
     str Ec2ImageId
-    WorkspaceImageIngestionProcess IngestionProcess
+    str IngestionProcess
     str ImageName
     str ImageDescription
     Optional[list[Tag]] Tags
-    Optional[list[Application]] Applications
+    Optional[list[str]] Applications
 
-@derive(Json)
 struct ImportWorkspaceImageResult:
     Optional[str] ImageId
 
-@derive(Json)
 struct IncompatibleApplicationsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InternalServerException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidParameterCombinationException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidParameterValuesException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidResourceStateException:
     Optional[str] message
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct IosClientBrandingAttributes:
     Optional[str] LogoUrl
     Optional[str] Logo2xUrl
@@ -1753,9 +1461,6 @@ struct IosClientBrandingAttributes:
     Optional[str] ForgotPasswordLink
     Optional[dict[str, str]] LoginMessage
 
-# no @derive(Json): member(s) LoginMessage: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct IosImportClientBrandingAttributes:
     Optional[bytes] Logo
     Optional[bytes] Logo2x
@@ -1765,549 +1470,403 @@ struct IosImportClientBrandingAttributes:
     Optional[str] ForgotPasswordLink
     Optional[dict[str, str]] LoginMessage
 
-@derive(Json)
 struct IpRuleItem:
     Optional[str] ipRule
     Optional[str] ruleDesc
 
-# no @derive(Json): member(s) LinkStatusFilter: list[AccountLinkStatusEnum] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAccountLinksRequest:
-    Optional[list[AccountLinkStatusEnum]] LinkStatusFilter
+    Optional[list[str]] LinkStatusFilter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AccountLinks: list[AccountLink] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAccountLinksResult:
     Optional[list[AccountLink]] AccountLinks
     Optional[str] NextToken
 
-@derive(Json)
 struct ListAvailableManagementCidrRangesRequest:
     str ManagementCidrRangeConstraint
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ManagementCidrRanges: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAvailableManagementCidrRangesResult:
     Optional[list[str]] ManagementCidrRanges
     Optional[str] NextToken
 
-@derive(Json)
 struct MicrosoftEntraConfig:
     Optional[str] TenantId
     Optional[str] ApplicationConfigSecretArn
 
-@derive(Json)
 struct MigrateWorkspaceRequest:
     str SourceWorkspaceId
     str BundleId
 
-@derive(Json)
 struct MigrateWorkspaceResult:
     Optional[str] SourceWorkspaceId
     Optional[str] TargetWorkspaceId
 
-@derive(Json)
 struct ModificationState:
-    Optional[ModificationResourceEnum] Resource
-    Optional[ModificationStateEnum] State
+    Optional[str] Resource
+    Optional[str] State
 
-@derive(Json)
 struct ModifyAccountRequest:
     Optional[str] DedicatedTenancySupport
     Optional[str] DedicatedTenancyManagementCidrRange
 
-@derive(Json)
 struct ModifyAccountResult:
     Optional[str] Message
 
-# no @derive(Json): member(s) PropertiesToDelete: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifyCertificateBasedAuthPropertiesRequest:
     str ResourceId
     Optional[CertificateBasedAuthProperties] CertificateBasedAuthProperties
     Optional[list[str]] PropertiesToDelete
 
-@derive(Json)
 struct ModifyCertificateBasedAuthPropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ModifyClientPropertiesRequest:
     str ResourceId
     ClientProperties ClientProperties
 
-@derive(Json)
 struct ModifyClientPropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ModifyEndpointEncryptionModeRequest:
     str DirectoryId
-    EndpointEncryptionMode EndpointEncryptionMode
+    str EndpointEncryptionMode
 
-@derive(Json)
 struct ModifyEndpointEncryptionModeResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) PropertiesToDelete: list[DeletableSamlProperty] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifySamlPropertiesRequest:
     str ResourceId
     Optional[SamlProperties] SamlProperties
-    Optional[list[DeletableSamlProperty]] PropertiesToDelete
+    Optional[list[str]] PropertiesToDelete
 
-@derive(Json)
 struct ModifySamlPropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ModifySelfservicePermissionsRequest:
     str ResourceId
     SelfservicePermissions SelfservicePermissions
 
-@derive(Json)
 struct ModifySelfservicePermissionsResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) StreamingProperties: StreamingProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifyStreamingPropertiesRequest:
     str ResourceId
     Optional[StreamingProperties] StreamingProperties
 
-@derive(Json)
 struct ModifyStreamingPropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) WorkspaceAccessProperties: WorkspaceAccessProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifyWorkspaceAccessPropertiesRequest:
     str ResourceId
     WorkspaceAccessProperties WorkspaceAccessProperties
 
-@derive(Json)
 struct ModifyWorkspaceAccessPropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ModifyWorkspaceCreationPropertiesRequest:
     str ResourceId
     WorkspaceCreationProperties WorkspaceCreationProperties
 
-@derive(Json)
 struct ModifyWorkspaceCreationPropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifyWorkspacePropertiesRequest:
     str WorkspaceId
     Optional[WorkspaceProperties] WorkspaceProperties
-    Optional[DataReplication] DataReplication
+    Optional[str] DataReplication
 
-@derive(Json)
 struct ModifyWorkspacePropertiesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ModifyWorkspaceStateRequest:
     str WorkspaceId
-    TargetWorkspaceState WorkspaceState
+    str WorkspaceState
 
-@derive(Json)
 struct ModifyWorkspaceStateResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct NetworkAccessConfiguration:
     Optional[str] EniPrivateIpAddress
     Optional[str] EniId
 
-@derive(Json)
 struct OperatingSystem:
-    Optional[OperatingSystemType] Type
+    Optional[str] Type
 
-@derive(Json)
 struct OperatingSystemNotCompatibleException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct OperationInProgressException:
     Optional[str] message
 
-@derive(Json)
 struct OperationNotSupportedException:
     Optional[str] message
     Optional[str] reason
 
-@derive(Json)
 struct PendingCreateStandbyWorkspacesRequest:
     Optional[str] UserName
     Optional[str] DirectoryId
-    Optional[WorkspaceState] State
+    Optional[str] State
     Optional[str] WorkspaceId
 
-@derive(Json)
 struct RebootRequest:
     str WorkspaceId
 
-# no @derive(Json): member(s) RebootWorkspaceRequests: list[RebootRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RebootWorkspacesRequest:
     list[RebootRequest] RebootWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RebootWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
-@derive(Json)
 struct RebuildRequest:
     str WorkspaceId
 
-# no @derive(Json): member(s) RebuildWorkspaceRequests: list[RebuildRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RebuildWorkspacesRequest:
     list[RebuildRequest] RebuildWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RebuildWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RegisterWorkspaceDirectoryRequest:
     Optional[str] DirectoryId
     Optional[list[str]] SubnetIds
     Optional[bool] EnableSelfService
-    Optional[Tenancy] Tenancy
+    Optional[str] Tenancy
     Optional[list[Tag]] Tags
     Optional[str] WorkspaceDirectoryName
     Optional[str] WorkspaceDirectoryDescription
-    Optional[UserIdentityType] UserIdentityType
+    Optional[str] UserIdentityType
     Optional[str] IdcInstanceArn
     Optional[MicrosoftEntraConfig] MicrosoftEntraConfig
-    Optional[WorkspaceType] WorkspaceType
+    Optional[str] WorkspaceType
     Optional[ActiveDirectoryConfig] ActiveDirectoryConfig
 
-@derive(Json)
 struct RegisterWorkspaceDirectoryResult:
     Optional[str] DirectoryId
-    Optional[WorkspaceDirectoryState] State
+    Optional[str] State
 
-@derive(Json)
 struct RejectAccountLinkInvitationRequest:
     str LinkId
     Optional[str] ClientToken
 
-@derive(Json)
 struct RejectAccountLinkInvitationResult:
     Optional[AccountLink] AccountLink
 
-@derive(Json)
 struct RelatedWorkspaceProperties:
     Optional[str] WorkspaceId
     Optional[str] Region
-    Optional[WorkspaceState] State
-    Optional[StandbyWorkspaceRelationshipType] Type
+    Optional[str] State
+    Optional[str] Type
 
-@derive(Json)
 struct ResourceAlreadyExistsException:
     Optional[str] message
 
-@derive(Json)
 struct ResourceAssociatedException:
     Optional[str] message
 
-@derive(Json)
 struct ResourceCreationFailedException:
     Optional[str] message
 
-@derive(Json)
 struct ResourceInUseException:
     Optional[str] message
     Optional[str] ResourceId
 
-@derive(Json)
 struct ResourceLimitExceededException:
     Optional[str] message
 
-@derive(Json)
 struct ResourceNotFoundException:
     Optional[str] message
     Optional[str] ResourceId
 
-@derive(Json)
 struct ResourceUnavailableException:
     Optional[str] message
     Optional[str] ResourceId
 
-@derive(Json)
 struct RestoreWorkspaceRequest:
     str WorkspaceId
 
-@derive(Json)
 struct RestoreWorkspaceResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) UserRules: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RevokeIpRulesRequest:
     str GroupId
     list[str] UserRules
 
-@derive(Json)
 struct RevokeIpRulesResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RootStorage:
     str Capacity
 
-@derive(Json)
 struct SamlProperties:
-    Optional[SamlStatusEnum] Status
+    Optional[str] Status
     Optional[str] UserAccessUrl
     Optional[str] RelayStateParameterName
 
-@derive(Json)
 struct SelfservicePermissions:
-    Optional[ReconnectEnum] RestartWorkspace
-    Optional[ReconnectEnum] IncreaseVolumeSize
-    Optional[ReconnectEnum] ChangeComputeType
-    Optional[ReconnectEnum] SwitchRunningMode
-    Optional[ReconnectEnum] RebuildWorkspace
+    Optional[str] RestartWorkspace
+    Optional[str] IncreaseVolumeSize
+    Optional[str] ChangeComputeType
+    Optional[str] SwitchRunningMode
+    Optional[str] RebuildWorkspace
 
-@derive(Json)
 struct Snapshot:
     Optional[DateTime] SnapshotTime
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StandbyWorkspace:
     str PrimaryWorkspaceId
     Optional[str] VolumeEncryptionKey
     str DirectoryId
     Optional[list[Tag]] Tags
-    Optional[DataReplication] DataReplication
+    Optional[str] DataReplication
 
-@derive(Json)
 struct StandbyWorkspacesProperties:
     Optional[str] StandbyWorkspaceId
-    Optional[DataReplication] DataReplication
+    Optional[str] DataReplication
     Optional[DateTime] RecoverySnapshotTime
 
-@derive(Json)
 struct StartRequest:
     Optional[str] WorkspaceId
 
-@derive(Json)
 struct StartWorkspacesPoolRequest:
     str PoolId
 
-@derive(Json)
 struct StartWorkspacesPoolResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) StartWorkspaceRequests: list[StartRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartWorkspacesRequest:
     list[StartRequest] StartWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
-@derive(Json)
 struct StopRequest:
     Optional[str] WorkspaceId
 
-@derive(Json)
 struct StopWorkspacesPoolRequest:
     str PoolId
 
-@derive(Json)
 struct StopWorkspacesPoolResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) StopWorkspaceRequests: list[StopRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StopWorkspacesRequest:
     list[StopRequest] StopWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StopWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
-@derive(Json)
 struct StorageConnector:
     str ConnectorType
-    StorageConnectorStatusEnum Status
+    str Status
 
-# no @derive(Json): member(s) UserSettings: list[UserSetting], StorageConnectors: list[StorageConnector] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StreamingProperties:
-    Optional[StreamingExperiencePreferredProtocolEnum] StreamingExperiencePreferredProtocol
+    Optional[str] StreamingExperiencePreferredProtocol
     Optional[list[UserSetting]] UserSettings
     Optional[list[StorageConnector]] StorageConnectors
     Optional[GlobalAcceleratorForDirectory] GlobalAccelerator
 
-@derive(Json)
 struct Tag:
     str Key
     Optional[str] Value
 
-@derive(Json)
 struct TerminateRequest:
     str WorkspaceId
 
-@derive(Json)
 struct TerminateWorkspacesPoolRequest:
     str PoolId
 
-@derive(Json)
 struct TerminateWorkspacesPoolResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TerminateWorkspacesPoolSessionRequest:
     str SessionId
 
-@derive(Json)
 struct TerminateWorkspacesPoolSessionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) TerminateWorkspaceRequests: list[TerminateRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TerminateWorkspacesRequest:
     list[TerminateRequest] TerminateWorkspaceRequests
 
-# no @derive(Json): member(s) FailedRequests: list[FailedWorkspaceChangeRequest] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TerminateWorkspacesResult:
     Optional[list[FailedWorkspaceChangeRequest]] FailedRequests
 
-@derive(Json)
 struct TimeoutSettings:
     Optional[int64] DisconnectTimeoutInSeconds
     Optional[int64] IdleDisconnectTimeoutInSeconds
     Optional[int64] MaxUserDurationInSeconds
 
-@derive(Json)
 struct UnsupportedNetworkConfigurationException:
     Optional[str] message
 
-@derive(Json)
 struct UnsupportedWorkspaceConfigurationException:
     Optional[str] message
 
-@derive(Json)
 struct UpdateConnectClientAddInRequest:
     str AddInId
     str ResourceId
     Optional[str] Name
     Optional[str] URL
 
-@derive(Json)
 struct UpdateConnectClientAddInResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateConnectionAliasPermissionRequest:
     str AliasId
     ConnectionAliasPermission ConnectionAliasPermission
 
-@derive(Json)
 struct UpdateConnectionAliasPermissionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateResult:
     Optional[bool] UpdateAvailable
     Optional[str] Description
 
-# no @derive(Json): member(s) UserRules: list[IpRuleItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateRulesOfIpGroupRequest:
     str GroupId
     list[IpRuleItem] UserRules
 
-@derive(Json)
 struct UpdateRulesOfIpGroupResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateWorkspaceBundleRequest:
     Optional[str] BundleId
     Optional[str] ImageId
 
-@derive(Json)
 struct UpdateWorkspaceBundleResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateWorkspaceImagePermissionRequest:
     str ImageId
     bool AllowCopyImage
     str SharedAccountId
 
-@derive(Json)
 struct UpdateWorkspaceImagePermissionResult:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateWorkspacesPoolRequest:
     str PoolId
     Optional[str] Description
@@ -2316,58 +1875,43 @@ struct UpdateWorkspacesPoolRequest:
     Optional[Capacity] Capacity
     Optional[ApplicationSettingsRequest] ApplicationSettings
     Optional[TimeoutSettings] TimeoutSettings
-    Optional[PoolsRunningMode] RunningMode
+    Optional[str] RunningMode
 
-# no @derive(Json): member(s) WorkspacesPool: WorkspacesPool not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateWorkspacesPoolResult:
     Optional[WorkspacesPool] WorkspacesPool
 
-@derive(Json)
 struct UserSetting:
-    UserSettingActionEnum Action
-    UserSettingPermissionEnum Permission
+    str Action
+    str Permission
     Optional[int64] MaximumLength
 
-@derive(Json)
 struct UserStorage:
     str Capacity
 
-@derive(Json)
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) SupportedComputeTypeNames: list[Compute], SupportedOperatingSystemNames: list[OperatingSystemName] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkSpaceApplication:
     Optional[str] ApplicationId
     Optional[DateTime] Created
     Optional[str] Description
-    Optional[WorkSpaceApplicationLicenseType] LicenseType
+    Optional[str] LicenseType
     Optional[str] Name
     Optional[str] Owner
-    Optional[WorkSpaceApplicationState] State
-    Optional[list[Compute]] SupportedComputeTypeNames
-    Optional[list[OperatingSystemName]] SupportedOperatingSystemNames
+    Optional[str] State
+    Optional[list[str]] SupportedComputeTypeNames
+    Optional[list[str]] SupportedOperatingSystemNames
 
-# no @derive(Json): member(s) Associations: list[WorkspaceResourceAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkSpaceApplicationDeployment:
     Optional[list[WorkspaceResourceAssociation]] Associations
 
-# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties, ModificationStates: list[ModificationState], RelatedWorkspaces: list[RelatedWorkspaceProperties], StandbyWorkspacesProperties: list[StandbyWorkspacesProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Workspace:
     Optional[str] WorkspaceId
     Optional[str] DirectoryId
     Optional[str] UserName
     Optional[str] IpAddress
     Optional[str] Ipv6Address
-    Optional[WorkspaceState] State
+    Optional[str] State
     Optional[str] BundleId
     Optional[str] SubnetId
     Optional[str] ErrorMessage
@@ -2383,22 +1927,18 @@ struct Workspace:
     Optional[DataReplicationSettings] DataReplicationSettings
     Optional[list[StandbyWorkspacesProperties]] StandbyWorkspacesProperties
 
-# no @derive(Json): member(s) AccessEndpointConfig: AccessEndpointConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspaceAccessProperties:
-    Optional[AccessPropertyValue] DeviceTypeWindows
-    Optional[AccessPropertyValue] DeviceTypeOsx
-    Optional[AccessPropertyValue] DeviceTypeWeb
-    Optional[AccessPropertyValue] DeviceTypeIos
-    Optional[AccessPropertyValue] DeviceTypeAndroid
-    Optional[AccessPropertyValue] DeviceTypeChromeOs
-    Optional[AccessPropertyValue] DeviceTypeZeroClient
-    Optional[AccessPropertyValue] DeviceTypeLinux
-    Optional[AccessPropertyValue] DeviceTypeWorkSpacesThinClient
+    Optional[str] DeviceTypeWindows
+    Optional[str] DeviceTypeOsx
+    Optional[str] DeviceTypeWeb
+    Optional[str] DeviceTypeIos
+    Optional[str] DeviceTypeAndroid
+    Optional[str] DeviceTypeChromeOs
+    Optional[str] DeviceTypeZeroClient
+    Optional[str] DeviceTypeLinux
+    Optional[str] DeviceTypeWorkSpacesThinClient
     Optional[AccessEndpointConfig] AccessEndpointConfig
 
-@derive(Json)
 struct WorkspaceBundle:
     Optional[str] BundleId
     Optional[str] Name
@@ -2410,17 +1950,15 @@ struct WorkspaceBundle:
     Optional[ComputeType] ComputeType
     Optional[DateTime] LastUpdatedTime
     Optional[DateTime] CreationTime
-    Optional[WorkspaceBundleState] State
-    Optional[BundleType] BundleType
+    Optional[str] State
+    Optional[str] BundleType
 
-@derive(Json)
 struct WorkspaceConnectionStatus:
     Optional[str] WorkspaceId
-    Optional[ConnectionState] ConnectionState
+    Optional[str] ConnectionState
     Optional[DateTime] ConnectionStateCheckTimestamp
     Optional[DateTime] LastKnownUserConnectionTimestamp
 
-@derive(Json)
 struct WorkspaceCreationProperties:
     Optional[bool] EnableInternetAccess
     Optional[str] DefaultOu
@@ -2429,9 +1967,6 @@ struct WorkspaceCreationProperties:
     Optional[bool] EnableMaintenanceMode
     Optional[str] InstanceIamRoleArn
 
-# no @derive(Json): member(s) SubnetIds: list[str], DnsIpAddresses: list[str], DnsIpv6Addresses: list[str], ipGroupIds: list[str], WorkspaceAccessProperties: WorkspaceAccessProperties, StreamingProperties: StreamingProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspaceDirectory:
     Optional[str] DirectoryId
     Optional[str] Alias
@@ -2442,37 +1977,34 @@ struct WorkspaceDirectory:
     Optional[list[str]] DnsIpv6Addresses
     Optional[str] CustomerUserName
     Optional[str] IamRoleId
-    Optional[WorkspaceDirectoryType] DirectoryType
+    Optional[str] DirectoryType
     Optional[str] WorkspaceSecurityGroupId
-    Optional[WorkspaceDirectoryState] State
+    Optional[str] State
     Optional[DefaultWorkspaceCreationProperties] WorkspaceCreationProperties
     Optional[list[str]] ipGroupIds
     Optional[WorkspaceAccessProperties] WorkspaceAccessProperties
-    Optional[Tenancy] Tenancy
+    Optional[str] Tenancy
     Optional[SelfservicePermissions] SelfservicePermissions
     Optional[SamlProperties] SamlProperties
     Optional[CertificateBasedAuthProperties] CertificateBasedAuthProperties
-    Optional[EndpointEncryptionMode] EndpointEncryptionMode
+    Optional[str] EndpointEncryptionMode
     Optional[MicrosoftEntraConfig] MicrosoftEntraConfig
     Optional[str] WorkspaceDirectoryName
     Optional[str] WorkspaceDirectoryDescription
-    Optional[UserIdentityType] UserIdentityType
-    Optional[WorkspaceType] WorkspaceType
+    Optional[str] UserIdentityType
+    Optional[str] WorkspaceType
     Optional[IDCConfig] IDCConfig
     Optional[ActiveDirectoryConfig] ActiveDirectoryConfig
     Optional[StreamingProperties] StreamingProperties
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetails] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspaceImage:
     Optional[str] ImageId
     Optional[str] Name
     Optional[str] Description
     Optional[OperatingSystem] OperatingSystem
-    Optional[WorkspaceImageState] State
-    Optional[WorkspaceImageRequiredTenancy] RequiredTenancy
+    Optional[str] State
+    Optional[str] RequiredTenancy
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
     Optional[DateTime] Created
@@ -2480,23 +2012,17 @@ struct WorkspaceImage:
     Optional[UpdateResult] Updates
     Optional[list[ErrorDetails]] ErrorDetails
 
-# no @derive(Json): member(s) Protocols: list[Protocol] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspaceProperties:
-    Optional[RunningMode] RunningMode
+    Optional[str] RunningMode
     Optional[int64] RunningModeAutoStopTimeoutInMinutes
     Optional[int64] RootVolumeSizeGib
     Optional[int64] UserVolumeSizeGib
-    Optional[Compute] ComputeTypeName
-    Optional[list[Protocol]] Protocols
-    Optional[OperatingSystemName] OperatingSystemName
+    Optional[str] ComputeTypeName
+    Optional[list[str]] Protocols
+    Optional[str] OperatingSystemName
     Optional[GlobalAcceleratorForWorkSpace] GlobalAccelerator
     Optional[bool] NestedVirtualizationEnabled
 
-# no @derive(Json): member(s) WorkspaceProperties: WorkspaceProperties, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspaceRequest:
     str DirectoryId
     str UserName
@@ -2509,56 +2035,46 @@ struct WorkspaceRequest:
     Optional[str] WorkspaceName
     Optional[str] Ipv6Address
 
-@derive(Json)
 struct WorkspaceResourceAssociation:
     Optional[str] AssociatedResourceId
     Optional[str] AssociatedResourceType
     Optional[DateTime] Created
     Optional[DateTime] LastUpdatedTime
-    Optional[AssociationState] State
+    Optional[str] State
     Optional[AssociationStateReason] StateReason
     Optional[str] WorkspaceId
 
-@derive(Json)
 struct WorkspacesDefaultRoleNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) userRules: list[IpRuleItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspacesIpGroup:
     Optional[str] groupId
     Optional[str] groupName
     Optional[str] groupDesc
     Optional[list[IpRuleItem]] userRules
 
-# no @derive(Json): member(s) Errors: list[WorkspacesPoolError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct WorkspacesPool:
     str PoolId
     str PoolArn
     CapacityStatus CapacityStatus
     str PoolName
     Optional[str] Description
-    WorkspacesPoolState State
+    str State
     DateTime CreatedAt
     str BundleId
     str DirectoryId
     Optional[list[WorkspacesPoolError]] Errors
     Optional[ApplicationSettingsResponse] ApplicationSettings
     Optional[TimeoutSettings] TimeoutSettings
-    PoolsRunningMode RunningMode
+    str RunningMode
 
-@derive(Json)
 struct WorkspacesPoolError:
-    Optional[WorkspacesPoolErrorCode] ErrorCode
+    Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct WorkspacesPoolSession:
     Optional[str] AuthenticationType
-    Optional[SessionConnectionState] ConnectionState
+    Optional[str] ConnectionState
     str SessionId
     Optional[str] InstanceId
     str PoolId
@@ -2574,7 +2090,7 @@ struct WorkspacesPoolSession:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2716,981 +2232,2110 @@ def workspaces_error_name(WorkSpacesErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def workspaces_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   DescribeAccountModifications
+#   DescribeIpGroups
+#   DescribeWorkspaceBundles
+#   DescribeWorkspaceDirectories
+#   DescribeWorkspaceImages
+#   DescribeWorkspaces
+#   DescribeWorkspacesConnectionStatus
+#   ListAccountLinks
+#   ListAvailableManagementCidrRanges
 
-def workspaces_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def workspaces_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize AcceptAccountLinkInvitationRequest to a CBOR map (member wire name -> value, model order).
+def accept_account_link_invitation_request_to_cbor(AcceptAccountLinkInvitationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LinkId")
+    vals.append(cbor.cbor_text(v.LinkId))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        keys.append("ClientToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AccessEndpoint to a CBOR map (member wire name -> value, model order).
+def access_endpoint_to_cbor(AccessEndpoint v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AccessEndpointType.is_some():
+        auto u0 = v.AccessEndpointType.unwrap()
+        keys.append("AccessEndpointType")
+        vals.append(cbor.cbor_text(u0))
+    if v.VpcEndpointId.is_some():
+        auto u1 = v.VpcEndpointId.unwrap()
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AccessEndpointConfig to a compact JSON object (declaration order).
-def access_endpoint_config_to_json(AccessEndpointConfig v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AccessEndpointConfig to a CBOR map (member wire name -> value, model order).
+def access_endpoint_config_to_cbor(AccessEndpointConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.AccessEndpoints:
-        e0.append(x0.to_json())
-    parts.append("\"AccessEndpoints\":" + workspaces_json_arr(e0))
+        e0.append(access_endpoint_to_cbor(x0))
+    keys.append("AccessEndpoints")
+    vals.append(cbor.cbor_list(e0))
     if v.InternetFallbackProtocols.is_some():
         auto u1 = v.InternetFallbackProtocols.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(workspaces_json_str(x2))
-        parts.append("\"InternetFallbackProtocols\":" + workspaces_json_arr(e2))
-    return workspaces_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("InternetFallbackProtocols")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AssociateIpGroupsRequest to a compact JSON object (declaration order).
-def associate_ip_groups_request_to_json(AssociateIpGroupsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
-    list[str] e0 = []
+# Serialize ActiveDirectoryConfig to a CBOR map (member wire name -> value, model order).
+def active_directory_config_to_cbor(ActiveDirectoryConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DomainName")
+    vals.append(cbor.cbor_text(v.DomainName))
+    keys.append("ServiceAccountSecretArn")
+    vals.append(cbor.cbor_text(v.ServiceAccountSecretArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ApplicationSettingsRequest to a CBOR map (member wire name -> value, model order).
+def application_settings_request_to_cbor(ApplicationSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Status")
+    vals.append(cbor.cbor_text(v.Status))
+    if v.SettingsGroup.is_some():
+        auto u0 = v.SettingsGroup.unwrap()
+        keys.append("SettingsGroup")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateConnectionAliasRequest to a CBOR map (member wire name -> value, model order).
+def associate_connection_alias_request_to_cbor(AssociateConnectionAliasRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AliasId")
+    vals.append(cbor.cbor_text(v.AliasId))
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateIpGroupsRequest to a CBOR map (member wire name -> value, model order).
+def associate_ip_groups_request_to_cbor(AssociateIpGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.GroupIds:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"GroupIds\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("GroupIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AuthorizeIpRulesRequest to a compact JSON object (declaration order).
-def authorize_ip_rules_request_to_json(AuthorizeIpRulesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"GroupId\":" + workspaces_json_str(v.GroupId))
-    list[str] e0 = []
+# Serialize AssociateWorkspaceApplicationRequest to a CBOR map (member wire name -> value, model order).
+def associate_workspace_application_request_to_cbor(AssociateWorkspaceApplicationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    keys.append("ApplicationId")
+    vals.append(cbor.cbor_text(v.ApplicationId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AuthorizeIpRulesRequest to a CBOR map (member wire name -> value, model order).
+def authorize_ip_rules_request_to_cbor(AuthorizeIpRulesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("GroupId")
+    vals.append(cbor.cbor_text(v.GroupId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.UserRules:
-        e0.append(x0.to_json())
-    parts.append("\"UserRules\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(ip_rule_item_to_cbor(x0))
+    keys.append("UserRules")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CopyWorkspaceImageRequest to a compact JSON object (declaration order).
-def copy_workspace_image_request_to_json(CopyWorkspaceImageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + workspaces_json_str(v.Name))
+# Serialize Capacity to a CBOR map (member wire name -> value, model order).
+def capacity_to_cbor(Capacity v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DesiredUserSessions")
+    vals.append(cbor.cbor_int(v.DesiredUserSessions))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CertificateBasedAuthProperties to a CBOR map (member wire name -> value, model order).
+def certificate_based_auth_properties_to_cbor(CertificateBasedAuthProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.CertificateAuthorityArn.is_some():
+        auto u1 = v.CertificateAuthorityArn.unwrap()
+        keys.append("CertificateAuthorityArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ClientProperties to a CBOR map (member wire name -> value, model order).
+def client_properties_to_cbor(ClientProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ReconnectEnabled.is_some():
+        auto u0 = v.ReconnectEnabled.unwrap()
+        keys.append("ReconnectEnabled")
+        vals.append(cbor.cbor_text(u0))
+    if v.LogUploadEnabled.is_some():
+        auto u1 = v.LogUploadEnabled.unwrap()
+        keys.append("LogUploadEnabled")
+        vals.append(cbor.cbor_text(u1))
+    if v.ClientExperiencePolicy.is_some():
+        auto u2 = v.ClientExperiencePolicy.unwrap()
+        keys.append("ClientExperiencePolicy")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ComputeType to a CBOR map (member wire name -> value, model order).
+def compute_type_to_cbor(ComputeType v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ConnectionAliasPermission to a CBOR map (member wire name -> value, model order).
+def connection_alias_permission_to_cbor(ConnectionAliasPermission v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SharedAccountId")
+    vals.append(cbor.cbor_text(v.SharedAccountId))
+    keys.append("AllowAssociation")
+    vals.append(cbor.cbor_bool(v.AllowAssociation))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CopyWorkspaceImageRequest to a CBOR map (member wire name -> value, model order).
+def copy_workspace_image_request_to_cbor(CopyWorkspaceImageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + workspaces_json_str(u0))
-    parts.append("\"SourceImageId\":" + workspaces_json_str(v.SourceImageId))
-    parts.append("\"SourceRegion\":" + workspaces_json_str(v.SourceRegion))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("SourceImageId")
+    vals.append(cbor.cbor_text(v.SourceImageId))
+    keys.append("SourceRegion")
+    vals.append(cbor.cbor_text(v.SourceRegion))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e2))
-    return workspaces_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateConnectionAliasRequest to a compact JSON object (declaration order).
-def create_connection_alias_request_to_json(CreateConnectionAliasRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ConnectionString\":" + workspaces_json_str(v.ConnectionString))
+# Serialize CreateAccountLinkInvitationRequest to a CBOR map (member wire name -> value, model order).
+def create_account_link_invitation_request_to_cbor(CreateAccountLinkInvitationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TargetAccountId")
+    vals.append(cbor.cbor_text(v.TargetAccountId))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        keys.append("ClientToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateConnectClientAddInRequest to a CBOR map (member wire name -> value, model order).
+def create_connect_client_add_in_request_to_cbor(CreateConnectClientAddInRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("URL")
+    vals.append(cbor.cbor_text(v.URL))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateConnectionAliasRequest to a CBOR map (member wire name -> value, model order).
+def create_connection_alias_request_to_cbor(CreateConnectionAliasRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ConnectionString")
+    vals.append(cbor.cbor_text(v.ConnectionString))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e1))
-    return workspaces_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateIpGroupRequest to a compact JSON object (declaration order).
-def create_ip_group_request_to_json(CreateIpGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"GroupName\":" + workspaces_json_str(v.GroupName))
+# Serialize CreateIpGroupRequest to a CBOR map (member wire name -> value, model order).
+def create_ip_group_request_to_cbor(CreateIpGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("GroupName")
+    vals.append(cbor.cbor_text(v.GroupName))
     if v.GroupDesc.is_some():
         auto u0 = v.GroupDesc.unwrap()
-        parts.append("\"GroupDesc\":" + workspaces_json_str(u0))
+        keys.append("GroupDesc")
+        vals.append(cbor.cbor_text(u0))
     if v.UserRules.is_some():
         auto u1 = v.UserRules.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"UserRules\":" + workspaces_json_arr(e2))
+            e2.append(ip_rule_item_to_cbor(x2))
+        keys.append("UserRules")
+        vals.append(cbor.cbor_list(e2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e4))
-    return workspaces_json_obj(parts)
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateStandbyWorkspacesRequest to a compact JSON object (declaration order).
-def create_standby_workspaces_request_to_json(CreateStandbyWorkspacesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"PrimaryRegion\":" + workspaces_json_str(v.PrimaryRegion))
-    list[str] e0 = []
+# Serialize CreateStandbyWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def create_standby_workspaces_request_to_cbor(CreateStandbyWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PrimaryRegion")
+    vals.append(cbor.cbor_text(v.PrimaryRegion))
+    list[cbor.CborValue] e0 = []
     for x0 in v.StandbyWorkspaces:
-        e0.append(standby_workspace_to_json(x0))
-    parts.append("\"StandbyWorkspaces\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(standby_workspace_to_cbor(x0))
+    keys.append("StandbyWorkspaces")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateTagsRequest to a compact JSON object (declaration order).
-def create_tags_request_to_json(CreateTagsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize CreateTagsRequest to a CBOR map (member wire name -> value, model order).
+def create_tags_request_to_cbor(CreateTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateUpdatedWorkspaceImageRequest to a compact JSON object (declaration order).
-def create_updated_workspace_image_request_to_json(CreateUpdatedWorkspaceImageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + workspaces_json_str(v.Name))
-    parts.append("\"Description\":" + workspaces_json_str(v.Description))
-    parts.append("\"SourceImageId\":" + workspaces_json_str(v.SourceImageId))
+# Serialize CreateUpdatedWorkspaceImageRequest to a CBOR map (member wire name -> value, model order).
+def create_updated_workspace_image_request_to_cbor(CreateUpdatedWorkspaceImageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("Description")
+    vals.append(cbor.cbor_text(v.Description))
+    keys.append("SourceImageId")
+    vals.append(cbor.cbor_text(v.SourceImageId))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e1))
-    return workspaces_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateWorkspaceBundleRequest to a compact JSON object (declaration order).
-def create_workspace_bundle_request_to_json(CreateWorkspaceBundleRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"BundleName\":" + workspaces_json_str(v.BundleName))
-    parts.append("\"BundleDescription\":" + workspaces_json_str(v.BundleDescription))
-    parts.append("\"ImageId\":" + workspaces_json_str(v.ImageId))
-    parts.append("\"ComputeType\":" + v.ComputeType.to_json())
-    parts.append("\"UserStorage\":" + v.UserStorage.to_json())
+# Serialize CreateWorkspaceBundleRequest to a CBOR map (member wire name -> value, model order).
+def create_workspace_bundle_request_to_cbor(CreateWorkspaceBundleRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BundleName")
+    vals.append(cbor.cbor_text(v.BundleName))
+    keys.append("BundleDescription")
+    vals.append(cbor.cbor_text(v.BundleDescription))
+    keys.append("ImageId")
+    vals.append(cbor.cbor_text(v.ImageId))
+    keys.append("ComputeType")
+    vals.append(compute_type_to_cbor(v.ComputeType))
+    keys.append("UserStorage")
+    vals.append(user_storage_to_cbor(v.UserStorage))
     if v.RootStorage.is_some():
         auto u0 = v.RootStorage.unwrap()
-        parts.append("\"RootStorage\":" + u0.to_json())
+        keys.append("RootStorage")
+        vals.append(root_storage_to_cbor(u0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e2))
-    return workspaces_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateWorkspaceImageRequest to a compact JSON object (declaration order).
-def create_workspace_image_request_to_json(CreateWorkspaceImageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + workspaces_json_str(v.Name))
-    parts.append("\"Description\":" + workspaces_json_str(v.Description))
-    parts.append("\"WorkspaceId\":" + workspaces_json_str(v.WorkspaceId))
+# Serialize CreateWorkspaceImageRequest to a CBOR map (member wire name -> value, model order).
+def create_workspace_image_request_to_cbor(CreateWorkspaceImageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("Description")
+    vals.append(cbor.cbor_text(v.Description))
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e1))
-    return workspaces_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateWorkspacesPoolRequest to a compact JSON object (declaration order).
-def create_workspaces_pool_request_to_json(CreateWorkspacesPoolRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"PoolName\":" + workspaces_json_str(v.PoolName))
-    parts.append("\"Description\":" + workspaces_json_str(v.Description))
-    parts.append("\"BundleId\":" + workspaces_json_str(v.BundleId))
-    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
-    parts.append("\"Capacity\":" + v.Capacity.to_json())
+# Serialize CreateWorkspacesPoolRequest to a CBOR map (member wire name -> value, model order).
+def create_workspaces_pool_request_to_cbor(CreateWorkspacesPoolRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PoolName")
+    vals.append(cbor.cbor_text(v.PoolName))
+    keys.append("Description")
+    vals.append(cbor.cbor_text(v.Description))
+    keys.append("BundleId")
+    vals.append(cbor.cbor_text(v.BundleId))
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("Capacity")
+    vals.append(capacity_to_cbor(v.Capacity))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
     if v.ApplicationSettings.is_some():
         auto u2 = v.ApplicationSettings.unwrap()
-        parts.append("\"ApplicationSettings\":" + u2.to_json())
+        keys.append("ApplicationSettings")
+        vals.append(application_settings_request_to_cbor(u2))
     if v.TimeoutSettings.is_some():
         auto u3 = v.TimeoutSettings.unwrap()
-        parts.append("\"TimeoutSettings\":" + u3.to_json())
+        keys.append("TimeoutSettings")
+        vals.append(timeout_settings_to_cbor(u3))
     if v.RunningMode.is_some():
         auto u4 = v.RunningMode.unwrap()
-        parts.append("\"RunningMode\":" + u4.to_json())
-    return workspaces_json_obj(parts)
+        keys.append("RunningMode")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateWorkspacesRequest to a compact JSON object (declaration order).
-def create_workspaces_request_to_json(CreateWorkspacesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize CreateWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def create_workspaces_request_to_cbor(CreateWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.Workspaces:
-        e0.append(workspace_request_to_json(x0))
-    parts.append("\"Workspaces\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(workspace_request_to_cbor(x0))
+    keys.append("Workspaces")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DefaultImportClientBrandingAttributes to a compact JSON object (declaration order).
-def default_import_client_branding_attributes_to_json(DefaultImportClientBrandingAttributes v) -> str:
-    list[str] parts = []
+# Serialize DefaultImportClientBrandingAttributes to a CBOR map (member wire name -> value, model order).
+def default_import_client_branding_attributes_to_cbor(DefaultImportClientBrandingAttributes v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Logo.is_some():
         auto u0 = v.Logo.unwrap()
-        parts.append("\"Logo\":" + workspaces_json_str(base64.encode(u0)))
+        keys.append("Logo")
+        vals.append(cbor.cbor_blob(u0))
     if v.SupportEmail.is_some():
         auto u1 = v.SupportEmail.unwrap()
-        parts.append("\"SupportEmail\":" + workspaces_json_str(u1))
+        keys.append("SupportEmail")
+        vals.append(cbor.cbor_text(u1))
     if v.SupportLink.is_some():
         auto u2 = v.SupportLink.unwrap()
-        parts.append("\"SupportLink\":" + workspaces_json_str(u2))
+        keys.append("SupportLink")
+        vals.append(cbor.cbor_text(u2))
     if v.ForgotPasswordLink.is_some():
         auto u3 = v.ForgotPasswordLink.unwrap()
-        parts.append("\"ForgotPasswordLink\":" + workspaces_json_str(u3))
+        keys.append("ForgotPasswordLink")
+        vals.append(cbor.cbor_text(u3))
     if v.LoginMessage.is_some():
         auto u4 = v.LoginMessage.unwrap()
-        list[str] m5 = []
+        list[str] mk5 = []
+        list[cbor.CborValue] mv5 = []
         for k5 in sorted(u4.keys()):
-            m5.append(workspaces_json_str(k5) + ":" + workspaces_json_str(u4[k5]))
-        parts.append("\"LoginMessage\":" + workspaces_json_obj(m5))
-    return workspaces_json_obj(parts)
+            mk5.append(k5)
+            mv5.append(cbor.cbor_text(u4[k5]))
+        keys.append("LoginMessage")
+        vals.append(cbor.cbor_map(mk5, mv5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DeleteClientBrandingRequest to a compact JSON object (declaration order).
-def delete_client_branding_request_to_json(DeleteClientBrandingRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize DeleteAccountLinkInvitationRequest to a CBOR map (member wire name -> value, model order).
+def delete_account_link_invitation_request_to_cbor(DeleteAccountLinkInvitationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LinkId")
+    vals.append(cbor.cbor_text(v.LinkId))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        keys.append("ClientToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteClientBrandingRequest to a CBOR map (member wire name -> value, model order).
+def delete_client_branding_request_to_cbor(DeleteClientBrandingRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Platforms:
-        e0.append(x0.to_json())
-    parts.append("\"Platforms\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Platforms")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DeleteTagsRequest to a compact JSON object (declaration order).
-def delete_tags_request_to_json(DeleteTagsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize DeleteConnectClientAddInRequest to a CBOR map (member wire name -> value, model order).
+def delete_connect_client_add_in_request_to_cbor(DeleteConnectClientAddInRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AddInId")
+    vals.append(cbor.cbor_text(v.AddInId))
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteConnectionAliasRequest to a CBOR map (member wire name -> value, model order).
+def delete_connection_alias_request_to_cbor(DeleteConnectionAliasRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AliasId")
+    vals.append(cbor.cbor_text(v.AliasId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteIpGroupRequest to a CBOR map (member wire name -> value, model order).
+def delete_ip_group_request_to_cbor(DeleteIpGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("GroupId")
+    vals.append(cbor.cbor_text(v.GroupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTagsRequest to a CBOR map (member wire name -> value, model order).
+def delete_tags_request_to_cbor(DeleteTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"TagKeys\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeApplicationAssociationsRequest to a compact JSON object (declaration order).
-def describe_application_associations_request_to_json(DescribeApplicationAssociationsRequest v) -> str:
-    list[str] parts = []
+# Serialize DeleteWorkspaceBundleRequest to a CBOR map (member wire name -> value, model order).
+def delete_workspace_bundle_request_to_cbor(DeleteWorkspaceBundleRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.BundleId.is_some():
+        auto u0 = v.BundleId.unwrap()
+        keys.append("BundleId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteWorkspaceImageRequest to a CBOR map (member wire name -> value, model order).
+def delete_workspace_image_request_to_cbor(DeleteWorkspaceImageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ImageId")
+    vals.append(cbor.cbor_text(v.ImageId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeployWorkspaceApplicationsRequest to a CBOR map (member wire name -> value, model order).
+def deploy_workspace_applications_request_to_cbor(DeployWorkspaceApplicationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    if v.Force.is_some():
+        auto u0 = v.Force.unwrap()
+        keys.append("Force")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeregisterWorkspaceDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def deregister_workspace_directory_request_to_cbor(DeregisterWorkspaceDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeAccountModificationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_account_modifications_request_to_cbor(DescribeAccountModificationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeAccountRequest to a CBOR map (member wire name -> value, model order).
+def describe_account_request_to_cbor(DescribeAccountRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeApplicationAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_application_associations_request_to_cbor(DescribeApplicationAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.MaxResults.is_some():
         auto u0 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u0))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
     if v.NextToken.is_some():
         auto u1 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u1))
-    parts.append("\"ApplicationId\":" + workspaces_json_str(v.ApplicationId))
-    list[str] e2 = []
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("ApplicationId")
+    vals.append(cbor.cbor_text(v.ApplicationId))
+    list[cbor.CborValue] e2 = []
     for x2 in v.AssociatedResourceTypes:
-        e2.append(x2.to_json())
-    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e2))
-    return workspaces_json_obj(parts)
+        e2.append(cbor.cbor_text(x2))
+    keys.append("AssociatedResourceTypes")
+    vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeApplicationsRequest to a compact JSON object (declaration order).
-def describe_applications_request_to_json(DescribeApplicationsRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeApplicationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_applications_request_to_cbor(DescribeApplicationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ApplicationIds.is_some():
         auto u0 = v.ApplicationIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"ApplicationIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("ApplicationIds")
+        vals.append(cbor.cbor_list(e1))
     if v.ComputeTypeNames.is_some():
         auto u2 = v.ComputeTypeNames.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"ComputeTypeNames\":" + workspaces_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("ComputeTypeNames")
+        vals.append(cbor.cbor_list(e3))
     if v.LicenseType.is_some():
         auto u4 = v.LicenseType.unwrap()
-        parts.append("\"LicenseType\":" + u4.to_json())
+        keys.append("LicenseType")
+        vals.append(cbor.cbor_text(u4))
     if v.OperatingSystemNames.is_some():
         auto u5 = v.OperatingSystemNames.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"OperatingSystemNames\":" + workspaces_json_arr(e6))
+            e6.append(cbor.cbor_text(x6))
+        keys.append("OperatingSystemNames")
+        vals.append(cbor.cbor_list(e6))
     if v.Owner.is_some():
         auto u7 = v.Owner.unwrap()
-        parts.append("\"Owner\":" + workspaces_json_str(u7))
+        keys.append("Owner")
+        vals.append(cbor.cbor_text(u7))
     if v.MaxResults.is_some():
         auto u8 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u8))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u8))
     if v.NextToken.is_some():
         auto u9 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u9))
-    return workspaces_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeBundleAssociationsRequest to a compact JSON object (declaration order).
-def describe_bundle_associations_request_to_json(DescribeBundleAssociationsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"BundleId\":" + workspaces_json_str(v.BundleId))
-    list[str] e0 = []
+# Serialize DescribeBundleAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_bundle_associations_request_to_cbor(DescribeBundleAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BundleId")
+    vals.append(cbor.cbor_text(v.BundleId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.AssociatedResourceTypes:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("AssociatedResourceTypes")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeClientPropertiesRequest to a compact JSON object (declaration order).
-def describe_client_properties_request_to_json(DescribeClientPropertiesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize DescribeClientBrandingRequest to a CBOR map (member wire name -> value, model order).
+def describe_client_branding_request_to_cbor(DescribeClientBrandingRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeClientPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def describe_client_properties_request_to_cbor(DescribeClientPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ResourceIds:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"ResourceIds\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ResourceIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeConnectionAliasesRequest to a compact JSON object (declaration order).
-def describe_connection_aliases_request_to_json(DescribeConnectionAliasesRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeConnectClientAddInsRequest to a CBOR map (member wire name -> value, model order).
+def describe_connect_client_add_ins_request_to_cbor(DescribeConnectClientAddInsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConnectionAliasPermissionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_connection_alias_permissions_request_to_cbor(DescribeConnectionAliasPermissionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AliasId")
+    vals.append(cbor.cbor_text(v.AliasId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConnectionAliasesRequest to a CBOR map (member wire name -> value, model order).
+def describe_connection_aliases_request_to_cbor(DescribeConnectionAliasesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AliasIds.is_some():
         auto u0 = v.AliasIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"AliasIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("AliasIds")
+        vals.append(cbor.cbor_list(e1))
     if v.ResourceId.is_some():
         auto u2 = v.ResourceId.unwrap()
-        parts.append("\"ResourceId\":" + workspaces_json_str(u2))
+        keys.append("ResourceId")
+        vals.append(cbor.cbor_text(u2))
     if v.Limit.is_some():
         auto u3 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u3))
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u3))
     if v.NextToken.is_some():
         auto u4 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u4))
-    return workspaces_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeImageAssociationsRequest to a compact JSON object (declaration order).
-def describe_image_associations_request_to_json(DescribeImageAssociationsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ImageId\":" + workspaces_json_str(v.ImageId))
-    list[str] e0 = []
+# Serialize DescribeCustomWorkspaceImageImportRequest to a CBOR map (member wire name -> value, model order).
+def describe_custom_workspace_image_import_request_to_cbor(DescribeCustomWorkspaceImageImportRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ImageId")
+    vals.append(cbor.cbor_text(v.ImageId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeImageAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_image_associations_request_to_cbor(DescribeImageAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ImageId")
+    vals.append(cbor.cbor_text(v.ImageId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.AssociatedResourceTypes:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("AssociatedResourceTypes")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeIpGroupsRequest to a compact JSON object (declaration order).
-def describe_ip_groups_request_to_json(DescribeIpGroupsRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeIpGroupsRequest to a CBOR map (member wire name -> value, model order).
+def describe_ip_groups_request_to_cbor(DescribeIpGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.GroupIds.is_some():
         auto u0 = v.GroupIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"GroupIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("GroupIds")
+        vals.append(cbor.cbor_list(e1))
     if v.NextToken.is_some():
         auto u2 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u2))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
     if v.MaxResults.is_some():
         auto u3 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u3))
-    return workspaces_json_obj(parts)
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspaceAssociationsRequest to a compact JSON object (declaration order).
-def describe_workspace_associations_request_to_json(DescribeWorkspaceAssociationsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"WorkspaceId\":" + workspaces_json_str(v.WorkspaceId))
-    list[str] e0 = []
+# Serialize DescribeTagsRequest to a CBOR map (member wire name -> value, model order).
+def describe_tags_request_to_cbor(DescribeTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeWorkspaceAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspace_associations_request_to_cbor(DescribeWorkspaceAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.AssociatedResourceTypes:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"AssociatedResourceTypes\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("AssociatedResourceTypes")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspaceBundlesRequest to a compact JSON object (declaration order).
-def describe_workspace_bundles_request_to_json(DescribeWorkspaceBundlesRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeWorkspaceBundlesRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspace_bundles_request_to_cbor(DescribeWorkspaceBundlesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.BundleIds.is_some():
         auto u0 = v.BundleIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"BundleIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("BundleIds")
+        vals.append(cbor.cbor_list(e1))
     if v.Owner.is_some():
         auto u2 = v.Owner.unwrap()
-        parts.append("\"Owner\":" + workspaces_json_str(u2))
+        keys.append("Owner")
+        vals.append(cbor.cbor_text(u2))
     if v.NextToken.is_some():
         auto u3 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u3))
-    return workspaces_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspaceDirectoriesFilter to a compact JSON object (declaration order).
-def describe_workspace_directories_filter_to_json(DescribeWorkspaceDirectoriesFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    list[str] e0 = []
+# Serialize DescribeWorkspaceDirectoriesFilter to a CBOR map (member wire name -> value, model order).
+def describe_workspace_directories_filter_to_cbor(DescribeWorkspaceDirectoriesFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Values:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"Values\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspaceDirectoriesRequest to a compact JSON object (declaration order).
-def describe_workspace_directories_request_to_json(DescribeWorkspaceDirectoriesRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeWorkspaceDirectoriesRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspace_directories_request_to_cbor(DescribeWorkspaceDirectoriesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DirectoryIds.is_some():
         auto u0 = v.DirectoryIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"DirectoryIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("DirectoryIds")
+        vals.append(cbor.cbor_list(e1))
     if v.WorkspaceDirectoryNames.is_some():
         auto u2 = v.WorkspaceDirectoryNames.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(workspaces_json_str(x3))
-        parts.append("\"WorkspaceDirectoryNames\":" + workspaces_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("WorkspaceDirectoryNames")
+        vals.append(cbor.cbor_list(e3))
     if v.Limit.is_some():
         auto u4 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u4))
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u4))
     if v.NextToken.is_some():
         auto u5 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u5))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u5))
     if v.Filters.is_some():
         auto u6 = v.Filters.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(describe_workspace_directories_filter_to_json(x7))
-        parts.append("\"Filters\":" + workspaces_json_arr(e7))
-    return workspaces_json_obj(parts)
+            e7.append(describe_workspace_directories_filter_to_cbor(x7))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspaceImagesRequest to a compact JSON object (declaration order).
-def describe_workspace_images_request_to_json(DescribeWorkspaceImagesRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeWorkspaceImagePermissionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspace_image_permissions_request_to_cbor(DescribeWorkspaceImagePermissionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ImageId")
+    vals.append(cbor.cbor_text(v.ImageId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeWorkspaceImagesRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspace_images_request_to_cbor(DescribeWorkspaceImagesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ImageIds.is_some():
         auto u0 = v.ImageIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"ImageIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("ImageIds")
+        vals.append(cbor.cbor_list(e1))
     if v.ImageType.is_some():
         auto u2 = v.ImageType.unwrap()
-        parts.append("\"ImageType\":" + u2.to_json())
+        keys.append("ImageType")
+        vals.append(cbor.cbor_text(u2))
     if v.NextToken.is_some():
         auto u3 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u3))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
     if v.MaxResults.is_some():
         auto u4 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u4))
-    return workspaces_json_obj(parts)
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspacesConnectionStatusRequest to a compact JSON object (declaration order).
-def describe_workspaces_connection_status_request_to_json(DescribeWorkspacesConnectionStatusRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeWorkspaceSnapshotsRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspace_snapshots_request_to_cbor(DescribeWorkspaceSnapshotsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeWorkspacesConnectionStatusRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspaces_connection_status_request_to_cbor(DescribeWorkspacesConnectionStatusRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.WorkspaceIds.is_some():
         auto u0 = v.WorkspaceIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"WorkspaceIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("WorkspaceIds")
+        vals.append(cbor.cbor_list(e1))
     if v.NextToken.is_some():
         auto u2 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u2))
-    return workspaces_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspacesPoolsFilter to a compact JSON object (declaration order).
-def describe_workspaces_pools_filter_to_json(DescribeWorkspacesPoolsFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + workspaces_json_str(v.Name))
-    list[str] e0 = []
+# Serialize DescribeWorkspacesPoolSessionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspaces_pool_sessions_request_to_cbor(DescribeWorkspacesPoolSessionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PoolId")
+    vals.append(cbor.cbor_text(v.PoolId))
+    if v.UserId.is_some():
+        auto u0 = v.UserId.unwrap()
+        keys.append("UserId")
+        vals.append(cbor.cbor_text(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeWorkspacesPoolsFilter to a CBOR map (member wire name -> value, model order).
+def describe_workspaces_pools_filter_to_cbor(DescribeWorkspacesPoolsFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Values:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"Values\":" + workspaces_json_arr(e0))
-    parts.append("\"Operator\":" + v.Operator.to_json())
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("Operator")
+    vals.append(cbor.cbor_text(v.Operator))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspacesPoolsRequest to a compact JSON object (declaration order).
-def describe_workspaces_pools_request_to_json(DescribeWorkspacesPoolsRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeWorkspacesPoolsRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspaces_pools_request_to_cbor(DescribeWorkspacesPoolsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.PoolIds.is_some():
         auto u0 = v.PoolIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"PoolIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("PoolIds")
+        vals.append(cbor.cbor_list(e1))
     if v.Filters.is_some():
         auto u2 = v.Filters.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(describe_workspaces_pools_filter_to_json(x3))
-        parts.append("\"Filters\":" + workspaces_json_arr(e3))
+            e3.append(describe_workspaces_pools_filter_to_cbor(x3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e3))
     if v.Limit.is_some():
         auto u4 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u4))
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u4))
     if v.NextToken.is_some():
         auto u5 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u5))
-    return workspaces_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeWorkspacesRequest to a compact JSON object (declaration order).
-def describe_workspaces_request_to_json(DescribeWorkspacesRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def describe_workspaces_request_to_cbor(DescribeWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.WorkspaceIds.is_some():
         auto u0 = v.WorkspaceIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(workspaces_json_str(x1))
-        parts.append("\"WorkspaceIds\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("WorkspaceIds")
+        vals.append(cbor.cbor_list(e1))
     if v.DirectoryId.is_some():
         auto u2 = v.DirectoryId.unwrap()
-        parts.append("\"DirectoryId\":" + workspaces_json_str(u2))
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u2))
     if v.UserName.is_some():
         auto u3 = v.UserName.unwrap()
-        parts.append("\"UserName\":" + workspaces_json_str(u3))
+        keys.append("UserName")
+        vals.append(cbor.cbor_text(u3))
     if v.BundleId.is_some():
         auto u4 = v.BundleId.unwrap()
-        parts.append("\"BundleId\":" + workspaces_json_str(u4))
+        keys.append("BundleId")
+        vals.append(cbor.cbor_text(u4))
     if v.Limit.is_some():
         auto u5 = v.Limit.unwrap()
-        parts.append("\"Limit\":" + str(u5))
+        keys.append("Limit")
+        vals.append(cbor.cbor_int(u5))
     if v.NextToken.is_some():
         auto u6 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u6))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u6))
     if v.WorkspaceName.is_some():
         auto u7 = v.WorkspaceName.unwrap()
-        parts.append("\"WorkspaceName\":" + workspaces_json_str(u7))
-    return workspaces_json_obj(parts)
+        keys.append("WorkspaceName")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DisassociateIpGroupsRequest to a compact JSON object (declaration order).
-def disassociate_ip_groups_request_to_json(DisassociateIpGroupsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
-    list[str] e0 = []
+# Serialize DisassociateConnectionAliasRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_connection_alias_request_to_cbor(DisassociateConnectionAliasRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AliasId")
+    vals.append(cbor.cbor_text(v.AliasId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateIpGroupsRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_ip_groups_request_to_cbor(DisassociateIpGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.GroupIds:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"GroupIds\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("GroupIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ImportClientBrandingRequest to a compact JSON object (declaration order).
-def import_client_branding_request_to_json(ImportClientBrandingRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+# Serialize DisassociateWorkspaceApplicationRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_workspace_application_request_to_cbor(DisassociateWorkspaceApplicationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    keys.append("ApplicationId")
+    vals.append(cbor.cbor_text(v.ApplicationId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetAccountLinkRequest to a CBOR map (member wire name -> value, model order).
+def get_account_link_request_to_cbor(GetAccountLinkRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.LinkId.is_some():
+        auto u0 = v.LinkId.unwrap()
+        keys.append("LinkId")
+        vals.append(cbor.cbor_text(u0))
+    if v.LinkedAccountId.is_some():
+        auto u1 = v.LinkedAccountId.unwrap()
+        keys.append("LinkedAccountId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GlobalAcceleratorForDirectory to a CBOR map (member wire name -> value, model order).
+def global_accelerator_for_directory_to_cbor(GlobalAcceleratorForDirectory v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Mode")
+    vals.append(cbor.cbor_text(v.Mode))
+    if v.PreferredProtocol.is_some():
+        auto u0 = v.PreferredProtocol.unwrap()
+        keys.append("PreferredProtocol")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GlobalAcceleratorForWorkSpace to a CBOR map (member wire name -> value, model order).
+def global_accelerator_for_work_space_to_cbor(GlobalAcceleratorForWorkSpace v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Mode")
+    vals.append(cbor.cbor_text(v.Mode))
+    if v.PreferredProtocol.is_some():
+        auto u0 = v.PreferredProtocol.unwrap()
+        keys.append("PreferredProtocol")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImageSourceIdentifier to a CBOR map (member wire name -> value, model order).
+def image_source_identifier_to_cbor(ImageSourceIdentifier v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Ec2ImportTaskId.is_some():
+        auto u0 = v.Ec2ImportTaskId.unwrap()
+        keys.append("Ec2ImportTaskId")
+        vals.append(cbor.cbor_text(u0))
+    if v.ImageBuildVersionArn.is_some():
+        auto u1 = v.ImageBuildVersionArn.unwrap()
+        keys.append("ImageBuildVersionArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.Ec2ImageId.is_some():
+        auto u2 = v.Ec2ImageId.unwrap()
+        keys.append("Ec2ImageId")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImportClientBrandingRequest to a CBOR map (member wire name -> value, model order).
+def import_client_branding_request_to_cbor(ImportClientBrandingRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
     if v.DeviceTypeWindows.is_some():
         auto u0 = v.DeviceTypeWindows.unwrap()
-        parts.append("\"DeviceTypeWindows\":" + default_import_client_branding_attributes_to_json(u0))
+        keys.append("DeviceTypeWindows")
+        vals.append(default_import_client_branding_attributes_to_cbor(u0))
     if v.DeviceTypeOsx.is_some():
         auto u1 = v.DeviceTypeOsx.unwrap()
-        parts.append("\"DeviceTypeOsx\":" + default_import_client_branding_attributes_to_json(u1))
+        keys.append("DeviceTypeOsx")
+        vals.append(default_import_client_branding_attributes_to_cbor(u1))
     if v.DeviceTypeAndroid.is_some():
         auto u2 = v.DeviceTypeAndroid.unwrap()
-        parts.append("\"DeviceTypeAndroid\":" + default_import_client_branding_attributes_to_json(u2))
+        keys.append("DeviceTypeAndroid")
+        vals.append(default_import_client_branding_attributes_to_cbor(u2))
     if v.DeviceTypeIos.is_some():
         auto u3 = v.DeviceTypeIos.unwrap()
-        parts.append("\"DeviceTypeIos\":" + ios_import_client_branding_attributes_to_json(u3))
+        keys.append("DeviceTypeIos")
+        vals.append(ios_import_client_branding_attributes_to_cbor(u3))
     if v.DeviceTypeLinux.is_some():
         auto u4 = v.DeviceTypeLinux.unwrap()
-        parts.append("\"DeviceTypeLinux\":" + default_import_client_branding_attributes_to_json(u4))
+        keys.append("DeviceTypeLinux")
+        vals.append(default_import_client_branding_attributes_to_cbor(u4))
     if v.DeviceTypeWeb.is_some():
         auto u5 = v.DeviceTypeWeb.unwrap()
-        parts.append("\"DeviceTypeWeb\":" + default_import_client_branding_attributes_to_json(u5))
-    return workspaces_json_obj(parts)
+        keys.append("DeviceTypeWeb")
+        vals.append(default_import_client_branding_attributes_to_cbor(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ImportCustomWorkspaceImageRequest to a compact JSON object (declaration order).
-def import_custom_workspace_image_request_to_json(ImportCustomWorkspaceImageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ImageName\":" + workspaces_json_str(v.ImageName))
-    parts.append("\"ImageDescription\":" + workspaces_json_str(v.ImageDescription))
-    parts.append("\"ComputeType\":" + v.ComputeType.to_json())
-    parts.append("\"Protocol\":" + v.Protocol.to_json())
-    parts.append("\"ImageSource\":" + v.ImageSource.to_json())
-    parts.append("\"InfrastructureConfigurationArn\":" + workspaces_json_str(v.InfrastructureConfigurationArn))
-    parts.append("\"Platform\":" + workspaces_json_str(v.Platform))
-    parts.append("\"OsVersion\":" + v.OsVersion.to_json())
+# Serialize ImportCustomWorkspaceImageRequest to a CBOR map (member wire name -> value, model order).
+def import_custom_workspace_image_request_to_cbor(ImportCustomWorkspaceImageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ImageName")
+    vals.append(cbor.cbor_text(v.ImageName))
+    keys.append("ImageDescription")
+    vals.append(cbor.cbor_text(v.ImageDescription))
+    keys.append("ComputeType")
+    vals.append(cbor.cbor_text(v.ComputeType))
+    keys.append("Protocol")
+    vals.append(cbor.cbor_text(v.Protocol))
+    keys.append("ImageSource")
+    vals.append(image_source_identifier_to_cbor(v.ImageSource))
+    keys.append("InfrastructureConfigurationArn")
+    vals.append(cbor.cbor_text(v.InfrastructureConfigurationArn))
+    keys.append("Platform")
+    vals.append(cbor.cbor_text(v.Platform))
+    keys.append("OsVersion")
+    vals.append(cbor.cbor_text(v.OsVersion))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
     if v.ImageValidationMode.is_some():
         auto u2 = v.ImageValidationMode.unwrap()
-        parts.append("\"ImageValidationMode\":" + u2.to_json())
-    return workspaces_json_obj(parts)
+        keys.append("ImageValidationMode")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ImportWorkspaceImageRequest to a compact JSON object (declaration order).
-def import_workspace_image_request_to_json(ImportWorkspaceImageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Ec2ImageId\":" + workspaces_json_str(v.Ec2ImageId))
-    parts.append("\"IngestionProcess\":" + v.IngestionProcess.to_json())
-    parts.append("\"ImageName\":" + workspaces_json_str(v.ImageName))
-    parts.append("\"ImageDescription\":" + workspaces_json_str(v.ImageDescription))
+# Serialize ImportWorkspaceImageRequest to a CBOR map (member wire name -> value, model order).
+def import_workspace_image_request_to_cbor(ImportWorkspaceImageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Ec2ImageId")
+    vals.append(cbor.cbor_text(v.Ec2ImageId))
+    keys.append("IngestionProcess")
+    vals.append(cbor.cbor_text(v.IngestionProcess))
+    keys.append("ImageName")
+    vals.append(cbor.cbor_text(v.ImageName))
+    keys.append("ImageDescription")
+    vals.append(cbor.cbor_text(v.ImageDescription))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e1))
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
     if v.Applications.is_some():
         auto u2 = v.Applications.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Applications\":" + workspaces_json_arr(e3))
-    return workspaces_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("Applications")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize IosImportClientBrandingAttributes to a compact JSON object (declaration order).
-def ios_import_client_branding_attributes_to_json(IosImportClientBrandingAttributes v) -> str:
-    list[str] parts = []
+# Serialize IosImportClientBrandingAttributes to a CBOR map (member wire name -> value, model order).
+def ios_import_client_branding_attributes_to_cbor(IosImportClientBrandingAttributes v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Logo.is_some():
         auto u0 = v.Logo.unwrap()
-        parts.append("\"Logo\":" + workspaces_json_str(base64.encode(u0)))
+        keys.append("Logo")
+        vals.append(cbor.cbor_blob(u0))
     if v.Logo2x.is_some():
         auto u1 = v.Logo2x.unwrap()
-        parts.append("\"Logo2x\":" + workspaces_json_str(base64.encode(u1)))
+        keys.append("Logo2x")
+        vals.append(cbor.cbor_blob(u1))
     if v.Logo3x.is_some():
         auto u2 = v.Logo3x.unwrap()
-        parts.append("\"Logo3x\":" + workspaces_json_str(base64.encode(u2)))
+        keys.append("Logo3x")
+        vals.append(cbor.cbor_blob(u2))
     if v.SupportEmail.is_some():
         auto u3 = v.SupportEmail.unwrap()
-        parts.append("\"SupportEmail\":" + workspaces_json_str(u3))
+        keys.append("SupportEmail")
+        vals.append(cbor.cbor_text(u3))
     if v.SupportLink.is_some():
         auto u4 = v.SupportLink.unwrap()
-        parts.append("\"SupportLink\":" + workspaces_json_str(u4))
+        keys.append("SupportLink")
+        vals.append(cbor.cbor_text(u4))
     if v.ForgotPasswordLink.is_some():
         auto u5 = v.ForgotPasswordLink.unwrap()
-        parts.append("\"ForgotPasswordLink\":" + workspaces_json_str(u5))
+        keys.append("ForgotPasswordLink")
+        vals.append(cbor.cbor_text(u5))
     if v.LoginMessage.is_some():
         auto u6 = v.LoginMessage.unwrap()
-        list[str] m7 = []
+        list[str] mk7 = []
+        list[cbor.CborValue] mv7 = []
         for k7 in sorted(u6.keys()):
-            m7.append(workspaces_json_str(k7) + ":" + workspaces_json_str(u6[k7]))
-        parts.append("\"LoginMessage\":" + workspaces_json_obj(m7))
-    return workspaces_json_obj(parts)
+            mk7.append(k7)
+            mv7.append(cbor.cbor_text(u6[k7]))
+        keys.append("LoginMessage")
+        vals.append(cbor.cbor_map(mk7, mv7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListAccountLinksRequest to a compact JSON object (declaration order).
-def list_account_links_request_to_json(ListAccountLinksRequest v) -> str:
-    list[str] parts = []
+# Serialize IpRuleItem to a CBOR map (member wire name -> value, model order).
+def ip_rule_item_to_cbor(IpRuleItem v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ipRule.is_some():
+        auto u0 = v.ipRule.unwrap()
+        keys.append("ipRule")
+        vals.append(cbor.cbor_text(u0))
+    if v.ruleDesc.is_some():
+        auto u1 = v.ruleDesc.unwrap()
+        keys.append("ruleDesc")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAccountLinksRequest to a CBOR map (member wire name -> value, model order).
+def list_account_links_request_to_cbor(ListAccountLinksRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.LinkStatusFilter.is_some():
         auto u0 = v.LinkStatusFilter.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"LinkStatusFilter\":" + workspaces_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("LinkStatusFilter")
+        vals.append(cbor.cbor_list(e1))
     if v.NextToken.is_some():
         auto u2 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + workspaces_json_str(u2))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
     if v.MaxResults.is_some():
         auto u3 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u3))
-    return workspaces_json_obj(parts)
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ModifyCertificateBasedAuthPropertiesRequest to a compact JSON object (declaration order).
-def modify_certificate_based_auth_properties_request_to_json(ModifyCertificateBasedAuthPropertiesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+# Serialize ListAvailableManagementCidrRangesRequest to a CBOR map (member wire name -> value, model order).
+def list_available_management_cidr_ranges_request_to_cbor(ListAvailableManagementCidrRangesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ManagementCidrRangeConstraint")
+    vals.append(cbor.cbor_text(v.ManagementCidrRangeConstraint))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MicrosoftEntraConfig to a CBOR map (member wire name -> value, model order).
+def microsoft_entra_config_to_cbor(MicrosoftEntraConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.TenantId.is_some():
+        auto u0 = v.TenantId.unwrap()
+        keys.append("TenantId")
+        vals.append(cbor.cbor_text(u0))
+    if v.ApplicationConfigSecretArn.is_some():
+        auto u1 = v.ApplicationConfigSecretArn.unwrap()
+        keys.append("ApplicationConfigSecretArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MigrateWorkspaceRequest to a CBOR map (member wire name -> value, model order).
+def migrate_workspace_request_to_cbor(MigrateWorkspaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SourceWorkspaceId")
+    vals.append(cbor.cbor_text(v.SourceWorkspaceId))
+    keys.append("BundleId")
+    vals.append(cbor.cbor_text(v.BundleId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyAccountRequest to a CBOR map (member wire name -> value, model order).
+def modify_account_request_to_cbor(ModifyAccountRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DedicatedTenancySupport.is_some():
+        auto u0 = v.DedicatedTenancySupport.unwrap()
+        keys.append("DedicatedTenancySupport")
+        vals.append(cbor.cbor_text(u0))
+    if v.DedicatedTenancyManagementCidrRange.is_some():
+        auto u1 = v.DedicatedTenancyManagementCidrRange.unwrap()
+        keys.append("DedicatedTenancyManagementCidrRange")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyCertificateBasedAuthPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_certificate_based_auth_properties_request_to_cbor(ModifyCertificateBasedAuthPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
     if v.CertificateBasedAuthProperties.is_some():
         auto u0 = v.CertificateBasedAuthProperties.unwrap()
-        parts.append("\"CertificateBasedAuthProperties\":" + u0.to_json())
+        keys.append("CertificateBasedAuthProperties")
+        vals.append(certificate_based_auth_properties_to_cbor(u0))
     if v.PropertiesToDelete.is_some():
         auto u1 = v.PropertiesToDelete.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(workspaces_json_str(x2))
-        parts.append("\"PropertiesToDelete\":" + workspaces_json_arr(e2))
-    return workspaces_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("PropertiesToDelete")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ModifySamlPropertiesRequest to a compact JSON object (declaration order).
-def modify_saml_properties_request_to_json(ModifySamlPropertiesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+# Serialize ModifyClientPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_client_properties_request_to_cbor(ModifyClientPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("ClientProperties")
+    vals.append(client_properties_to_cbor(v.ClientProperties))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyEndpointEncryptionModeRequest to a CBOR map (member wire name -> value, model order).
+def modify_endpoint_encryption_mode_request_to_cbor(ModifyEndpointEncryptionModeRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("EndpointEncryptionMode")
+    vals.append(cbor.cbor_text(v.EndpointEncryptionMode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifySamlPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_saml_properties_request_to_cbor(ModifySamlPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
     if v.SamlProperties.is_some():
         auto u0 = v.SamlProperties.unwrap()
-        parts.append("\"SamlProperties\":" + u0.to_json())
+        keys.append("SamlProperties")
+        vals.append(saml_properties_to_cbor(u0))
     if v.PropertiesToDelete.is_some():
         auto u1 = v.PropertiesToDelete.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"PropertiesToDelete\":" + workspaces_json_arr(e2))
-    return workspaces_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("PropertiesToDelete")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ModifyStreamingPropertiesRequest to a compact JSON object (declaration order).
-def modify_streaming_properties_request_to_json(ModifyStreamingPropertiesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
+# Serialize ModifySelfservicePermissionsRequest to a CBOR map (member wire name -> value, model order).
+def modify_selfservice_permissions_request_to_cbor(ModifySelfservicePermissionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("SelfservicePermissions")
+    vals.append(selfservice_permissions_to_cbor(v.SelfservicePermissions))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyStreamingPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_streaming_properties_request_to_cbor(ModifyStreamingPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
     if v.StreamingProperties.is_some():
         auto u0 = v.StreamingProperties.unwrap()
-        parts.append("\"StreamingProperties\":" + streaming_properties_to_json(u0))
-    return workspaces_json_obj(parts)
+        keys.append("StreamingProperties")
+        vals.append(streaming_properties_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ModifyWorkspaceAccessPropertiesRequest to a compact JSON object (declaration order).
-def modify_workspace_access_properties_request_to_json(ModifyWorkspaceAccessPropertiesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + workspaces_json_str(v.ResourceId))
-    parts.append("\"WorkspaceAccessProperties\":" + workspace_access_properties_to_json(v.WorkspaceAccessProperties))
-    return workspaces_json_obj(parts)
+# Serialize ModifyWorkspaceAccessPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_workspace_access_properties_request_to_cbor(ModifyWorkspaceAccessPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("WorkspaceAccessProperties")
+    vals.append(workspace_access_properties_to_cbor(v.WorkspaceAccessProperties))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ModifyWorkspacePropertiesRequest to a compact JSON object (declaration order).
-def modify_workspace_properties_request_to_json(ModifyWorkspacePropertiesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"WorkspaceId\":" + workspaces_json_str(v.WorkspaceId))
+# Serialize ModifyWorkspaceCreationPropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_workspace_creation_properties_request_to_cbor(ModifyWorkspaceCreationPropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("WorkspaceCreationProperties")
+    vals.append(workspace_creation_properties_to_cbor(v.WorkspaceCreationProperties))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyWorkspacePropertiesRequest to a CBOR map (member wire name -> value, model order).
+def modify_workspace_properties_request_to_cbor(ModifyWorkspacePropertiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
     if v.WorkspaceProperties.is_some():
         auto u0 = v.WorkspaceProperties.unwrap()
-        parts.append("\"WorkspaceProperties\":" + workspace_properties_to_json(u0))
+        keys.append("WorkspaceProperties")
+        vals.append(workspace_properties_to_cbor(u0))
     if v.DataReplication.is_some():
         auto u1 = v.DataReplication.unwrap()
-        parts.append("\"DataReplication\":" + u1.to_json())
-    return workspaces_json_obj(parts)
+        keys.append("DataReplication")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RebootWorkspacesRequest to a compact JSON object (declaration order).
-def reboot_workspaces_request_to_json(RebootWorkspacesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize ModifyWorkspaceStateRequest to a CBOR map (member wire name -> value, model order).
+def modify_workspace_state_request_to_cbor(ModifyWorkspaceStateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    keys.append("WorkspaceState")
+    vals.append(cbor.cbor_text(v.WorkspaceState))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RebootRequest to a CBOR map (member wire name -> value, model order).
+def reboot_request_to_cbor(RebootRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RebootWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def reboot_workspaces_request_to_cbor(RebootWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.RebootWorkspaceRequests:
-        e0.append(x0.to_json())
-    parts.append("\"RebootWorkspaceRequests\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(reboot_request_to_cbor(x0))
+    keys.append("RebootWorkspaceRequests")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RebuildWorkspacesRequest to a compact JSON object (declaration order).
-def rebuild_workspaces_request_to_json(RebuildWorkspacesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize RebuildRequest to a CBOR map (member wire name -> value, model order).
+def rebuild_request_to_cbor(RebuildRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RebuildWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def rebuild_workspaces_request_to_cbor(RebuildWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.RebuildWorkspaceRequests:
-        e0.append(x0.to_json())
-    parts.append("\"RebuildWorkspaceRequests\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(rebuild_request_to_cbor(x0))
+    keys.append("RebuildWorkspaceRequests")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RegisterWorkspaceDirectoryRequest to a compact JSON object (declaration order).
-def register_workspace_directory_request_to_json(RegisterWorkspaceDirectoryRequest v) -> str:
-    list[str] parts = []
+# Serialize RegisterWorkspaceDirectoryRequest to a CBOR map (member wire name -> value, model order).
+def register_workspace_directory_request_to_cbor(RegisterWorkspaceDirectoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DirectoryId.is_some():
         auto u0 = v.DirectoryId.unwrap()
-        parts.append("\"DirectoryId\":" + workspaces_json_str(u0))
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u0))
     if v.SubnetIds.is_some():
         auto u1 = v.SubnetIds.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(workspaces_json_str(x2))
-        parts.append("\"SubnetIds\":" + workspaces_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("SubnetIds")
+        vals.append(cbor.cbor_list(e2))
     if v.EnableSelfService.is_some():
         auto u3 = v.EnableSelfService.unwrap()
-        parts.append("\"EnableSelfService\":" + json.dumps(JsonValue.Bool(u3)))
+        keys.append("EnableSelfService")
+        vals.append(cbor.cbor_bool(u3))
     if v.Tenancy.is_some():
         auto u4 = v.Tenancy.unwrap()
-        parts.append("\"Tenancy\":" + u4.to_json())
+        keys.append("Tenancy")
+        vals.append(cbor.cbor_text(u4))
     if v.Tags.is_some():
         auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e6))
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
     if v.WorkspaceDirectoryName.is_some():
         auto u7 = v.WorkspaceDirectoryName.unwrap()
-        parts.append("\"WorkspaceDirectoryName\":" + workspaces_json_str(u7))
+        keys.append("WorkspaceDirectoryName")
+        vals.append(cbor.cbor_text(u7))
     if v.WorkspaceDirectoryDescription.is_some():
         auto u8 = v.WorkspaceDirectoryDescription.unwrap()
-        parts.append("\"WorkspaceDirectoryDescription\":" + workspaces_json_str(u8))
+        keys.append("WorkspaceDirectoryDescription")
+        vals.append(cbor.cbor_text(u8))
     if v.UserIdentityType.is_some():
         auto u9 = v.UserIdentityType.unwrap()
-        parts.append("\"UserIdentityType\":" + u9.to_json())
+        keys.append("UserIdentityType")
+        vals.append(cbor.cbor_text(u9))
     if v.IdcInstanceArn.is_some():
         auto u10 = v.IdcInstanceArn.unwrap()
-        parts.append("\"IdcInstanceArn\":" + workspaces_json_str(u10))
+        keys.append("IdcInstanceArn")
+        vals.append(cbor.cbor_text(u10))
     if v.MicrosoftEntraConfig.is_some():
         auto u11 = v.MicrosoftEntraConfig.unwrap()
-        parts.append("\"MicrosoftEntraConfig\":" + u11.to_json())
+        keys.append("MicrosoftEntraConfig")
+        vals.append(microsoft_entra_config_to_cbor(u11))
     if v.WorkspaceType.is_some():
         auto u12 = v.WorkspaceType.unwrap()
-        parts.append("\"WorkspaceType\":" + u12.to_json())
+        keys.append("WorkspaceType")
+        vals.append(cbor.cbor_text(u12))
     if v.ActiveDirectoryConfig.is_some():
         auto u13 = v.ActiveDirectoryConfig.unwrap()
-        parts.append("\"ActiveDirectoryConfig\":" + u13.to_json())
-    return workspaces_json_obj(parts)
+        keys.append("ActiveDirectoryConfig")
+        vals.append(active_directory_config_to_cbor(u13))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RevokeIpRulesRequest to a compact JSON object (declaration order).
-def revoke_ip_rules_request_to_json(RevokeIpRulesRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"GroupId\":" + workspaces_json_str(v.GroupId))
-    list[str] e0 = []
+# Serialize RejectAccountLinkInvitationRequest to a CBOR map (member wire name -> value, model order).
+def reject_account_link_invitation_request_to_cbor(RejectAccountLinkInvitationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LinkId")
+    vals.append(cbor.cbor_text(v.LinkId))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        keys.append("ClientToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RestoreWorkspaceRequest to a CBOR map (member wire name -> value, model order).
+def restore_workspace_request_to_cbor(RestoreWorkspaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RevokeIpRulesRequest to a CBOR map (member wire name -> value, model order).
+def revoke_ip_rules_request_to_cbor(RevokeIpRulesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("GroupId")
+    vals.append(cbor.cbor_text(v.GroupId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.UserRules:
-        e0.append(workspaces_json_str(x0))
-    parts.append("\"UserRules\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("UserRules")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StandbyWorkspace to a compact JSON object (declaration order).
-def standby_workspace_to_json(StandbyWorkspace v) -> str:
-    list[str] parts = []
-    parts.append("\"PrimaryWorkspaceId\":" + workspaces_json_str(v.PrimaryWorkspaceId))
+# Serialize RootStorage to a CBOR map (member wire name -> value, model order).
+def root_storage_to_cbor(RootStorage v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Capacity")
+    vals.append(cbor.cbor_text(v.Capacity))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SamlProperties to a CBOR map (member wire name -> value, model order).
+def saml_properties_to_cbor(SamlProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.UserAccessUrl.is_some():
+        auto u1 = v.UserAccessUrl.unwrap()
+        keys.append("UserAccessUrl")
+        vals.append(cbor.cbor_text(u1))
+    if v.RelayStateParameterName.is_some():
+        auto u2 = v.RelayStateParameterName.unwrap()
+        keys.append("RelayStateParameterName")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SelfservicePermissions to a CBOR map (member wire name -> value, model order).
+def selfservice_permissions_to_cbor(SelfservicePermissions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RestartWorkspace.is_some():
+        auto u0 = v.RestartWorkspace.unwrap()
+        keys.append("RestartWorkspace")
+        vals.append(cbor.cbor_text(u0))
+    if v.IncreaseVolumeSize.is_some():
+        auto u1 = v.IncreaseVolumeSize.unwrap()
+        keys.append("IncreaseVolumeSize")
+        vals.append(cbor.cbor_text(u1))
+    if v.ChangeComputeType.is_some():
+        auto u2 = v.ChangeComputeType.unwrap()
+        keys.append("ChangeComputeType")
+        vals.append(cbor.cbor_text(u2))
+    if v.SwitchRunningMode.is_some():
+        auto u3 = v.SwitchRunningMode.unwrap()
+        keys.append("SwitchRunningMode")
+        vals.append(cbor.cbor_text(u3))
+    if v.RebuildWorkspace.is_some():
+        auto u4 = v.RebuildWorkspace.unwrap()
+        keys.append("RebuildWorkspace")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StandbyWorkspace to a CBOR map (member wire name -> value, model order).
+def standby_workspace_to_cbor(StandbyWorkspace v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PrimaryWorkspaceId")
+    vals.append(cbor.cbor_text(v.PrimaryWorkspaceId))
     if v.VolumeEncryptionKey.is_some():
         auto u0 = v.VolumeEncryptionKey.unwrap()
-        parts.append("\"VolumeEncryptionKey\":" + workspaces_json_str(u0))
-    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
+        keys.append("VolumeEncryptionKey")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e2))
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
     if v.DataReplication.is_some():
         auto u3 = v.DataReplication.unwrap()
-        parts.append("\"DataReplication\":" + u3.to_json())
-    return workspaces_json_obj(parts)
+        keys.append("DataReplication")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartWorkspacesRequest to a compact JSON object (declaration order).
-def start_workspaces_request_to_json(StartWorkspacesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize StartRequest to a CBOR map (member wire name -> value, model order).
+def start_request_to_cbor(StartRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.WorkspaceId.is_some():
+        auto u0 = v.WorkspaceId.unwrap()
+        keys.append("WorkspaceId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartWorkspacesPoolRequest to a CBOR map (member wire name -> value, model order).
+def start_workspaces_pool_request_to_cbor(StartWorkspacesPoolRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PoolId")
+    vals.append(cbor.cbor_text(v.PoolId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def start_workspaces_request_to_cbor(StartWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.StartWorkspaceRequests:
-        e0.append(x0.to_json())
-    parts.append("\"StartWorkspaceRequests\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(start_request_to_cbor(x0))
+    keys.append("StartWorkspaceRequests")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StopWorkspacesRequest to a compact JSON object (declaration order).
-def stop_workspaces_request_to_json(StopWorkspacesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize StopRequest to a CBOR map (member wire name -> value, model order).
+def stop_request_to_cbor(StopRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.WorkspaceId.is_some():
+        auto u0 = v.WorkspaceId.unwrap()
+        keys.append("WorkspaceId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopWorkspacesPoolRequest to a CBOR map (member wire name -> value, model order).
+def stop_workspaces_pool_request_to_cbor(StopWorkspacesPoolRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PoolId")
+    vals.append(cbor.cbor_text(v.PoolId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def stop_workspaces_request_to_cbor(StopWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.StopWorkspaceRequests:
-        e0.append(x0.to_json())
-    parts.append("\"StopWorkspaceRequests\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(stop_request_to_cbor(x0))
+    keys.append("StopWorkspaceRequests")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StreamingProperties to a compact JSON object (declaration order).
-def streaming_properties_to_json(StreamingProperties v) -> str:
-    list[str] parts = []
+# Serialize StorageConnector to a CBOR map (member wire name -> value, model order).
+def storage_connector_to_cbor(StorageConnector v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ConnectorType")
+    vals.append(cbor.cbor_text(v.ConnectorType))
+    keys.append("Status")
+    vals.append(cbor.cbor_text(v.Status))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StreamingProperties to a CBOR map (member wire name -> value, model order).
+def streaming_properties_to_cbor(StreamingProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.StreamingExperiencePreferredProtocol.is_some():
         auto u0 = v.StreamingExperiencePreferredProtocol.unwrap()
-        parts.append("\"StreamingExperiencePreferredProtocol\":" + u0.to_json())
+        keys.append("StreamingExperiencePreferredProtocol")
+        vals.append(cbor.cbor_text(u0))
     if v.UserSettings.is_some():
         auto u1 = v.UserSettings.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"UserSettings\":" + workspaces_json_arr(e2))
+            e2.append(user_setting_to_cbor(x2))
+        keys.append("UserSettings")
+        vals.append(cbor.cbor_list(e2))
     if v.StorageConnectors.is_some():
         auto u3 = v.StorageConnectors.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"StorageConnectors\":" + workspaces_json_arr(e4))
+            e4.append(storage_connector_to_cbor(x4))
+        keys.append("StorageConnectors")
+        vals.append(cbor.cbor_list(e4))
     if v.GlobalAccelerator.is_some():
         auto u5 = v.GlobalAccelerator.unwrap()
-        parts.append("\"GlobalAccelerator\":" + u5.to_json())
-    return workspaces_json_obj(parts)
+        keys.append("GlobalAccelerator")
+        vals.append(global_accelerator_for_directory_to_cbor(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TerminateWorkspacesRequest to a compact JSON object (declaration order).
-def terminate_workspaces_request_to_json(TerminateWorkspacesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TerminateRequest to a CBOR map (member wire name -> value, model order).
+def terminate_request_to_cbor(TerminateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkspaceId")
+    vals.append(cbor.cbor_text(v.WorkspaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TerminateWorkspacesPoolRequest to a CBOR map (member wire name -> value, model order).
+def terminate_workspaces_pool_request_to_cbor(TerminateWorkspacesPoolRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PoolId")
+    vals.append(cbor.cbor_text(v.PoolId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TerminateWorkspacesPoolSessionRequest to a CBOR map (member wire name -> value, model order).
+def terminate_workspaces_pool_session_request_to_cbor(TerminateWorkspacesPoolSessionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SessionId")
+    vals.append(cbor.cbor_text(v.SessionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TerminateWorkspacesRequest to a CBOR map (member wire name -> value, model order).
+def terminate_workspaces_request_to_cbor(TerminateWorkspacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TerminateWorkspaceRequests:
-        e0.append(x0.to_json())
-    parts.append("\"TerminateWorkspaceRequests\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(terminate_request_to_cbor(x0))
+    keys.append("TerminateWorkspaceRequests")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateRulesOfIpGroupRequest to a compact JSON object (declaration order).
-def update_rules_of_ip_group_request_to_json(UpdateRulesOfIpGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"GroupId\":" + workspaces_json_str(v.GroupId))
-    list[str] e0 = []
+# Serialize TimeoutSettings to a CBOR map (member wire name -> value, model order).
+def timeout_settings_to_cbor(TimeoutSettings v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DisconnectTimeoutInSeconds.is_some():
+        auto u0 = v.DisconnectTimeoutInSeconds.unwrap()
+        keys.append("DisconnectTimeoutInSeconds")
+        vals.append(cbor.cbor_int(u0))
+    if v.IdleDisconnectTimeoutInSeconds.is_some():
+        auto u1 = v.IdleDisconnectTimeoutInSeconds.unwrap()
+        keys.append("IdleDisconnectTimeoutInSeconds")
+        vals.append(cbor.cbor_int(u1))
+    if v.MaxUserDurationInSeconds.is_some():
+        auto u2 = v.MaxUserDurationInSeconds.unwrap()
+        keys.append("MaxUserDurationInSeconds")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateConnectClientAddInRequest to a CBOR map (member wire name -> value, model order).
+def update_connect_client_add_in_request_to_cbor(UpdateConnectClientAddInRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AddInId")
+    vals.append(cbor.cbor_text(v.AddInId))
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    if v.URL.is_some():
+        auto u1 = v.URL.unwrap()
+        keys.append("URL")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateConnectionAliasPermissionRequest to a CBOR map (member wire name -> value, model order).
+def update_connection_alias_permission_request_to_cbor(UpdateConnectionAliasPermissionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AliasId")
+    vals.append(cbor.cbor_text(v.AliasId))
+    keys.append("ConnectionAliasPermission")
+    vals.append(connection_alias_permission_to_cbor(v.ConnectionAliasPermission))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateRulesOfIpGroupRequest to a CBOR map (member wire name -> value, model order).
+def update_rules_of_ip_group_request_to_cbor(UpdateRulesOfIpGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("GroupId")
+    vals.append(cbor.cbor_text(v.GroupId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.UserRules:
-        e0.append(x0.to_json())
-    parts.append("\"UserRules\":" + workspaces_json_arr(e0))
-    return workspaces_json_obj(parts)
+        e0.append(ip_rule_item_to_cbor(x0))
+    keys.append("UserRules")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize WorkspaceAccessProperties to a compact JSON object (declaration order).
-def workspace_access_properties_to_json(WorkspaceAccessProperties v) -> str:
-    list[str] parts = []
+# Serialize UpdateWorkspaceBundleRequest to a CBOR map (member wire name -> value, model order).
+def update_workspace_bundle_request_to_cbor(UpdateWorkspaceBundleRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.BundleId.is_some():
+        auto u0 = v.BundleId.unwrap()
+        keys.append("BundleId")
+        vals.append(cbor.cbor_text(u0))
+    if v.ImageId.is_some():
+        auto u1 = v.ImageId.unwrap()
+        keys.append("ImageId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateWorkspaceImagePermissionRequest to a CBOR map (member wire name -> value, model order).
+def update_workspace_image_permission_request_to_cbor(UpdateWorkspaceImagePermissionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ImageId")
+    vals.append(cbor.cbor_text(v.ImageId))
+    keys.append("AllowCopyImage")
+    vals.append(cbor.cbor_bool(v.AllowCopyImage))
+    keys.append("SharedAccountId")
+    vals.append(cbor.cbor_text(v.SharedAccountId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateWorkspacesPoolRequest to a CBOR map (member wire name -> value, model order).
+def update_workspaces_pool_request_to_cbor(UpdateWorkspacesPoolRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PoolId")
+    vals.append(cbor.cbor_text(v.PoolId))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.BundleId.is_some():
+        auto u1 = v.BundleId.unwrap()
+        keys.append("BundleId")
+        vals.append(cbor.cbor_text(u1))
+    if v.DirectoryId.is_some():
+        auto u2 = v.DirectoryId.unwrap()
+        keys.append("DirectoryId")
+        vals.append(cbor.cbor_text(u2))
+    if v.Capacity.is_some():
+        auto u3 = v.Capacity.unwrap()
+        keys.append("Capacity")
+        vals.append(capacity_to_cbor(u3))
+    if v.ApplicationSettings.is_some():
+        auto u4 = v.ApplicationSettings.unwrap()
+        keys.append("ApplicationSettings")
+        vals.append(application_settings_request_to_cbor(u4))
+    if v.TimeoutSettings.is_some():
+        auto u5 = v.TimeoutSettings.unwrap()
+        keys.append("TimeoutSettings")
+        vals.append(timeout_settings_to_cbor(u5))
+    if v.RunningMode.is_some():
+        auto u6 = v.RunningMode.unwrap()
+        keys.append("RunningMode")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UserSetting to a CBOR map (member wire name -> value, model order).
+def user_setting_to_cbor(UserSetting v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Action")
+    vals.append(cbor.cbor_text(v.Action))
+    keys.append("Permission")
+    vals.append(cbor.cbor_text(v.Permission))
+    if v.MaximumLength.is_some():
+        auto u0 = v.MaximumLength.unwrap()
+        keys.append("MaximumLength")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UserStorage to a CBOR map (member wire name -> value, model order).
+def user_storage_to_cbor(UserStorage v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Capacity")
+    vals.append(cbor.cbor_text(v.Capacity))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize WorkspaceAccessProperties to a CBOR map (member wire name -> value, model order).
+def workspace_access_properties_to_cbor(WorkspaceAccessProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.DeviceTypeWindows.is_some():
         auto u0 = v.DeviceTypeWindows.unwrap()
-        parts.append("\"DeviceTypeWindows\":" + u0.to_json())
+        keys.append("DeviceTypeWindows")
+        vals.append(cbor.cbor_text(u0))
     if v.DeviceTypeOsx.is_some():
         auto u1 = v.DeviceTypeOsx.unwrap()
-        parts.append("\"DeviceTypeOsx\":" + u1.to_json())
+        keys.append("DeviceTypeOsx")
+        vals.append(cbor.cbor_text(u1))
     if v.DeviceTypeWeb.is_some():
         auto u2 = v.DeviceTypeWeb.unwrap()
-        parts.append("\"DeviceTypeWeb\":" + u2.to_json())
+        keys.append("DeviceTypeWeb")
+        vals.append(cbor.cbor_text(u2))
     if v.DeviceTypeIos.is_some():
         auto u3 = v.DeviceTypeIos.unwrap()
-        parts.append("\"DeviceTypeIos\":" + u3.to_json())
+        keys.append("DeviceTypeIos")
+        vals.append(cbor.cbor_text(u3))
     if v.DeviceTypeAndroid.is_some():
         auto u4 = v.DeviceTypeAndroid.unwrap()
-        parts.append("\"DeviceTypeAndroid\":" + u4.to_json())
+        keys.append("DeviceTypeAndroid")
+        vals.append(cbor.cbor_text(u4))
     if v.DeviceTypeChromeOs.is_some():
         auto u5 = v.DeviceTypeChromeOs.unwrap()
-        parts.append("\"DeviceTypeChromeOs\":" + u5.to_json())
+        keys.append("DeviceTypeChromeOs")
+        vals.append(cbor.cbor_text(u5))
     if v.DeviceTypeZeroClient.is_some():
         auto u6 = v.DeviceTypeZeroClient.unwrap()
-        parts.append("\"DeviceTypeZeroClient\":" + u6.to_json())
+        keys.append("DeviceTypeZeroClient")
+        vals.append(cbor.cbor_text(u6))
     if v.DeviceTypeLinux.is_some():
         auto u7 = v.DeviceTypeLinux.unwrap()
-        parts.append("\"DeviceTypeLinux\":" + u7.to_json())
+        keys.append("DeviceTypeLinux")
+        vals.append(cbor.cbor_text(u7))
     if v.DeviceTypeWorkSpacesThinClient.is_some():
         auto u8 = v.DeviceTypeWorkSpacesThinClient.unwrap()
-        parts.append("\"DeviceTypeWorkSpacesThinClient\":" + u8.to_json())
+        keys.append("DeviceTypeWorkSpacesThinClient")
+        vals.append(cbor.cbor_text(u8))
     if v.AccessEndpointConfig.is_some():
         auto u9 = v.AccessEndpointConfig.unwrap()
-        parts.append("\"AccessEndpointConfig\":" + access_endpoint_config_to_json(u9))
-    return workspaces_json_obj(parts)
+        keys.append("AccessEndpointConfig")
+        vals.append(access_endpoint_config_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize WorkspaceProperties to a compact JSON object (declaration order).
-def workspace_properties_to_json(WorkspaceProperties v) -> str:
-    list[str] parts = []
+# Serialize WorkspaceCreationProperties to a CBOR map (member wire name -> value, model order).
+def workspace_creation_properties_to_cbor(WorkspaceCreationProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.EnableInternetAccess.is_some():
+        auto u0 = v.EnableInternetAccess.unwrap()
+        keys.append("EnableInternetAccess")
+        vals.append(cbor.cbor_bool(u0))
+    if v.DefaultOu.is_some():
+        auto u1 = v.DefaultOu.unwrap()
+        keys.append("DefaultOu")
+        vals.append(cbor.cbor_text(u1))
+    if v.CustomSecurityGroupId.is_some():
+        auto u2 = v.CustomSecurityGroupId.unwrap()
+        keys.append("CustomSecurityGroupId")
+        vals.append(cbor.cbor_text(u2))
+    if v.UserEnabledAsLocalAdministrator.is_some():
+        auto u3 = v.UserEnabledAsLocalAdministrator.unwrap()
+        keys.append("UserEnabledAsLocalAdministrator")
+        vals.append(cbor.cbor_bool(u3))
+    if v.EnableMaintenanceMode.is_some():
+        auto u4 = v.EnableMaintenanceMode.unwrap()
+        keys.append("EnableMaintenanceMode")
+        vals.append(cbor.cbor_bool(u4))
+    if v.InstanceIamRoleArn.is_some():
+        auto u5 = v.InstanceIamRoleArn.unwrap()
+        keys.append("InstanceIamRoleArn")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize WorkspaceProperties to a CBOR map (member wire name -> value, model order).
+def workspace_properties_to_cbor(WorkspaceProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.RunningMode.is_some():
         auto u0 = v.RunningMode.unwrap()
-        parts.append("\"RunningMode\":" + u0.to_json())
+        keys.append("RunningMode")
+        vals.append(cbor.cbor_text(u0))
     if v.RunningModeAutoStopTimeoutInMinutes.is_some():
         auto u1 = v.RunningModeAutoStopTimeoutInMinutes.unwrap()
-        parts.append("\"RunningModeAutoStopTimeoutInMinutes\":" + str(u1))
+        keys.append("RunningModeAutoStopTimeoutInMinutes")
+        vals.append(cbor.cbor_int(u1))
     if v.RootVolumeSizeGib.is_some():
         auto u2 = v.RootVolumeSizeGib.unwrap()
-        parts.append("\"RootVolumeSizeGib\":" + str(u2))
+        keys.append("RootVolumeSizeGib")
+        vals.append(cbor.cbor_int(u2))
     if v.UserVolumeSizeGib.is_some():
         auto u3 = v.UserVolumeSizeGib.unwrap()
-        parts.append("\"UserVolumeSizeGib\":" + str(u3))
+        keys.append("UserVolumeSizeGib")
+        vals.append(cbor.cbor_int(u3))
     if v.ComputeTypeName.is_some():
         auto u4 = v.ComputeTypeName.unwrap()
-        parts.append("\"ComputeTypeName\":" + u4.to_json())
+        keys.append("ComputeTypeName")
+        vals.append(cbor.cbor_text(u4))
     if v.Protocols.is_some():
         auto u5 = v.Protocols.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Protocols\":" + workspaces_json_arr(e6))
+            e6.append(cbor.cbor_text(x6))
+        keys.append("Protocols")
+        vals.append(cbor.cbor_list(e6))
     if v.OperatingSystemName.is_some():
         auto u7 = v.OperatingSystemName.unwrap()
-        parts.append("\"OperatingSystemName\":" + u7.to_json())
+        keys.append("OperatingSystemName")
+        vals.append(cbor.cbor_text(u7))
     if v.GlobalAccelerator.is_some():
         auto u8 = v.GlobalAccelerator.unwrap()
-        parts.append("\"GlobalAccelerator\":" + u8.to_json())
+        keys.append("GlobalAccelerator")
+        vals.append(global_accelerator_for_work_space_to_cbor(u8))
     if v.NestedVirtualizationEnabled.is_some():
         auto u9 = v.NestedVirtualizationEnabled.unwrap()
-        parts.append("\"NestedVirtualizationEnabled\":" + json.dumps(JsonValue.Bool(u9)))
-    return workspaces_json_obj(parts)
+        keys.append("NestedVirtualizationEnabled")
+        vals.append(cbor.cbor_bool(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize WorkspaceRequest to a compact JSON object (declaration order).
-def workspace_request_to_json(WorkspaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DirectoryId\":" + workspaces_json_str(v.DirectoryId))
-    parts.append("\"UserName\":" + workspaces_json_str(v.UserName))
-    parts.append("\"BundleId\":" + workspaces_json_str(v.BundleId))
+# Serialize WorkspaceRequest to a CBOR map (member wire name -> value, model order).
+def workspace_request_to_cbor(WorkspaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DirectoryId")
+    vals.append(cbor.cbor_text(v.DirectoryId))
+    keys.append("UserName")
+    vals.append(cbor.cbor_text(v.UserName))
+    keys.append("BundleId")
+    vals.append(cbor.cbor_text(v.BundleId))
     if v.VolumeEncryptionKey.is_some():
         auto u0 = v.VolumeEncryptionKey.unwrap()
-        parts.append("\"VolumeEncryptionKey\":" + workspaces_json_str(u0))
+        keys.append("VolumeEncryptionKey")
+        vals.append(cbor.cbor_text(u0))
     if v.UserVolumeEncryptionEnabled.is_some():
         auto u1 = v.UserVolumeEncryptionEnabled.unwrap()
-        parts.append("\"UserVolumeEncryptionEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+        keys.append("UserVolumeEncryptionEnabled")
+        vals.append(cbor.cbor_bool(u1))
     if v.RootVolumeEncryptionEnabled.is_some():
         auto u2 = v.RootVolumeEncryptionEnabled.unwrap()
-        parts.append("\"RootVolumeEncryptionEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+        keys.append("RootVolumeEncryptionEnabled")
+        vals.append(cbor.cbor_bool(u2))
     if v.WorkspaceProperties.is_some():
         auto u3 = v.WorkspaceProperties.unwrap()
-        parts.append("\"WorkspaceProperties\":" + workspace_properties_to_json(u3))
+        keys.append("WorkspaceProperties")
+        vals.append(workspace_properties_to_cbor(u3))
     if v.Tags.is_some():
         auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + workspaces_json_arr(e5))
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
     if v.WorkspaceName.is_some():
         auto u6 = v.WorkspaceName.unwrap()
-        parts.append("\"WorkspaceName\":" + workspaces_json_str(u6))
+        keys.append("WorkspaceName")
+        vals.append(cbor.cbor_text(u6))
     if v.Ipv6Address.is_some():
         auto u7 = v.Ipv6Address.unwrap()
-        parts.append("\"Ipv6Address\":" + workspaces_json_str(u7))
-    return workspaces_json_obj(parts)
+        keys.append("Ipv6Address")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
 
 # A bound WorkSpaces client: credentials + region, threaded into every operation.
 struct WorkSpacesClient:
@@ -3699,672 +4344,819 @@ struct WorkSpacesClient:
 
     # AcceptAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
-    def accept_account_link_invitation(self, AcceptAccountLinkInvitationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AcceptAccountLinkInvitation", body)
+    def accept_account_link_invitation(self, AcceptAccountLinkInvitationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(accept_account_link_invitation_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "AcceptAccountLinkInvitation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateConnectionAlias
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAssociatedException, ResourceNotFoundException
-    def associate_connection_alias(self, AssociateConnectionAliasRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AssociateConnectionAlias", body)
+    def associate_connection_alias(self, AssociateConnectionAliasRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_connection_alias_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "AssociateConnectionAlias", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateIpGroups
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
-    def associate_ip_groups(self, AssociateIpGroupsRequest input) -> str:
-        auto body = associate_ip_groups_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AssociateIpGroups", body)
+    def associate_ip_groups(self, AssociateIpGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_ip_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "AssociateIpGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateWorkspaceApplication
     # errors: AccessDeniedException, ApplicationNotSupportedException, ComputeNotCompatibleException, IncompatibleApplicationsException, InvalidParameterValuesException, OperatingSystemNotCompatibleException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
-    def associate_workspace_application(self, AssociateWorkspaceApplicationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AssociateWorkspaceApplication", body)
+    def associate_workspace_application(self, AssociateWorkspaceApplicationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_workspace_application_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "AssociateWorkspaceApplication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AuthorizeIpRules
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceLimitExceededException, ResourceNotFoundException
-    def authorize_ip_rules(self, AuthorizeIpRulesRequest input) -> str:
-        auto body = authorize_ip_rules_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "AuthorizeIpRules", body)
+    def authorize_ip_rules(self, AuthorizeIpRulesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(authorize_ip_rules_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "AuthorizeIpRules", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CopyWorkspaceImage
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException
-    def copy_workspace_image(self, CopyWorkspaceImageRequest input) -> str:
-        auto body = copy_workspace_image_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CopyWorkspaceImage", body)
+    def copy_workspace_image(self, CopyWorkspaceImageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(copy_workspace_image_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CopyWorkspaceImage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ValidationException
-    def create_account_link_invitation(self, CreateAccountLinkInvitationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateAccountLinkInvitation", body)
+    def create_account_link_invitation(self, CreateAccountLinkInvitationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_account_link_invitation_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateAccountLinkInvitation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateConnectClientAddIn
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAlreadyExistsException, ResourceCreationFailedException, ResourceNotFoundException
-    def create_connect_client_add_in(self, CreateConnectClientAddInRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateConnectClientAddIn", body)
+    def create_connect_client_add_in(self, CreateConnectClientAddInRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_connect_client_add_in_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateConnectClientAddIn", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateConnectionAlias
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException
-    def create_connection_alias(self, CreateConnectionAliasRequest input) -> str:
-        auto body = create_connection_alias_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateConnectionAlias", body)
+    def create_connection_alias(self, CreateConnectionAliasRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_connection_alias_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateConnectionAlias", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateIpGroup
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAlreadyExistsException, ResourceCreationFailedException, ResourceLimitExceededException
-    def create_ip_group(self, CreateIpGroupRequest input) -> str:
-        auto body = create_ip_group_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateIpGroup", body)
+    def create_ip_group(self, CreateIpGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_ip_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateIpGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateStandbyWorkspaces
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
-    def create_standby_workspaces(self, CreateStandbyWorkspacesRequest input) -> str:
-        auto body = create_standby_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateStandbyWorkspaces", body)
+    def create_standby_workspaces(self, CreateStandbyWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_standby_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateStandbyWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateTags
     # errors: InvalidParameterValuesException, ResourceLimitExceededException, ResourceNotFoundException
-    def create_tags(self, CreateTagsRequest input) -> str:
-        auto body = create_tags_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateTags", body)
+    def create_tags(self, CreateTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateUpdatedWorkspaceImage
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
-    def create_updated_workspace_image(self, CreateUpdatedWorkspaceImageRequest input) -> str:
-        auto body = create_updated_workspace_image_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateUpdatedWorkspaceImage", body)
+    def create_updated_workspace_image(self, CreateUpdatedWorkspaceImageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_updated_workspace_image_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateUpdatedWorkspaceImage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateWorkspaceBundle
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException
-    def create_workspace_bundle(self, CreateWorkspaceBundleRequest input) -> str:
-        auto body = create_workspace_bundle_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspaceBundle", body)
+    def create_workspace_bundle(self, CreateWorkspaceBundleRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_workspace_bundle_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateWorkspaceBundle", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateWorkspaceImage
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
-    def create_workspace_image(self, CreateWorkspaceImageRequest input) -> str:
-        auto body = create_workspace_image_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspaceImage", body)
+    def create_workspace_image(self, CreateWorkspaceImageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_workspace_image_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateWorkspaceImage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateWorkspaces
     # errors: InvalidParameterValuesException, ResourceLimitExceededException
-    def create_workspaces(self, CreateWorkspacesRequest input) -> str:
-        auto body = create_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspaces", body)
+    def create_workspaces(self, CreateWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
-    def create_workspaces_pool(self, CreateWorkspacesPoolRequest input) -> str:
-        auto body = create_workspaces_pool_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "CreateWorkspacesPool", body)
+    def create_workspaces_pool(self, CreateWorkspacesPoolRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_workspaces_pool_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "CreateWorkspacesPool", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
-    def delete_account_link_invitation(self, DeleteAccountLinkInvitationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteAccountLinkInvitation", body)
+    def delete_account_link_invitation(self, DeleteAccountLinkInvitationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_account_link_invitation_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteAccountLinkInvitation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteClientBranding
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def delete_client_branding(self, DeleteClientBrandingRequest input) -> str:
-        auto body = delete_client_branding_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteClientBranding", body)
+    def delete_client_branding(self, DeleteClientBrandingRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_client_branding_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteClientBranding", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteConnectClientAddIn
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def delete_connect_client_add_in(self, DeleteConnectClientAddInRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteConnectClientAddIn", body)
+    def delete_connect_client_add_in(self, DeleteConnectClientAddInRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_connect_client_add_in_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteConnectClientAddIn", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteConnectionAlias
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAssociatedException, ResourceNotFoundException
-    def delete_connection_alias(self, DeleteConnectionAliasRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteConnectionAlias", body)
+    def delete_connection_alias(self, DeleteConnectionAliasRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_connection_alias_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteConnectionAlias", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteIpGroup
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAssociatedException, ResourceNotFoundException
-    def delete_ip_group(self, DeleteIpGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteIpGroup", body)
+    def delete_ip_group(self, DeleteIpGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_ip_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteIpGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTags
     # errors: InvalidParameterValuesException, ResourceNotFoundException
-    def delete_tags(self, DeleteTagsRequest input) -> str:
-        auto body = delete_tags_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteTags", body)
+    def delete_tags(self, DeleteTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteWorkspaceBundle
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceAssociatedException, ResourceNotFoundException
-    def delete_workspace_bundle(self, DeleteWorkspaceBundleRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteWorkspaceBundle", body)
+    def delete_workspace_bundle(self, DeleteWorkspaceBundleRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_workspace_bundle_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteWorkspaceBundle", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteWorkspaceImage
     # errors: AccessDeniedException, InvalidResourceStateException, ResourceAssociatedException
-    def delete_workspace_image(self, DeleteWorkspaceImageRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeleteWorkspaceImage", body)
+    def delete_workspace_image(self, DeleteWorkspaceImageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_workspace_image_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeleteWorkspaceImage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeployWorkspaceApplications
     # errors: AccessDeniedException, IncompatibleApplicationsException, InvalidParameterValuesException, OperationNotSupportedException, ResourceInUseException, ResourceNotFoundException
-    def deploy_workspace_applications(self, DeployWorkspaceApplicationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeployWorkspaceApplications", body)
+    def deploy_workspace_applications(self, DeployWorkspaceApplicationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(deploy_workspace_applications_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeployWorkspaceApplications", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeregisterWorkspaceDirectory
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
-    def deregister_workspace_directory(self, DeregisterWorkspaceDirectoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DeregisterWorkspaceDirectory", body)
+    def deregister_workspace_directory(self, DeregisterWorkspaceDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(deregister_workspace_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DeregisterWorkspaceDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeAccount
     # errors: AccessDeniedException
-    def describe_account(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeAccount", body)
+    def describe_account(self, DescribeAccountRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_account_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeAccount", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeAccountModifications
     # errors: AccessDeniedException
-    def describe_account_modifications(self, DescribeAccountModificationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeAccountModifications", body)
+    def describe_account_modifications(self, DescribeAccountModificationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_account_modifications_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeAccountModifications", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeApplicationAssociations
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_application_associations(self, DescribeApplicationAssociationsRequest input) -> str:
-        auto body = describe_application_associations_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeApplicationAssociations", body)
+    def describe_application_associations(self, DescribeApplicationAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_application_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeApplicationAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeApplications
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_applications(self, DescribeApplicationsRequest input) -> str:
-        auto body = describe_applications_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeApplications", body)
+    def describe_applications(self, DescribeApplicationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_applications_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeApplications", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeBundleAssociations
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_bundle_associations(self, DescribeBundleAssociationsRequest input) -> str:
-        auto body = describe_bundle_associations_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeBundleAssociations", body)
+    def describe_bundle_associations(self, DescribeBundleAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_bundle_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeBundleAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeClientBranding
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_client_branding(self, DescribeClientBrandingRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeClientBranding", body)
+    def describe_client_branding(self, DescribeClientBrandingRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_client_branding_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeClientBranding", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeClientProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_client_properties(self, DescribeClientPropertiesRequest input) -> str:
-        auto body = describe_client_properties_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeClientProperties", body)
+    def describe_client_properties(self, DescribeClientPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_client_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeClientProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConnectClientAddIns
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_connect_client_add_ins(self, DescribeConnectClientAddInsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeConnectClientAddIns", body)
+    def describe_connect_client_add_ins(self, DescribeConnectClientAddInsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_connect_client_add_ins_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeConnectClientAddIns", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConnectionAliasPermissions
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_connection_alias_permissions(self, DescribeConnectionAliasPermissionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeConnectionAliasPermissions", body)
+    def describe_connection_alias_permissions(self, DescribeConnectionAliasPermissionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_connection_alias_permissions_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeConnectionAliasPermissions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConnectionAliases
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException
-    def describe_connection_aliases(self, DescribeConnectionAliasesRequest input) -> str:
-        auto body = describe_connection_aliases_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeConnectionAliases", body)
+    def describe_connection_aliases(self, DescribeConnectionAliasesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_connection_aliases_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeConnectionAliases", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCustomWorkspaceImageImport
     # errors: AccessDeniedException, ResourceNotFoundException
-    def describe_custom_workspace_image_import(self, DescribeCustomWorkspaceImageImportRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeCustomWorkspaceImageImport", body)
+    def describe_custom_workspace_image_import(self, DescribeCustomWorkspaceImageImportRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_custom_workspace_image_import_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeCustomWorkspaceImageImport", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeImageAssociations
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_image_associations(self, DescribeImageAssociationsRequest input) -> str:
-        auto body = describe_image_associations_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeImageAssociations", body)
+    def describe_image_associations(self, DescribeImageAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_image_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeImageAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeIpGroups
     # errors: AccessDeniedException, InvalidParameterValuesException
-    def describe_ip_groups(self, DescribeIpGroupsRequest input) -> str:
-        auto body = describe_ip_groups_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeIpGroups", body)
+    def describe_ip_groups(self, DescribeIpGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_ip_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeIpGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTags
     # errors: ResourceNotFoundException
-    def describe_tags(self, DescribeTagsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeTags", body)
+    def describe_tags(self, DescribeTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaceAssociations
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_workspace_associations(self, DescribeWorkspaceAssociationsRequest input) -> str:
-        auto body = describe_workspace_associations_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceAssociations", body)
+    def describe_workspace_associations(self, DescribeWorkspaceAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspace_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaceAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaceBundles
     # errors: InvalidParameterValuesException
-    def describe_workspace_bundles(self, DescribeWorkspaceBundlesRequest input) -> str:
-        auto body = describe_workspace_bundles_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceBundles", body)
+    def describe_workspace_bundles(self, DescribeWorkspaceBundlesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspace_bundles_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaceBundles", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaceDirectories
     # errors: InvalidParameterValuesException
-    def describe_workspace_directories(self, DescribeWorkspaceDirectoriesRequest input) -> str:
-        auto body = describe_workspace_directories_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceDirectories", body)
+    def describe_workspace_directories(self, DescribeWorkspaceDirectoriesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspace_directories_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaceDirectories", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaceImagePermissions
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_workspace_image_permissions(self, DescribeWorkspaceImagePermissionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceImagePermissions", body)
+    def describe_workspace_image_permissions(self, DescribeWorkspaceImagePermissionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspace_image_permissions_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaceImagePermissions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaceImages
     # errors: AccessDeniedException
-    def describe_workspace_images(self, DescribeWorkspaceImagesRequest input) -> str:
-        auto body = describe_workspace_images_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceImages", body)
+    def describe_workspace_images(self, DescribeWorkspaceImagesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspace_images_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaceImages", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaceSnapshots
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_workspace_snapshots(self, DescribeWorkspaceSnapshotsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceSnapshots", body)
+    def describe_workspace_snapshots(self, DescribeWorkspaceSnapshotsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspace_snapshots_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaceSnapshots", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspaces
     # errors: InvalidParameterValuesException, ResourceUnavailableException
-    def describe_workspaces(self, DescribeWorkspacesRequest input) -> str:
-        auto body = describe_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaces", body)
+    def describe_workspaces(self, DescribeWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspacesConnectionStatus
     # errors: InvalidParameterValuesException
-    def describe_workspaces_connection_status(self, DescribeWorkspacesConnectionStatusRequest input) -> str:
-        auto body = describe_workspaces_connection_status_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesConnectionStatus", body)
+    def describe_workspaces_connection_status(self, DescribeWorkspacesConnectionStatusRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspaces_connection_status_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspacesConnectionStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspacesPoolSessions
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_workspaces_pool_sessions(self, DescribeWorkspacesPoolSessionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesPoolSessions", body)
+    def describe_workspaces_pool_sessions(self, DescribeWorkspacesPoolSessionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspaces_pool_sessions_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspacesPoolSessions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeWorkspacesPools
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def describe_workspaces_pools(self, DescribeWorkspacesPoolsRequest input) -> str:
-        auto body = describe_workspaces_pools_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesPools", body)
+    def describe_workspaces_pools(self, DescribeWorkspacesPoolsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_workspaces_pools_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DescribeWorkspacesPools", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateConnectionAlias
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
-    def disassociate_connection_alias(self, DisassociateConnectionAliasRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DisassociateConnectionAlias", body)
+    def disassociate_connection_alias(self, DisassociateConnectionAliasRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_connection_alias_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DisassociateConnectionAlias", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateIpGroups
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
-    def disassociate_ip_groups(self, DisassociateIpGroupsRequest input) -> str:
-        auto body = disassociate_ip_groups_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DisassociateIpGroups", body)
+    def disassociate_ip_groups(self, DisassociateIpGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_ip_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DisassociateIpGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateWorkspaceApplication
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceInUseException, ResourceNotFoundException
-    def disassociate_workspace_application(self, DisassociateWorkspaceApplicationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DisassociateWorkspaceApplication", body)
+    def disassociate_workspace_application(self, DisassociateWorkspaceApplicationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_workspace_application_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "DisassociateWorkspaceApplication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetAccountLink
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
-    def get_account_link(self, GetAccountLinkRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "GetAccountLink", body)
+    def get_account_link(self, GetAccountLinkRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_account_link_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "GetAccountLink", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportClientBranding
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceLimitExceededException, ResourceNotFoundException
-    def import_client_branding(self, ImportClientBrandingRequest input) -> str:
-        auto body = import_client_branding_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ImportClientBranding", body)
+    def import_client_branding(self, ImportClientBrandingRequest input) -> bytes:
+        auto body = cbor.cbor_encode(import_client_branding_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ImportClientBranding", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportCustomWorkspaceImage
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
-    def import_custom_workspace_image(self, ImportCustomWorkspaceImageRequest input) -> str:
-        auto body = import_custom_workspace_image_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ImportCustomWorkspaceImage", body)
+    def import_custom_workspace_image(self, ImportCustomWorkspaceImageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(import_custom_workspace_image_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ImportCustomWorkspaceImage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportWorkspaceImage
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException
-    def import_workspace_image(self, ImportWorkspaceImageRequest input) -> str:
-        auto body = import_workspace_image_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ImportWorkspaceImage", body)
+    def import_workspace_image(self, ImportWorkspaceImageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(import_workspace_image_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ImportWorkspaceImage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAccountLinks
     # errors: AccessDeniedException, InternalServerException, ValidationException
-    def list_account_links(self, ListAccountLinksRequest input) -> str:
-        auto body = list_account_links_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ListAccountLinks", body)
+    def list_account_links(self, ListAccountLinksRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_account_links_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ListAccountLinks", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAvailableManagementCidrRanges
     # errors: AccessDeniedException, InvalidParameterValuesException
-    def list_available_management_cidr_ranges(self, ListAvailableManagementCidrRangesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ListAvailableManagementCidrRanges", body)
+    def list_available_management_cidr_ranges(self, ListAvailableManagementCidrRangesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_available_management_cidr_ranges_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ListAvailableManagementCidrRanges", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # MigrateWorkspace
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationInProgressException, OperationNotSupportedException, ResourceNotFoundException, ResourceUnavailableException
-    def migrate_workspace(self, MigrateWorkspaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "MigrateWorkspace", body)
+    def migrate_workspace(self, MigrateWorkspaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(migrate_workspace_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "MigrateWorkspace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyAccount
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceNotFoundException, ResourceUnavailableException
-    def modify_account(self, ModifyAccountRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyAccount", body)
+    def modify_account(self, ModifyAccountRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_account_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyAccount", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyCertificateBasedAuthProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_certificate_based_auth_properties(self, ModifyCertificateBasedAuthPropertiesRequest input) -> str:
-        auto body = modify_certificate_based_auth_properties_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyCertificateBasedAuthProperties", body)
+    def modify_certificate_based_auth_properties(self, ModifyCertificateBasedAuthPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_certificate_based_auth_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyCertificateBasedAuthProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyClientProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_client_properties(self, ModifyClientPropertiesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyClientProperties", body)
+    def modify_client_properties(self, ModifyClientPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_client_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyClientProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyEndpointEncryptionMode
     # errors: AccessDeniedException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_endpoint_encryption_mode(self, ModifyEndpointEncryptionModeRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyEndpointEncryptionMode", body)
+    def modify_endpoint_encryption_mode(self, ModifyEndpointEncryptionModeRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_endpoint_encryption_mode_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyEndpointEncryptionMode", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifySamlProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_saml_properties(self, ModifySamlPropertiesRequest input) -> str:
-        auto body = modify_saml_properties_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifySamlProperties", body)
+    def modify_saml_properties(self, ModifySamlPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_saml_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifySamlProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifySelfservicePermissions
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_selfservice_permissions(self, ModifySelfservicePermissionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifySelfservicePermissions", body)
+    def modify_selfservice_permissions(self, ModifySelfservicePermissionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_selfservice_permissions_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifySelfservicePermissions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyStreamingProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_streaming_properties(self, ModifyStreamingPropertiesRequest input) -> str:
-        auto body = modify_streaming_properties_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyStreamingProperties", body)
+    def modify_streaming_properties(self, ModifyStreamingPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_streaming_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyStreamingProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyWorkspaceAccessProperties
     # errors: AccessDeniedException, InvalidParameterCombinationException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_workspace_access_properties(self, ModifyWorkspaceAccessPropertiesRequest input) -> str:
-        auto body = modify_workspace_access_properties_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceAccessProperties", body)
+    def modify_workspace_access_properties(self, ModifyWorkspaceAccessPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_workspace_access_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyWorkspaceAccessProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyWorkspaceCreationProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_workspace_creation_properties(self, ModifyWorkspaceCreationPropertiesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceCreationProperties", body)
+    def modify_workspace_creation_properties(self, ModifyWorkspaceCreationPropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_workspace_creation_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyWorkspaceCreationProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyWorkspaceProperties
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, ResourceNotFoundException, ResourceUnavailableException, UnsupportedWorkspaceConfigurationException
-    def modify_workspace_properties(self, ModifyWorkspacePropertiesRequest input) -> str:
-        auto body = modify_workspace_properties_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceProperties", body)
+    def modify_workspace_properties(self, ModifyWorkspacePropertiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_workspace_properties_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyWorkspaceProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyWorkspaceState
     # errors: InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceNotFoundException
-    def modify_workspace_state(self, ModifyWorkspaceStateRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ModifyWorkspaceState", body)
+    def modify_workspace_state(self, ModifyWorkspaceStateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_workspace_state_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "ModifyWorkspaceState", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RebootWorkspaces
     # errors: OperationNotSupportedException
-    def reboot_workspaces(self, RebootWorkspacesRequest input) -> str:
-        auto body = reboot_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RebootWorkspaces", body)
+    def reboot_workspaces(self, RebootWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reboot_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "RebootWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RebuildWorkspaces
     # errors: OperationNotSupportedException
-    def rebuild_workspaces(self, RebuildWorkspacesRequest input) -> str:
-        auto body = rebuild_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RebuildWorkspaces", body)
+    def rebuild_workspaces(self, RebuildWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(rebuild_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "RebuildWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterWorkspaceDirectory
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, UnsupportedNetworkConfigurationException, WorkspacesDefaultRoleNotFoundException
-    def register_workspace_directory(self, RegisterWorkspaceDirectoryRequest input) -> str:
-        auto body = register_workspace_directory_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RegisterWorkspaceDirectory", body)
+    def register_workspace_directory(self, RegisterWorkspaceDirectoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(register_workspace_directory_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "RegisterWorkspaceDirectory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RejectAccountLinkInvitation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
-    def reject_account_link_invitation(self, RejectAccountLinkInvitationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RejectAccountLinkInvitation", body)
+    def reject_account_link_invitation(self, RejectAccountLinkInvitationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reject_account_link_invitation_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "RejectAccountLinkInvitation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RestoreWorkspace
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException
-    def restore_workspace(self, RestoreWorkspaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RestoreWorkspace", body)
+    def restore_workspace(self, RestoreWorkspaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(restore_workspace_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "RestoreWorkspace", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RevokeIpRules
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceNotFoundException
-    def revoke_ip_rules(self, RevokeIpRulesRequest input) -> str:
-        auto body = revoke_ip_rules_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "RevokeIpRules", body)
+    def revoke_ip_rules(self, RevokeIpRulesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(revoke_ip_rules_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "RevokeIpRules", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartWorkspaces
-    def start_workspaces(self, StartWorkspacesRequest input) -> str:
-        auto body = start_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StartWorkspaces", body)
+    def start_workspaces(self, StartWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "StartWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
-    def start_workspaces_pool(self, StartWorkspacesPoolRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StartWorkspacesPool", body)
+    def start_workspaces_pool(self, StartWorkspacesPoolRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_workspaces_pool_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "StartWorkspacesPool", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopWorkspaces
-    def stop_workspaces(self, StopWorkspacesRequest input) -> str:
-        auto body = stop_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StopWorkspaces", body)
+    def stop_workspaces(self, StopWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "StopWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, ResourceNotFoundException
-    def stop_workspaces_pool(self, StopWorkspacesPoolRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "StopWorkspacesPool", body)
+    def stop_workspaces_pool(self, StopWorkspacesPoolRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_workspaces_pool_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "StopWorkspacesPool", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TerminateWorkspaces
-    def terminate_workspaces(self, TerminateWorkspacesRequest input) -> str:
-        auto body = terminate_workspaces_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "TerminateWorkspaces", body)
+    def terminate_workspaces(self, TerminateWorkspacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(terminate_workspaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "TerminateWorkspaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TerminateWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, ResourceNotFoundException
-    def terminate_workspaces_pool(self, TerminateWorkspacesPoolRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "TerminateWorkspacesPool", body)
+    def terminate_workspaces_pool(self, TerminateWorkspacesPoolRequest input) -> bytes:
+        auto body = cbor.cbor_encode(terminate_workspaces_pool_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "TerminateWorkspacesPool", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TerminateWorkspacesPoolSession
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationInProgressException, OperationNotSupportedException, ResourceNotFoundException
-    def terminate_workspaces_pool_session(self, TerminateWorkspacesPoolSessionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "TerminateWorkspacesPoolSession", body)
+    def terminate_workspaces_pool_session(self, TerminateWorkspacesPoolSessionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(terminate_workspaces_pool_session_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "TerminateWorkspacesPoolSession", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateConnectClientAddIn
     # errors: AccessDeniedException, InvalidParameterValuesException, ResourceNotFoundException
-    def update_connect_client_add_in(self, UpdateConnectClientAddInRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateConnectClientAddIn", body)
+    def update_connect_client_add_in(self, UpdateConnectClientAddInRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_connect_client_add_in_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "UpdateConnectClientAddIn", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateConnectionAliasPermission
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationNotSupportedException, ResourceAssociatedException, ResourceLimitExceededException, ResourceNotFoundException
-    def update_connection_alias_permission(self, UpdateConnectionAliasPermissionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateConnectionAliasPermission", body)
+    def update_connection_alias_permission(self, UpdateConnectionAliasPermissionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_connection_alias_permission_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "UpdateConnectionAliasPermission", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateRulesOfIpGroup
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, ResourceLimitExceededException, ResourceNotFoundException
-    def update_rules_of_ip_group(self, UpdateRulesOfIpGroupRequest input) -> str:
-        auto body = update_rules_of_ip_group_request_to_json(input)
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateRulesOfIpGroup", body)
+    def update_rules_of_ip_group(self, UpdateRulesOfIpGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_rules_of_ip_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "UpdateRulesOfIpGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateWorkspaceBundle
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException, ResourceUnavailableException
-    def update_workspace_bundle(self, UpdateWorkspaceBundleRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateWorkspaceBundle", body)
+    def update_workspace_bundle(self, UpdateWorkspaceBundleRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_workspace_bundle_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "UpdateWorkspaceBundle", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateWorkspaceImagePermission
     # errors: AccessDeniedException, InvalidParameterValuesException, OperationNotSupportedException, ResourceNotFoundException, ResourceUnavailableException
-    def update_workspace_image_permission(self, UpdateWorkspaceImagePermissionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateWorkspaceImagePermission", body)
+    def update_workspace_image_permission(self, UpdateWorkspaceImagePermissionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_workspace_image_permission_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "UpdateWorkspaceImagePermission", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateWorkspacesPool
     # errors: AccessDeniedException, InvalidParameterValuesException, InvalidResourceStateException, OperationInProgressException, OperationNotSupportedException, ResourceLimitExceededException, ResourceNotFoundException
-    def update_workspaces_pool(self, UpdateWorkspacesPoolRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "UpdateWorkspacesPool", body)
-
-    # Paginator for DescribeAccountModifications — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: AccountModifications).
-    def paginate_describe_account_modifications(self, DescribeAccountModificationsRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeAccountModifications", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeIpGroups — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Result).
-    def paginate_describe_ip_groups(self, DescribeIpGroupsRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = describe_ip_groups_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeIpGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeWorkspaceBundles — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Bundles).
-    def paginate_describe_workspace_bundles(self, DescribeWorkspaceBundlesRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = describe_workspace_bundles_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceBundles", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeWorkspaceDirectories — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Directories).
-    def paginate_describe_workspace_directories(self, DescribeWorkspaceDirectoriesRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = describe_workspace_directories_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceDirectories", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeWorkspaceImages — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Images).
-    def paginate_describe_workspace_images(self, DescribeWorkspaceImagesRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = describe_workspace_images_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaceImages", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeWorkspaces — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Workspaces).
-    def paginate_describe_workspaces(self, DescribeWorkspacesRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = describe_workspaces_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspaces", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeWorkspacesConnectionStatus — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: WorkspacesConnectionStatus).
-    def paginate_describe_workspaces_connection_status(self, DescribeWorkspacesConnectionStatusRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = describe_workspaces_connection_status_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "DescribeWorkspacesConnectionStatus", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListAccountLinks — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: AccountLinks).
-    def paginate_list_account_links(self, ListAccountLinksRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = list_account_links_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ListAccountLinks", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListAvailableManagementCidrRanges — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ManagementCidrRanges).
-    def paginate_list_available_management_cidr_ranges(self, ListAvailableManagementCidrRangesRequest input):
-        auto host = endpoints.regional_host(workspaces_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(workspaces_protocol(), self.creds, self.region, "ListAvailableManagementCidrRanges", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_workspaces_pool(self, UpdateWorkspacesPoolRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_workspaces_pool_request_to_cbor(input))
+        auto host = endpoints.regional_host(workspaces_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(workspaces_service(), self.region, host, "WorkspacesService", "UpdateWorkspacesPool", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a WorkSpacesClient bound to credentials + region.
 def workspaces_client(core.Credentials creds, str region) -> WorkSpacesClient:

@@ -19,6 +19,39 @@
   "uid": "mwaa-serverless-2024-07-26"
  },
  "operations": {
+  "CreateAirflowUiUrl": {
+   "name": "CreateAirflowUiUrl",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "CreateAirflowUiUrlRequest"
+   },
+   "output": {
+    "shape": "CreateAirflowUiUrlResponse"
+   },
+   "errors": [
+    {
+     "shape": "ThrottlingException"
+    },
+    {
+     "shape": "ValidationException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "InternalServerException"
+    },
+    {
+     "shape": "OperationTimeoutException"
+    },
+    {
+     "shape": "ConflictException"
+    }
+   ]
+  },
   "CreateWorkflow": {
    "name": "CreateWorkflow",
    "http": {
@@ -544,6 +577,12 @@
    },
    "exception": true
   },
+  "AuthorizedUrlString": {
+   "type": "string",
+   "max": 2048,
+   "min": 1,
+   "sensitive": true
+  },
   "Code": {
    "type": "structure",
    "members": {
@@ -572,6 +611,40 @@
     }
    },
    "exception": true
+  },
+  "CreateAirflowUiUrlRequest": {
+   "type": "structure",
+   "members": {
+    "ExpiresInSeconds": {
+     "shape": "ExpiresInSecondsInteger"
+    },
+    "SessionDurationInSeconds": {
+     "shape": "SessionDurationInSecondsInteger"
+    }
+   }
+  },
+  "CreateAirflowUiUrlResponse": {
+   "type": "structure",
+   "required": [
+    "AuthorizedUrl",
+    "SessionId",
+    "UrlExpiresAt",
+    "SessionExpiresAt"
+   ],
+   "members": {
+    "AuthorizedUrl": {
+     "shape": "AuthorizedUrlString"
+    },
+    "SessionId": {
+     "shape": "SessionIdString"
+    },
+    "UrlExpiresAt": {
+     "shape": "TimestampValue"
+    },
+    "SessionExpiresAt": {
+     "shape": "TimestampValue"
+    }
+   }
   },
   "CreateWorkflowRequest": {
    "type": "structure",
@@ -611,6 +684,9 @@
     },
     "NetworkConfiguration": {
      "shape": "NetworkConfiguration"
+    },
+    "Environment": {
+     "shape": "Environment"
     },
     "Tags": {
      "shape": "Tags"
@@ -731,11 +807,48 @@
    "type": "integer",
    "box": true
   },
+  "Environment": {
+   "type": "structure",
+   "members": {
+    "Variables": {
+     "shape": "EnvironmentVariablesMap"
+    }
+   }
+  },
+  "EnvironmentVariableKey": {
+   "type": "string",
+   "max": 128,
+   "min": 1,
+   "pattern": "[a-zA-Z][a-zA-Z0-9_]*"
+  },
+  "EnvironmentVariableValue": {
+   "type": "string",
+   "max": 255,
+   "min": 0,
+   "sensitive": true
+  },
+  "EnvironmentVariablesMap": {
+   "type": "map",
+   "key": {
+    "shape": "EnvironmentVariableKey"
+   },
+   "value": {
+    "shape": "EnvironmentVariableValue"
+   },
+   "max": 50,
+   "min": 0
+  },
   "ErrorMessage": {
    "type": "string",
    "max": 2048,
    "min": 1,
    "pattern": ".*"
+  },
+  "ExpiresInSecondsInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 300,
+   "min": 5
   },
   "GenericMap": {
    "type": "map",
@@ -893,6 +1006,9 @@
     },
     "NetworkConfiguration": {
      "shape": "NetworkConfiguration"
+    },
+    "Environment": {
+     "shape": "Environment"
     },
     "TriggerMode": {
      "shape": "GenericString"
@@ -1317,6 +1433,19 @@
    },
    "exception": true
   },
+  "SessionDurationInSecondsInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 43200,
+   "min": 1
+  },
+  "SessionIdString": {
+   "type": "string",
+   "max": 32,
+   "min": 32,
+   "pattern": "[a-z0-9]{32}",
+   "sensitive": true
+  },
   "StartWorkflowRunRequest": {
    "type": "structure",
    "required": [
@@ -1442,7 +1571,7 @@
    "type": "string",
    "max": 1011,
    "min": 1,
-   "pattern": "arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-[a-z]+-[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
+   "pattern": "arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-(?:[a-z]+-)+[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
   },
   "Tags": {
    "type": "map",
@@ -1593,6 +1722,9 @@
     "NetworkConfiguration": {
      "shape": "NetworkConfiguration"
     },
+    "Environment": {
+     "shape": "Environment"
+    },
     "TriggerMode": {
      "shape": "GenericString"
     }
@@ -1683,7 +1815,7 @@
    "type": "string",
    "max": 2048,
    "min": 1,
-   "pattern": "arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-[a-z]+-[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
+   "pattern": "arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-(?:[a-z]+-)+[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
   },
   "WorkflowRunDetail": {
    "type": "structure",

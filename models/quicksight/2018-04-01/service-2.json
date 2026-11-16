@@ -4711,6 +4711,36 @@
     }
    ]
   },
+  "DescribeResourcePermissions": {
+   "name": "DescribeResourcePermissions",
+   "http": {
+    "method": "GET",
+    "requestUri": "/accounts/{AwsAccountId}/account-resource-permissions"
+   },
+   "input": {
+    "shape": "DescribeResourcePermissionsRequest"
+   },
+   "output": {
+    "shape": "DescribeResourcePermissionsResponse"
+   },
+   "errors": [
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "InvalidParameterValueException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "ThrottlingException"
+    },
+    {
+     "shape": "InternalFailureException"
+    }
+   ]
+  },
   "DescribeRoleCustomPermission": {
    "name": "DescribeRoleCustomPermission",
    "http": {
@@ -9684,6 +9714,36 @@
     },
     {
      "shape": "PreconditionNotMetException"
+    },
+    {
+     "shape": "InternalFailureException"
+    }
+   ]
+  },
+  "UpdateResourcePermissions": {
+   "name": "UpdateResourcePermissions",
+   "http": {
+    "method": "PUT",
+    "requestUri": "/accounts/{AwsAccountId}/account-resource-permissions"
+   },
+   "input": {
+    "shape": "UpdateResourcePermissionsRequest"
+   },
+   "output": {
+    "shape": "UpdateResourcePermissionsResponse"
+   },
+   "errors": [
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "InvalidParameterValueException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "ThrottlingException"
     },
     {
      "shape": "InternalFailureException"
@@ -27075,6 +27135,37 @@
     }
    }
   },
+  "DescribeResourcePermissionsRequest": {
+   "type": "structure",
+   "required": [
+    "AwsAccountId"
+   ],
+   "members": {
+    "AwsAccountId": {
+     "shape": "AwsAccountId",
+     "location": "uri",
+     "locationName": "AwsAccountId"
+    }
+   }
+  },
+  "DescribeResourcePermissionsResponse": {
+   "type": "structure",
+   "members": {
+    "RoleType": {
+     "shape": "ServiceRoleType"
+    },
+    "CustomerManagedRoleArn": {
+     "shape": "String"
+    },
+    "RequestId": {
+     "shape": "String"
+    },
+    "Status": {
+     "shape": "StatusCode",
+     "location": "statusCode"
+    }
+   }
+  },
   "DescribeRoleCustomPermissionRequest": {
    "type": "structure",
    "required": [
@@ -43203,6 +43294,13 @@
     }
    }
   },
+  "ServiceRoleType": {
+   "type": "string",
+   "enum": [
+    "QUICKSIGHT_MANAGED",
+    "CUSTOMER_MANAGED"
+   ]
+  },
   "ServiceType": {
    "type": "string",
    "enum": [
@@ -50939,6 +51037,45 @@
     "shape": "ResourcePermission"
    },
    "max": 100
+  },
+  "UpdateResourcePermissionsRequest": {
+   "type": "structure",
+   "required": [
+    "AwsAccountId",
+    "RoleType",
+    "CustomerManagedRoleArn"
+   ],
+   "members": {
+    "AwsAccountId": {
+     "shape": "AwsAccountId",
+     "location": "uri",
+     "locationName": "AwsAccountId"
+    },
+    "RoleType": {
+     "shape": "ServiceRoleType"
+    },
+    "CustomerManagedRoleArn": {
+     "shape": "RoleArn"
+    }
+   }
+  },
+  "UpdateResourcePermissionsResponse": {
+   "type": "structure",
+   "members": {
+    "RoleType": {
+     "shape": "ServiceRoleType"
+    },
+    "CustomerManagedRoleArn": {
+     "shape": "String"
+    },
+    "RequestId": {
+     "shape": "String"
+    },
+    "Status": {
+     "shape": "StatusCode",
+     "location": "statusCode"
+    }
+   }
   },
   "UpdateRoleCustomPermissionRequest": {
    "type": "structure",

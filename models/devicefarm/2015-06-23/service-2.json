@@ -2212,7 +2212,8 @@
     "VIDEO",
     "CUSTOMER_ARTIFACT",
     "CUSTOMER_ARTIFACT_LOG",
-    "TESTSPEC_OUTPUT"
+    "TESTSPEC_OUTPUT",
+    "DEVICE_CONNECT_COMMAND_LOG"
    ]
   },
   "Artifacts": {
@@ -3593,7 +3594,8 @@
   "InsightsType": {
    "type": "string",
    "enum": [
-    "TEST_REPORT"
+    "TEST_REPORT",
+    "NONE"
    ]
   },
   "InsightsTypes": {
@@ -5165,6 +5167,9 @@
      "shape": "SkipAppResign"
     },
     "testSpecArn": {
+     "shape": "AmazonResourceName"
+    },
+    "testPackageArn": {
      "shape": "AmazonResourceName"
     },
     "deviceSelectionResult": {

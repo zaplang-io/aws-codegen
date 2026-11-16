@@ -1443,6 +1443,40 @@
     }
    ]
   },
+  "InvokeWebSearch": {
+   "name": "InvokeWebSearch",
+   "http": {
+    "method": "POST",
+    "requestUri": "/web-search/{webSearchId}/invoke",
+    "responseCode": 200
+   },
+   "input": {
+    "shape": "InvokeWebSearchInput"
+   },
+   "output": {
+    "shape": "InvokeWebSearchOutput"
+   },
+   "errors": [
+    {
+     "shape": "ServiceUnavailableException"
+    },
+    {
+     "shape": "ValidationException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    },
+    {
+     "shape": "ThrottlingException"
+    },
+    {
+     "shape": "InternalServerException"
+    }
+   ]
+  },
   "ListABTests": {
    "name": "ListABTests",
    "http": {
@@ -4463,6 +4497,31 @@
    "members": {},
    "document": true
   },
+  "DomainFilter": {
+   "type": "structure",
+   "members": {
+    "include": {
+     "shape": "DomainList"
+    },
+    "exclude": {
+     "shape": "DomainList"
+    }
+   }
+  },
+  "DomainList": {
+   "type": "list",
+   "member": {
+    "shape": "DomainName"
+   },
+   "max": 100,
+   "min": 1
+  },
+  "DomainName": {
+   "type": "string",
+   "max": 253,
+   "min": 1,
+   "pattern": "[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*"
+  },
   "DomainPattern": {
    "type": "string",
    "max": 253,
@@ -6713,8 +6772,23 @@
     },
     "headers": {
      "shape": "HttpHeadersMap"
+    },
+    "outboundAuth": {
+     "shape": "HarnessRemoteMcpOutboundAuth"
     }
    }
+  },
+  "HarnessRemoteMcpOutboundAuth": {
+   "type": "structure",
+   "members": {
+    "awsIam": {
+     "shape": "IamCredentialProvider"
+    },
+    "none": {
+     "shape": "Unit"
+    }
+   },
+   "union": true
   },
   "HarnessRemoteMcpUrl": {
    "type": "string",
@@ -7158,6 +7232,32 @@
   "HttpResponseCode": {
    "type": "integer",
    "box": true
+  },
+  "IamCredentialProvider": {
+   "type": "structure",
+   "required": [
+    "service"
+   ],
+   "members": {
+    "service": {
+     "shape": "IamCredentialProviderServiceString"
+    },
+    "region": {
+     "shape": "IamCredentialProviderRegionString"
+    }
+   }
+  },
+  "IamCredentialProviderRegionString": {
+   "type": "string",
+   "max": 32,
+   "min": 1,
+   "pattern": "[a-zA-Z0-9-]+"
+  },
+  "IamCredentialProviderServiceString": {
+   "type": "string",
+   "max": 64,
+   "min": 1,
+   "pattern": "[a-zA-Z0-9._-]+"
   },
   "IgnoredReferenceInputField": {
    "type": "string",
@@ -7833,6 +7933,11 @@
      "location": "header",
      "locationName": "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
     },
+    "sessionEndpointUrl": {
+     "shape": "InvokeAgentRuntimeResponseSessionEndpointUrlString",
+     "location": "header",
+     "locationName": "X-Amzn-Bedrock-AgentCore-Runtime-Session-Endpoint-Url"
+    },
     "mcpSessionId": {
      "shape": "SessionId",
      "location": "header",
@@ -7877,6 +7982,11 @@
     }
    },
    "payload": "response"
+  },
+  "InvokeAgentRuntimeResponseSessionEndpointUrlString": {
+   "type": "string",
+   "max": 128,
+   "min": 1
   },
   "InvokeBrowserRequest": {
    "type": "structure",
@@ -8133,6 +8243,51 @@
     }
    },
    "eventstream": true
+  },
+  "InvokeWebSearchInput": {
+   "type": "structure",
+   "required": [
+    "webSearchId",
+    "searchQuery"
+   ],
+   "members": {
+    "webSearchId": {
+     "shape": "WebSearchId",
+     "location": "uri",
+     "locationName": "webSearchId"
+    },
+    "searchQuery": {
+     "shape": "InvokeWebSearchInputSearchQueryString"
+    },
+    "maxResults": {
+     "shape": "InvokeWebSearchInputMaxResultsInteger"
+    },
+    "filters": {
+     "shape": "WebSearchFilters"
+    }
+   }
+  },
+  "InvokeWebSearchInputMaxResultsInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 25,
+   "min": 1
+  },
+  "InvokeWebSearchInputSearchQueryString": {
+   "type": "string",
+   "max": 200,
+   "min": 1
+  },
+  "InvokeWebSearchOutput": {
+   "type": "structure",
+   "required": [
+    "results"
+   ],
+   "members": {
+    "results": {
+     "shape": "WebSearchResultList"
+    }
+   }
   },
   "JwtKeyId": {
    "type": "string",
@@ -10293,6 +10448,17 @@
    },
    "union": true
   },
+  "PublishedDateFilter": {
+   "type": "structure",
+   "members": {
+    "publishedAfter": {
+     "shape": "DateTimestamp"
+    },
+    "publishedBefore": {
+     "shape": "DateTimestamp"
+    }
+   }
+  },
   "RecommendationArn": {
    "type": "string",
    "pattern": "arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:recommendation/[0-9a-zA-Z_-]{1,48}-[0-9A-Z]{10}"
@@ -11204,6 +11370,28 @@
     "senderFault": true
    },
    "exception": true
+  },
+  "ServiceUnavailableException": {
+   "type": "structure",
+   "required": [
+    "message"
+   ],
+   "members": {
+    "message": {
+     "shape": "String"
+    },
+    "retryAfterSeconds": {
+     "shape": "Integer"
+    }
+   },
+   "error": {
+    "httpStatusCode": 503
+   },
+   "exception": true,
+   "fault": true,
+   "retryable": {
+    "throttling": false
+   }
   },
   "SessionFilter": {
    "type": "structure",
@@ -13066,6 +13254,49 @@
    "box": true,
    "max": 3840,
    "min": 320
+  },
+  "WebSearchFilters": {
+   "type": "structure",
+   "members": {
+    "domainFilter": {
+     "shape": "DomainFilter"
+    },
+    "publishedDateFilter": {
+     "shape": "PublishedDateFilter"
+    }
+   }
+  },
+  "WebSearchId": {
+   "type": "string",
+   "max": 100,
+   "min": 1,
+   "pattern": "[a-z0-9]+([.-][a-z0-9]+)*"
+  },
+  "WebSearchResult": {
+   "type": "structure",
+   "required": [
+    "text"
+   ],
+   "members": {
+    "title": {
+     "shape": "String"
+    },
+    "url": {
+     "shape": "String"
+    },
+    "text": {
+     "shape": "String"
+    },
+    "publishedAt": {
+     "shape": "DateTimestamp"
+    }
+   }
+  },
+  "WebSearchResultList": {
+   "type": "list",
+   "member": {
+    "shape": "WebSearchResult"
+   }
   },
   "WorkloadIdentityNameType": {
    "type": "string",

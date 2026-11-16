@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 102 operations — 102 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   357 structs (205 @derive(Json)), 32 enums, 57 error variants.
+#   358 structs (206 @derive(Json)), 33 enums, 57 error variants.
 #   34 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -232,6 +232,13 @@ enum Owner:
     CUSTOM_LAMBDA
     AWS
     CUSTOM_POLICY
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum Provider:
+    AZURE
+    GCP
     Unknown(str value)
 
 @derive(Json)
@@ -1211,7 +1218,7 @@ struct ConfigurationRecorderSummary:
     str name
     Optional[str] servicePrincipal
     RecordingScope recordingScope
-    Optional[str] provider
+    Optional[Provider] provider
 
 @derive(Json)
 struct ConflictException:
@@ -1312,6 +1319,7 @@ struct Connector:
 @derive(Json)
 struct ConnectorConfiguration:
     Optional[AzureConnectorConfiguration] azure
+    Optional[GcpConnectorConfiguration] gcp
 
 # no @derive(Json): member(s) filterValues: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1324,8 +1332,10 @@ struct ConnectorFilter:
 struct ConnectorSummary:
     str arn
     str name
-    str provider
-    str tenantIdentifier
+    Provider provider
+    Optional[str] tenantIdentifier
+    Optional[str] gcpOrganizationId
+    Optional[str] serviceAccountEmail
     DateTime createdTime
 
 @derive(Json)
@@ -1925,6 +1935,12 @@ struct FailedRemediationExceptionBatch:
 @derive(Json)
 struct FieldInfo:
     Optional[str] Name
+
+@derive(Json)
+struct GcpConnectorConfiguration:
+    Optional[str] gcpOrganizationId
+    str serviceAccountEmail
+    str workloadIdentityPoolProvider
 
 @derive(Json)
 struct GetAggregateComplianceDetailsByConfigRuleRequest:

@@ -617,6 +617,7 @@ struct CopyDBSnapshotMessage:
     Optional[str] SnapshotTarget
     Optional[bool] CopyOptionGroup
     Optional[str] SnapshotAvailabilityZone
+    Optional[list[TagSpecification]] TagSpecifications
 
 struct CopyDBSnapshotResult:
     Optional[DBSnapshot] DBSnapshot
@@ -3265,6 +3266,7 @@ struct OptionGroup:
     Optional[str] SourceOptionGroup
     Optional[str] SourceAccountId
     Optional[DateTime] CopyTimestamp
+    Optional[str] SourceRegion
 
 struct OptionGroupAlreadyExistsFault:
     # empty shape in the model; reserved field keeps it valid
@@ -3296,6 +3298,7 @@ struct OptionGroupOption:
     Optional[list[OptionGroupOptionSetting]] OptionGroupOptionSettings
     Optional[list[OptionVersion]] OptionGroupOptionVersions
     Optional[bool] CopyableCrossAccount
+    Optional[bool] CopyableCrossRegion
 
 struct OptionGroupOptionSetting:
     Optional[str] SettingName
@@ -5629,6 +5632,10 @@ struct RDSClient:
         if input.SnapshotAvailabilityZone.is_some():
             auto t7 = input.SnapshotAvailabilityZone.unwrap()
             p = query.query_scalar(p, "SnapshotAvailabilityZone", t7)
+        auto qi8 = 1
+        for qe9 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi8), qe9)
+            qi8 = qi8 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # CopyOptionGroup

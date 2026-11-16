@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 69 operations — 68 with a generated method,
+# Coverage (rest-json): 71 operations — 70 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   215 structs (120 @derive(Json)), 17 enums, 19 error variants.
+#   222 structs (126 @derive(Json)), 17 enums, 19 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -76,6 +76,7 @@ enum CredentialsScope:
 @derive(Json)
 @json(open)
 enum DataLakeResourceType:
+    ANY_RESOURCE
     CATALOG
     DATABASE
     TABLE
@@ -85,6 +86,7 @@ enum DataLakeResourceType:
     LF_TAG_POLICY_DATABASE
     LF_TAG_POLICY_TABLE
     LF_NAMED_TAG_EXPRESSION
+    USER_DEFINED_FUNCTION
     Unknown(str value)
 
 @derive(Json)
@@ -129,6 +131,7 @@ enum Permission:
     CREATE_LF_TAG_EXPRESSION
     CREATE_CATALOG
     SUPER_USER
+    EXECUTE
     Unknown(str value)
 
 @derive(Json)
@@ -241,6 +244,11 @@ struct AllRowsWildcard:
 @derive(Json)
 struct AlreadyExistsException:
     Optional[str] Message
+
+@derive(Json)
+struct AnyResource:
+    Optional[str] CatalogId
+    str ResourceType
 
 # rest-json request for AssumeDecoratedRoleWithSAMLRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -739,6 +747,17 @@ struct GetEffectivePermissionsForPathResponse:
     Optional[list[PrincipalResourcePermissions]] Permissions
     Optional[str] NextToken
 
+# rest-json request for GetGlueFunctionSessionContextRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetGlueFunctionSessionContextRequest:
+    list[str] UserDefinedFunctionArns
+    Optional[int64] DurationSeconds
+
+@derive(Json)
+struct GetGlueFunctionSessionContextResponse:
+    Optional[str] SessionContextId
+    Optional[DateTime] Expiration
+
 # rest-json request for GetLFTagExpressionRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct GetLFTagExpressionRequest:
@@ -850,6 +869,19 @@ struct GetTemporaryDataLocationCredentialsResponse:
     Optional[TemporaryCredentials] Credentials
     Optional[list[str]] AccessibleDataLocations
     Optional[CredentialsScope] CredentialsScope
+
+# rest-json request for GetTemporaryGlueFunctionCredentialsRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetTemporaryGlueFunctionCredentialsRequest:
+    str UserDefinedFunctionArn
+    Optional[AuditContext] AuditContext
+
+@derive(Json)
+struct GetTemporaryGlueFunctionCredentialsResponse:
+    Optional[str] AccessKeyId
+    Optional[str] SecretAccessKey
+    Optional[str] SessionToken
+    Optional[DateTime] Expiration
 
 # rest-json request for GetTemporaryGluePartitionCredentialsRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1301,6 +1333,7 @@ struct RemoveLFTagsFromResourceResponse:
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Resource:
+    Optional[AnyResource] AnyResource
     Optional[CatalogResource] Catalog
     Optional[DatabaseResource] Database
     Optional[TableResource] Table
@@ -1311,6 +1344,7 @@ struct Resource:
     Optional[LFTagPolicyResource] LFTagPolicy
     Optional[LFTagExpressionResource] LFTagExpression
     Optional[RLSPolicyResource] RLSPolicy
+    Optional[UserDefinedFunctionResource] UserDefinedFunction
 
 @derive(Json)
 struct ResourceInfo:
@@ -1594,6 +1628,18 @@ struct UpdateTableStorageOptimizerRequest:
 @derive(Json)
 struct UpdateTableStorageOptimizerResponse:
     Optional[str] Result
+
+@derive(Json)
+struct UserDefinedFunctionResource:
+    Optional[str] CatalogId
+    str DatabaseName
+    Optional[str] Name
+    Optional[UserDefinedFunctionWildcard] UserDefinedFunctionWildcard
+
+@derive(Json)
+struct UserDefinedFunctionWildcard:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 @derive(Json)
 struct VirtualObject:
@@ -1886,6 +1932,12 @@ struct GetTableObjectsDocument:
     Optional[str] PartitionPredicate
     Optional[int64] MaxResults
     Optional[str] NextToken
+
+@derive(Json)
+struct GetTemporaryGlueFunctionCredentialsDocument:
+    # document members of GetTemporaryGlueFunctionCredentials
+    str UserDefinedFunctionArn
+    Optional[AuditContext] AuditContext
 
 @derive(Json)
 struct GetWorkUnitResultsDocument:
@@ -2309,36 +2361,42 @@ def query_session_context_to_json(QuerySessionContext v) -> str:
 # Serialize Resource to a compact JSON object (declaration order).
 def resource_to_json(Resource v) -> str:
     list[str] parts = []
+    if v.AnyResource.is_some():
+        auto u0 = v.AnyResource.unwrap()
+        parts.append("\"AnyResource\":" + u0.to_json())
     if v.Catalog.is_some():
-        auto u0 = v.Catalog.unwrap()
-        parts.append("\"Catalog\":" + u0.to_json())
+        auto u1 = v.Catalog.unwrap()
+        parts.append("\"Catalog\":" + u1.to_json())
     if v.Database.is_some():
-        auto u1 = v.Database.unwrap()
-        parts.append("\"Database\":" + u1.to_json())
+        auto u2 = v.Database.unwrap()
+        parts.append("\"Database\":" + u2.to_json())
     if v.Table.is_some():
-        auto u2 = v.Table.unwrap()
-        parts.append("\"Table\":" + u2.to_json())
+        auto u3 = v.Table.unwrap()
+        parts.append("\"Table\":" + u3.to_json())
     if v.TableWithColumns.is_some():
-        auto u3 = v.TableWithColumns.unwrap()
-        parts.append("\"TableWithColumns\":" + table_with_columns_resource_to_json(u3))
+        auto u4 = v.TableWithColumns.unwrap()
+        parts.append("\"TableWithColumns\":" + table_with_columns_resource_to_json(u4))
     if v.DataLocation.is_some():
-        auto u4 = v.DataLocation.unwrap()
-        parts.append("\"DataLocation\":" + u4.to_json())
+        auto u5 = v.DataLocation.unwrap()
+        parts.append("\"DataLocation\":" + u5.to_json())
     if v.DataCellsFilter.is_some():
-        auto u5 = v.DataCellsFilter.unwrap()
-        parts.append("\"DataCellsFilter\":" + u5.to_json())
+        auto u6 = v.DataCellsFilter.unwrap()
+        parts.append("\"DataCellsFilter\":" + u6.to_json())
     if v.LFTag.is_some():
-        auto u6 = v.LFTag.unwrap()
-        parts.append("\"LFTag\":" + lf_tag_key_resource_to_json(u6))
+        auto u7 = v.LFTag.unwrap()
+        parts.append("\"LFTag\":" + lf_tag_key_resource_to_json(u7))
     if v.LFTagPolicy.is_some():
-        auto u7 = v.LFTagPolicy.unwrap()
-        parts.append("\"LFTagPolicy\":" + lf_tag_policy_resource_to_json(u7))
+        auto u8 = v.LFTagPolicy.unwrap()
+        parts.append("\"LFTagPolicy\":" + lf_tag_policy_resource_to_json(u8))
     if v.LFTagExpression.is_some():
-        auto u8 = v.LFTagExpression.unwrap()
-        parts.append("\"LFTagExpression\":" + u8.to_json())
+        auto u9 = v.LFTagExpression.unwrap()
+        parts.append("\"LFTagExpression\":" + u9.to_json())
     if v.RLSPolicy.is_some():
-        auto u9 = v.RLSPolicy.unwrap()
-        parts.append("\"RLSPolicy\":" + u9.to_json())
+        auto u10 = v.RLSPolicy.unwrap()
+        parts.append("\"RLSPolicy\":" + u10.to_json())
+    if v.UserDefinedFunction.is_some():
+        auto u11 = v.UserDefinedFunction.unwrap()
+        parts.append("\"UserDefinedFunction\":" + u11.to_json())
     return lakeformation_json_obj(parts)
 
 # Serialize ServiceIntegrationUnion to a compact JSON object (declaration order).
@@ -2766,6 +2824,22 @@ struct LakeFormationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
+    # GetGlueFunctionSessionContext  POST /GetGlueFunctionSessionContext
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_glue_function_session_context(self, GetGlueFunctionSessionContextRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetGlueFunctionSessionContext", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserDefinedFunctionArns:
+            e0.append(lakeformation_json_str(x0))
+        parts.append("\"UserDefinedFunctionArns\":" + lakeformation_json_arr(e0))
+        if input.DurationSeconds.is_some():
+            auto u1 = input.DurationSeconds.unwrap()
+            parts.append("\"DurationSeconds\":" + str(u1))
+        auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
     # GetLFTag  POST /GetLFTag
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_lf_tag(self, GetLFTagRequest input) -> str:
@@ -2858,6 +2932,15 @@ struct LakeFormationClient:
             auto u4 = input.CredentialsScope.unwrap()
             parts.append("\"CredentialsScope\":" + u4.to_json())
         auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
+
+    # GetTemporaryGlueFunctionCredentials  POST /GetTemporaryGlueFunctionCredentials
+    # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_temporary_glue_function_credentials(self, GetTemporaryGlueFunctionCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(lakeformation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGlueFunctionCredentials", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = GetTemporaryGlueFunctionCredentialsDocument(UserDefinedFunctionArn=input.UserDefinedFunctionArn, AuditContext=input.AuditContext)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
 
     # GetTemporaryGluePartitionCredentials  POST /GetTemporaryGluePartitionCredentials

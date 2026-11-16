@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS CodeDeploy (serviceId CodeDeploy, API 2014-10-06)
-# Protocol: awsJson 1.1 (targetPrefix CodeDeploy_20141006)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service codedeploy, service shape CodeDeploy_20141006)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 47 operations — 46 with a generated method,
-#   1 skipped (input has a non-string-keyed map or free-form document member).
-#   255 structs (189 @derive(Json)), 36 enums, 111 error variants.
-#   8 paginators generated (1 paginated ops skipped) from paginators-1.json.
-#   1 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Coverage (smithy-rpc-v2-cbor): 47 operations — 47 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   255 structs (plain carriers), 36 enums, 111 error variants.
+#   0 paginators generated (9 paginated ops skipped) from paginators-1.json.
+#   0 waiters generated (1 skipped) from waiters-2.json.
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import aws_core.waiters
+import aws_core.cbor
+import datetime
 
-# The CodeDeploy awsJson protocol: version 1.1, API id "CodeDeploy_20141006".
-def codedeploy_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("CodeDeploy_20141006", "codedeploy")
+# The CodeDeploy smithy-rpc-v2-cbor protocol: SigV4 service "codedeploy" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/CodeDeploy_20141006/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def codedeploy_service() -> str:
+    return "codedeploy"
 
 # --- enums -----------------------------------------------------------------
 
@@ -380,239 +384,161 @@ enum TriggerEventType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) tags: list[Tag], instanceNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AddTagsToOnPremisesInstancesInput:
     list[Tag] tags
     list[str] instanceNames
 
-@derive(Json)
 struct Alarm:
     Optional[str] name
 
-# no @derive(Json): member(s) alarms: list[Alarm] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AlarmConfiguration:
     Optional[bool] enabled
     Optional[bool] ignorePollAlarmFailure
     Optional[list[Alarm]] alarms
 
-@derive(Json)
 struct AlarmsLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AppSpecContent:
     Optional[str] content
     Optional[str] sha256
 
-@derive(Json)
 struct ApplicationAlreadyExistsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ApplicationDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ApplicationInfo:
     Optional[str] applicationId
     Optional[str] applicationName
     Optional[DateTime] createTime
     Optional[bool] linkedToGitHub
     Optional[str] gitHubAccountName
-    Optional[ComputePlatform] computePlatform
+    Optional[str] computePlatform
 
-@derive(Json)
 struct ApplicationLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ApplicationNameRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ArnNotSupportedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) events: list[AutoRollbackEvent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AutoRollbackConfiguration:
     Optional[bool] enabled
-    Optional[list[AutoRollbackEvent]] events
+    Optional[list[str]] events
 
-@derive(Json)
 struct AutoScalingGroup:
     Optional[str] name
     Optional[str] hook
     Optional[str] terminationHook
 
-# no @derive(Json): member(s) revisions: list[RevisionLocation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetApplicationRevisionsInput:
     str applicationName
     list[RevisionLocation] revisions
 
-# no @derive(Json): member(s) revisions: list[RevisionInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetApplicationRevisionsOutput:
     Optional[str] applicationName
     Optional[str] errorMessage
     Optional[list[RevisionInfo]] revisions
 
-# no @derive(Json): member(s) applicationNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetApplicationsInput:
     list[str] applicationNames
 
-# no @derive(Json): member(s) applicationsInfo: list[ApplicationInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetApplicationsOutput:
     Optional[list[ApplicationInfo]] applicationsInfo
 
-# no @derive(Json): member(s) deploymentGroupNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentGroupsInput:
     str applicationName
     list[str] deploymentGroupNames
 
-# no @derive(Json): member(s) deploymentGroupsInfo: list[DeploymentGroupInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentGroupsOutput:
     Optional[list[DeploymentGroupInfo]] deploymentGroupsInfo
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) instanceIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentInstancesInput:
     str deploymentId
     list[str] instanceIds
 
-# no @derive(Json): member(s) instancesSummary: list[InstanceSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentInstancesOutput:
     Optional[list[InstanceSummary]] instancesSummary
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) targetIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentTargetsInput:
     str deploymentId
     list[str] targetIds
 
-# no @derive(Json): member(s) deploymentTargets: list[DeploymentTarget] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentTargetsOutput:
     Optional[list[DeploymentTarget]] deploymentTargets
 
-# no @derive(Json): member(s) deploymentIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentsInput:
     list[str] deploymentIds
 
-# no @derive(Json): member(s) deploymentsInfo: list[DeploymentInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetDeploymentsOutput:
     Optional[list[DeploymentInfo]] deploymentsInfo
 
-# no @derive(Json): member(s) instanceNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetOnPremisesInstancesInput:
     list[str] instanceNames
 
-# no @derive(Json): member(s) instanceInfos: list[InstanceInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchGetOnPremisesInstancesOutput:
     Optional[list[InstanceInfo]] instanceInfos
 
-@derive(Json)
 struct BatchLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct BlueGreenDeploymentConfiguration:
     Optional[BlueInstanceTerminationOption] terminateBlueInstancesOnDeploymentSuccess
     Optional[DeploymentReadyOption] deploymentReadyOption
     Optional[GreenFleetProvisioningOption] greenFleetProvisioningOption
 
-@derive(Json)
 struct BlueInstanceTerminationOption:
-    Optional[InstanceAction] action
+    Optional[str] action
     Optional[int64] terminationWaitTimeInMinutes
 
-@derive(Json)
 struct BucketNameFilterRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CloudFormationTarget:
     Optional[str] deploymentId
     Optional[str] targetId
     Optional[DateTime] lastUpdatedAt
     Optional[list[LifecycleEvent]] lifecycleEvents
-    Optional[TargetStatus] status
+    Optional[str] status
     Optional[str] resourceType
     Optional[float64] targetVersionWeight
 
-@derive(Json)
 struct ContinueDeploymentInput:
     Optional[str] deploymentId
-    Optional[DeploymentWaitType] deploymentWaitType
+    Optional[str] deploymentWaitType
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateApplicationInput:
     str applicationName
-    Optional[ComputePlatform] computePlatform
+    Optional[str] computePlatform
     Optional[list[Tag]] tags
 
-@derive(Json)
 struct CreateApplicationOutput:
     Optional[str] applicationId
 
-@derive(Json)
 struct CreateDeploymentConfigInput:
     str deploymentConfigName
     Optional[MinimumHealthyHosts] minimumHealthyHosts
     Optional[TrafficRoutingConfig] trafficRoutingConfig
-    Optional[ComputePlatform] computePlatform
+    Optional[str] computePlatform
     Optional[ZonalConfig] zonalConfig
 
-@derive(Json)
 struct CreateDeploymentConfigOutput:
     Optional[str] deploymentConfigId
 
-# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[str], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, ecsServices: list[ECSService], onPremisesTagSet: OnPremisesTagSet, tags: list[Tag], ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDeploymentGroupInput:
     str applicationName
     str deploymentGroupName
@@ -624,7 +550,7 @@ struct CreateDeploymentGroupInput:
     Optional[list[TriggerConfig]] triggerConfigurations
     Optional[AlarmConfiguration] alarmConfiguration
     Optional[AutoRollbackConfiguration] autoRollbackConfiguration
-    Optional[OutdatedInstancesStrategy] outdatedInstancesStrategy
+    Optional[str] outdatedInstancesStrategy
     Optional[DeploymentStyle] deploymentStyle
     Optional[BlueGreenDeploymentConfiguration] blueGreenDeploymentConfiguration
     Optional[LoadBalancerInfo] loadBalancerInfo
@@ -635,13 +561,9 @@ struct CreateDeploymentGroupInput:
     Optional[EC2DeploymentOptions] ec2DeploymentOptions
     Optional[bool] terminationHookEnabled
 
-@derive(Json)
 struct CreateDeploymentGroupOutput:
     Optional[str] deploymentGroupId
 
-# no @derive(Json): member(s) targetInstances: TargetInstances, autoRollbackConfiguration: AutoRollbackConfiguration, overrideAlarmConfiguration: AlarmConfiguration, ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDeploymentInput:
     str applicationName
     Optional[str] deploymentGroupName
@@ -652,114 +574,89 @@ struct CreateDeploymentInput:
     Optional[TargetInstances] targetInstances
     Optional[AutoRollbackConfiguration] autoRollbackConfiguration
     Optional[bool] updateOutdatedInstancesOnly
-    Optional[FileExistsBehavior] fileExistsBehavior
-    Optional[DeploymentMode] deploymentMode
+    Optional[str] fileExistsBehavior
+    Optional[str] deploymentMode
     Optional[AlarmConfiguration] overrideAlarmConfiguration
     Optional[EC2DeploymentOptions] ec2DeploymentOptions
 
-@derive(Json)
 struct CreateDeploymentOutput:
     Optional[str] deploymentId
 
-@derive(Json)
 struct DeleteApplicationInput:
     str applicationName
 
-@derive(Json)
 struct DeleteDeploymentConfigInput:
     str deploymentConfigName
 
-@derive(Json)
 struct DeleteDeploymentGroupInput:
     str applicationName
     str deploymentGroupName
 
-# no @derive(Json): member(s) hooksNotCleanedUp: list[AutoScalingGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteDeploymentGroupOutput:
     Optional[list[AutoScalingGroup]] hooksNotCleanedUp
 
-@derive(Json)
 struct DeleteGitHubAccountTokenInput:
     Optional[str] tokenName
 
-@derive(Json)
 struct DeleteGitHubAccountTokenOutput:
     Optional[str] tokenName
 
-@derive(Json)
 struct DeleteResourcesByExternalIdInput:
     Optional[str] externalId
 
-@derive(Json)
 struct DeleteResourcesByExternalIdOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentAlreadyCompletedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentAlreadyStartedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentConfigAlreadyExistsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentConfigDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentConfigInUseException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentConfigInfo:
     Optional[str] deploymentConfigId
     Optional[str] deploymentConfigName
     Optional[MinimumHealthyHosts] minimumHealthyHosts
     Optional[DateTime] createTime
-    Optional[ComputePlatform] computePlatform
+    Optional[str] computePlatform
     Optional[TrafficRoutingConfig] trafficRoutingConfig
     Optional[ZonalConfig] zonalConfig
 
-@derive(Json)
 struct DeploymentConfigLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentConfigNameRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentGroupAlreadyExistsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentGroupDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[AutoScalingGroup], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, onPremisesTagSet: OnPremisesTagSet, ecsServices: list[ECSService], ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeploymentGroupInfo:
     Optional[str] applicationName
     Optional[str] deploymentGroupId
@@ -774,36 +671,30 @@ struct DeploymentGroupInfo:
     Optional[AlarmConfiguration] alarmConfiguration
     Optional[AutoRollbackConfiguration] autoRollbackConfiguration
     Optional[DeploymentStyle] deploymentStyle
-    Optional[OutdatedInstancesStrategy] outdatedInstancesStrategy
+    Optional[str] outdatedInstancesStrategy
     Optional[BlueGreenDeploymentConfiguration] blueGreenDeploymentConfiguration
     Optional[LoadBalancerInfo] loadBalancerInfo
     Optional[LastDeploymentInfo] lastSuccessfulDeployment
     Optional[LastDeploymentInfo] lastAttemptedDeployment
     Optional[EC2TagSet] ec2TagSet
     Optional[OnPremisesTagSet] onPremisesTagSet
-    Optional[ComputePlatform] computePlatform
+    Optional[str] computePlatform
     Optional[list[ECSService]] ecsServices
     Optional[EC2DeploymentOptions] ec2DeploymentOptions
     Optional[bool] terminationHookEnabled
 
-@derive(Json)
 struct DeploymentGroupLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentGroupNameRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentIdRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) autoRollbackConfiguration: AutoRollbackConfiguration, targetInstances: TargetInstances, loadBalancerInfo: LoadBalancerInfo, deploymentStatusMessages: list[str], relatedDeployments: RelatedDeployments, overrideAlarmConfiguration: AlarmConfiguration, ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeploymentInfo:
     Optional[str] applicationName
     Optional[str] deploymentGroupName
@@ -811,14 +702,14 @@ struct DeploymentInfo:
     Optional[str] deploymentId
     Optional[RevisionLocation] previousRevision
     Optional[RevisionLocation] revision
-    Optional[DeploymentStatus] status
+    Optional[str] status
     Optional[ErrorInformation] errorInformation
     Optional[DateTime] createTime
     Optional[DateTime] startTime
     Optional[DateTime] completeTime
     Optional[DeploymentOverview] deploymentOverview
     Optional[str] description
-    Optional[DeploymentCreator] creator
+    Optional[str] creator
     Optional[bool] ignoreApplicationStopFailures
     Optional[AutoRollbackConfiguration] autoRollbackConfiguration
     Optional[bool] updateOutdatedInstancesOnly
@@ -829,31 +720,27 @@ struct DeploymentInfo:
     Optional[BlueGreenDeploymentConfiguration] blueGreenDeploymentConfiguration
     Optional[LoadBalancerInfo] loadBalancerInfo
     Optional[str] additionalDeploymentStatusInfo
-    Optional[FileExistsBehavior] fileExistsBehavior
-    Optional[DeploymentMode] deploymentMode
+    Optional[str] fileExistsBehavior
+    Optional[str] deploymentMode
     Optional[list[str]] deploymentStatusMessages
-    Optional[ComputePlatform] computePlatform
+    Optional[str] computePlatform
     Optional[str] externalId
     Optional[RelatedDeployments] relatedDeployments
     Optional[AlarmConfiguration] overrideAlarmConfiguration
     Optional[EC2DeploymentOptions] ec2DeploymentOptions
 
-@derive(Json)
 struct DeploymentIsNotInReadyStateException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentNotStartedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentOverview:
     Optional[int64] Pending
     Optional[int64] InProgress
@@ -862,98 +749,74 @@ struct DeploymentOverview:
     Optional[int64] Skipped
     Optional[int64] Ready
 
-@derive(Json)
 struct DeploymentReadyOption:
-    Optional[DeploymentReadyAction] actionOnTimeout
+    Optional[str] actionOnTimeout
     Optional[int64] waitTimeInMinutes
 
-@derive(Json)
 struct DeploymentStyle:
-    Optional[DeploymentType] deploymentType
-    Optional[DeploymentOption] deploymentOption
+    Optional[str] deploymentType
+    Optional[str] deploymentOption
 
-# no @derive(Json): member(s) instanceTarget: InstanceTarget, lambdaTarget: LambdaTarget, ecsTarget: ECSTarget, cloudFormationTarget: CloudFormationTarget not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeploymentTarget:
-    Optional[DeploymentTargetType] deploymentTargetType
+    Optional[str] deploymentTargetType
     Optional[InstanceTarget] instanceTarget
     Optional[LambdaTarget] lambdaTarget
     Optional[ECSTarget] ecsTarget
     Optional[CloudFormationTarget] cloudFormationTarget
 
-@derive(Json)
 struct DeploymentTargetDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentTargetIdRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeploymentTargetListSizeExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeregisterOnPremisesInstanceInput:
     str instanceName
 
-@derive(Json)
 struct DescriptionTooLongException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Diagnostics:
-    Optional[LifecycleErrorCode] errorCode
+    Optional[str] errorCode
     Optional[str] scriptName
     Optional[str] message
     Optional[str] logTail
 
-# no @derive(Json): member(s) autoScalingGroupProcessesToSuspend: list[AutoScalingGroupProcess] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EC2DeploymentOptions:
-    Optional[list[AutoScalingGroupProcess]] autoScalingGroupProcessesToSuspend
+    Optional[list[str]] autoScalingGroupProcessesToSuspend
 
-@derive(Json)
 struct EC2TagFilter:
     Optional[str] Key
     Optional[str] Value
-    Optional[EC2TagFilterType] Type
+    Optional[str] Type
 
-# no @derive(Json): member(s) ec2TagSetList: list[list[EC2TagFilter]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EC2TagSet:
     Optional[list[list[EC2TagFilter]]] ec2TagSetList
 
-@derive(Json)
 struct ECSService:
     Optional[str] serviceName
     Optional[str] clusterName
 
-@derive(Json)
 struct ECSServiceMappingLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent], taskSetsInfo: list[ECSTaskSet] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ECSTarget:
     Optional[str] deploymentId
     Optional[str] targetId
     Optional[str] targetArn
     Optional[DateTime] lastUpdatedAt
     Optional[list[LifecycleEvent]] lifecycleEvents
-    Optional[TargetStatus] status
+    Optional[str] status
     Optional[list[ECSTaskSet]] taskSetsInfo
 
-@derive(Json)
 struct ECSTaskSet:
     Optional[str] identifer
     Optional[int64] desiredCount
@@ -962,20 +825,15 @@ struct ECSTaskSet:
     Optional[str] status
     Optional[float64] trafficWeight
     Optional[TargetGroupInfo] targetGroup
-    Optional[TargetLabel] taskSetLabel
+    Optional[str] taskSetLabel
 
-@derive(Json)
 struct ELBInfo:
     Optional[str] name
 
-@derive(Json)
 struct ErrorInformation:
-    Optional[ErrorCode] code
+    Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) deploymentGroups: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GenericRevisionInfo:
     Optional[str] description
     Optional[list[str]] deploymentGroups
@@ -983,140 +841,99 @@ struct GenericRevisionInfo:
     Optional[DateTime] lastUsedTime
     Optional[DateTime] registerTime
 
-@derive(Json)
 struct GetApplicationInput:
     str applicationName
 
-@derive(Json)
 struct GetApplicationOutput:
     Optional[ApplicationInfo] application
 
-@derive(Json)
 struct GetApplicationRevisionInput:
     str applicationName
     RevisionLocation revision
 
-# no @derive(Json): member(s) revisionInfo: GenericRevisionInfo not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetApplicationRevisionOutput:
     Optional[str] applicationName
     Optional[RevisionLocation] revision
     Optional[GenericRevisionInfo] revisionInfo
 
-@derive(Json)
 struct GetDeploymentConfigInput:
     str deploymentConfigName
 
-@derive(Json)
 struct GetDeploymentConfigOutput:
     Optional[DeploymentConfigInfo] deploymentConfigInfo
 
-@derive(Json)
 struct GetDeploymentGroupInput:
     str applicationName
     str deploymentGroupName
 
-# no @derive(Json): member(s) deploymentGroupInfo: DeploymentGroupInfo not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDeploymentGroupOutput:
     Optional[DeploymentGroupInfo] deploymentGroupInfo
 
-@derive(Json)
 struct GetDeploymentInput:
     str deploymentId
 
-@derive(Json)
 struct GetDeploymentInstanceInput:
     str deploymentId
     str instanceId
 
-# no @derive(Json): member(s) instanceSummary: InstanceSummary not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDeploymentInstanceOutput:
     Optional[InstanceSummary] instanceSummary
 
-# no @derive(Json): member(s) deploymentInfo: DeploymentInfo not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDeploymentOutput:
     Optional[DeploymentInfo] deploymentInfo
 
-@derive(Json)
 struct GetDeploymentTargetInput:
     str deploymentId
     str targetId
 
-# no @derive(Json): member(s) deploymentTarget: DeploymentTarget not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetDeploymentTargetOutput:
     Optional[DeploymentTarget] deploymentTarget
 
-@derive(Json)
 struct GetOnPremisesInstanceInput:
     str instanceName
 
-# no @derive(Json): member(s) instanceInfo: InstanceInfo not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetOnPremisesInstanceOutput:
     Optional[InstanceInfo] instanceInfo
 
-@derive(Json)
 struct GitHubAccountTokenDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GitHubAccountTokenNameRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GitHubLocation:
     Optional[str] repository
     Optional[str] commitId
 
-@derive(Json)
 struct GreenFleetProvisioningOption:
-    Optional[GreenFleetProvisioningAction] action
+    Optional[str] action
 
-@derive(Json)
 struct IamArnRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct IamSessionArnAlreadyRegisteredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct IamUserArnAlreadyRegisteredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct IamUserArnRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InstanceDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InstanceIdRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InstanceInfo:
     Optional[str] instanceName
     Optional[str] iamSessionArn
@@ -1126,340 +943,271 @@ struct InstanceInfo:
     Optional[DateTime] deregisterTime
     Optional[list[Tag]] tags
 
-@derive(Json)
 struct InstanceLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InstanceNameAlreadyRegisteredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InstanceNameRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InstanceNotRegisteredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InstanceSummary:
     Optional[str] deploymentId
     Optional[str] instanceId
-    Optional[InstanceStatus] status
+    Optional[str] status
     Optional[DateTime] lastUpdatedAt
     Optional[list[LifecycleEvent]] lifecycleEvents
-    Optional[InstanceType] instanceType
+    Optional[str] instanceType
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InstanceTarget:
     Optional[str] deploymentId
     Optional[str] targetId
     Optional[str] targetArn
-    Optional[TargetStatus] status
+    Optional[str] status
     Optional[DateTime] lastUpdatedAt
     Optional[list[LifecycleEvent]] lifecycleEvents
-    Optional[TargetLabel] instanceLabel
+    Optional[str] instanceLabel
 
-@derive(Json)
 struct InvalidAlarmConfigException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidApplicationNameException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidArnException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidAutoRollbackConfigException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidAutoScalingGroupException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidAutoScalingGroupProcessToSuspendException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidBlueGreenDeploymentConfigurationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidBucketNameFilterException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidComputePlatformException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeployedStateFilterException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentConfigNameException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentGroupNameException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentIdException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentInstanceTypeException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentStatusException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentStyleException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentTargetIdException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidDeploymentWaitTypeException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidEC2TagCombinationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidEC2TagException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidECSServiceException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidExternalIdException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidFileExistsBehaviorException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidGitHubAccountTokenException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidGitHubAccountTokenNameException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidIamSessionArnException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidIamUserArnException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidIgnoreApplicationStopFailuresValueException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidInputException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidInstanceIdException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidInstanceNameException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidInstanceStatusException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidInstanceTypeException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidKeyPrefixFilterException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidLifecycleEventHookExecutionIdException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidLifecycleEventHookExecutionStatusException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidLoadBalancerInfoException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidMinimumHealthyHostValueException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidNextTokenException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidOnPremisesTagCombinationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidOperationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidRegistrationStatusException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidRevisionException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidRoleException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidSortByException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidSortOrderException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTagException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTagFilterException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTagsToAddException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTargetException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTargetFilterNameException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTargetGroupPairException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTargetInstancesException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTimeRangeException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTrafficRoutingConfigurationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidTriggerConfigException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidUpdateOutdatedInstancesOnlyValueException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidZonalDeploymentConfigurationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct LambdaFunctionInfo:
     Optional[str] functionName
     Optional[str] functionAlias
@@ -1467,453 +1215,326 @@ struct LambdaFunctionInfo:
     Optional[str] targetVersion
     Optional[float64] targetVersionWeight
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LambdaTarget:
     Optional[str] deploymentId
     Optional[str] targetId
     Optional[str] targetArn
-    Optional[TargetStatus] status
+    Optional[str] status
     Optional[DateTime] lastUpdatedAt
     Optional[list[LifecycleEvent]] lifecycleEvents
     Optional[LambdaFunctionInfo] lambdaFunctionInfo
 
-@derive(Json)
 struct LastDeploymentInfo:
     Optional[str] deploymentId
-    Optional[DeploymentStatus] status
+    Optional[str] status
     Optional[DateTime] endTime
     Optional[DateTime] createTime
 
-@derive(Json)
 struct LifecycleEvent:
     Optional[str] lifecycleEventName
     Optional[Diagnostics] diagnostics
     Optional[DateTime] startTime
     Optional[DateTime] endTime
-    Optional[LifecycleEventStatus] status
+    Optional[str] status
 
-@derive(Json)
 struct LifecycleEventAlreadyCompletedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct LifecycleHookLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ListApplicationRevisionsInput:
     str applicationName
-    Optional[ApplicationRevisionSortBy] sortBy
-    Optional[SortOrder] sortOrder
+    Optional[str] sortBy
+    Optional[str] sortOrder
     Optional[str] s3Bucket
     Optional[str] s3KeyPrefix
-    Optional[ListStateFilterAction] deployed
+    Optional[str] deployed
     Optional[str] nextToken
 
-# no @derive(Json): member(s) revisions: list[RevisionLocation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListApplicationRevisionsOutput:
     Optional[list[RevisionLocation]] revisions
     Optional[str] nextToken
 
-@derive(Json)
 struct ListApplicationsInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) applications: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListApplicationsOutput:
     Optional[list[str]] applications
     Optional[str] nextToken
 
-@derive(Json)
 struct ListDeploymentConfigsInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deploymentConfigsList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentConfigsOutput:
     Optional[list[str]] deploymentConfigsList
     Optional[str] nextToken
 
-@derive(Json)
 struct ListDeploymentGroupsInput:
     str applicationName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deploymentGroups: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentGroupsOutput:
     Optional[str] applicationName
     Optional[list[str]] deploymentGroups
     Optional[str] nextToken
 
-# no @derive(Json): member(s) instanceStatusFilter: list[InstanceStatus], instanceTypeFilter: list[InstanceType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentInstancesInput:
     str deploymentId
     Optional[str] nextToken
-    Optional[list[InstanceStatus]] instanceStatusFilter
-    Optional[list[InstanceType]] instanceTypeFilter
+    Optional[list[str]] instanceStatusFilter
+    Optional[list[str]] instanceTypeFilter
 
-# no @derive(Json): member(s) instancesList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentInstancesOutput:
     Optional[list[str]] instancesList
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targetFilters: dict[TargetFilterName, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentTargetsInput:
     str deploymentId
     Optional[str] nextToken
-    Optional[dict[TargetFilterName, list[str]]] targetFilters
+    Optional[dict[str, list[str]]] targetFilters
 
-# no @derive(Json): member(s) targetIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentTargetsOutput:
     Optional[list[str]] targetIds
     Optional[str] nextToken
 
-# no @derive(Json): member(s) includeOnlyStatuses: list[DeploymentStatus] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentsInput:
     Optional[str] applicationName
     Optional[str] deploymentGroupName
     Optional[str] externalId
-    Optional[list[DeploymentStatus]] includeOnlyStatuses
+    Optional[list[str]] includeOnlyStatuses
     Optional[TimeRange] createTimeRange
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deployments: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDeploymentsOutput:
     Optional[list[str]] deployments
     Optional[str] nextToken
 
-@derive(Json)
 struct ListGitHubAccountTokenNamesInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tokenNameList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListGitHubAccountTokenNamesOutput:
     Optional[list[str]] tokenNameList
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tagFilters: list[TagFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOnPremisesInstancesInput:
-    Optional[RegistrationStatus] registrationStatus
+    Optional[str] registrationStatus
     Optional[list[TagFilter]] tagFilters
     Optional[str] nextToken
 
-# no @derive(Json): member(s) instanceNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOnPremisesInstancesOutput:
     Optional[list[str]] instanceNames
     Optional[str] nextToken
 
-@derive(Json)
 struct ListTagsForResourceInput:
     str ResourceArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
 
-# no @derive(Json): member(s) elbInfoList: list[ELBInfo], targetGroupInfoList: list[TargetGroupInfo], targetGroupPairInfoList: list[TargetGroupPairInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LoadBalancerInfo:
     Optional[list[ELBInfo]] elbInfoList
     Optional[list[TargetGroupInfo]] targetGroupInfoList
     Optional[list[TargetGroupPairInfo]] targetGroupPairInfoList
 
-@derive(Json)
 struct MinimumHealthyHosts:
-    Optional[MinimumHealthyHostsType] type
+    Optional[str] type
     Optional[int64] value
 
-@derive(Json)
 struct MinimumHealthyHostsPerZone:
-    Optional[MinimumHealthyHostsPerZoneType] type
+    Optional[str] type
     Optional[int64] value
 
-@derive(Json)
 struct MultipleIamArnsProvidedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) onPremisesTagSetList: list[list[TagFilter]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct OnPremisesTagSet:
     Optional[list[list[TagFilter]]] onPremisesTagSetList
 
-@derive(Json)
 struct OperationNotSupportedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct PutLifecycleEventHookExecutionStatusInput:
     Optional[str] deploymentId
     Optional[str] lifecycleEventHookExecutionId
-    Optional[LifecycleEventStatus] status
+    Optional[str] status
 
-@derive(Json)
 struct PutLifecycleEventHookExecutionStatusOutput:
     Optional[str] lifecycleEventHookExecutionId
 
-@derive(Json)
 struct RawString:
     Optional[str] content
     Optional[str] sha256
 
-@derive(Json)
 struct RegisterApplicationRevisionInput:
     str applicationName
     Optional[str] description
     RevisionLocation revision
 
-@derive(Json)
 struct RegisterOnPremisesInstanceInput:
     str instanceName
     Optional[str] iamSessionArn
     Optional[str] iamUserArn
 
-# no @derive(Json): member(s) autoUpdateOutdatedInstancesDeploymentIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RelatedDeployments:
     Optional[str] autoUpdateOutdatedInstancesRootDeploymentId
     Optional[list[str]] autoUpdateOutdatedInstancesDeploymentIds
 
-# no @derive(Json): member(s) tags: list[Tag], instanceNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RemoveTagsFromOnPremisesInstancesInput:
     list[Tag] tags
     list[str] instanceNames
 
-@derive(Json)
 struct ResourceArnRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ResourceValidationException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RevisionDoesNotExistException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) genericRevisionInfo: GenericRevisionInfo not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RevisionInfo:
     Optional[RevisionLocation] revisionLocation
     Optional[GenericRevisionInfo] genericRevisionInfo
 
-@derive(Json)
 struct RevisionLocation:
-    Optional[RevisionLocationType] revisionType
+    Optional[str] revisionType
     Optional[S3Location] s3Location
     Optional[GitHubLocation] gitHubLocation
     Optional[RawString] string
     Optional[AppSpecContent] appSpecContent
 
-@derive(Json)
 struct RevisionRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RoleRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct RollbackInfo:
     Optional[str] rollbackDeploymentId
     Optional[str] rollbackTriggeringDeploymentId
     Optional[str] rollbackMessage
 
-@derive(Json)
 struct S3Location:
     Optional[str] bucket
     Optional[str] key
-    Optional[BundleType] bundleType
+    Optional[str] bundleType
     Optional[str] version
     Optional[str] eTag
 
-@derive(Json)
 struct SkipWaitTimeForInstanceTerminationInput:
     Optional[str] deploymentId
 
-@derive(Json)
 struct StopDeploymentInput:
     str deploymentId
     Optional[bool] autoRollbackEnabled
 
-@derive(Json)
 struct StopDeploymentOutput:
-    Optional[StopStatus] status
+    Optional[str] status
     Optional[str] statusMessage
 
-@derive(Json)
 struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-@derive(Json)
 struct TagFilter:
     Optional[str] Key
     Optional[str] Value
-    Optional[TagFilterType] Type
+    Optional[str] Type
 
-@derive(Json)
 struct TagLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TagRequiredException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceArn
     list[Tag] Tags
 
-@derive(Json)
 struct TagResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TagSetListLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TargetGroupInfo:
     Optional[str] name
 
-# no @derive(Json): member(s) targetGroups: list[TargetGroupInfo], prodTrafficRoute: TrafficRoute, testTrafficRoute: TrafficRoute not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TargetGroupPairInfo:
     Optional[list[TargetGroupInfo]] targetGroups
     Optional[TrafficRoute] prodTrafficRoute
     Optional[TrafficRoute] testTrafficRoute
 
-# no @derive(Json): member(s) tagFilters: list[EC2TagFilter], autoScalingGroups: list[str], ec2TagSet: EC2TagSet not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TargetInstances:
     Optional[list[EC2TagFilter]] tagFilters
     Optional[list[str]] autoScalingGroups
     Optional[EC2TagSet] ec2TagSet
 
-@derive(Json)
 struct ThrottlingException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TimeBasedCanary:
     Optional[int64] canaryPercentage
     Optional[int64] canaryInterval
 
-@derive(Json)
 struct TimeBasedLinear:
     Optional[int64] linearPercentage
     Optional[int64] linearInterval
 
-@derive(Json)
 struct TimeRange:
     Optional[DateTime] start
     Optional[DateTime] end
 
-# no @derive(Json): member(s) listenerArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TrafficRoute:
     Optional[list[str]] listenerArns
 
-@derive(Json)
 struct TrafficRoutingConfig:
-    Optional[TrafficRoutingType] type
+    Optional[str] type
     Optional[TimeBasedCanary] timeBasedCanary
     Optional[TimeBasedLinear] timeBasedLinear
 
-# no @derive(Json): member(s) triggerEvents: list[TriggerEventType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TriggerConfig:
     Optional[str] triggerName
     Optional[str] triggerTargetArn
-    Optional[list[TriggerEventType]] triggerEvents
+    Optional[list[str]] triggerEvents
 
-@derive(Json)
 struct TriggerTargetsLimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UnsupportedActionForDeploymentTypeException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceArn
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateApplicationInput:
     Optional[str] applicationName
     Optional[str] newApplicationName
 
-# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[str], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, ecsServices: list[ECSService], onPremisesTagSet: OnPremisesTagSet, ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDeploymentGroupInput:
     str applicationName
     str currentDeploymentGroupName
@@ -1926,7 +1547,7 @@ struct UpdateDeploymentGroupInput:
     Optional[list[TriggerConfig]] triggerConfigurations
     Optional[AlarmConfiguration] alarmConfiguration
     Optional[AutoRollbackConfiguration] autoRollbackConfiguration
-    Optional[OutdatedInstancesStrategy] outdatedInstancesStrategy
+    Optional[str] outdatedInstancesStrategy
     Optional[DeploymentStyle] deploymentStyle
     Optional[BlueGreenDeploymentConfiguration] blueGreenDeploymentConfiguration
     Optional[LoadBalancerInfo] loadBalancerInfo
@@ -1936,13 +1557,9 @@ struct UpdateDeploymentGroupInput:
     Optional[EC2DeploymentOptions] ec2DeploymentOptions
     Optional[bool] terminationHookEnabled
 
-# no @derive(Json): member(s) hooksNotCleanedUp: list[AutoScalingGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDeploymentGroupOutput:
     Optional[list[AutoScalingGroup]] hooksNotCleanedUp
 
-@derive(Json)
 struct ZonalConfig:
     Optional[int64] firstZoneMonitorDurationInSeconds
     Optional[int64] monitorDurationInSeconds
@@ -1955,7 +1572,7 @@ struct ZonalConfig:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2537,588 +2154,1429 @@ def codedeploy_error_name(CodeDeployErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable — a map
-# with a non-string key, or a free-form document member):
-#   ListDeploymentTargets (input ListDeploymentTargetsInput)
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListApplicationRevisions
+#   ListApplications
+#   ListDeploymentConfigs
+#   ListDeploymentGroups
+#   ListDeploymentInstances
+#   ListDeploymentTargets
+#   ListDeployments
+#   ListGitHubAccountTokenNames
+#   ListOnPremisesInstances
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListDeploymentTargets (input not serializable (no generated method))
+# Waiters (waiters-2.json) are not surfaced for this protocol yet — the
+# waiter-response matcher DOM needs this protocol's parse adapter (a follow-up):
+#   DeploymentSuccessful
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def codedeploy_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def codedeploy_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
-
-def codedeploy_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize AddTagsToOnPremisesInstancesInput to a compact JSON object (declaration order).
-def add_tags_to_on_premises_instances_input_to_json(AddTagsToOnPremisesInstancesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AddTagsToOnPremisesInstancesInput to a CBOR map (member wire name -> value, model order).
+def add_tags_to_on_premises_instances_input_to_cbor(AddTagsToOnPremisesInstancesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.tags:
-        e0.append(x0.to_json())
-    parts.append("\"tags\":" + codedeploy_json_arr(e0))
-    list[str] e1 = []
+        e0.append(tag_to_cbor(x0))
+    keys.append("tags")
+    vals.append(cbor.cbor_list(e0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.instanceNames:
-        e1.append(codedeploy_json_str(x1))
-    parts.append("\"instanceNames\":" + codedeploy_json_arr(e1))
-    return codedeploy_json_obj(parts)
+        e1.append(cbor.cbor_text(x1))
+    keys.append("instanceNames")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AlarmConfiguration to a compact JSON object (declaration order).
-def alarm_configuration_to_json(AlarmConfiguration v) -> str:
-    list[str] parts = []
+# Serialize Alarm to a CBOR map (member wire name -> value, model order).
+def alarm_to_cbor(Alarm v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        keys.append("name")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AlarmConfiguration to a CBOR map (member wire name -> value, model order).
+def alarm_configuration_to_cbor(AlarmConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.enabled.is_some():
         auto u0 = v.enabled.unwrap()
-        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+        keys.append("enabled")
+        vals.append(cbor.cbor_bool(u0))
     if v.ignorePollAlarmFailure.is_some():
         auto u1 = v.ignorePollAlarmFailure.unwrap()
-        parts.append("\"ignorePollAlarmFailure\":" + json.dumps(JsonValue.Bool(u1)))
+        keys.append("ignorePollAlarmFailure")
+        vals.append(cbor.cbor_bool(u1))
     if v.alarms.is_some():
         auto u2 = v.alarms.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"alarms\":" + codedeploy_json_arr(e3))
-    return codedeploy_json_obj(parts)
+            e3.append(alarm_to_cbor(x3))
+        keys.append("alarms")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AutoRollbackConfiguration to a compact JSON object (declaration order).
-def auto_rollback_configuration_to_json(AutoRollbackConfiguration v) -> str:
-    list[str] parts = []
+# Serialize AppSpecContent to a CBOR map (member wire name -> value, model order).
+def app_spec_content_to_cbor(AppSpecContent v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.content.is_some():
+        auto u0 = v.content.unwrap()
+        keys.append("content")
+        vals.append(cbor.cbor_text(u0))
+    if v.sha256.is_some():
+        auto u1 = v.sha256.unwrap()
+        keys.append("sha256")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AutoRollbackConfiguration to a CBOR map (member wire name -> value, model order).
+def auto_rollback_configuration_to_cbor(AutoRollbackConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.enabled.is_some():
         auto u0 = v.enabled.unwrap()
-        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+        keys.append("enabled")
+        vals.append(cbor.cbor_bool(u0))
     if v.events.is_some():
         auto u1 = v.events.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"events\":" + codedeploy_json_arr(e2))
-    return codedeploy_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("events")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetApplicationRevisionsInput to a compact JSON object (declaration order).
-def batch_get_application_revisions_input_to_json(BatchGetApplicationRevisionsInput v) -> str:
-    list[str] parts = []
-    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
-    list[str] e0 = []
+# Serialize BatchGetApplicationRevisionsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_application_revisions_input_to_cbor(BatchGetApplicationRevisionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    list[cbor.CborValue] e0 = []
     for x0 in v.revisions:
-        e0.append(x0.to_json())
-    parts.append("\"revisions\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(revision_location_to_cbor(x0))
+    keys.append("revisions")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetApplicationsInput to a compact JSON object (declaration order).
-def batch_get_applications_input_to_json(BatchGetApplicationsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetApplicationsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_applications_input_to_cbor(BatchGetApplicationsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.applicationNames:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"applicationNames\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("applicationNames")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetDeploymentGroupsInput to a compact JSON object (declaration order).
-def batch_get_deployment_groups_input_to_json(BatchGetDeploymentGroupsInput v) -> str:
-    list[str] parts = []
-    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
-    list[str] e0 = []
+# Serialize BatchGetDeploymentGroupsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_deployment_groups_input_to_cbor(BatchGetDeploymentGroupsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    list[cbor.CborValue] e0 = []
     for x0 in v.deploymentGroupNames:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"deploymentGroupNames\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("deploymentGroupNames")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetDeploymentInstancesInput to a compact JSON object (declaration order).
-def batch_get_deployment_instances_input_to_json(BatchGetDeploymentInstancesInput v) -> str:
-    list[str] parts = []
-    parts.append("\"deploymentId\":" + codedeploy_json_str(v.deploymentId))
-    list[str] e0 = []
+# Serialize BatchGetDeploymentInstancesInput to a CBOR map (member wire name -> value, model order).
+def batch_get_deployment_instances_input_to_cbor(BatchGetDeploymentInstancesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.instanceIds:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"instanceIds\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("instanceIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetDeploymentTargetsInput to a compact JSON object (declaration order).
-def batch_get_deployment_targets_input_to_json(BatchGetDeploymentTargetsInput v) -> str:
-    list[str] parts = []
-    parts.append("\"deploymentId\":" + codedeploy_json_str(v.deploymentId))
-    list[str] e0 = []
+# Serialize BatchGetDeploymentTargetsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_deployment_targets_input_to_cbor(BatchGetDeploymentTargetsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.targetIds:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"targetIds\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("targetIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetDeploymentsInput to a compact JSON object (declaration order).
-def batch_get_deployments_input_to_json(BatchGetDeploymentsInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetDeploymentsInput to a CBOR map (member wire name -> value, model order).
+def batch_get_deployments_input_to_cbor(BatchGetDeploymentsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.deploymentIds:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"deploymentIds\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("deploymentIds")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchGetOnPremisesInstancesInput to a compact JSON object (declaration order).
-def batch_get_on_premises_instances_input_to_json(BatchGetOnPremisesInstancesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchGetOnPremisesInstancesInput to a CBOR map (member wire name -> value, model order).
+def batch_get_on_premises_instances_input_to_cbor(BatchGetOnPremisesInstancesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.instanceNames:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"instanceNames\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("instanceNames")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateApplicationInput to a compact JSON object (declaration order).
-def create_application_input_to_json(CreateApplicationInput v) -> str:
-    list[str] parts = []
-    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+# Serialize BlueGreenDeploymentConfiguration to a CBOR map (member wire name -> value, model order).
+def blue_green_deployment_configuration_to_cbor(BlueGreenDeploymentConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.terminateBlueInstancesOnDeploymentSuccess.is_some():
+        auto u0 = v.terminateBlueInstancesOnDeploymentSuccess.unwrap()
+        keys.append("terminateBlueInstancesOnDeploymentSuccess")
+        vals.append(blue_instance_termination_option_to_cbor(u0))
+    if v.deploymentReadyOption.is_some():
+        auto u1 = v.deploymentReadyOption.unwrap()
+        keys.append("deploymentReadyOption")
+        vals.append(deployment_ready_option_to_cbor(u1))
+    if v.greenFleetProvisioningOption.is_some():
+        auto u2 = v.greenFleetProvisioningOption.unwrap()
+        keys.append("greenFleetProvisioningOption")
+        vals.append(green_fleet_provisioning_option_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize BlueInstanceTerminationOption to a CBOR map (member wire name -> value, model order).
+def blue_instance_termination_option_to_cbor(BlueInstanceTerminationOption v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.action.is_some():
+        auto u0 = v.action.unwrap()
+        keys.append("action")
+        vals.append(cbor.cbor_text(u0))
+    if v.terminationWaitTimeInMinutes.is_some():
+        auto u1 = v.terminationWaitTimeInMinutes.unwrap()
+        keys.append("terminationWaitTimeInMinutes")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ContinueDeploymentInput to a CBOR map (member wire name -> value, model order).
+def continue_deployment_input_to_cbor(ContinueDeploymentInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.deploymentId.is_some():
+        auto u0 = v.deploymentId.unwrap()
+        keys.append("deploymentId")
+        vals.append(cbor.cbor_text(u0))
+    if v.deploymentWaitType.is_some():
+        auto u1 = v.deploymentWaitType.unwrap()
+        keys.append("deploymentWaitType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateApplicationInput to a CBOR map (member wire name -> value, model order).
+def create_application_input_to_cbor(CreateApplicationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
     if v.computePlatform.is_some():
         auto u0 = v.computePlatform.unwrap()
-        parts.append("\"computePlatform\":" + u0.to_json())
+        keys.append("computePlatform")
+        vals.append(cbor.cbor_text(u0))
     if v.tags.is_some():
         auto u1 = v.tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tags\":" + codedeploy_json_arr(e2))
-    return codedeploy_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDeploymentGroupInput to a compact JSON object (declaration order).
-def create_deployment_group_input_to_json(CreateDeploymentGroupInput v) -> str:
-    list[str] parts = []
-    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
-    parts.append("\"deploymentGroupName\":" + codedeploy_json_str(v.deploymentGroupName))
+# Serialize CreateDeploymentConfigInput to a CBOR map (member wire name -> value, model order).
+def create_deployment_config_input_to_cbor(CreateDeploymentConfigInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentConfigName")
+    vals.append(cbor.cbor_text(v.deploymentConfigName))
+    if v.minimumHealthyHosts.is_some():
+        auto u0 = v.minimumHealthyHosts.unwrap()
+        keys.append("minimumHealthyHosts")
+        vals.append(minimum_healthy_hosts_to_cbor(u0))
+    if v.trafficRoutingConfig.is_some():
+        auto u1 = v.trafficRoutingConfig.unwrap()
+        keys.append("trafficRoutingConfig")
+        vals.append(traffic_routing_config_to_cbor(u1))
+    if v.computePlatform.is_some():
+        auto u2 = v.computePlatform.unwrap()
+        keys.append("computePlatform")
+        vals.append(cbor.cbor_text(u2))
+    if v.zonalConfig.is_some():
+        auto u3 = v.zonalConfig.unwrap()
+        keys.append("zonalConfig")
+        vals.append(zonal_config_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateDeploymentGroupInput to a CBOR map (member wire name -> value, model order).
+def create_deployment_group_input_to_cbor(CreateDeploymentGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    keys.append("deploymentGroupName")
+    vals.append(cbor.cbor_text(v.deploymentGroupName))
     if v.deploymentConfigName.is_some():
         auto u0 = v.deploymentConfigName.unwrap()
-        parts.append("\"deploymentConfigName\":" + codedeploy_json_str(u0))
+        keys.append("deploymentConfigName")
+        vals.append(cbor.cbor_text(u0))
     if v.ec2TagFilters.is_some():
         auto u1 = v.ec2TagFilters.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"ec2TagFilters\":" + codedeploy_json_arr(e2))
+            e2.append(ec2_tag_filter_to_cbor(x2))
+        keys.append("ec2TagFilters")
+        vals.append(cbor.cbor_list(e2))
     if v.onPremisesInstanceTagFilters.is_some():
         auto u3 = v.onPremisesInstanceTagFilters.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"onPremisesInstanceTagFilters\":" + codedeploy_json_arr(e4))
+            e4.append(tag_filter_to_cbor(x4))
+        keys.append("onPremisesInstanceTagFilters")
+        vals.append(cbor.cbor_list(e4))
     if v.autoScalingGroups.is_some():
         auto u5 = v.autoScalingGroups.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(codedeploy_json_str(x6))
-        parts.append("\"autoScalingGroups\":" + codedeploy_json_arr(e6))
-    parts.append("\"serviceRoleArn\":" + codedeploy_json_str(v.serviceRoleArn))
+            e6.append(cbor.cbor_text(x6))
+        keys.append("autoScalingGroups")
+        vals.append(cbor.cbor_list(e6))
+    keys.append("serviceRoleArn")
+    vals.append(cbor.cbor_text(v.serviceRoleArn))
     if v.triggerConfigurations.is_some():
         auto u7 = v.triggerConfigurations.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(trigger_config_to_json(x8))
-        parts.append("\"triggerConfigurations\":" + codedeploy_json_arr(e8))
+            e8.append(trigger_config_to_cbor(x8))
+        keys.append("triggerConfigurations")
+        vals.append(cbor.cbor_list(e8))
     if v.alarmConfiguration.is_some():
         auto u9 = v.alarmConfiguration.unwrap()
-        parts.append("\"alarmConfiguration\":" + alarm_configuration_to_json(u9))
+        keys.append("alarmConfiguration")
+        vals.append(alarm_configuration_to_cbor(u9))
     if v.autoRollbackConfiguration.is_some():
         auto u10 = v.autoRollbackConfiguration.unwrap()
-        parts.append("\"autoRollbackConfiguration\":" + auto_rollback_configuration_to_json(u10))
+        keys.append("autoRollbackConfiguration")
+        vals.append(auto_rollback_configuration_to_cbor(u10))
     if v.outdatedInstancesStrategy.is_some():
         auto u11 = v.outdatedInstancesStrategy.unwrap()
-        parts.append("\"outdatedInstancesStrategy\":" + u11.to_json())
+        keys.append("outdatedInstancesStrategy")
+        vals.append(cbor.cbor_text(u11))
     if v.deploymentStyle.is_some():
         auto u12 = v.deploymentStyle.unwrap()
-        parts.append("\"deploymentStyle\":" + u12.to_json())
+        keys.append("deploymentStyle")
+        vals.append(deployment_style_to_cbor(u12))
     if v.blueGreenDeploymentConfiguration.is_some():
         auto u13 = v.blueGreenDeploymentConfiguration.unwrap()
-        parts.append("\"blueGreenDeploymentConfiguration\":" + u13.to_json())
+        keys.append("blueGreenDeploymentConfiguration")
+        vals.append(blue_green_deployment_configuration_to_cbor(u13))
     if v.loadBalancerInfo.is_some():
         auto u14 = v.loadBalancerInfo.unwrap()
-        parts.append("\"loadBalancerInfo\":" + load_balancer_info_to_json(u14))
+        keys.append("loadBalancerInfo")
+        vals.append(load_balancer_info_to_cbor(u14))
     if v.ec2TagSet.is_some():
         auto u15 = v.ec2TagSet.unwrap()
-        parts.append("\"ec2TagSet\":" + ec2_tag_set_to_json(u15))
+        keys.append("ec2TagSet")
+        vals.append(ec2_tag_set_to_cbor(u15))
     if v.ecsServices.is_some():
         auto u16 = v.ecsServices.unwrap()
-        list[str] e17 = []
+        list[cbor.CborValue] e17 = []
         for x17 in u16:
-            e17.append(x17.to_json())
-        parts.append("\"ecsServices\":" + codedeploy_json_arr(e17))
+            e17.append(ecs_service_to_cbor(x17))
+        keys.append("ecsServices")
+        vals.append(cbor.cbor_list(e17))
     if v.onPremisesTagSet.is_some():
         auto u18 = v.onPremisesTagSet.unwrap()
-        parts.append("\"onPremisesTagSet\":" + on_premises_tag_set_to_json(u18))
+        keys.append("onPremisesTagSet")
+        vals.append(on_premises_tag_set_to_cbor(u18))
     if v.tags.is_some():
         auto u19 = v.tags.unwrap()
-        list[str] e20 = []
+        list[cbor.CborValue] e20 = []
         for x20 in u19:
-            e20.append(x20.to_json())
-        parts.append("\"tags\":" + codedeploy_json_arr(e20))
+            e20.append(tag_to_cbor(x20))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e20))
     if v.ec2DeploymentOptions.is_some():
         auto u21 = v.ec2DeploymentOptions.unwrap()
-        parts.append("\"ec2DeploymentOptions\":" + ec2_deployment_options_to_json(u21))
+        keys.append("ec2DeploymentOptions")
+        vals.append(ec2_deployment_options_to_cbor(u21))
     if v.terminationHookEnabled.is_some():
         auto u22 = v.terminationHookEnabled.unwrap()
-        parts.append("\"terminationHookEnabled\":" + json.dumps(JsonValue.Bool(u22)))
-    return codedeploy_json_obj(parts)
+        keys.append("terminationHookEnabled")
+        vals.append(cbor.cbor_bool(u22))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDeploymentInput to a compact JSON object (declaration order).
-def create_deployment_input_to_json(CreateDeploymentInput v) -> str:
-    list[str] parts = []
-    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+# Serialize CreateDeploymentInput to a CBOR map (member wire name -> value, model order).
+def create_deployment_input_to_cbor(CreateDeploymentInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
     if v.deploymentGroupName.is_some():
         auto u0 = v.deploymentGroupName.unwrap()
-        parts.append("\"deploymentGroupName\":" + codedeploy_json_str(u0))
+        keys.append("deploymentGroupName")
+        vals.append(cbor.cbor_text(u0))
     if v.revision.is_some():
         auto u1 = v.revision.unwrap()
-        parts.append("\"revision\":" + u1.to_json())
+        keys.append("revision")
+        vals.append(revision_location_to_cbor(u1))
     if v.deploymentConfigName.is_some():
         auto u2 = v.deploymentConfigName.unwrap()
-        parts.append("\"deploymentConfigName\":" + codedeploy_json_str(u2))
+        keys.append("deploymentConfigName")
+        vals.append(cbor.cbor_text(u2))
     if v.description.is_some():
         auto u3 = v.description.unwrap()
-        parts.append("\"description\":" + codedeploy_json_str(u3))
+        keys.append("description")
+        vals.append(cbor.cbor_text(u3))
     if v.ignoreApplicationStopFailures.is_some():
         auto u4 = v.ignoreApplicationStopFailures.unwrap()
-        parts.append("\"ignoreApplicationStopFailures\":" + json.dumps(JsonValue.Bool(u4)))
+        keys.append("ignoreApplicationStopFailures")
+        vals.append(cbor.cbor_bool(u4))
     if v.targetInstances.is_some():
         auto u5 = v.targetInstances.unwrap()
-        parts.append("\"targetInstances\":" + target_instances_to_json(u5))
+        keys.append("targetInstances")
+        vals.append(target_instances_to_cbor(u5))
     if v.autoRollbackConfiguration.is_some():
         auto u6 = v.autoRollbackConfiguration.unwrap()
-        parts.append("\"autoRollbackConfiguration\":" + auto_rollback_configuration_to_json(u6))
+        keys.append("autoRollbackConfiguration")
+        vals.append(auto_rollback_configuration_to_cbor(u6))
     if v.updateOutdatedInstancesOnly.is_some():
         auto u7 = v.updateOutdatedInstancesOnly.unwrap()
-        parts.append("\"updateOutdatedInstancesOnly\":" + json.dumps(JsonValue.Bool(u7)))
+        keys.append("updateOutdatedInstancesOnly")
+        vals.append(cbor.cbor_bool(u7))
     if v.fileExistsBehavior.is_some():
         auto u8 = v.fileExistsBehavior.unwrap()
-        parts.append("\"fileExistsBehavior\":" + u8.to_json())
+        keys.append("fileExistsBehavior")
+        vals.append(cbor.cbor_text(u8))
     if v.deploymentMode.is_some():
         auto u9 = v.deploymentMode.unwrap()
-        parts.append("\"deploymentMode\":" + u9.to_json())
+        keys.append("deploymentMode")
+        vals.append(cbor.cbor_text(u9))
     if v.overrideAlarmConfiguration.is_some():
         auto u10 = v.overrideAlarmConfiguration.unwrap()
-        parts.append("\"overrideAlarmConfiguration\":" + alarm_configuration_to_json(u10))
+        keys.append("overrideAlarmConfiguration")
+        vals.append(alarm_configuration_to_cbor(u10))
     if v.ec2DeploymentOptions.is_some():
         auto u11 = v.ec2DeploymentOptions.unwrap()
-        parts.append("\"ec2DeploymentOptions\":" + ec2_deployment_options_to_json(u11))
-    return codedeploy_json_obj(parts)
+        keys.append("ec2DeploymentOptions")
+        vals.append(ec2_deployment_options_to_cbor(u11))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize EC2DeploymentOptions to a compact JSON object (declaration order).
-def ec2_deployment_options_to_json(EC2DeploymentOptions v) -> str:
-    list[str] parts = []
+# Serialize DeleteApplicationInput to a CBOR map (member wire name -> value, model order).
+def delete_application_input_to_cbor(DeleteApplicationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDeploymentConfigInput to a CBOR map (member wire name -> value, model order).
+def delete_deployment_config_input_to_cbor(DeleteDeploymentConfigInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentConfigName")
+    vals.append(cbor.cbor_text(v.deploymentConfigName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDeploymentGroupInput to a CBOR map (member wire name -> value, model order).
+def delete_deployment_group_input_to_cbor(DeleteDeploymentGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    keys.append("deploymentGroupName")
+    vals.append(cbor.cbor_text(v.deploymentGroupName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteGitHubAccountTokenInput to a CBOR map (member wire name -> value, model order).
+def delete_git_hub_account_token_input_to_cbor(DeleteGitHubAccountTokenInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.tokenName.is_some():
+        auto u0 = v.tokenName.unwrap()
+        keys.append("tokenName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteResourcesByExternalIdInput to a CBOR map (member wire name -> value, model order).
+def delete_resources_by_external_id_input_to_cbor(DeleteResourcesByExternalIdInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.externalId.is_some():
+        auto u0 = v.externalId.unwrap()
+        keys.append("externalId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeploymentReadyOption to a CBOR map (member wire name -> value, model order).
+def deployment_ready_option_to_cbor(DeploymentReadyOption v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.actionOnTimeout.is_some():
+        auto u0 = v.actionOnTimeout.unwrap()
+        keys.append("actionOnTimeout")
+        vals.append(cbor.cbor_text(u0))
+    if v.waitTimeInMinutes.is_some():
+        auto u1 = v.waitTimeInMinutes.unwrap()
+        keys.append("waitTimeInMinutes")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeploymentStyle to a CBOR map (member wire name -> value, model order).
+def deployment_style_to_cbor(DeploymentStyle v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.deploymentType.is_some():
+        auto u0 = v.deploymentType.unwrap()
+        keys.append("deploymentType")
+        vals.append(cbor.cbor_text(u0))
+    if v.deploymentOption.is_some():
+        auto u1 = v.deploymentOption.unwrap()
+        keys.append("deploymentOption")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeregisterOnPremisesInstanceInput to a CBOR map (member wire name -> value, model order).
+def deregister_on_premises_instance_input_to_cbor(DeregisterOnPremisesInstanceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("instanceName")
+    vals.append(cbor.cbor_text(v.instanceName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EC2DeploymentOptions to a CBOR map (member wire name -> value, model order).
+def ec2_deployment_options_to_cbor(EC2DeploymentOptions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.autoScalingGroupProcessesToSuspend.is_some():
         auto u0 = v.autoScalingGroupProcessesToSuspend.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"autoScalingGroupProcessesToSuspend\":" + codedeploy_json_arr(e1))
-    return codedeploy_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("autoScalingGroupProcessesToSuspend")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize EC2TagSet to a compact JSON object (declaration order).
-def ec2_tag_set_to_json(EC2TagSet v) -> str:
-    list[str] parts = []
+# Serialize EC2TagFilter to a CBOR map (member wire name -> value, model order).
+def ec2_tag_filter_to_cbor(EC2TagFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EC2TagSet to a CBOR map (member wire name -> value, model order).
+def ec2_tag_set_to_cbor(EC2TagSet v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ec2TagSetList.is_some():
         auto u0 = v.ec2TagSetList.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            list[str] e2 = []
+            list[cbor.CborValue] e2 = []
             for x2 in x1:
-                e2.append(x2.to_json())
-            e1.append(codedeploy_json_arr(e2))
-        parts.append("\"ec2TagSetList\":" + codedeploy_json_arr(e1))
-    return codedeploy_json_obj(parts)
+                e2.append(ec2_tag_filter_to_cbor(x2))
+            e1.append(cbor.cbor_list(e2))
+        keys.append("ec2TagSetList")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListDeploymentInstancesInput to a compact JSON object (declaration order).
-def list_deployment_instances_input_to_json(ListDeploymentInstancesInput v) -> str:
-    list[str] parts = []
-    parts.append("\"deploymentId\":" + codedeploy_json_str(v.deploymentId))
+# Serialize ECSService to a CBOR map (member wire name -> value, model order).
+def ecs_service_to_cbor(ECSService v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.serviceName.is_some():
+        auto u0 = v.serviceName.unwrap()
+        keys.append("serviceName")
+        vals.append(cbor.cbor_text(u0))
+    if v.clusterName.is_some():
+        auto u1 = v.clusterName.unwrap()
+        keys.append("clusterName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ELBInfo to a CBOR map (member wire name -> value, model order).
+def elb_info_to_cbor(ELBInfo v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        keys.append("name")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetApplicationInput to a CBOR map (member wire name -> value, model order).
+def get_application_input_to_cbor(GetApplicationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetApplicationRevisionInput to a CBOR map (member wire name -> value, model order).
+def get_application_revision_input_to_cbor(GetApplicationRevisionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    keys.append("revision")
+    vals.append(revision_location_to_cbor(v.revision))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDeploymentConfigInput to a CBOR map (member wire name -> value, model order).
+def get_deployment_config_input_to_cbor(GetDeploymentConfigInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentConfigName")
+    vals.append(cbor.cbor_text(v.deploymentConfigName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDeploymentGroupInput to a CBOR map (member wire name -> value, model order).
+def get_deployment_group_input_to_cbor(GetDeploymentGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    keys.append("deploymentGroupName")
+    vals.append(cbor.cbor_text(v.deploymentGroupName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDeploymentInput to a CBOR map (member wire name -> value, model order).
+def get_deployment_input_to_cbor(GetDeploymentInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDeploymentInstanceInput to a CBOR map (member wire name -> value, model order).
+def get_deployment_instance_input_to_cbor(GetDeploymentInstanceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    keys.append("instanceId")
+    vals.append(cbor.cbor_text(v.instanceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetDeploymentTargetInput to a CBOR map (member wire name -> value, model order).
+def get_deployment_target_input_to_cbor(GetDeploymentTargetInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    keys.append("targetId")
+    vals.append(cbor.cbor_text(v.targetId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetOnPremisesInstanceInput to a CBOR map (member wire name -> value, model order).
+def get_on_premises_instance_input_to_cbor(GetOnPremisesInstanceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("instanceName")
+    vals.append(cbor.cbor_text(v.instanceName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GitHubLocation to a CBOR map (member wire name -> value, model order).
+def git_hub_location_to_cbor(GitHubLocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.repository.is_some():
+        auto u0 = v.repository.unwrap()
+        keys.append("repository")
+        vals.append(cbor.cbor_text(u0))
+    if v.commitId.is_some():
+        auto u1 = v.commitId.unwrap()
+        keys.append("commitId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GreenFleetProvisioningOption to a CBOR map (member wire name -> value, model order).
+def green_fleet_provisioning_option_to_cbor(GreenFleetProvisioningOption v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.action.is_some():
+        auto u0 = v.action.unwrap()
+        keys.append("action")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListApplicationRevisionsInput to a CBOR map (member wire name -> value, model order).
+def list_application_revisions_input_to_cbor(ListApplicationRevisionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    if v.sortBy.is_some():
+        auto u0 = v.sortBy.unwrap()
+        keys.append("sortBy")
+        vals.append(cbor.cbor_text(u0))
+    if v.sortOrder.is_some():
+        auto u1 = v.sortOrder.unwrap()
+        keys.append("sortOrder")
+        vals.append(cbor.cbor_text(u1))
+    if v.s3Bucket.is_some():
+        auto u2 = v.s3Bucket.unwrap()
+        keys.append("s3Bucket")
+        vals.append(cbor.cbor_text(u2))
+    if v.s3KeyPrefix.is_some():
+        auto u3 = v.s3KeyPrefix.unwrap()
+        keys.append("s3KeyPrefix")
+        vals.append(cbor.cbor_text(u3))
+    if v.deployed.is_some():
+        auto u4 = v.deployed.unwrap()
+        keys.append("deployed")
+        vals.append(cbor.cbor_text(u4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListApplicationsInput to a CBOR map (member wire name -> value, model order).
+def list_applications_input_to_cbor(ListApplicationsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.nextToken.is_some():
         auto u0 = v.nextToken.unwrap()
-        parts.append("\"nextToken\":" + codedeploy_json_str(u0))
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDeploymentConfigsInput to a CBOR map (member wire name -> value, model order).
+def list_deployment_configs_input_to_cbor(ListDeploymentConfigsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDeploymentGroupsInput to a CBOR map (member wire name -> value, model order).
+def list_deployment_groups_input_to_cbor(ListDeploymentGroupsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDeploymentInstancesInput to a CBOR map (member wire name -> value, model order).
+def list_deployment_instances_input_to_cbor(ListDeploymentInstancesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.instanceStatusFilter.is_some():
         auto u1 = v.instanceStatusFilter.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"instanceStatusFilter\":" + codedeploy_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("instanceStatusFilter")
+        vals.append(cbor.cbor_list(e2))
     if v.instanceTypeFilter.is_some():
         auto u3 = v.instanceTypeFilter.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"instanceTypeFilter\":" + codedeploy_json_arr(e4))
-    return codedeploy_json_obj(parts)
+            e4.append(cbor.cbor_text(x4))
+        keys.append("instanceTypeFilter")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListDeploymentsInput to a compact JSON object (declaration order).
-def list_deployments_input_to_json(ListDeploymentsInput v) -> str:
-    list[str] parts = []
+# Serialize ListDeploymentTargetsInput to a CBOR map (member wire name -> value, model order).
+def list_deployment_targets_input_to_cbor(ListDeploymentTargetsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.targetFilters.is_some():
+        auto u1 = v.targetFilters.unwrap()
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
+        for k2 in sorted(u1.keys()):
+            list[cbor.CborValue] e3 = []
+            for x3 in u1[k2]:
+                e3.append(cbor.cbor_text(x3))
+            mk2.append(k2)
+            mv2.append(cbor.cbor_list(e3))
+        keys.append("targetFilters")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDeploymentsInput to a CBOR map (member wire name -> value, model order).
+def list_deployments_input_to_cbor(ListDeploymentsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.applicationName.is_some():
         auto u0 = v.applicationName.unwrap()
-        parts.append("\"applicationName\":" + codedeploy_json_str(u0))
+        keys.append("applicationName")
+        vals.append(cbor.cbor_text(u0))
     if v.deploymentGroupName.is_some():
         auto u1 = v.deploymentGroupName.unwrap()
-        parts.append("\"deploymentGroupName\":" + codedeploy_json_str(u1))
+        keys.append("deploymentGroupName")
+        vals.append(cbor.cbor_text(u1))
     if v.externalId.is_some():
         auto u2 = v.externalId.unwrap()
-        parts.append("\"externalId\":" + codedeploy_json_str(u2))
+        keys.append("externalId")
+        vals.append(cbor.cbor_text(u2))
     if v.includeOnlyStatuses.is_some():
         auto u3 = v.includeOnlyStatuses.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"includeOnlyStatuses\":" + codedeploy_json_arr(e4))
+            e4.append(cbor.cbor_text(x4))
+        keys.append("includeOnlyStatuses")
+        vals.append(cbor.cbor_list(e4))
     if v.createTimeRange.is_some():
         auto u5 = v.createTimeRange.unwrap()
-        parts.append("\"createTimeRange\":" + u5.to_json())
+        keys.append("createTimeRange")
+        vals.append(time_range_to_cbor(u5))
     if v.nextToken.is_some():
         auto u6 = v.nextToken.unwrap()
-        parts.append("\"nextToken\":" + codedeploy_json_str(u6))
-    return codedeploy_json_obj(parts)
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListOnPremisesInstancesInput to a compact JSON object (declaration order).
-def list_on_premises_instances_input_to_json(ListOnPremisesInstancesInput v) -> str:
-    list[str] parts = []
+# Serialize ListGitHubAccountTokenNamesInput to a CBOR map (member wire name -> value, model order).
+def list_git_hub_account_token_names_input_to_cbor(ListGitHubAccountTokenNamesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListOnPremisesInstancesInput to a CBOR map (member wire name -> value, model order).
+def list_on_premises_instances_input_to_cbor(ListOnPremisesInstancesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.registrationStatus.is_some():
         auto u0 = v.registrationStatus.unwrap()
-        parts.append("\"registrationStatus\":" + u0.to_json())
+        keys.append("registrationStatus")
+        vals.append(cbor.cbor_text(u0))
     if v.tagFilters.is_some():
         auto u1 = v.tagFilters.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tagFilters\":" + codedeploy_json_arr(e2))
+            e2.append(tag_filter_to_cbor(x2))
+        keys.append("tagFilters")
+        vals.append(cbor.cbor_list(e2))
     if v.nextToken.is_some():
         auto u3 = v.nextToken.unwrap()
-        parts.append("\"nextToken\":" + codedeploy_json_str(u3))
-    return codedeploy_json_obj(parts)
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize LoadBalancerInfo to a compact JSON object (declaration order).
-def load_balancer_info_to_json(LoadBalancerInfo v) -> str:
-    list[str] parts = []
+# Serialize ListTagsForResourceInput to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_input_to_cbor(ListTagsForResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LoadBalancerInfo to a CBOR map (member wire name -> value, model order).
+def load_balancer_info_to_cbor(LoadBalancerInfo v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.elbInfoList.is_some():
         auto u0 = v.elbInfoList.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"elbInfoList\":" + codedeploy_json_arr(e1))
+            e1.append(elb_info_to_cbor(x1))
+        keys.append("elbInfoList")
+        vals.append(cbor.cbor_list(e1))
     if v.targetGroupInfoList.is_some():
         auto u2 = v.targetGroupInfoList.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"targetGroupInfoList\":" + codedeploy_json_arr(e3))
+            e3.append(target_group_info_to_cbor(x3))
+        keys.append("targetGroupInfoList")
+        vals.append(cbor.cbor_list(e3))
     if v.targetGroupPairInfoList.is_some():
         auto u4 = v.targetGroupPairInfoList.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(target_group_pair_info_to_json(x5))
-        parts.append("\"targetGroupPairInfoList\":" + codedeploy_json_arr(e5))
-    return codedeploy_json_obj(parts)
+            e5.append(target_group_pair_info_to_cbor(x5))
+        keys.append("targetGroupPairInfoList")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize OnPremisesTagSet to a compact JSON object (declaration order).
-def on_premises_tag_set_to_json(OnPremisesTagSet v) -> str:
-    list[str] parts = []
+# Serialize MinimumHealthyHosts to a CBOR map (member wire name -> value, model order).
+def minimum_healthy_hosts_to_cbor(MinimumHealthyHosts v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        keys.append("value")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize MinimumHealthyHostsPerZone to a CBOR map (member wire name -> value, model order).
+def minimum_healthy_hosts_per_zone_to_cbor(MinimumHealthyHostsPerZone v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        keys.append("value")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OnPremisesTagSet to a CBOR map (member wire name -> value, model order).
+def on_premises_tag_set_to_cbor(OnPremisesTagSet v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.onPremisesTagSetList.is_some():
         auto u0 = v.onPremisesTagSetList.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            list[str] e2 = []
+            list[cbor.CborValue] e2 = []
             for x2 in x1:
-                e2.append(x2.to_json())
-            e1.append(codedeploy_json_arr(e2))
-        parts.append("\"onPremisesTagSetList\":" + codedeploy_json_arr(e1))
-    return codedeploy_json_obj(parts)
+                e2.append(tag_filter_to_cbor(x2))
+            e1.append(cbor.cbor_list(e2))
+        keys.append("onPremisesTagSetList")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RemoveTagsFromOnPremisesInstancesInput to a compact JSON object (declaration order).
-def remove_tags_from_on_premises_instances_input_to_json(RemoveTagsFromOnPremisesInstancesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize PutLifecycleEventHookExecutionStatusInput to a CBOR map (member wire name -> value, model order).
+def put_lifecycle_event_hook_execution_status_input_to_cbor(PutLifecycleEventHookExecutionStatusInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.deploymentId.is_some():
+        auto u0 = v.deploymentId.unwrap()
+        keys.append("deploymentId")
+        vals.append(cbor.cbor_text(u0))
+    if v.lifecycleEventHookExecutionId.is_some():
+        auto u1 = v.lifecycleEventHookExecutionId.unwrap()
+        keys.append("lifecycleEventHookExecutionId")
+        vals.append(cbor.cbor_text(u1))
+    if v.status.is_some():
+        auto u2 = v.status.unwrap()
+        keys.append("status")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RawString to a CBOR map (member wire name -> value, model order).
+def raw_string_to_cbor(RawString v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.content.is_some():
+        auto u0 = v.content.unwrap()
+        keys.append("content")
+        vals.append(cbor.cbor_text(u0))
+    if v.sha256.is_some():
+        auto u1 = v.sha256.unwrap()
+        keys.append("sha256")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RegisterApplicationRevisionInput to a CBOR map (member wire name -> value, model order).
+def register_application_revision_input_to_cbor(RegisterApplicationRevisionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        keys.append("description")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("revision")
+    vals.append(revision_location_to_cbor(v.revision))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RegisterOnPremisesInstanceInput to a CBOR map (member wire name -> value, model order).
+def register_on_premises_instance_input_to_cbor(RegisterOnPremisesInstanceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("instanceName")
+    vals.append(cbor.cbor_text(v.instanceName))
+    if v.iamSessionArn.is_some():
+        auto u0 = v.iamSessionArn.unwrap()
+        keys.append("iamSessionArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.iamUserArn.is_some():
+        auto u1 = v.iamUserArn.unwrap()
+        keys.append("iamUserArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RemoveTagsFromOnPremisesInstancesInput to a CBOR map (member wire name -> value, model order).
+def remove_tags_from_on_premises_instances_input_to_cbor(RemoveTagsFromOnPremisesInstancesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.tags:
-        e0.append(x0.to_json())
-    parts.append("\"tags\":" + codedeploy_json_arr(e0))
-    list[str] e1 = []
+        e0.append(tag_to_cbor(x0))
+    keys.append("tags")
+    vals.append(cbor.cbor_list(e0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.instanceNames:
-        e1.append(codedeploy_json_str(x1))
-    parts.append("\"instanceNames\":" + codedeploy_json_arr(e1))
-    return codedeploy_json_obj(parts)
+        e1.append(cbor.cbor_text(x1))
+    keys.append("instanceNames")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceInput to a compact JSON object (declaration order).
-def tag_resource_input_to_json(TagResourceInput v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + codedeploy_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize RevisionLocation to a CBOR map (member wire name -> value, model order).
+def revision_location_to_cbor(RevisionLocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.revisionType.is_some():
+        auto u0 = v.revisionType.unwrap()
+        keys.append("revisionType")
+        vals.append(cbor.cbor_text(u0))
+    if v.s3Location.is_some():
+        auto u1 = v.s3Location.unwrap()
+        keys.append("s3Location")
+        vals.append(s3_location_to_cbor(u1))
+    if v.gitHubLocation.is_some():
+        auto u2 = v.gitHubLocation.unwrap()
+        keys.append("gitHubLocation")
+        vals.append(git_hub_location_to_cbor(u2))
+    if v.string.is_some():
+        auto u3 = v.string.unwrap()
+        keys.append("string")
+        vals.append(raw_string_to_cbor(u3))
+    if v.appSpecContent.is_some():
+        auto u4 = v.appSpecContent.unwrap()
+        keys.append("appSpecContent")
+        vals.append(app_spec_content_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize S3Location to a CBOR map (member wire name -> value, model order).
+def s3_location_to_cbor(S3Location v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.bucket.is_some():
+        auto u0 = v.bucket.unwrap()
+        keys.append("bucket")
+        vals.append(cbor.cbor_text(u0))
+    if v.key.is_some():
+        auto u1 = v.key.unwrap()
+        keys.append("key")
+        vals.append(cbor.cbor_text(u1))
+    if v.bundleType.is_some():
+        auto u2 = v.bundleType.unwrap()
+        keys.append("bundleType")
+        vals.append(cbor.cbor_text(u2))
+    if v.version.is_some():
+        auto u3 = v.version.unwrap()
+        keys.append("version")
+        vals.append(cbor.cbor_text(u3))
+    if v.eTag.is_some():
+        auto u4 = v.eTag.unwrap()
+        keys.append("eTag")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SkipWaitTimeForInstanceTerminationInput to a CBOR map (member wire name -> value, model order).
+def skip_wait_time_for_instance_termination_input_to_cbor(SkipWaitTimeForInstanceTerminationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.deploymentId.is_some():
+        auto u0 = v.deploymentId.unwrap()
+        keys.append("deploymentId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopDeploymentInput to a CBOR map (member wire name -> value, model order).
+def stop_deployment_input_to_cbor(StopDeploymentInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("deploymentId")
+    vals.append(cbor.cbor_text(v.deploymentId))
+    if v.autoRollbackEnabled.is_some():
+        auto u0 = v.autoRollbackEnabled.unwrap()
+        keys.append("autoRollbackEnabled")
+        vals.append(cbor.cbor_bool(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagFilter to a CBOR map (member wire name -> value, model order).
+def tag_filter_to_cbor(TagFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceInput to a CBOR map (member wire name -> value, model order).
+def tag_resource_input_to_cbor(TagResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TargetGroupPairInfo to a compact JSON object (declaration order).
-def target_group_pair_info_to_json(TargetGroupPairInfo v) -> str:
-    list[str] parts = []
+# Serialize TargetGroupInfo to a CBOR map (member wire name -> value, model order).
+def target_group_info_to_cbor(TargetGroupInfo v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        keys.append("name")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TargetGroupPairInfo to a CBOR map (member wire name -> value, model order).
+def target_group_pair_info_to_cbor(TargetGroupPairInfo v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.targetGroups.is_some():
         auto u0 = v.targetGroups.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"targetGroups\":" + codedeploy_json_arr(e1))
+            e1.append(target_group_info_to_cbor(x1))
+        keys.append("targetGroups")
+        vals.append(cbor.cbor_list(e1))
     if v.prodTrafficRoute.is_some():
         auto u2 = v.prodTrafficRoute.unwrap()
-        parts.append("\"prodTrafficRoute\":" + traffic_route_to_json(u2))
+        keys.append("prodTrafficRoute")
+        vals.append(traffic_route_to_cbor(u2))
     if v.testTrafficRoute.is_some():
         auto u3 = v.testTrafficRoute.unwrap()
-        parts.append("\"testTrafficRoute\":" + traffic_route_to_json(u3))
-    return codedeploy_json_obj(parts)
+        keys.append("testTrafficRoute")
+        vals.append(traffic_route_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TargetInstances to a compact JSON object (declaration order).
-def target_instances_to_json(TargetInstances v) -> str:
-    list[str] parts = []
+# Serialize TargetInstances to a CBOR map (member wire name -> value, model order).
+def target_instances_to_cbor(TargetInstances v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.tagFilters.is_some():
         auto u0 = v.tagFilters.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"tagFilters\":" + codedeploy_json_arr(e1))
+            e1.append(ec2_tag_filter_to_cbor(x1))
+        keys.append("tagFilters")
+        vals.append(cbor.cbor_list(e1))
     if v.autoScalingGroups.is_some():
         auto u2 = v.autoScalingGroups.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(codedeploy_json_str(x3))
-        parts.append("\"autoScalingGroups\":" + codedeploy_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("autoScalingGroups")
+        vals.append(cbor.cbor_list(e3))
     if v.ec2TagSet.is_some():
         auto u4 = v.ec2TagSet.unwrap()
-        parts.append("\"ec2TagSet\":" + ec2_tag_set_to_json(u4))
-    return codedeploy_json_obj(parts)
+        keys.append("ec2TagSet")
+        vals.append(ec2_tag_set_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TrafficRoute to a compact JSON object (declaration order).
-def traffic_route_to_json(TrafficRoute v) -> str:
-    list[str] parts = []
+# Serialize TimeBasedCanary to a CBOR map (member wire name -> value, model order).
+def time_based_canary_to_cbor(TimeBasedCanary v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.canaryPercentage.is_some():
+        auto u0 = v.canaryPercentage.unwrap()
+        keys.append("canaryPercentage")
+        vals.append(cbor.cbor_int(u0))
+    if v.canaryInterval.is_some():
+        auto u1 = v.canaryInterval.unwrap()
+        keys.append("canaryInterval")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TimeBasedLinear to a CBOR map (member wire name -> value, model order).
+def time_based_linear_to_cbor(TimeBasedLinear v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.linearPercentage.is_some():
+        auto u0 = v.linearPercentage.unwrap()
+        keys.append("linearPercentage")
+        vals.append(cbor.cbor_int(u0))
+    if v.linearInterval.is_some():
+        auto u1 = v.linearInterval.unwrap()
+        keys.append("linearInterval")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TimeRange to a CBOR map (member wire name -> value, model order).
+def time_range_to_cbor(TimeRange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.start.is_some():
+        auto u0 = v.start.unwrap()
+        keys.append("start")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
+    if v.end.is_some():
+        auto u1 = v.end.unwrap()
+        keys.append("end")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TrafficRoute to a CBOR map (member wire name -> value, model order).
+def traffic_route_to_cbor(TrafficRoute v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.listenerArns.is_some():
         auto u0 = v.listenerArns.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(codedeploy_json_str(x1))
-        parts.append("\"listenerArns\":" + codedeploy_json_arr(e1))
-    return codedeploy_json_obj(parts)
+            e1.append(cbor.cbor_text(x1))
+        keys.append("listenerArns")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TriggerConfig to a compact JSON object (declaration order).
-def trigger_config_to_json(TriggerConfig v) -> str:
-    list[str] parts = []
+# Serialize TrafficRoutingConfig to a CBOR map (member wire name -> value, model order).
+def traffic_routing_config_to_cbor(TrafficRoutingConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        keys.append("type")
+        vals.append(cbor.cbor_text(u0))
+    if v.timeBasedCanary.is_some():
+        auto u1 = v.timeBasedCanary.unwrap()
+        keys.append("timeBasedCanary")
+        vals.append(time_based_canary_to_cbor(u1))
+    if v.timeBasedLinear.is_some():
+        auto u2 = v.timeBasedLinear.unwrap()
+        keys.append("timeBasedLinear")
+        vals.append(time_based_linear_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TriggerConfig to a CBOR map (member wire name -> value, model order).
+def trigger_config_to_cbor(TriggerConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.triggerName.is_some():
         auto u0 = v.triggerName.unwrap()
-        parts.append("\"triggerName\":" + codedeploy_json_str(u0))
+        keys.append("triggerName")
+        vals.append(cbor.cbor_text(u0))
     if v.triggerTargetArn.is_some():
         auto u1 = v.triggerTargetArn.unwrap()
-        parts.append("\"triggerTargetArn\":" + codedeploy_json_str(u1))
+        keys.append("triggerTargetArn")
+        vals.append(cbor.cbor_text(u1))
     if v.triggerEvents.is_some():
         auto u2 = v.triggerEvents.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"triggerEvents\":" + codedeploy_json_arr(e3))
-    return codedeploy_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("triggerEvents")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceInput to a compact JSON object (declaration order).
-def untag_resource_input_to_json(UntagResourceInput v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + codedeploy_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize UntagResourceInput to a CBOR map (member wire name -> value, model order).
+def untag_resource_input_to_cbor(UntagResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(codedeploy_json_str(x0))
-    parts.append("\"TagKeys\":" + codedeploy_json_arr(e0))
-    return codedeploy_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateDeploymentGroupInput to a compact JSON object (declaration order).
-def update_deployment_group_input_to_json(UpdateDeploymentGroupInput v) -> str:
-    list[str] parts = []
-    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
-    parts.append("\"currentDeploymentGroupName\":" + codedeploy_json_str(v.currentDeploymentGroupName))
+# Serialize UpdateApplicationInput to a CBOR map (member wire name -> value, model order).
+def update_application_input_to_cbor(UpdateApplicationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.applicationName.is_some():
+        auto u0 = v.applicationName.unwrap()
+        keys.append("applicationName")
+        vals.append(cbor.cbor_text(u0))
+    if v.newApplicationName.is_some():
+        auto u1 = v.newApplicationName.unwrap()
+        keys.append("newApplicationName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateDeploymentGroupInput to a CBOR map (member wire name -> value, model order).
+def update_deployment_group_input_to_cbor(UpdateDeploymentGroupInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("applicationName")
+    vals.append(cbor.cbor_text(v.applicationName))
+    keys.append("currentDeploymentGroupName")
+    vals.append(cbor.cbor_text(v.currentDeploymentGroupName))
     if v.newDeploymentGroupName.is_some():
         auto u0 = v.newDeploymentGroupName.unwrap()
-        parts.append("\"newDeploymentGroupName\":" + codedeploy_json_str(u0))
+        keys.append("newDeploymentGroupName")
+        vals.append(cbor.cbor_text(u0))
     if v.deploymentConfigName.is_some():
         auto u1 = v.deploymentConfigName.unwrap()
-        parts.append("\"deploymentConfigName\":" + codedeploy_json_str(u1))
+        keys.append("deploymentConfigName")
+        vals.append(cbor.cbor_text(u1))
     if v.ec2TagFilters.is_some():
         auto u2 = v.ec2TagFilters.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"ec2TagFilters\":" + codedeploy_json_arr(e3))
+            e3.append(ec2_tag_filter_to_cbor(x3))
+        keys.append("ec2TagFilters")
+        vals.append(cbor.cbor_list(e3))
     if v.onPremisesInstanceTagFilters.is_some():
         auto u4 = v.onPremisesInstanceTagFilters.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"onPremisesInstanceTagFilters\":" + codedeploy_json_arr(e5))
+            e5.append(tag_filter_to_cbor(x5))
+        keys.append("onPremisesInstanceTagFilters")
+        vals.append(cbor.cbor_list(e5))
     if v.autoScalingGroups.is_some():
         auto u6 = v.autoScalingGroups.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(codedeploy_json_str(x7))
-        parts.append("\"autoScalingGroups\":" + codedeploy_json_arr(e7))
+            e7.append(cbor.cbor_text(x7))
+        keys.append("autoScalingGroups")
+        vals.append(cbor.cbor_list(e7))
     if v.serviceRoleArn.is_some():
         auto u8 = v.serviceRoleArn.unwrap()
-        parts.append("\"serviceRoleArn\":" + codedeploy_json_str(u8))
+        keys.append("serviceRoleArn")
+        vals.append(cbor.cbor_text(u8))
     if v.triggerConfigurations.is_some():
         auto u9 = v.triggerConfigurations.unwrap()
-        list[str] e10 = []
+        list[cbor.CborValue] e10 = []
         for x10 in u9:
-            e10.append(trigger_config_to_json(x10))
-        parts.append("\"triggerConfigurations\":" + codedeploy_json_arr(e10))
+            e10.append(trigger_config_to_cbor(x10))
+        keys.append("triggerConfigurations")
+        vals.append(cbor.cbor_list(e10))
     if v.alarmConfiguration.is_some():
         auto u11 = v.alarmConfiguration.unwrap()
-        parts.append("\"alarmConfiguration\":" + alarm_configuration_to_json(u11))
+        keys.append("alarmConfiguration")
+        vals.append(alarm_configuration_to_cbor(u11))
     if v.autoRollbackConfiguration.is_some():
         auto u12 = v.autoRollbackConfiguration.unwrap()
-        parts.append("\"autoRollbackConfiguration\":" + auto_rollback_configuration_to_json(u12))
+        keys.append("autoRollbackConfiguration")
+        vals.append(auto_rollback_configuration_to_cbor(u12))
     if v.outdatedInstancesStrategy.is_some():
         auto u13 = v.outdatedInstancesStrategy.unwrap()
-        parts.append("\"outdatedInstancesStrategy\":" + u13.to_json())
+        keys.append("outdatedInstancesStrategy")
+        vals.append(cbor.cbor_text(u13))
     if v.deploymentStyle.is_some():
         auto u14 = v.deploymentStyle.unwrap()
-        parts.append("\"deploymentStyle\":" + u14.to_json())
+        keys.append("deploymentStyle")
+        vals.append(deployment_style_to_cbor(u14))
     if v.blueGreenDeploymentConfiguration.is_some():
         auto u15 = v.blueGreenDeploymentConfiguration.unwrap()
-        parts.append("\"blueGreenDeploymentConfiguration\":" + u15.to_json())
+        keys.append("blueGreenDeploymentConfiguration")
+        vals.append(blue_green_deployment_configuration_to_cbor(u15))
     if v.loadBalancerInfo.is_some():
         auto u16 = v.loadBalancerInfo.unwrap()
-        parts.append("\"loadBalancerInfo\":" + load_balancer_info_to_json(u16))
+        keys.append("loadBalancerInfo")
+        vals.append(load_balancer_info_to_cbor(u16))
     if v.ec2TagSet.is_some():
         auto u17 = v.ec2TagSet.unwrap()
-        parts.append("\"ec2TagSet\":" + ec2_tag_set_to_json(u17))
+        keys.append("ec2TagSet")
+        vals.append(ec2_tag_set_to_cbor(u17))
     if v.ecsServices.is_some():
         auto u18 = v.ecsServices.unwrap()
-        list[str] e19 = []
+        list[cbor.CborValue] e19 = []
         for x19 in u18:
-            e19.append(x19.to_json())
-        parts.append("\"ecsServices\":" + codedeploy_json_arr(e19))
+            e19.append(ecs_service_to_cbor(x19))
+        keys.append("ecsServices")
+        vals.append(cbor.cbor_list(e19))
     if v.onPremisesTagSet.is_some():
         auto u20 = v.onPremisesTagSet.unwrap()
-        parts.append("\"onPremisesTagSet\":" + on_premises_tag_set_to_json(u20))
+        keys.append("onPremisesTagSet")
+        vals.append(on_premises_tag_set_to_cbor(u20))
     if v.ec2DeploymentOptions.is_some():
         auto u21 = v.ec2DeploymentOptions.unwrap()
-        parts.append("\"ec2DeploymentOptions\":" + ec2_deployment_options_to_json(u21))
+        keys.append("ec2DeploymentOptions")
+        vals.append(ec2_deployment_options_to_cbor(u21))
     if v.terminationHookEnabled.is_some():
         auto u22 = v.terminationHookEnabled.unwrap()
-        parts.append("\"terminationHookEnabled\":" + json.dumps(JsonValue.Bool(u22)))
-    return codedeploy_json_obj(parts)
+        keys.append("terminationHookEnabled")
+        vals.append(cbor.cbor_bool(u22))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ZonalConfig to a CBOR map (member wire name -> value, model order).
+def zonal_config_to_cbor(ZonalConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.firstZoneMonitorDurationInSeconds.is_some():
+        auto u0 = v.firstZoneMonitorDurationInSeconds.unwrap()
+        keys.append("firstZoneMonitorDurationInSeconds")
+        vals.append(cbor.cbor_int(u0))
+    if v.monitorDurationInSeconds.is_some():
+        auto u1 = v.monitorDurationInSeconds.unwrap()
+        keys.append("monitorDurationInSeconds")
+        vals.append(cbor.cbor_int(u1))
+    if v.minimumHealthyHostsPerZone.is_some():
+        auto u2 = v.minimumHealthyHostsPerZone.unwrap()
+        keys.append("minimumHealthyHostsPerZone")
+        vals.append(minimum_healthy_hosts_per_zone_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
 # A bound CodeDeploy client: credentials + region, threaded into every operation.
 struct CodeDeployClient:
@@ -3127,414 +3585,425 @@ struct CodeDeployClient:
 
     # AddTagsToOnPremisesInstances
     # errors: InstanceLimitExceededException, InstanceNameRequiredException, InstanceNotRegisteredException, InvalidInstanceNameException, InvalidTagException, TagLimitExceededException, TagRequiredException
-    def add_tags_to_on_premises_instances(self, AddTagsToOnPremisesInstancesInput input) -> str:
-        auto body = add_tags_to_on_premises_instances_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "AddTagsToOnPremisesInstances", body)
+    def add_tags_to_on_premises_instances(self, AddTagsToOnPremisesInstancesInput input) -> bytes:
+        auto body = cbor.cbor_encode(add_tags_to_on_premises_instances_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "AddTagsToOnPremisesInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetApplicationRevisions
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BatchLimitExceededException, InvalidApplicationNameException, InvalidRevisionException, RevisionRequiredException
-    def batch_get_application_revisions(self, BatchGetApplicationRevisionsInput input) -> str:
-        auto body = batch_get_application_revisions_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetApplicationRevisions", body)
+    def batch_get_application_revisions(self, BatchGetApplicationRevisionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_application_revisions_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetApplicationRevisions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetApplications
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BatchLimitExceededException, InvalidApplicationNameException
-    def batch_get_applications(self, BatchGetApplicationsInput input) -> str:
-        auto body = batch_get_applications_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetApplications", body)
+    def batch_get_applications(self, BatchGetApplicationsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_applications_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetApplications", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetDeploymentGroups
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BatchLimitExceededException, DeploymentConfigDoesNotExistException, DeploymentGroupNameRequiredException, InvalidApplicationNameException, InvalidDeploymentGroupNameException
-    def batch_get_deployment_groups(self, BatchGetDeploymentGroupsInput input) -> str:
-        auto body = batch_get_deployment_groups_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeploymentGroups", body)
+    def batch_get_deployment_groups(self, BatchGetDeploymentGroupsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_deployment_groups_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetDeploymentGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetDeploymentInstances
     # errors: BatchLimitExceededException, DeploymentDoesNotExistException, DeploymentIdRequiredException, InstanceIdRequiredException, InvalidComputePlatformException, InvalidDeploymentIdException, InvalidInstanceNameException
-    def batch_get_deployment_instances(self, BatchGetDeploymentInstancesInput input) -> str:
-        auto body = batch_get_deployment_instances_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeploymentInstances", body)
+    def batch_get_deployment_instances(self, BatchGetDeploymentInstancesInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_deployment_instances_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetDeploymentInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetDeploymentTargets
     # errors: DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, DeploymentTargetDoesNotExistException, DeploymentTargetIdRequiredException, DeploymentTargetListSizeExceededException, InstanceDoesNotExistException, InvalidDeploymentIdException, InvalidDeploymentTargetIdException
-    def batch_get_deployment_targets(self, BatchGetDeploymentTargetsInput input) -> str:
-        auto body = batch_get_deployment_targets_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeploymentTargets", body)
+    def batch_get_deployment_targets(self, BatchGetDeploymentTargetsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_deployment_targets_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetDeploymentTargets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetDeployments
     # errors: BatchLimitExceededException, DeploymentIdRequiredException, InvalidDeploymentIdException
-    def batch_get_deployments(self, BatchGetDeploymentsInput input) -> str:
-        auto body = batch_get_deployments_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeployments", body)
+    def batch_get_deployments(self, BatchGetDeploymentsInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_deployments_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetDeployments", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchGetOnPremisesInstances
     # errors: BatchLimitExceededException, InstanceNameRequiredException, InvalidInstanceNameException
-    def batch_get_on_premises_instances(self, BatchGetOnPremisesInstancesInput input) -> str:
-        auto body = batch_get_on_premises_instances_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetOnPremisesInstances", body)
+    def batch_get_on_premises_instances(self, BatchGetOnPremisesInstancesInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_get_on_premises_instances_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "BatchGetOnPremisesInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ContinueDeployment
     # errors: DeploymentAlreadyCompletedException, DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentIsNotInReadyStateException, InvalidDeploymentIdException, InvalidDeploymentStatusException, InvalidDeploymentWaitTypeException, UnsupportedActionForDeploymentTypeException
-    def continue_deployment(self, ContinueDeploymentInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ContinueDeployment", body)
+    def continue_deployment(self, ContinueDeploymentInput input) -> bytes:
+        auto body = cbor.cbor_encode(continue_deployment_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ContinueDeployment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateApplication
     # errors: ApplicationAlreadyExistsException, ApplicationLimitExceededException, ApplicationNameRequiredException, InvalidApplicationNameException, InvalidComputePlatformException, InvalidTagsToAddException, ThrottlingException
-    def create_application(self, CreateApplicationInput input) -> str:
-        auto body = create_application_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateApplication", body)
+    def create_application(self, CreateApplicationInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_application_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "CreateApplication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDeployment
     # errors: AlarmsLimitExceededException, ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, DeploymentLimitExceededException, DescriptionTooLongException, InvalidAlarmConfigException, InvalidApplicationNameException, InvalidAutoRollbackConfigException, InvalidAutoScalingGroupException, InvalidAutoScalingGroupProcessToSuspendException, InvalidComputePlatformException, InvalidDeploymentConfigNameException, InvalidDeploymentGroupNameException, InvalidECSServiceException, InvalidFileExistsBehaviorException, InvalidGitHubAccountTokenException, InvalidIgnoreApplicationStopFailuresValueException, InvalidInputException, InvalidLoadBalancerInfoException, InvalidRevisionException, InvalidRoleException, InvalidTargetInstancesException, InvalidTrafficRoutingConfigurationException, InvalidUpdateOutdatedInstancesOnlyValueException, RevisionDoesNotExistException, RevisionRequiredException, ThrottlingException
-    def create_deployment(self, CreateDeploymentInput input) -> str:
-        auto body = create_deployment_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateDeployment", body)
+    def create_deployment(self, CreateDeploymentInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_deployment_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "CreateDeployment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDeploymentConfig
     # errors: DeploymentConfigAlreadyExistsException, DeploymentConfigLimitExceededException, DeploymentConfigNameRequiredException, InvalidComputePlatformException, InvalidDeploymentConfigNameException, InvalidMinimumHealthyHostValueException, InvalidTrafficRoutingConfigurationException, InvalidZonalDeploymentConfigurationException
-    def create_deployment_config(self, CreateDeploymentConfigInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateDeploymentConfig", body)
+    def create_deployment_config(self, CreateDeploymentConfigInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_deployment_config_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "CreateDeploymentConfig", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDeploymentGroup
     # errors: AlarmsLimitExceededException, ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupAlreadyExistsException, DeploymentGroupLimitExceededException, DeploymentGroupNameRequiredException, ECSServiceMappingLimitExceededException, InvalidAlarmConfigException, InvalidApplicationNameException, InvalidAutoRollbackConfigException, InvalidAutoScalingGroupException, InvalidAutoScalingGroupProcessToSuspendException, InvalidBlueGreenDeploymentConfigurationException, InvalidDeploymentConfigNameException, InvalidDeploymentGroupNameException, InvalidDeploymentStyleException, InvalidEC2TagCombinationException, InvalidEC2TagException, InvalidECSServiceException, InvalidInputException, InvalidLoadBalancerInfoException, InvalidOnPremisesTagCombinationException, InvalidRoleException, InvalidTagException, InvalidTagsToAddException, InvalidTargetGroupPairException, InvalidTrafficRoutingConfigurationException, InvalidTriggerConfigException, LifecycleHookLimitExceededException, RoleRequiredException, TagSetListLimitExceededException, ThrottlingException, TriggerTargetsLimitExceededException
-    def create_deployment_group(self, CreateDeploymentGroupInput input) -> str:
-        auto body = create_deployment_group_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateDeploymentGroup", body)
+    def create_deployment_group(self, CreateDeploymentGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_deployment_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "CreateDeploymentGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteApplication
     # errors: ApplicationNameRequiredException, InvalidApplicationNameException, InvalidRoleException
-    def delete_application(self, DeleteApplicationInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "DeleteApplication", body)
+    def delete_application(self, DeleteApplicationInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_application_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "DeleteApplication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDeploymentConfig
     # errors: DeploymentConfigInUseException, DeploymentConfigNameRequiredException, InvalidDeploymentConfigNameException, InvalidOperationException
-    def delete_deployment_config(self, DeleteDeploymentConfigInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "DeleteDeploymentConfig", body)
+    def delete_deployment_config(self, DeleteDeploymentConfigInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_deployment_config_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "DeleteDeploymentConfig", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDeploymentGroup
     # errors: ApplicationNameRequiredException, DeploymentGroupNameRequiredException, InvalidApplicationNameException, InvalidDeploymentGroupNameException, InvalidRoleException
-    def delete_deployment_group(self, DeleteDeploymentGroupInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "DeleteDeploymentGroup", body)
+    def delete_deployment_group(self, DeleteDeploymentGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_deployment_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "DeleteDeploymentGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteGitHubAccountToken
     # errors: GitHubAccountTokenDoesNotExistException, GitHubAccountTokenNameRequiredException, InvalidGitHubAccountTokenNameException, OperationNotSupportedException, ResourceValidationException
-    def delete_git_hub_account_token(self, DeleteGitHubAccountTokenInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "DeleteGitHubAccountToken", body)
+    def delete_git_hub_account_token(self, DeleteGitHubAccountTokenInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_git_hub_account_token_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "DeleteGitHubAccountToken", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteResourcesByExternalId
-    def delete_resources_by_external_id(self, DeleteResourcesByExternalIdInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "DeleteResourcesByExternalId", body)
+    def delete_resources_by_external_id(self, DeleteResourcesByExternalIdInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_resources_by_external_id_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "DeleteResourcesByExternalId", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeregisterOnPremisesInstance
     # errors: InstanceNameRequiredException, InvalidInstanceNameException
-    def deregister_on_premises_instance(self, DeregisterOnPremisesInstanceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "DeregisterOnPremisesInstance", body)
+    def deregister_on_premises_instance(self, DeregisterOnPremisesInstanceInput input) -> bytes:
+        auto body = cbor.cbor_encode(deregister_on_premises_instance_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "DeregisterOnPremisesInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetApplication
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, InvalidApplicationNameException
-    def get_application(self, GetApplicationInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetApplication", body)
+    def get_application(self, GetApplicationInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_application_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetApplication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetApplicationRevision
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, InvalidApplicationNameException, InvalidRevisionException, RevisionDoesNotExistException, RevisionRequiredException
-    def get_application_revision(self, GetApplicationRevisionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetApplicationRevision", body)
+    def get_application_revision(self, GetApplicationRevisionInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_application_revision_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetApplicationRevision", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDeployment
     # errors: DeploymentDoesNotExistException, DeploymentIdRequiredException, InvalidDeploymentIdException
-    def get_deployment(self, GetDeploymentInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetDeployment", body)
+    def get_deployment(self, GetDeploymentInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_deployment_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetDeployment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDeploymentConfig
     # errors: DeploymentConfigDoesNotExistException, DeploymentConfigNameRequiredException, InvalidComputePlatformException, InvalidDeploymentConfigNameException
-    def get_deployment_config(self, GetDeploymentConfigInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetDeploymentConfig", body)
+    def get_deployment_config(self, GetDeploymentConfigInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_deployment_config_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetDeploymentConfig", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDeploymentGroup
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, InvalidApplicationNameException, InvalidDeploymentGroupNameException
-    def get_deployment_group(self, GetDeploymentGroupInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetDeploymentGroup", body)
+    def get_deployment_group(self, GetDeploymentGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_deployment_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetDeploymentGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDeploymentInstance
     # errors: DeploymentDoesNotExistException, DeploymentIdRequiredException, InstanceDoesNotExistException, InstanceIdRequiredException, InvalidComputePlatformException, InvalidDeploymentIdException, InvalidInstanceNameException
-    def get_deployment_instance(self, GetDeploymentInstanceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetDeploymentInstance", body)
+    def get_deployment_instance(self, GetDeploymentInstanceInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_deployment_instance_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetDeploymentInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetDeploymentTarget
     # errors: DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, DeploymentTargetDoesNotExistException, DeploymentTargetIdRequiredException, InvalidDeploymentIdException, InvalidDeploymentTargetIdException, InvalidInstanceNameException
-    def get_deployment_target(self, GetDeploymentTargetInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetDeploymentTarget", body)
+    def get_deployment_target(self, GetDeploymentTargetInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_deployment_target_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetDeploymentTarget", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetOnPremisesInstance
     # errors: InstanceNameRequiredException, InstanceNotRegisteredException, InvalidInstanceNameException
-    def get_on_premises_instance(self, GetOnPremisesInstanceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "GetOnPremisesInstance", body)
+    def get_on_premises_instance(self, GetOnPremisesInstanceInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_on_premises_instance_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "GetOnPremisesInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListApplicationRevisions
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BucketNameFilterRequiredException, InvalidApplicationNameException, InvalidBucketNameFilterException, InvalidDeployedStateFilterException, InvalidKeyPrefixFilterException, InvalidNextTokenException, InvalidSortByException, InvalidSortOrderException
-    def list_application_revisions(self, ListApplicationRevisionsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListApplicationRevisions", body)
+    def list_application_revisions(self, ListApplicationRevisionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_application_revisions_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListApplicationRevisions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListApplications
     # errors: InvalidNextTokenException
-    def list_applications(self, ListApplicationsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListApplications", body)
+    def list_applications(self, ListApplicationsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_applications_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListApplications", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDeploymentConfigs
     # errors: InvalidNextTokenException
-    def list_deployment_configs(self, ListDeploymentConfigsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentConfigs", body)
+    def list_deployment_configs(self, ListDeploymentConfigsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_deployment_configs_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListDeploymentConfigs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDeploymentGroups
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, InvalidApplicationNameException, InvalidNextTokenException
-    def list_deployment_groups(self, ListDeploymentGroupsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentGroups", body)
+    def list_deployment_groups(self, ListDeploymentGroupsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_deployment_groups_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListDeploymentGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDeploymentInstances
     # errors: ApplicationDoesNotExistException, DeploymentDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, InvalidComputePlatformException, InvalidDeploymentIdException, InvalidDeploymentInstanceTypeException, InvalidInstanceStatusException, InvalidInstanceTypeException, InvalidNextTokenException, InvalidTargetFilterNameException
-    def list_deployment_instances(self, ListDeploymentInstancesInput input) -> str:
-        auto body = list_deployment_instances_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentInstances", body)
+    def list_deployment_instances(self, ListDeploymentInstancesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_deployment_instances_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListDeploymentInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # ListDeploymentTargets
+    # errors: ApplicationDoesNotExistException, DeploymentDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, InvalidDeploymentIdException, InvalidDeploymentInstanceTypeException, InvalidInstanceStatusException, InvalidInstanceTypeException, InvalidNextTokenException, InvalidTargetFilterNameException
+    def list_deployment_targets(self, ListDeploymentTargetsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_deployment_targets_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListDeploymentTargets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDeployments
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, InvalidApplicationNameException, InvalidDeploymentGroupNameException, InvalidDeploymentStatusException, InvalidExternalIdException, InvalidInputException, InvalidNextTokenException, InvalidTimeRangeException
-    def list_deployments(self, ListDeploymentsInput input) -> str:
-        auto body = list_deployments_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeployments", body)
+    def list_deployments(self, ListDeploymentsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_deployments_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListDeployments", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListGitHubAccountTokenNames
     # errors: InvalidNextTokenException, OperationNotSupportedException, ResourceValidationException
-    def list_git_hub_account_token_names(self, ListGitHubAccountTokenNamesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListGitHubAccountTokenNames", body)
+    def list_git_hub_account_token_names(self, ListGitHubAccountTokenNamesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_git_hub_account_token_names_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListGitHubAccountTokenNames", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListOnPremisesInstances
     # errors: InvalidNextTokenException, InvalidRegistrationStatusException, InvalidTagFilterException
-    def list_on_premises_instances(self, ListOnPremisesInstancesInput input) -> str:
-        auto body = list_on_premises_instances_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListOnPremisesInstances", body)
+    def list_on_premises_instances(self, ListOnPremisesInstancesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_on_premises_instances_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListOnPremisesInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: ArnNotSupportedException, InvalidArnException, ResourceArnRequiredException
-    def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutLifecycleEventHookExecutionStatus
     # errors: DeploymentDoesNotExistException, DeploymentIdRequiredException, InvalidDeploymentIdException, InvalidLifecycleEventHookExecutionIdException, InvalidLifecycleEventHookExecutionStatusException, LifecycleEventAlreadyCompletedException, UnsupportedActionForDeploymentTypeException
-    def put_lifecycle_event_hook_execution_status(self, PutLifecycleEventHookExecutionStatusInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "PutLifecycleEventHookExecutionStatus", body)
+    def put_lifecycle_event_hook_execution_status(self, PutLifecycleEventHookExecutionStatusInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_lifecycle_event_hook_execution_status_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "PutLifecycleEventHookExecutionStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterApplicationRevision
     # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, DescriptionTooLongException, InvalidApplicationNameException, InvalidRevisionException, RevisionRequiredException
-    def register_application_revision(self, RegisterApplicationRevisionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "RegisterApplicationRevision", body)
+    def register_application_revision(self, RegisterApplicationRevisionInput input) -> bytes:
+        auto body = cbor.cbor_encode(register_application_revision_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "RegisterApplicationRevision", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RegisterOnPremisesInstance
     # errors: IamArnRequiredException, IamSessionArnAlreadyRegisteredException, IamUserArnAlreadyRegisteredException, IamUserArnRequiredException, InstanceNameAlreadyRegisteredException, InstanceNameRequiredException, InvalidIamSessionArnException, InvalidIamUserArnException, InvalidInstanceNameException, MultipleIamArnsProvidedException
-    def register_on_premises_instance(self, RegisterOnPremisesInstanceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "RegisterOnPremisesInstance", body)
+    def register_on_premises_instance(self, RegisterOnPremisesInstanceInput input) -> bytes:
+        auto body = cbor.cbor_encode(register_on_premises_instance_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "RegisterOnPremisesInstance", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RemoveTagsFromOnPremisesInstances
     # errors: InstanceLimitExceededException, InstanceNameRequiredException, InstanceNotRegisteredException, InvalidInstanceNameException, InvalidTagException, TagLimitExceededException, TagRequiredException
-    def remove_tags_from_on_premises_instances(self, RemoveTagsFromOnPremisesInstancesInput input) -> str:
-        auto body = remove_tags_from_on_premises_instances_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "RemoveTagsFromOnPremisesInstances", body)
+    def remove_tags_from_on_premises_instances(self, RemoveTagsFromOnPremisesInstancesInput input) -> bytes:
+        auto body = cbor.cbor_encode(remove_tags_from_on_premises_instances_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "RemoveTagsFromOnPremisesInstances", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # SkipWaitTimeForInstanceTermination
     # errors: DeploymentAlreadyCompletedException, DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, InvalidDeploymentIdException, UnsupportedActionForDeploymentTypeException
-    def skip_wait_time_for_instance_termination(self, SkipWaitTimeForInstanceTerminationInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "SkipWaitTimeForInstanceTermination", body)
+    def skip_wait_time_for_instance_termination(self, SkipWaitTimeForInstanceTerminationInput input) -> bytes:
+        auto body = cbor.cbor_encode(skip_wait_time_for_instance_termination_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "SkipWaitTimeForInstanceTermination", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopDeployment
     # errors: DeploymentAlreadyCompletedException, DeploymentDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentIdRequiredException, InvalidDeploymentIdException, UnsupportedActionForDeploymentTypeException
-    def stop_deployment(self, StopDeploymentInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "StopDeployment", body)
+    def stop_deployment(self, StopDeploymentInput input) -> bytes:
+        auto body = cbor.cbor_encode(stop_deployment_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "StopDeployment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: ApplicationDoesNotExistException, ArnNotSupportedException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, InvalidArnException, InvalidTagsToAddException, ResourceArnRequiredException, TagRequiredException
-    def tag_resource(self, TagResourceInput input) -> str:
-        auto body = tag_resource_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: ApplicationDoesNotExistException, ArnNotSupportedException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, InvalidArnException, InvalidTagsToAddException, ResourceArnRequiredException, TagRequiredException
-    def untag_resource(self, UntagResourceInput input) -> str:
-        auto body = untag_resource_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateApplication
     # errors: ApplicationAlreadyExistsException, ApplicationDoesNotExistException, ApplicationNameRequiredException, InvalidApplicationNameException
-    def update_application(self, UpdateApplicationInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "UpdateApplication", body)
+    def update_application(self, UpdateApplicationInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_application_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "UpdateApplication", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDeploymentGroup
     # errors: AlarmsLimitExceededException, ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupAlreadyExistsException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, ECSServiceMappingLimitExceededException, InvalidAlarmConfigException, InvalidApplicationNameException, InvalidAutoRollbackConfigException, InvalidAutoScalingGroupException, InvalidAutoScalingGroupProcessToSuspendException, InvalidBlueGreenDeploymentConfigurationException, InvalidDeploymentConfigNameException, InvalidDeploymentGroupNameException, InvalidDeploymentStyleException, InvalidEC2TagCombinationException, InvalidEC2TagException, InvalidECSServiceException, InvalidInputException, InvalidLoadBalancerInfoException, InvalidOnPremisesTagCombinationException, InvalidRoleException, InvalidTagException, InvalidTargetGroupPairException, InvalidTrafficRoutingConfigurationException, InvalidTriggerConfigException, LifecycleHookLimitExceededException, TagSetListLimitExceededException, ThrottlingException, TriggerTargetsLimitExceededException
-    def update_deployment_group(self, UpdateDeploymentGroupInput input) -> str:
-        auto body = update_deployment_group_input_to_json(input)
-        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "UpdateDeploymentGroup", body)
-
-    # Paginator for ListApplicationRevisions — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: revisions).
-    def paginate_list_application_revisions(self, ListApplicationRevisionsInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListApplicationRevisions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListApplications — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: applications).
-    def paginate_list_applications(self, ListApplicationsInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListApplications", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListDeploymentConfigs — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: deploymentConfigsList).
-    def paginate_list_deployment_configs(self, ListDeploymentConfigsInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentConfigs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListDeploymentGroups — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: deploymentGroups).
-    def paginate_list_deployment_groups(self, ListDeploymentGroupsInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListDeploymentInstances — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: instancesList).
-    def paginate_list_deployment_instances(self, ListDeploymentInstancesInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = list_deployment_instances_input_to_json(input)
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentInstances", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListDeployments — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: deployments).
-    def paginate_list_deployments(self, ListDeploymentsInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = list_deployments_input_to_json(input)
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeployments", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListGitHubAccountTokenNames — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: tokenNameList).
-    def paginate_list_git_hub_account_token_names(self, ListGitHubAccountTokenNamesInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListGitHubAccountTokenNames", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for ListOnPremisesInstances — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: instanceNames).
-    def paginate_list_on_premises_instances(self, ListOnPremisesInstancesInput input):
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        while True:
-            auto body = list_on_premises_instances_input_to_json(input)
-            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListOnPremisesInstances", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # One poll of GetDeployment for its waiter(s): send the signed operation request
-    # and parse the response body into the matcher DOM.
-    def _waiter_poll_get_deployment(self, GetDeploymentInput input) -> waiters.Poll:
-        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
-        auto resp = core.send(host, self.get_deployment(input))
-        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
-
-    # Waiter DeploymentSuccessful — polls GetDeployment until a success acceptor fires (delay 15s,
-    # max 120 attempts), then returns; raises on a failure acceptor or timeout.
-    # boto3: wait_deployment_successful.
-    def wait_deployment_successful(self, GetDeploymentInput input):
-        auto cfg = waiters.WaiterConfig(
-            name="DeploymentSuccessful",
-            delay=15,
-            max_attempts=120,
-            acceptors=[
-                waiters.acceptor_path(waiters.state_success(), "deploymentInfo.status", "Succeeded"),
-                waiters.acceptor_path(waiters.state_failure(), "deploymentInfo.status", "Failed"),
-                waiters.acceptor_path(waiters.state_failure(), "deploymentInfo.status", "Stopped")
-            ],
-        )
-        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_deployment(input)
-        waiters.waiter(cfg, poll).wait_or_raise()
+    def update_deployment_group(self, UpdateDeploymentGroupInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_deployment_group_input_to_cbor(input))
+        auto host = endpoints.regional_host(codedeploy_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(codedeploy_service(), self.region, host, "CodeDeploy_20141006", "UpdateDeploymentGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a CodeDeployClient bound to credentials + region.
 def codedeploy_client(core.Credentials creds, str region) -> CodeDeployClient:

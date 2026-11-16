@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Resource Groups Tagging API (serviceId Resource Groups Tagging API, API 2017-01-26)
-# Protocol: awsJson 1.1 (targetPrefix ResourceGroupsTaggingAPI_20170126)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service tagging, service shape ResourceGroupsTaggingAPI_20170126)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 9 operations — 9 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   31 structs (16 @derive(Json)), 3 enums, 6 error variants.
-#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 9 operations — 9 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   31 structs (plain carriers), 3 enums, 6 error variants.
+#   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 
-# The Resource_Groups_Tagging_API awsJson protocol: version 1.1, API id "ResourceGroupsTaggingAPI_20170126".
-def tagging_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("ResourceGroupsTaggingAPI_20170126", "tagging")
+# The Resource_Groups_Tagging_API smithy-rpc-v2-cbor protocol: SigV4 service "tagging" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/ResourceGroupsTaggingAPI_20170126/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def tagging_service() -> str:
+    return "tagging"
 
 # --- enums -----------------------------------------------------------------
 
@@ -63,62 +67,45 @@ enum TargetIdType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) NoncompliantKeys: list[str], KeysWithNoncompliantValues: list[str], MissingTagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ComplianceDetails:
     Optional[list[str]] NoncompliantKeys
     Optional[list[str]] KeysWithNoncompliantValues
     Optional[list[str]] MissingTagKeys
     Optional[bool] ComplianceStatus
 
-@derive(Json)
 struct ConcurrentModificationException:
     Optional[str] Message
 
-@derive(Json)
 struct ConstraintViolationException:
     Optional[str] Message
 
-@derive(Json)
 struct DescribeReportCreationInput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeReportCreationOutput:
     Optional[str] Status
     Optional[str] S3Location
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct FailureInfo:
     Optional[int64] StatusCode
-    Optional[ErrorCode] ErrorCode
+    Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) TargetIdFilters: list[str], RegionFilters: list[str], ResourceTypeFilters: list[str], TagKeyFilters: list[str], GroupBy: list[GroupByAttribute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetComplianceSummaryInput:
     Optional[list[str]] TargetIdFilters
     Optional[list[str]] RegionFilters
     Optional[list[str]] ResourceTypeFilters
     Optional[list[str]] TagKeyFilters
-    Optional[list[GroupByAttribute]] GroupBy
+    Optional[list[str]] GroupBy
     Optional[int64] MaxResults
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) SummaryList: list[Summary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetComplianceSummaryOutput:
     Optional[list[Summary]] SummaryList
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) TagFilters: list[TagFilter], ResourceTypeFilters: list[str], ResourceARNList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetResourcesInput:
     Optional[str] PaginationToken
     Optional[list[TagFilter]] TagFilters
@@ -129,133 +116,89 @@ struct GetResourcesInput:
     Optional[bool] ExcludeCompliantResources
     Optional[list[str]] ResourceARNList
 
-# no @derive(Json): member(s) ResourceTagMappingList: list[ResourceTagMapping] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetResourcesOutput:
     Optional[str] PaginationToken
     Optional[list[ResourceTagMapping]] ResourceTagMappingList
 
-@derive(Json)
 struct GetTagKeysInput:
     Optional[str] PaginationToken
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetTagKeysOutput:
     Optional[str] PaginationToken
     Optional[list[str]] TagKeys
 
-@derive(Json)
 struct GetTagValuesInput:
     Optional[str] PaginationToken
     str Key
 
-# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetTagValuesOutput:
     Optional[str] PaginationToken
     Optional[list[str]] TagValues
 
-@derive(Json)
 struct InternalServiceException:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidParameterException:
     Optional[str] Message
 
-@derive(Json)
 struct ListRequiredTagsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RequiredTags: list[RequiredTag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListRequiredTagsOutput:
     Optional[list[RequiredTag]] RequiredTags
     Optional[str] NextToken
 
-@derive(Json)
 struct PaginationTokenExpiredException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CloudFormationResourceTypes: list[str], ReportingTagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RequiredTag:
     Optional[str] ResourceType
     Optional[list[str]] CloudFormationResourceTypes
     Optional[list[str]] ReportingTagKeys
 
-# no @derive(Json): member(s) Tags: list[Tag], ComplianceDetails: ComplianceDetails not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ResourceTagMapping:
     Optional[str] ResourceARN
     Optional[list[Tag]] Tags
     Optional[ComplianceDetails] ComplianceDetails
 
-@derive(Json)
 struct StartReportCreationInput:
     str S3Bucket
 
-@derive(Json)
 struct StartReportCreationOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Summary:
     Optional[str] LastUpdated
     Optional[str] TargetId
-    Optional[TargetIdType] TargetIdType
+    Optional[str] TargetIdType
     Optional[str] Region
     Optional[str] ResourceType
     Optional[int64] NonCompliantResources
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagFilter:
     Optional[str] Key
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) ResourceARNList: list[str], Tags: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourcesInput:
     list[str] ResourceARNList
     dict[str, str] Tags
 
-# no @derive(Json): member(s) FailedResourcesMap: dict[str, FailureInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourcesOutput:
     Optional[dict[str, FailureInfo]] FailedResourcesMap
 
-@derive(Json)
 struct ThrottledException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ResourceARNList: list[str], TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourcesInput:
     list[str] ResourceARNList
     list[str] TagKeys
 
-# no @derive(Json): member(s) FailedResourcesMap: dict[str, FailureInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourcesOutput:
     Optional[dict[str, FailureInfo]] FailedResourcesMap
 
@@ -266,7 +209,7 @@ struct UntagResourcesOutput:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -323,154 +266,214 @@ def tagging_error_name(Resource_Groups_Tagging_APIErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def tagging_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   GetComplianceSummary
+#   GetResources
+#   GetTagKeys
+#   GetTagValues
+#   ListRequiredTags
 
-def tagging_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def tagging_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize DescribeReportCreationInput to a CBOR map (member wire name -> value, model order).
+def describe_report_creation_input_to_cbor(DescribeReportCreationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize GetComplianceSummaryInput to a compact JSON object (declaration order).
-def get_compliance_summary_input_to_json(GetComplianceSummaryInput v) -> str:
-    list[str] parts = []
+# Serialize GetComplianceSummaryInput to a CBOR map (member wire name -> value, model order).
+def get_compliance_summary_input_to_cbor(GetComplianceSummaryInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.TargetIdFilters.is_some():
         auto u0 = v.TargetIdFilters.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(tagging_json_str(x1))
-        parts.append("\"TargetIdFilters\":" + tagging_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("TargetIdFilters")
+        vals.append(cbor.cbor_list(e1))
     if v.RegionFilters.is_some():
         auto u2 = v.RegionFilters.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(tagging_json_str(x3))
-        parts.append("\"RegionFilters\":" + tagging_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("RegionFilters")
+        vals.append(cbor.cbor_list(e3))
     if v.ResourceTypeFilters.is_some():
         auto u4 = v.ResourceTypeFilters.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(tagging_json_str(x5))
-        parts.append("\"ResourceTypeFilters\":" + tagging_json_arr(e5))
+            e5.append(cbor.cbor_text(x5))
+        keys.append("ResourceTypeFilters")
+        vals.append(cbor.cbor_list(e5))
     if v.TagKeyFilters.is_some():
         auto u6 = v.TagKeyFilters.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(tagging_json_str(x7))
-        parts.append("\"TagKeyFilters\":" + tagging_json_arr(e7))
+            e7.append(cbor.cbor_text(x7))
+        keys.append("TagKeyFilters")
+        vals.append(cbor.cbor_list(e7))
     if v.GroupBy.is_some():
         auto u8 = v.GroupBy.unwrap()
-        list[str] e9 = []
+        list[cbor.CborValue] e9 = []
         for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"GroupBy\":" + tagging_json_arr(e9))
+            e9.append(cbor.cbor_text(x9))
+        keys.append("GroupBy")
+        vals.append(cbor.cbor_list(e9))
     if v.MaxResults.is_some():
         auto u10 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u10))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u10))
     if v.PaginationToken.is_some():
         auto u11 = v.PaginationToken.unwrap()
-        parts.append("\"PaginationToken\":" + tagging_json_str(u11))
-    return tagging_json_obj(parts)
+        keys.append("PaginationToken")
+        vals.append(cbor.cbor_text(u11))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize GetResourcesInput to a compact JSON object (declaration order).
-def get_resources_input_to_json(GetResourcesInput v) -> str:
-    list[str] parts = []
+# Serialize GetResourcesInput to a CBOR map (member wire name -> value, model order).
+def get_resources_input_to_cbor(GetResourcesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.PaginationToken.is_some():
         auto u0 = v.PaginationToken.unwrap()
-        parts.append("\"PaginationToken\":" + tagging_json_str(u0))
+        keys.append("PaginationToken")
+        vals.append(cbor.cbor_text(u0))
     if v.TagFilters.is_some():
         auto u1 = v.TagFilters.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(tag_filter_to_json(x2))
-        parts.append("\"TagFilters\":" + tagging_json_arr(e2))
+            e2.append(tag_filter_to_cbor(x2))
+        keys.append("TagFilters")
+        vals.append(cbor.cbor_list(e2))
     if v.ResourcesPerPage.is_some():
         auto u3 = v.ResourcesPerPage.unwrap()
-        parts.append("\"ResourcesPerPage\":" + str(u3))
+        keys.append("ResourcesPerPage")
+        vals.append(cbor.cbor_int(u3))
     if v.TagsPerPage.is_some():
         auto u4 = v.TagsPerPage.unwrap()
-        parts.append("\"TagsPerPage\":" + str(u4))
+        keys.append("TagsPerPage")
+        vals.append(cbor.cbor_int(u4))
     if v.ResourceTypeFilters.is_some():
         auto u5 = v.ResourceTypeFilters.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(tagging_json_str(x6))
-        parts.append("\"ResourceTypeFilters\":" + tagging_json_arr(e6))
+            e6.append(cbor.cbor_text(x6))
+        keys.append("ResourceTypeFilters")
+        vals.append(cbor.cbor_list(e6))
     if v.IncludeComplianceDetails.is_some():
         auto u7 = v.IncludeComplianceDetails.unwrap()
-        parts.append("\"IncludeComplianceDetails\":" + json.dumps(JsonValue.Bool(u7)))
+        keys.append("IncludeComplianceDetails")
+        vals.append(cbor.cbor_bool(u7))
     if v.ExcludeCompliantResources.is_some():
         auto u8 = v.ExcludeCompliantResources.unwrap()
-        parts.append("\"ExcludeCompliantResources\":" + json.dumps(JsonValue.Bool(u8)))
+        keys.append("ExcludeCompliantResources")
+        vals.append(cbor.cbor_bool(u8))
     if v.ResourceARNList.is_some():
         auto u9 = v.ResourceARNList.unwrap()
-        list[str] e10 = []
+        list[cbor.CborValue] e10 = []
         for x10 in u9:
-            e10.append(tagging_json_str(x10))
-        parts.append("\"ResourceARNList\":" + tagging_json_arr(e10))
-    return tagging_json_obj(parts)
+            e10.append(cbor.cbor_text(x10))
+        keys.append("ResourceARNList")
+        vals.append(cbor.cbor_list(e10))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagFilter to a compact JSON object (declaration order).
-def tag_filter_to_json(TagFilter v) -> str:
-    list[str] parts = []
+# Serialize GetTagKeysInput to a CBOR map (member wire name -> value, model order).
+def get_tag_keys_input_to_cbor(GetTagKeysInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.PaginationToken.is_some():
+        auto u0 = v.PaginationToken.unwrap()
+        keys.append("PaginationToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetTagValuesInput to a CBOR map (member wire name -> value, model order).
+def get_tag_values_input_to_cbor(GetTagValuesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.PaginationToken.is_some():
+        auto u0 = v.PaginationToken.unwrap()
+        keys.append("PaginationToken")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListRequiredTagsInput to a CBOR map (member wire name -> value, model order).
+def list_required_tags_input_to_cbor(ListRequiredTagsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartReportCreationInput to a CBOR map (member wire name -> value, model order).
+def start_report_creation_input_to_cbor(StartReportCreationInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Bucket")
+    vals.append(cbor.cbor_text(v.S3Bucket))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagFilter to a CBOR map (member wire name -> value, model order).
+def tag_filter_to_cbor(TagFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Key.is_some():
         auto u0 = v.Key.unwrap()
-        parts.append("\"Key\":" + tagging_json_str(u0))
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
     if v.Values.is_some():
         auto u1 = v.Values.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(tagging_json_str(x2))
-        parts.append("\"Values\":" + tagging_json_arr(e2))
-    return tagging_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("Values")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourcesInput to a compact JSON object (declaration order).
-def tag_resources_input_to_json(TagResourcesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize TagResourcesInput to a CBOR map (member wire name -> value, model order).
+def tag_resources_input_to_cbor(TagResourcesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ResourceARNList:
-        e0.append(tagging_json_str(x0))
-    parts.append("\"ResourceARNList\":" + tagging_json_arr(e0))
-    list[str] m1 = []
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ResourceARNList")
+    vals.append(cbor.cbor_list(e0))
+    list[str] mk1 = []
+    list[cbor.CborValue] mv1 = []
     for k1 in sorted(v.Tags.keys()):
-        m1.append(tagging_json_str(k1) + ":" + tagging_json_str(v.Tags[k1]))
-    parts.append("\"Tags\":" + tagging_json_obj(m1))
-    return tagging_json_obj(parts)
+        mk1.append(k1)
+        mv1.append(cbor.cbor_text(v.Tags[k1]))
+    keys.append("Tags")
+    vals.append(cbor.cbor_map(mk1, mv1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourcesInput to a compact JSON object (declaration order).
-def untag_resources_input_to_json(UntagResourcesInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize UntagResourcesInput to a CBOR map (member wire name -> value, model order).
+def untag_resources_input_to_cbor(UntagResourcesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ResourceARNList:
-        e0.append(tagging_json_str(x0))
-    parts.append("\"ResourceARNList\":" + tagging_json_arr(e0))
-    list[str] e1 = []
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ResourceARNList")
+    vals.append(cbor.cbor_list(e0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.TagKeys:
-        e1.append(tagging_json_str(x1))
-    parts.append("\"TagKeys\":" + tagging_json_arr(e1))
-    return tagging_json_obj(parts)
+        e1.append(cbor.cbor_text(x1))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Resource_Groups_Tagging_API client: credentials + region, threaded into every operation.
 struct Resource_Groups_Tagging_APIClient:
@@ -479,127 +482,84 @@ struct Resource_Groups_Tagging_APIClient:
 
     # DescribeReportCreation
     # errors: ConstraintViolationException, InternalServiceException, InvalidParameterException, ThrottledException
-    def describe_report_creation(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "DescribeReportCreation", body)
+    def describe_report_creation(self, DescribeReportCreationInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_report_creation_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "DescribeReportCreation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetComplianceSummary
     # errors: ConstraintViolationException, InternalServiceException, InvalidParameterException, ThrottledException
-    def get_compliance_summary(self, GetComplianceSummaryInput input) -> str:
-        auto body = get_compliance_summary_input_to_json(input)
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetComplianceSummary", body)
+    def get_compliance_summary(self, GetComplianceSummaryInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_compliance_summary_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "GetComplianceSummary", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetResources
     # errors: InternalServiceException, InvalidParameterException, PaginationTokenExpiredException, ThrottledException
-    def get_resources(self, GetResourcesInput input) -> str:
-        auto body = get_resources_input_to_json(input)
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetResources", body)
+    def get_resources(self, GetResourcesInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_resources_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "GetResources", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetTagKeys
     # errors: InternalServiceException, InvalidParameterException, PaginationTokenExpiredException, ThrottledException
-    def get_tag_keys(self, GetTagKeysInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetTagKeys", body)
+    def get_tag_keys(self, GetTagKeysInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_tag_keys_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "GetTagKeys", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetTagValues
     # errors: InternalServiceException, InvalidParameterException, PaginationTokenExpiredException, ThrottledException
-    def get_tag_values(self, GetTagValuesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetTagValues", body)
+    def get_tag_values(self, GetTagValuesInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_tag_values_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "GetTagValues", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListRequiredTags
     # errors: InternalServiceException, InvalidParameterException, PaginationTokenExpiredException, ThrottledException
-    def list_required_tags(self, ListRequiredTagsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "ListRequiredTags", body)
+    def list_required_tags(self, ListRequiredTagsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_required_tags_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "ListRequiredTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartReportCreation
     # errors: ConcurrentModificationException, ConstraintViolationException, InternalServiceException, InvalidParameterException, ThrottledException
-    def start_report_creation(self, StartReportCreationInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "StartReportCreation", body)
+    def start_report_creation(self, StartReportCreationInput input) -> bytes:
+        auto body = cbor.cbor_encode(start_report_creation_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "StartReportCreation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResources
     # errors: InternalServiceException, InvalidParameterException, ThrottledException
-    def tag_resources(self, TagResourcesInput input) -> str:
-        auto body = tag_resources_input_to_json(input)
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "TagResources", body)
+    def tag_resources(self, TagResourcesInput input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resources_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "TagResources", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResources
     # errors: InternalServiceException, InvalidParameterException, ThrottledException
-    def untag_resources(self, UntagResourcesInput input) -> str:
-        auto body = untag_resources_input_to_json(input)
-        return awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "UntagResources", body)
-
-    # Paginator for GetComplianceSummary — yields each Response page, threading the
-    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: SummaryList).
-    def paginate_get_compliance_summary(self, GetComplianceSummaryInput input):
-        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
-        while True:
-            auto body = get_compliance_summary_input_to_json(input)
-            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetComplianceSummary", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "PaginationToken")
-            if not np.has_more:
-                break
-            input.PaginationToken = Optional.Some(np.token)
-
-    # Paginator for GetResources — yields each Response page, threading the
-    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: ResourceTagMappingList).
-    def paginate_get_resources(self, GetResourcesInput input):
-        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
-        while True:
-            auto body = get_resources_input_to_json(input)
-            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetResources", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "PaginationToken")
-            if not np.has_more:
-                break
-            input.PaginationToken = Optional.Some(np.token)
-
-    # Paginator for GetTagKeys — yields each Response page, threading the
-    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: TagKeys).
-    def paginate_get_tag_keys(self, GetTagKeysInput input):
-        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetTagKeys", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "PaginationToken")
-            if not np.has_more:
-                break
-            input.PaginationToken = Optional.Some(np.token)
-
-    # Paginator for GetTagValues — yields each Response page, threading the
-    # PaginationToken -> PaginationToken continuation token until the output token is absent (result key: TagValues).
-    def paginate_get_tag_values(self, GetTagValuesInput input):
-        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "GetTagValues", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "PaginationToken")
-            if not np.has_more:
-                break
-            input.PaginationToken = Optional.Some(np.token)
-
-    # Paginator for ListRequiredTags — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: RequiredTags).
-    def paginate_list_required_tags(self, ListRequiredTagsInput input):
-        auto host = endpoints.regional_host(tagging_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(tagging_protocol(), self.creds, self.region, "ListRequiredTags", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def untag_resources(self, UntagResourcesInput input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resources_input_to_cbor(input))
+        auto host = endpoints.regional_host(tagging_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(tagging_service(), self.region, host, "ResourceGroupsTaggingAPI_20170126", "UntagResources", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a Resource_Groups_Tagging_APIClient bound to credentials + region.
 def tagging_client(core.Credentials creds, str region) -> Resource_Groups_Tagging_APIClient:

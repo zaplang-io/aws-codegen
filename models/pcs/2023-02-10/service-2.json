@@ -687,6 +687,10 @@
    "type": "string",
    "pattern": "ami-[a-z0-9]+"
   },
+  "AmiIdOrEmpty": {
+   "type": "string",
+   "pattern": "(ami-[a-z0-9]+)?"
+  },
   "Arn": {
    "type": "string",
    "max": 1011,
@@ -909,12 +913,20 @@
     "modifiedAt",
     "status",
     "subnetIds",
-    "customLaunchTemplate",
     "iamInstanceProfileArn",
     "scalingConfiguration",
     "instanceConfigs"
    ],
    "members": {
+    "amiId": {
+     "shape": "AmiId"
+    },
+    "securityGroupIds": {
+     "shape": "SecurityGroupIdList"
+    },
+    "sshKeyName": {
+     "shape": "KeyPairName"
+    },
     "name": {
      "shape": "ComputeNodeGroupName"
     },
@@ -936,14 +948,14 @@
     "status": {
      "shape": "ComputeNodeGroupStatus"
     },
-    "amiId": {
-     "shape": "AmiId"
-    },
     "subnetIds": {
      "shape": "SubnetIdList"
     },
     "purchaseOption": {
      "shape": "PurchaseOption"
+    },
+    "launchTemplateMode": {
+     "shape": "LaunchTemplateMode"
     },
     "customLaunchTemplate": {
      "shape": "CustomLaunchTemplate"
@@ -1159,26 +1171,34 @@
     "clusterIdentifier",
     "computeNodeGroupName",
     "subnetIds",
-    "customLaunchTemplate",
     "iamInstanceProfileArn",
     "scalingConfiguration",
     "instanceConfigs"
    ],
    "members": {
+    "amiId": {
+     "shape": "AmiId"
+    },
+    "securityGroupIds": {
+     "shape": "SecurityGroupIdList"
+    },
+    "sshKeyName": {
+     "shape": "KeyPairName"
+    },
     "clusterIdentifier": {
      "shape": "ClusterIdentifier"
     },
     "computeNodeGroupName": {
      "shape": "ComputeNodeGroupName"
     },
-    "amiId": {
-     "shape": "AmiId"
-    },
     "subnetIds": {
      "shape": "StringList"
     },
     "purchaseOption": {
      "shape": "PurchaseOption"
+    },
+    "launchTemplateMode": {
+     "shape": "LaunchTemplateMode"
     },
     "customLaunchTemplate": {
      "shape": "CustomLaunchTemplate"
@@ -1537,6 +1557,23 @@
      "shape": "String"
     }
    }
+  },
+  "KeyPairName": {
+   "type": "string",
+   "max": 255,
+   "min": 1
+  },
+  "KeyPairNameOrEmpty": {
+   "type": "string",
+   "max": 255,
+   "min": 0
+  },
+  "LaunchTemplateMode": {
+   "type": "string",
+   "enum": [
+    "CUSTOM",
+    "MANAGED"
+   ]
   },
   "ListClustersRequest": {
    "type": "structure",
@@ -2150,6 +2187,12 @@
     "shape": "SecurityGroupId"
    }
   },
+  "SecurityGroupIdListOrEmpty": {
+   "type": "list",
+   "member": {
+    "shape": "SecurityGroupId"
+   }
+  },
   "ServiceQuotaExceededException": {
    "type": "structure",
    "required": [
@@ -2469,17 +2512,26 @@
     "computeNodeGroupIdentifier"
    ],
    "members": {
+    "amiId": {
+     "shape": "AmiIdOrEmpty"
+    },
+    "securityGroupIds": {
+     "shape": "SecurityGroupIdListOrEmpty"
+    },
+    "sshKeyName": {
+     "shape": "KeyPairNameOrEmpty"
+    },
     "clusterIdentifier": {
      "shape": "ClusterIdentifier"
     },
     "computeNodeGroupIdentifier": {
      "shape": "ComputeNodeGroupIdentifier"
     },
-    "amiId": {
-     "shape": "AmiId"
-    },
     "subnetIds": {
      "shape": "StringList"
+    },
+    "launchTemplateMode": {
+     "shape": "LaunchTemplateMode"
     },
     "customLaunchTemplate": {
      "shape": "CustomLaunchTemplate"

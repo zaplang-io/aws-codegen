@@ -2064,6 +2064,9 @@ struct GetProfileObjectTypeTemplateResponse:
     Optional[str] TemplateId
     Optional[str] SourceName
     Optional[str] SourceObject
+    Optional[int64] DefaultMaxProfileObjectCount
+    Optional[DateTime] DefaultMaxProfileObjectCountEffectiveAfter
+    Optional[bool] StoreOnly
     Optional[bool] AllowProfileCreation
     Optional[str] SourceLastUpdatedTimestampFormat
     Optional[dict[str, ObjectTypeField]] Fields

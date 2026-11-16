@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 86 operations — 86 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   441 structs (281 @derive(Json)), 65 enums, 7 error variants.
+#   442 structs (282 @derive(Json)), 67 enums, 7 error variants.
 #   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -235,6 +235,13 @@ enum EmbeddingModelType:
 enum EnabledOrDisabledState:
     ENABLED
     DISABLED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FieldType:
+    STRING
+    STRING_LIST
     Unknown(str value)
 
 @derive(Json)
@@ -572,6 +579,13 @@ enum RetrievalInstructionLastTransitionStatus:
 enum RetrievalInstructionStatus:
     ACTIVE
     INACTIVE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SearchableStatus:
+    ENABLED
+    DISABLED
     Unknown(str value)
 
 @derive(Json)
@@ -2203,7 +2217,7 @@ struct IteratorFlowNodeConfiguration:
 struct KendraKnowledgeBaseConfiguration:
     str kendraIndexArn
 
-# no @derive(Json): member(s) knowledgeBaseConfiguration: KnowledgeBaseConfiguration, failureReasons: list[str] not derivable (list/map collections);
+# no @derive(Json): member(s) knowledgeBaseConfiguration: KnowledgeBaseConfiguration, failureReasons: list[str], metadataConfigurations: list[MetadataConfiguration] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct KnowledgeBase:
@@ -2218,6 +2232,7 @@ struct KnowledgeBase:
     DateTime createdAt
     DateTime updatedAt
     Optional[list[str]] failureReasons
+    Optional[list[MetadataConfiguration]] metadataConfigurations
 
 # no @derive(Json): member(s) vectorKnowledgeBaseConfiguration: VectorKnowledgeBaseConfiguration, managedKnowledgeBaseConfiguration: ManagedKnowledgeBaseConfiguration, sqlKnowledgeBaseConfiguration: SqlKnowledgeBaseConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2639,6 +2654,12 @@ struct MetadataAttributeValue:
     Optional[bool] booleanValue
     Optional[str] stringValue
     Optional[list[str]] stringListValue
+
+@derive(Json)
+struct MetadataConfiguration:
+    str name
+    FieldType type
+    SearchableStatus searchability
 
 # no @derive(Json): member(s) selectiveModeConfiguration: RerankingMetadataSelectiveModeConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3608,6 +3629,7 @@ struct UpdateKnowledgeBaseRequest:
     str roleArn
     KnowledgeBaseConfiguration knowledgeBaseConfiguration
     Optional[StorageConfiguration] storageConfiguration
+    Optional[list[MetadataConfiguration]] metadataConfigurations
 
 # no @derive(Json): member(s) knowledgeBase: KnowledgeBase not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -6358,6 +6380,12 @@ struct Bedrock_AgentClient:
         if input.storageConfiguration.is_some():
             auto u1 = input.storageConfiguration.unwrap()
             parts.append("\"storageConfiguration\":" + u1.to_json())
+        if input.metadataConfigurations.is_some():
+            auto u2 = input.metadataConfigurations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"metadataConfigurations\":" + bedrock_agent_json_arr(e3))
         auto bp = restjson.rest_json_document(b, bedrock_agent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
 

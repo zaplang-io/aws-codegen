@@ -1345,6 +1345,9 @@
     "communicationLimitsOverride": {
      "shape": "CommunicationLimitsConfig"
     },
+    "lastModifiedTime": {
+     "shape": "TimeStamp"
+    },
     "tags": {
      "shape": "TagMap"
     }
@@ -1428,6 +1431,9 @@
     },
     "connectCampaignFlowArn": {
      "shape": "Arn"
+    },
+    "lastModifiedTime": {
+     "shape": "TimeStamp"
     }
    }
   },

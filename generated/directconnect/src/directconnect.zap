@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Direct Connect (serviceId Direct Connect, API 2012-10-25)
-# Protocol: awsJson 1.1 (targetPrefix OvertureService)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service directconnect, service shape OvertureService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 73 operations — 73 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   163 structs (77 @derive(Json)), 22 enums, 5 error variants.
-#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 73 operations — 73 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   163 structs (plain carriers), 22 enums, 5 error variants.
+#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 
-# The Direct_Connect awsJson protocol: version 1.1, API id "OvertureService".
-def directconnect_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("OvertureService", "directconnect")
+# The Direct_Connect smithy-rpc-v2-cbor protocol: SigV4 service "directconnect" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/OvertureService/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def directconnect_service() -> str:
+    return "directconnect"
 
 # --- enums -----------------------------------------------------------------
 
@@ -251,22 +255,15 @@ enum VirtualInterfaceState:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) overrideAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AcceptDirectConnectGatewayAssociationProposalRequest:
     str directConnectGatewayId
     str proposalId
     str associatedGatewayOwnerAccount
     Optional[list[RouteFilterPrefix]] overrideAllowedPrefixesToDirectConnectGateway
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AcceptDirectConnectGatewayAssociationProposalResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
-@derive(Json)
 struct AllocateConnectionOnInterconnectRequest:
     str bandwidth
     str connectionName
@@ -274,9 +271,6 @@ struct AllocateConnectionOnInterconnectRequest:
     str interconnectId
     int64 vlan
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AllocateHostedConnectionRequest:
     str connectionId
     str ownerAccount
@@ -285,172 +279,125 @@ struct AllocateHostedConnectionRequest:
     int64 vlan
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) newPrivateVirtualInterfaceAllocation: NewPrivateVirtualInterfaceAllocation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AllocatePrivateVirtualInterfaceRequest:
     str connectionId
     str ownerAccount
     NewPrivateVirtualInterfaceAllocation newPrivateVirtualInterfaceAllocation
 
-# no @derive(Json): member(s) newPublicVirtualInterfaceAllocation: NewPublicVirtualInterfaceAllocation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AllocatePublicVirtualInterfaceRequest:
     str connectionId
     str ownerAccount
     NewPublicVirtualInterfaceAllocation newPublicVirtualInterfaceAllocation
 
-# no @derive(Json): member(s) newTransitVirtualInterfaceAllocation: NewTransitVirtualInterfaceAllocation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AllocateTransitVirtualInterfaceRequest:
     str connectionId
     str ownerAccount
     NewTransitVirtualInterfaceAllocation newTransitVirtualInterfaceAllocation
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AllocateTransitVirtualInterfaceResult:
     Optional[VirtualInterface] virtualInterface
 
-# no @derive(Json): member(s) path: list[int64] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AsPathSegment:
-    Optional[AsPathType] pathType
+    Optional[str] pathType
     Optional[list[int64]] path
 
-@derive(Json)
 struct AssociateConnectionWithLagRequest:
     str connectionId
     str lagId
 
-# no @derive(Json): member(s) connectionIdentifiers: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateConnectionsToResiliencyGroupRequest:
     list[str] connectionIdentifiers
     str resiliencyGroupId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resiliencyGroupAssociations: list[ResiliencyGroupAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateConnectionsToResiliencyGroupResult:
     Optional[list[ResiliencyGroupAssociation]] resiliencyGroupAssociations
 
-@derive(Json)
 struct AssociateHostedConnectionRequest:
     str connectionId
     str parentConnectionId
 
-@derive(Json)
 struct AssociateMacSecKeyRequest:
     str connectionId
     Optional[str] secretARN
     Optional[str] ckn
     Optional[str] cak
 
-# no @derive(Json): member(s) macSecKeys: list[MacSecKey] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateMacSecKeyResponse:
     Optional[str] connectionId
     Optional[list[MacSecKey]] macSecKeys
 
-@derive(Json)
 struct AssociateVirtualInterfaceRequest:
     str virtualInterfaceId
     str connectionId
 
-@derive(Json)
 struct AssociatedCoreNetwork:
     Optional[str] id
     Optional[str] ownerAccount
     Optional[str] attachmentId
 
-@derive(Json)
 struct AssociatedGateway:
     Optional[str] id
-    Optional[GatewayType] type
+    Optional[str] type
     Optional[str] ownerAccount
     Optional[str] region
 
-# no @derive(Json): member(s) availablePortSpeeds: list[str], includedRegions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AvailableBillingMode:
-    Optional[BillingMode] billingMode
+    Optional[str] billingMode
     Optional[list[str]] availablePortSpeeds
     Optional[list[str]] includedRegions
 
-@derive(Json)
 struct BGPPeer:
     Optional[str] bgpPeerId
     Optional[int64] asn
     Optional[int64] asnLong
     Optional[str] authKey
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[BGPPeerState] bgpPeerState
-    Optional[BGPStatus] bgpStatus
+    Optional[str] bgpPeerState
+    Optional[str] bgpStatus
     Optional[str] awsDeviceV2
     Optional[str] awsLogicalDeviceId
 
-@derive(Json)
 struct ConfirmConnectionRequest:
     str connectionId
 
-@derive(Json)
 struct ConfirmConnectionResponse:
-    Optional[ConnectionState] connectionState
+    Optional[str] connectionState
 
-@derive(Json)
 struct ConfirmCustomerAgreementRequest:
     Optional[str] agreementName
 
-@derive(Json)
 struct ConfirmCustomerAgreementResponse:
     Optional[str] status
 
-@derive(Json)
 struct ConfirmPrivateVirtualInterfaceRequest:
     str virtualInterfaceId
     Optional[str] virtualGatewayId
     Optional[str] directConnectGatewayId
 
-@derive(Json)
 struct ConfirmPrivateVirtualInterfaceResponse:
-    Optional[VirtualInterfaceState] virtualInterfaceState
+    Optional[str] virtualInterfaceState
 
-@derive(Json)
 struct ConfirmPublicVirtualInterfaceRequest:
     str virtualInterfaceId
 
-@derive(Json)
 struct ConfirmPublicVirtualInterfaceResponse:
-    Optional[VirtualInterfaceState] virtualInterfaceState
+    Optional[str] virtualInterfaceState
 
-@derive(Json)
 struct ConfirmTransitVirtualInterfaceRequest:
     str virtualInterfaceId
     str directConnectGatewayId
 
-@derive(Json)
 struct ConfirmTransitVirtualInterfaceResponse:
-    Optional[VirtualInterfaceState] virtualInterfaceState
+    Optional[str] virtualInterfaceState
 
-# no @derive(Json): member(s) tags: list[Tag], macSecKeys: list[MacSecKey] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Connection:
     Optional[str] ownerAccount
     Optional[str] connectionId
     Optional[str] connectionName
-    Optional[ConnectionState] connectionState
+    Optional[str] connectionState
     Optional[str] region
     Optional[str] location
     Optional[str] bandwidth
@@ -462,7 +409,7 @@ struct Connection:
     Optional[bool] jumboFrameCapable
     Optional[str] awsDeviceV2
     Optional[str] awsLogicalDeviceId
-    Optional[HasLogicalRedundancy] hasLogicalRedundancy
+    Optional[str] hasLogicalRedundancy
     Optional[list[Tag]] tags
     Optional[str] providerName
     Optional[bool] macSecCapable
@@ -475,29 +422,19 @@ struct Connection:
     Optional[int64] prefixPoolSizeIpv6
     Optional[int64] prefixPoolUnallocatedCountIpv4
     Optional[int64] prefixPoolUnallocatedCountIpv6
-    Optional[BillingMode] billingMode
+    Optional[str] billingMode
 
-# no @derive(Json): member(s) connections: list[Connection] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Connections:
     Optional[list[Connection]] connections
     Optional[str] nextToken
 
-@derive(Json)
 struct CreateBGPPeerRequest:
     Optional[str] virtualInterfaceId
     Optional[NewBGPPeer] newBGPPeer
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateBGPPeerResponse:
     Optional[VirtualInterface] virtualInterface
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateConnectionRequest:
     str location
     str bandwidth
@@ -506,11 +443,8 @@ struct CreateConnectionRequest:
     Optional[list[Tag]] tags
     Optional[str] providerName
     Optional[bool] requestMACSec
-    Optional[RequestBillingMode] billingMode
+    Optional[str] billingMode
 
-# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], removeAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationProposalRequest:
     str directConnectGatewayId
     str directConnectGatewayOwnerAccount
@@ -518,44 +452,26 @@ struct CreateDirectConnectGatewayAssociationProposalRequest:
     Optional[list[RouteFilterPrefix]] addAllowedPrefixesToDirectConnectGateway
     Optional[list[RouteFilterPrefix]] removeAllowedPrefixesToDirectConnectGateway
 
-# no @derive(Json): member(s) directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposal not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationProposalResult:
     Optional[DirectConnectGatewayAssociationProposal] directConnectGatewayAssociationProposal
 
-# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationRequest:
     str directConnectGatewayId
     Optional[str] gatewayId
     Optional[list[RouteFilterPrefix]] addAllowedPrefixesToDirectConnectGateway
     Optional[str] virtualGatewayId
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayAssociationResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayRequest:
     str directConnectGatewayName
     Optional[list[Tag]] tags
     Optional[int64] amazonSideAsn
 
-# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDirectConnectGatewayResult:
     Optional[DirectConnectGateway] directConnectGateway
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateInterconnectRequest:
     str interconnectName
     str bandwidth
@@ -565,9 +481,6 @@ struct CreateInterconnectRequest:
     Optional[str] providerName
     Optional[bool] requestMACSec
 
-# no @derive(Json): member(s) tags: list[Tag], childConnectionTags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLagRequest:
     int64 numberOfConnections
     str location
@@ -578,56 +491,36 @@ struct CreateLagRequest:
     Optional[list[Tag]] childConnectionTags
     Optional[str] providerName
     Optional[bool] requestMACSec
-    Optional[RequestBillingMode] billingMode
+    Optional[str] billingMode
 
-# no @derive(Json): member(s) newPrivateVirtualInterface: NewPrivateVirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePrivateVirtualInterfaceRequest:
     str connectionId
     NewPrivateVirtualInterface newPrivateVirtualInterface
 
-# no @derive(Json): member(s) newPublicVirtualInterface: NewPublicVirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePublicVirtualInterfaceRequest:
     str connectionId
     NewPublicVirtualInterface newPublicVirtualInterface
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateResiliencyGroupRequest:
     str resiliencyGroupName
-    ResiliencyModel intendedResiliencyModel
+    str intendedResiliencyModel
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
-# no @derive(Json): member(s) newTransitVirtualInterface: NewTransitVirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTransitVirtualInterfaceRequest:
     str connectionId
     NewTransitVirtualInterface newTransitVirtualInterface
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTransitVirtualInterfaceResult:
     Optional[VirtualInterface] virtualInterface
 
-@derive(Json)
 struct CustomerAgreement:
     Optional[str] agreementName
     Optional[str] status
 
-@derive(Json)
 struct DeleteBGPPeerRequest:
     Optional[str] virtualInterfaceId
     Optional[int64] asn
@@ -635,106 +528,73 @@ struct DeleteBGPPeerRequest:
     Optional[str] customerAddress
     Optional[str] bgpPeerId
 
-# no @derive(Json): member(s) virtualInterface: VirtualInterface not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteBGPPeerResponse:
     Optional[VirtualInterface] virtualInterface
 
-@derive(Json)
 struct DeleteConnectionRequest:
     str connectionId
 
-@derive(Json)
 struct DeleteDirectConnectGatewayAssociationProposalRequest:
     str proposalId
 
-# no @derive(Json): member(s) directConnectGatewayAssociationProposal: DirectConnectGatewayAssociationProposal not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteDirectConnectGatewayAssociationProposalResult:
     Optional[DirectConnectGatewayAssociationProposal] directConnectGatewayAssociationProposal
 
-@derive(Json)
 struct DeleteDirectConnectGatewayAssociationRequest:
     Optional[str] associationId
     Optional[str] directConnectGatewayId
     Optional[str] virtualGatewayId
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteDirectConnectGatewayAssociationResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
-@derive(Json)
 struct DeleteDirectConnectGatewayRequest:
     str directConnectGatewayId
 
-# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteDirectConnectGatewayResult:
     Optional[DirectConnectGateway] directConnectGateway
 
-@derive(Json)
 struct DeleteInterconnectRequest:
     str interconnectId
 
-@derive(Json)
 struct DeleteInterconnectResponse:
-    Optional[InterconnectState] interconnectState
+    Optional[str] interconnectState
 
-@derive(Json)
 struct DeleteLagRequest:
     str lagId
 
-@derive(Json)
 struct DeleteResiliencyGroupRequest:
     str resiliencyGroupId
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
-@derive(Json)
 struct DeleteVirtualInterfaceRequest:
     str virtualInterfaceId
 
-@derive(Json)
 struct DeleteVirtualInterfaceResponse:
-    Optional[VirtualInterfaceState] virtualInterfaceState
+    Optional[str] virtualInterfaceState
 
-@derive(Json)
 struct DescribeConnectionLoaRequest:
     str connectionId
     Optional[str] providerName
     Optional[str] loaContentType
 
-@derive(Json)
 struct DescribeConnectionLoaResponse:
     Optional[Loa] loa
 
-@derive(Json)
 struct DescribeConnectionsOnInterconnectRequest:
     str interconnectId
 
-@derive(Json)
 struct DescribeConnectionsRequest:
     Optional[str] connectionId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) agreements: list[CustomerAgreement] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeCustomerMetadataResponse:
     Optional[list[CustomerAgreement]] agreements
-    Optional[NniPartnerType] nniPartnerType
+    Optional[str] nniPartnerType
 
-@derive(Json)
 struct DescribeDirectConnectGatewayAssociationProposalsRequest:
     Optional[str] directConnectGatewayId
     Optional[str] proposalId
@@ -742,14 +602,10 @@ struct DescribeDirectConnectGatewayAssociationProposalsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) directConnectGatewayAssociationProposals: list[DirectConnectGatewayAssociationProposal] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewayAssociationProposalsResult:
     Optional[list[DirectConnectGatewayAssociationProposal]] directConnectGatewayAssociationProposals
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeDirectConnectGatewayAssociationsRequest:
     Optional[str] associationId
     Optional[str] associatedGatewayId
@@ -758,129 +614,96 @@ struct DescribeDirectConnectGatewayAssociationsRequest:
     Optional[str] nextToken
     Optional[str] virtualGatewayId
 
-# no @derive(Json): member(s) directConnectGatewayAssociations: list[DirectConnectGatewayAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewayAssociationsResult:
     Optional[list[DirectConnectGatewayAssociation]] directConnectGatewayAssociations
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeDirectConnectGatewayAttachmentsRequest:
     Optional[str] directConnectGatewayId
     Optional[str] virtualInterfaceId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) directConnectGatewayAttachments: list[DirectConnectGatewayAttachment] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewayAttachmentsResult:
     Optional[list[DirectConnectGatewayAttachment]] directConnectGatewayAttachments
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeDirectConnectGatewaysRequest:
     Optional[str] directConnectGatewayId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) directConnectGateways: list[DirectConnectGateway] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDirectConnectGatewaysResult:
     Optional[list[DirectConnectGateway]] directConnectGateways
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeHostedConnectionsRequest:
     str connectionId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeInterconnectLoaRequest:
     str interconnectId
     Optional[str] providerName
     Optional[str] loaContentType
 
-@derive(Json)
 struct DescribeInterconnectLoaResponse:
     Optional[Loa] loa
 
-@derive(Json)
 struct DescribeInterconnectsRequest:
     Optional[str] interconnectId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeLagsRequest:
     Optional[str] lagId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-@derive(Json)
 struct DescribeLoaRequest:
     str connectionId
     Optional[str] providerName
     Optional[str] loaContentType
 
-@derive(Json)
 struct DescribeRouterConfigurationRequest:
     str virtualInterfaceId
     Optional[str] routerTypeIdentifier
 
-@derive(Json)
 struct DescribeRouterConfigurationResponse:
     Optional[str] customerRouterConfig
     Optional[RouterType] router
     Optional[str] virtualInterfaceId
     Optional[str] virtualInterfaceName
 
-# no @derive(Json): member(s) resourceArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTagsRequest:
     list[str] resourceArns
 
-# no @derive(Json): member(s) resourceTags: list[ResourceTag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTagsResponse:
     Optional[list[ResourceTag]] resourceTags
 
-@derive(Json)
 struct DescribeVirtualInterfacesRequest:
     Optional[str] connectionId
     Optional[str] virtualInterfaceId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-@derive(Json)
 struct DirectConnectClientException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectConnectGateway:
     Optional[str] directConnectGatewayId
     Optional[str] directConnectGatewayName
     Optional[int64] amazonSideAsn
     Optional[str] ownerAccount
-    Optional[DirectConnectGatewayState] directConnectGatewayState
+    Optional[str] directConnectGatewayState
     Optional[str] stateChangeError
     Optional[int64] totalPrefixPoolAllocations
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) allowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectConnectGatewayAssociation:
     Optional[str] directConnectGatewayId
     Optional[str] directConnectGatewayOwnerAccount
-    Optional[DirectConnectGatewayAssociationState] associationState
+    Optional[str] associationState
     Optional[str] stateChangeError
     Optional[AssociatedGateway] associatedGateway
     Optional[str] associationId
@@ -890,85 +713,61 @@ struct DirectConnectGatewayAssociation:
     Optional[str] virtualGatewayRegion
     Optional[str] virtualGatewayOwnerAccount
 
-# no @derive(Json): member(s) existingAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], requestedAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DirectConnectGatewayAssociationProposal:
     Optional[str] proposalId
     Optional[str] directConnectGatewayId
     Optional[str] directConnectGatewayOwnerAccount
-    Optional[DirectConnectGatewayAssociationProposalState] proposalState
+    Optional[str] proposalState
     Optional[AssociatedGateway] associatedGateway
     Optional[list[RouteFilterPrefix]] existingAllowedPrefixesToDirectConnectGateway
     Optional[list[RouteFilterPrefix]] requestedAllowedPrefixesToDirectConnectGateway
 
-@derive(Json)
 struct DirectConnectGatewayAttachment:
     Optional[str] directConnectGatewayId
     Optional[str] virtualInterfaceId
     Optional[str] virtualInterfaceRegion
     Optional[str] virtualInterfaceOwnerAccount
-    Optional[DirectConnectGatewayAttachmentState] attachmentState
-    Optional[DirectConnectGatewayAttachmentType] attachmentType
+    Optional[str] attachmentState
+    Optional[str] attachmentType
     Optional[str] stateChangeError
 
-@derive(Json)
 struct DirectConnectServerException:
     Optional[str] message
 
-@derive(Json)
 struct DisassociateConnectionFromLagRequest:
     str connectionId
     str lagId
 
-# no @derive(Json): member(s) connectionIdentifiers: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateConnectionsFromResiliencyGroupRequest:
     list[str] connectionIdentifiers
     str resiliencyGroupId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resiliencyGroupAssociations: list[ResiliencyGroupAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateConnectionsFromResiliencyGroupResult:
     Optional[list[ResiliencyGroupAssociation]] resiliencyGroupAssociations
 
-@derive(Json)
 struct DisassociateMacSecKeyRequest:
     str connectionId
     str secretARN
 
-# no @derive(Json): member(s) macSecKeys: list[MacSecKey] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DisassociateMacSecKeyResponse:
     Optional[str] connectionId
     Optional[list[MacSecKey]] macSecKeys
 
-@derive(Json)
 struct DuplicateTagKeysException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GetResiliencyGroupRequest:
     str resiliencyGroupId
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
-# no @derive(Json): member(s) tags: list[Tag], macSecKeys: list[MacSecKey] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Interconnect:
     Optional[str] interconnectId
     Optional[str] interconnectName
-    Optional[InterconnectState] interconnectState
+    Optional[str] interconnectState
     Optional[str] region
     Optional[str] location
     Optional[str] bandwidth
@@ -978,7 +777,7 @@ struct Interconnect:
     Optional[bool] jumboFrameCapable
     Optional[str] awsDeviceV2
     Optional[str] awsLogicalDeviceId
-    Optional[HasLogicalRedundancy] hasLogicalRedundancy
+    Optional[str] hasLogicalRedundancy
     Optional[list[Tag]] tags
     Optional[str] providerName
     Optional[bool] macSecCapable
@@ -986,23 +785,17 @@ struct Interconnect:
     Optional[str] encryptionMode
     Optional[list[MacSecKey]] macSecKeys
 
-# no @derive(Json): member(s) interconnects: list[Interconnect] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Interconnects:
     Optional[list[Interconnect]] interconnects
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connections: list[Connection], tags: list[Tag], macSecKeys: list[MacSecKey] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Lag:
     Optional[str] connectionsBandwidth
     Optional[int64] numberOfConnections
     Optional[str] lagId
     Optional[str] ownerAccount
     Optional[str] lagName
-    Optional[LagState] lagState
+    Optional[str] lagState
     Optional[str] location
     Optional[str] region
     Optional[int64] minimumLinks
@@ -1012,7 +805,7 @@ struct Lag:
     Optional[list[Connection]] connections
     Optional[bool] allowsHostedConnections
     Optional[bool] jumboFrameCapable
-    Optional[HasLogicalRedundancy] hasLogicalRedundancy
+    Optional[str] hasLogicalRedundancy
     Optional[list[Tag]] tags
     Optional[str] providerName
     Optional[bool] macSecCapable
@@ -1023,65 +816,44 @@ struct Lag:
     Optional[int64] prefixPoolUnallocatedCountIpv4
     Optional[int64] prefixPoolUnallocatedCountIpv6
     Optional[RateLimiterStatus] rateLimiterStatus
-    Optional[BillingMode] billingMode
+    Optional[str] billingMode
 
-# no @derive(Json): member(s) lags: list[Lag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Lags:
     Optional[list[Lag]] lags
     Optional[str] nextToken
 
-@derive(Json)
 struct LimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ListResiliencyGroupAssociationsRequest:
     str resiliencyGroupId
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResiliencyGroupAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListResiliencyGroupAssociationsResult:
     Optional[list[ResiliencyGroupAssociation]] items
     Optional[str] nextToken
 
-@derive(Json)
 struct ListResiliencyGroupsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ResiliencyGroupSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListResiliencyGroupsResult:
     Optional[list[ResiliencyGroupSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: RouteFilters not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVirtualInterfaceRoutesRequest:
     Optional[str] virtualInterfaceId
     Optional[RouteFilters] filters
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) routes: list[Route] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVirtualInterfaceRoutesResponse:
     Optional[str] virtualInterfaceId
     Optional[list[Route]] routes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) bgpPeers: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVirtualInterfaceTestHistoryRequest:
     Optional[str] testId
     Optional[str] virtualInterfaceId
@@ -1090,21 +862,14 @@ struct ListVirtualInterfaceTestHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) virtualInterfaceTestHistory: list[VirtualInterfaceTestHistory] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListVirtualInterfaceTestHistoryResponse:
     Optional[list[VirtualInterfaceTestHistory]] virtualInterfaceTestHistory
     Optional[str] nextToken
 
-@derive(Json)
 struct Loa:
     Optional[bytes] loaContent
     Optional[str] loaContentType
 
-# no @derive(Json): member(s) availablePortSpeeds: list[str], availableProviders: list[str], availableMacSecPortSpeeds: list[str], availableBillingModes: list[AvailableBillingMode] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Location:
     Optional[str] locationCode
     Optional[str] locationName
@@ -1114,31 +879,23 @@ struct Location:
     Optional[list[str]] availableMacSecPortSpeeds
     Optional[list[AvailableBillingMode]] availableBillingModes
 
-# no @derive(Json): member(s) locations: list[Location] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Locations:
     Optional[list[Location]] locations
 
-@derive(Json)
 struct MacSecKey:
     Optional[str] secretARN
     Optional[str] ckn
     Optional[str] state
     Optional[str] startOn
 
-@derive(Json)
 struct NewBGPPeer:
     Optional[int64] asn
     Optional[int64] asnLong
     Optional[str] authKey
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[str] amazonAddress
     Optional[str] customerAddress
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NewPrivateVirtualInterface:
     str virtualInterfaceName
     int64 vlan
@@ -1148,7 +905,7 @@ struct NewPrivateVirtualInterface:
     Optional[str] authKey
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[str] virtualGatewayId
     Optional[str] directConnectGatewayId
     Optional[list[Tag]] tags
@@ -1157,9 +914,6 @@ struct NewPrivateVirtualInterface:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NewPrivateVirtualInterfaceAllocation:
     str virtualInterfaceName
     int64 vlan
@@ -1168,14 +922,11 @@ struct NewPrivateVirtualInterfaceAllocation:
     Optional[int64] mtu
     Optional[str] authKey
     Optional[str] amazonAddress
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[str] customerAddress
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NewPublicVirtualInterface:
     str virtualInterfaceName
     int64 vlan
@@ -1184,14 +935,11 @@ struct NewPublicVirtualInterface:
     Optional[str] authKey
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[list[RouteFilterPrefix]] routeFilterPrefixes
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NewPublicVirtualInterfaceAllocation:
     str virtualInterfaceName
     int64 vlan
@@ -1200,14 +948,11 @@ struct NewPublicVirtualInterfaceAllocation:
     Optional[str] authKey
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[list[RouteFilterPrefix]] routeFilterPrefixes
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NewTransitVirtualInterface:
     Optional[str] virtualInterfaceName
     Optional[int64] vlan
@@ -1217,7 +962,7 @@ struct NewTransitVirtualInterface:
     Optional[str] authKey
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[str] directConnectGatewayId
     Optional[list[Tag]] tags
     Optional[bool] enableSiteLink
@@ -1225,9 +970,6 @@ struct NewTransitVirtualInterface:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NewTransitVirtualInterfaceAllocation:
     Optional[str] virtualInterfaceName
     Optional[int64] vlan
@@ -1237,78 +979,61 @@ struct NewTransitVirtualInterfaceAllocation:
     Optional[str] authKey
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[AddressFamily] addressFamily
+    Optional[str] addressFamily
     Optional[list[Tag]] tags
     Optional[str] rateLimit
 
-@derive(Json)
 struct RateLimiterStatus:
     Optional[int64] maxAllowed
     Optional[int64] inUse
     Optional[int64] remaining
     Optional[str] totalBandwidth
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ResiliencyGroup:
     Optional[str] resiliencyGroupId
     Optional[str] resiliencyGroupArn
     Optional[str] resiliencyGroupName
     Optional[str] resiliencyGroupType
     Optional[str] ownerAccount
-    Optional[ResiliencyGroupState] state
+    Optional[str] state
     Optional[list[Tag]] tags
 
-@derive(Json)
 struct ResiliencyGroupAssociation:
     Optional[str] resiliencyGroupId
     Optional[str] connectionArn
-    Optional[ResiliencyGroupAssociationState] state
+    Optional[str] state
 
-@derive(Json)
 struct ResiliencyGroupSummary:
     Optional[str] resiliencyGroupId
     Optional[str] resiliencyGroupArn
     Optional[str] resiliencyGroupName
     Optional[str] resiliencyGroupType
     Optional[str] ownerAccount
-    Optional[ResiliencyGroupState] state
+    Optional[str] state
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ResourceTag:
     Optional[str] resourceArn
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) asPath: list[AsPathSegment], communities: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Route:
     Optional[str] cidr
-    Optional[RouteDirection] routeDirection
-    Optional[AddressFamily] addressFamily
+    Optional[str] routeDirection
+    Optional[str] addressFamily
     Optional[list[AsPathSegment]] asPath
     Optional[list[str]] communities
     Optional[str] awsLogicalDeviceId
     Optional[DateTime] routeInstalledAt
 
-@derive(Json)
 struct RouteFilterPrefix:
     Optional[str] cidr
 
-# no @derive(Json): member(s) cidrs: list[str], asPath: list[int64], communities: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RouteFilters:
-    Optional[RouteDirection] routeDirection
-    Optional[AddressFamily] addressFamily
+    Optional[str] routeDirection
+    Optional[str] addressFamily
     Optional[list[str]] cidrs
     Optional[list[int64]] asPath
     Optional[list[str]] communities
 
-@derive(Json)
 struct RouterType:
     Optional[str] vendor
     Optional[str] platform
@@ -1317,129 +1042,86 @@ struct RouterType:
     Optional[str] xsltTemplateNameForMacSec
     Optional[str] routerTypeIdentifier
 
-# no @derive(Json): member(s) bgpPeers: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartBgpFailoverTestRequest:
     str virtualInterfaceId
     Optional[list[str]] bgpPeers
     Optional[int64] testDurationInMinutes
 
-# no @derive(Json): member(s) virtualInterfaceTest: VirtualInterfaceTestHistory not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartBgpFailoverTestResponse:
     Optional[VirtualInterfaceTestHistory] virtualInterfaceTest
 
-@derive(Json)
 struct StopBgpFailoverTestRequest:
     str virtualInterfaceId
 
-# no @derive(Json): member(s) virtualInterfaceTest: VirtualInterfaceTestHistory not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StopBgpFailoverTestResponse:
     Optional[VirtualInterfaceTestHistory] virtualInterfaceTest
 
-@derive(Json)
 struct Tag:
     str key
     Optional[str] value
 
-# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TooManyTagsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateConnectionRequest:
     str connectionId
     Optional[str] connectionName
     Optional[str] encryptionMode
 
-# no @derive(Json): member(s) connectionIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateConnectionsBillingModeRequest:
     list[str] connectionIds
-    RequestBillingMode billingMode
+    str billingMode
 
-# no @derive(Json): member(s) connections: list[Connection] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateConnectionsBillingModeResponse:
-    Optional[BillingMode] billingMode
+    Optional[str] billingMode
     Optional[list[Connection]] connections
 
-# no @derive(Json): member(s) addAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix], removeAllowedPrefixesToDirectConnectGateway: list[RouteFilterPrefix] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayAssociationRequest:
     Optional[str] associationId
     Optional[list[RouteFilterPrefix]] addAllowedPrefixesToDirectConnectGateway
     Optional[list[RouteFilterPrefix]] removeAllowedPrefixesToDirectConnectGateway
 
-# no @derive(Json): member(s) directConnectGatewayAssociation: DirectConnectGatewayAssociation not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayAssociationResult:
     Optional[DirectConnectGatewayAssociation] directConnectGatewayAssociation
 
-@derive(Json)
 struct UpdateDirectConnectGatewayRequest:
     str directConnectGatewayId
     str newDirectConnectGatewayName
 
-# no @derive(Json): member(s) directConnectGateway: DirectConnectGateway not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDirectConnectGatewayResponse:
     Optional[DirectConnectGateway] directConnectGateway
 
-@derive(Json)
 struct UpdateLagRequest:
     str lagId
     Optional[str] lagName
     Optional[int64] minimumLinks
     Optional[str] encryptionMode
 
-@derive(Json)
 struct UpdateResiliencyGroupRequest:
     str resiliencyGroupId
     str resiliencyGroupName
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resiliencyGroup: ResiliencyGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateResiliencyGroupResult:
     Optional[ResiliencyGroup] resiliencyGroup
 
-@derive(Json)
 struct UpdateVirtualInterfaceAttributesRequest:
     str virtualInterfaceId
     Optional[int64] mtu
@@ -1449,20 +1131,13 @@ struct UpdateVirtualInterfaceAttributesRequest:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-@derive(Json)
 struct VirtualGateway:
     Optional[str] virtualGatewayId
     Optional[str] virtualGatewayState
 
-# no @derive(Json): member(s) virtualGateways: list[VirtualGateway] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VirtualGateways:
     Optional[list[VirtualGateway]] virtualGateways
 
-# no @derive(Json): member(s) routeFilterPrefixes: list[RouteFilterPrefix], bgpPeers: list[BGPPeer], tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VirtualInterface:
     Optional[str] ownerAccount
     Optional[str] virtualInterfaceId
@@ -1477,8 +1152,8 @@ struct VirtualInterface:
     Optional[str] authKey
     Optional[str] amazonAddress
     Optional[str] customerAddress
-    Optional[AddressFamily] addressFamily
-    Optional[VirtualInterfaceState] virtualInterfaceState
+    Optional[str] addressFamily
+    Optional[str] virtualInterfaceState
     Optional[str] customerRouterConfig
     Optional[int64] mtu
     Optional[bool] jumboFrameCapable
@@ -1495,9 +1170,6 @@ struct VirtualInterface:
     Optional[int64] prefixPoolAllocatedCountIpv6
     Optional[str] rateLimit
 
-# no @derive(Json): member(s) bgpPeers: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VirtualInterfaceTestHistory:
     Optional[str] testId
     Optional[str] virtualInterfaceId
@@ -1508,9 +1180,6 @@ struct VirtualInterfaceTestHistory:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) virtualInterfaces: list[VirtualInterface] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VirtualInterfaces:
     Optional[list[VirtualInterface]] virtualInterfaces
     Optional[str] nextToken
@@ -1522,7 +1191,7 @@ struct VirtualInterfaces:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -1574,696 +1243,1581 @@ def directconnect_error_name(Direct_ConnectErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def directconnect_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   DescribeDirectConnectGatewayAssociations
+#   DescribeDirectConnectGatewayAttachments
+#   DescribeDirectConnectGateways
 
-def directconnect_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def directconnect_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize AcceptDirectConnectGatewayAssociationProposalRequest to a compact JSON object (declaration order).
-def accept_direct_connect_gateway_association_proposal_request_to_json(AcceptDirectConnectGatewayAssociationProposalRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"directConnectGatewayId\":" + directconnect_json_str(v.directConnectGatewayId))
-    parts.append("\"proposalId\":" + directconnect_json_str(v.proposalId))
-    parts.append("\"associatedGatewayOwnerAccount\":" + directconnect_json_str(v.associatedGatewayOwnerAccount))
+# Serialize AcceptDirectConnectGatewayAssociationProposalRequest to a CBOR map (member wire name -> value, model order).
+def accept_direct_connect_gateway_association_proposal_request_to_cbor(AcceptDirectConnectGatewayAssociationProposalRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("directConnectGatewayId")
+    vals.append(cbor.cbor_text(v.directConnectGatewayId))
+    keys.append("proposalId")
+    vals.append(cbor.cbor_text(v.proposalId))
+    keys.append("associatedGatewayOwnerAccount")
+    vals.append(cbor.cbor_text(v.associatedGatewayOwnerAccount))
     if v.overrideAllowedPrefixesToDirectConnectGateway.is_some():
         auto u0 = v.overrideAllowedPrefixesToDirectConnectGateway.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"overrideAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e1))
-    return directconnect_json_obj(parts)
+            e1.append(route_filter_prefix_to_cbor(x1))
+        keys.append("overrideAllowedPrefixesToDirectConnectGateway")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AllocateHostedConnectionRequest to a compact JSON object (declaration order).
-def allocate_hosted_connection_request_to_json(AllocateHostedConnectionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
-    parts.append("\"bandwidth\":" + directconnect_json_str(v.bandwidth))
-    parts.append("\"connectionName\":" + directconnect_json_str(v.connectionName))
-    parts.append("\"vlan\":" + str(v.vlan))
+# Serialize AllocateConnectionOnInterconnectRequest to a CBOR map (member wire name -> value, model order).
+def allocate_connection_on_interconnect_request_to_cbor(AllocateConnectionOnInterconnectRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("bandwidth")
+    vals.append(cbor.cbor_text(v.bandwidth))
+    keys.append("connectionName")
+    vals.append(cbor.cbor_text(v.connectionName))
+    keys.append("ownerAccount")
+    vals.append(cbor.cbor_text(v.ownerAccount))
+    keys.append("interconnectId")
+    vals.append(cbor.cbor_text(v.interconnectId))
+    keys.append("vlan")
+    vals.append(cbor.cbor_int(v.vlan))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AllocateHostedConnectionRequest to a CBOR map (member wire name -> value, model order).
+def allocate_hosted_connection_request_to_cbor(AllocateHostedConnectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("ownerAccount")
+    vals.append(cbor.cbor_text(v.ownerAccount))
+    keys.append("bandwidth")
+    vals.append(cbor.cbor_text(v.bandwidth))
+    keys.append("connectionName")
+    vals.append(cbor.cbor_text(v.connectionName))
+    keys.append("vlan")
+    vals.append(cbor.cbor_int(v.vlan))
     if v.tags.is_some():
         auto u0 = v.tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e1))
-    return directconnect_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AllocatePrivateVirtualInterfaceRequest to a compact JSON object (declaration order).
-def allocate_private_virtual_interface_request_to_json(AllocatePrivateVirtualInterfaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
-    parts.append("\"newPrivateVirtualInterfaceAllocation\":" + new_private_virtual_interface_allocation_to_json(v.newPrivateVirtualInterfaceAllocation))
-    return directconnect_json_obj(parts)
+# Serialize AllocatePrivateVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def allocate_private_virtual_interface_request_to_cbor(AllocatePrivateVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("ownerAccount")
+    vals.append(cbor.cbor_text(v.ownerAccount))
+    keys.append("newPrivateVirtualInterfaceAllocation")
+    vals.append(new_private_virtual_interface_allocation_to_cbor(v.newPrivateVirtualInterfaceAllocation))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AllocatePublicVirtualInterfaceRequest to a compact JSON object (declaration order).
-def allocate_public_virtual_interface_request_to_json(AllocatePublicVirtualInterfaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
-    parts.append("\"newPublicVirtualInterfaceAllocation\":" + new_public_virtual_interface_allocation_to_json(v.newPublicVirtualInterfaceAllocation))
-    return directconnect_json_obj(parts)
+# Serialize AllocatePublicVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def allocate_public_virtual_interface_request_to_cbor(AllocatePublicVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("ownerAccount")
+    vals.append(cbor.cbor_text(v.ownerAccount))
+    keys.append("newPublicVirtualInterfaceAllocation")
+    vals.append(new_public_virtual_interface_allocation_to_cbor(v.newPublicVirtualInterfaceAllocation))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AllocateTransitVirtualInterfaceRequest to a compact JSON object (declaration order).
-def allocate_transit_virtual_interface_request_to_json(AllocateTransitVirtualInterfaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"ownerAccount\":" + directconnect_json_str(v.ownerAccount))
-    parts.append("\"newTransitVirtualInterfaceAllocation\":" + new_transit_virtual_interface_allocation_to_json(v.newTransitVirtualInterfaceAllocation))
-    return directconnect_json_obj(parts)
+# Serialize AllocateTransitVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def allocate_transit_virtual_interface_request_to_cbor(AllocateTransitVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("ownerAccount")
+    vals.append(cbor.cbor_text(v.ownerAccount))
+    keys.append("newTransitVirtualInterfaceAllocation")
+    vals.append(new_transit_virtual_interface_allocation_to_cbor(v.newTransitVirtualInterfaceAllocation))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AssociateConnectionsToResiliencyGroupRequest to a compact JSON object (declaration order).
-def associate_connections_to_resiliency_group_request_to_json(AssociateConnectionsToResiliencyGroupRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AssociateConnectionWithLagRequest to a CBOR map (member wire name -> value, model order).
+def associate_connection_with_lag_request_to_cbor(AssociateConnectionWithLagRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("lagId")
+    vals.append(cbor.cbor_text(v.lagId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateConnectionsToResiliencyGroupRequest to a CBOR map (member wire name -> value, model order).
+def associate_connections_to_resiliency_group_request_to_cbor(AssociateConnectionsToResiliencyGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.connectionIdentifiers:
-        e0.append(directconnect_json_str(x0))
-    parts.append("\"connectionIdentifiers\":" + directconnect_json_arr(e0))
-    parts.append("\"resiliencyGroupId\":" + directconnect_json_str(v.resiliencyGroupId))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("connectionIdentifiers")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("resiliencyGroupId")
+    vals.append(cbor.cbor_text(v.resiliencyGroupId))
     if v.clientToken.is_some():
         auto u1 = v.clientToken.unwrap()
-        parts.append("\"clientToken\":" + directconnect_json_str(u1))
-    return directconnect_json_obj(parts)
+        keys.append("clientToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateConnectionRequest to a compact JSON object (declaration order).
-def create_connection_request_to_json(CreateConnectionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"location\":" + directconnect_json_str(v.location))
-    parts.append("\"bandwidth\":" + directconnect_json_str(v.bandwidth))
-    parts.append("\"connectionName\":" + directconnect_json_str(v.connectionName))
-    if v.lagId.is_some():
-        auto u0 = v.lagId.unwrap()
-        parts.append("\"lagId\":" + directconnect_json_str(u0))
-    if v.tags.is_some():
-        auto u1 = v.tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e2))
-    if v.providerName.is_some():
-        auto u3 = v.providerName.unwrap()
-        parts.append("\"providerName\":" + directconnect_json_str(u3))
-    if v.requestMACSec.is_some():
-        auto u4 = v.requestMACSec.unwrap()
-        parts.append("\"requestMACSec\":" + json.dumps(JsonValue.Bool(u4)))
-    if v.billingMode.is_some():
-        auto u5 = v.billingMode.unwrap()
-        parts.append("\"billingMode\":" + u5.to_json())
-    return directconnect_json_obj(parts)
+# Serialize AssociateHostedConnectionRequest to a CBOR map (member wire name -> value, model order).
+def associate_hosted_connection_request_to_cbor(AssociateHostedConnectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("parentConnectionId")
+    vals.append(cbor.cbor_text(v.parentConnectionId))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDirectConnectGatewayAssociationProposalRequest to a compact JSON object (declaration order).
-def create_direct_connect_gateway_association_proposal_request_to_json(CreateDirectConnectGatewayAssociationProposalRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"directConnectGatewayId\":" + directconnect_json_str(v.directConnectGatewayId))
-    parts.append("\"directConnectGatewayOwnerAccount\":" + directconnect_json_str(v.directConnectGatewayOwnerAccount))
-    parts.append("\"gatewayId\":" + directconnect_json_str(v.gatewayId))
-    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
-        auto u0 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"addAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e1))
-    if v.removeAllowedPrefixesToDirectConnectGateway.is_some():
-        auto u2 = v.removeAllowedPrefixesToDirectConnectGateway.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"removeAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e3))
-    return directconnect_json_obj(parts)
+# Serialize AssociateMacSecKeyRequest to a CBOR map (member wire name -> value, model order).
+def associate_mac_sec_key_request_to_cbor(AssociateMacSecKeyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    if v.secretARN.is_some():
+        auto u0 = v.secretARN.unwrap()
+        keys.append("secretARN")
+        vals.append(cbor.cbor_text(u0))
+    if v.ckn.is_some():
+        auto u1 = v.ckn.unwrap()
+        keys.append("ckn")
+        vals.append(cbor.cbor_text(u1))
+    if v.cak.is_some():
+        auto u2 = v.cak.unwrap()
+        keys.append("cak")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDirectConnectGatewayAssociationRequest to a compact JSON object (declaration order).
-def create_direct_connect_gateway_association_request_to_json(CreateDirectConnectGatewayAssociationRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"directConnectGatewayId\":" + directconnect_json_str(v.directConnectGatewayId))
-    if v.gatewayId.is_some():
-        auto u0 = v.gatewayId.unwrap()
-        parts.append("\"gatewayId\":" + directconnect_json_str(u0))
-    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
-        auto u1 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"addAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e2))
+# Serialize AssociateVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def associate_virtual_interface_request_to_cbor(AssociateVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ConfirmConnectionRequest to a CBOR map (member wire name -> value, model order).
+def confirm_connection_request_to_cbor(ConfirmConnectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ConfirmCustomerAgreementRequest to a CBOR map (member wire name -> value, model order).
+def confirm_customer_agreement_request_to_cbor(ConfirmCustomerAgreementRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.agreementName.is_some():
+        auto u0 = v.agreementName.unwrap()
+        keys.append("agreementName")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ConfirmPrivateVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def confirm_private_virtual_interface_request_to_cbor(ConfirmPrivateVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
     if v.virtualGatewayId.is_some():
-        auto u3 = v.virtualGatewayId.unwrap()
-        parts.append("\"virtualGatewayId\":" + directconnect_json_str(u3))
-    return directconnect_json_obj(parts)
+        auto u0 = v.virtualGatewayId.unwrap()
+        keys.append("virtualGatewayId")
+        vals.append(cbor.cbor_text(u0))
+    if v.directConnectGatewayId.is_some():
+        auto u1 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDirectConnectGatewayRequest to a compact JSON object (declaration order).
-def create_direct_connect_gateway_request_to_json(CreateDirectConnectGatewayRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"directConnectGatewayName\":" + directconnect_json_str(v.directConnectGatewayName))
-    if v.tags.is_some():
-        auto u0 = v.tags.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e1))
-    if v.amazonSideAsn.is_some():
-        auto u2 = v.amazonSideAsn.unwrap()
-        parts.append("\"amazonSideAsn\":" + str(u2))
-    return directconnect_json_obj(parts)
+# Serialize ConfirmPublicVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def confirm_public_virtual_interface_request_to_cbor(ConfirmPublicVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateInterconnectRequest to a compact JSON object (declaration order).
-def create_interconnect_request_to_json(CreateInterconnectRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"interconnectName\":" + directconnect_json_str(v.interconnectName))
-    parts.append("\"bandwidth\":" + directconnect_json_str(v.bandwidth))
-    parts.append("\"location\":" + directconnect_json_str(v.location))
-    if v.lagId.is_some():
-        auto u0 = v.lagId.unwrap()
-        parts.append("\"lagId\":" + directconnect_json_str(u0))
-    if v.tags.is_some():
-        auto u1 = v.tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e2))
-    if v.providerName.is_some():
-        auto u3 = v.providerName.unwrap()
-        parts.append("\"providerName\":" + directconnect_json_str(u3))
-    if v.requestMACSec.is_some():
-        auto u4 = v.requestMACSec.unwrap()
-        parts.append("\"requestMACSec\":" + json.dumps(JsonValue.Bool(u4)))
-    return directconnect_json_obj(parts)
+# Serialize ConfirmTransitVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def confirm_transit_virtual_interface_request_to_cbor(ConfirmTransitVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    keys.append("directConnectGatewayId")
+    vals.append(cbor.cbor_text(v.directConnectGatewayId))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateLagRequest to a compact JSON object (declaration order).
-def create_lag_request_to_json(CreateLagRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"numberOfConnections\":" + str(v.numberOfConnections))
-    parts.append("\"location\":" + directconnect_json_str(v.location))
-    parts.append("\"connectionsBandwidth\":" + directconnect_json_str(v.connectionsBandwidth))
-    parts.append("\"lagName\":" + directconnect_json_str(v.lagName))
-    if v.connectionId.is_some():
-        auto u0 = v.connectionId.unwrap()
-        parts.append("\"connectionId\":" + directconnect_json_str(u0))
-    if v.tags.is_some():
-        auto u1 = v.tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e2))
-    if v.childConnectionTags.is_some():
-        auto u3 = v.childConnectionTags.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"childConnectionTags\":" + directconnect_json_arr(e4))
-    if v.providerName.is_some():
-        auto u5 = v.providerName.unwrap()
-        parts.append("\"providerName\":" + directconnect_json_str(u5))
-    if v.requestMACSec.is_some():
-        auto u6 = v.requestMACSec.unwrap()
-        parts.append("\"requestMACSec\":" + json.dumps(JsonValue.Bool(u6)))
-    if v.billingMode.is_some():
-        auto u7 = v.billingMode.unwrap()
-        parts.append("\"billingMode\":" + u7.to_json())
-    return directconnect_json_obj(parts)
-
-# Serialize CreatePrivateVirtualInterfaceRequest to a compact JSON object (declaration order).
-def create_private_virtual_interface_request_to_json(CreatePrivateVirtualInterfaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"newPrivateVirtualInterface\":" + new_private_virtual_interface_to_json(v.newPrivateVirtualInterface))
-    return directconnect_json_obj(parts)
-
-# Serialize CreatePublicVirtualInterfaceRequest to a compact JSON object (declaration order).
-def create_public_virtual_interface_request_to_json(CreatePublicVirtualInterfaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"newPublicVirtualInterface\":" + new_public_virtual_interface_to_json(v.newPublicVirtualInterface))
-    return directconnect_json_obj(parts)
-
-# Serialize CreateResiliencyGroupRequest to a compact JSON object (declaration order).
-def create_resiliency_group_request_to_json(CreateResiliencyGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"resiliencyGroupName\":" + directconnect_json_str(v.resiliencyGroupName))
-    parts.append("\"intendedResiliencyModel\":" + v.intendedResiliencyModel.to_json())
-    if v.clientToken.is_some():
-        auto u0 = v.clientToken.unwrap()
-        parts.append("\"clientToken\":" + directconnect_json_str(u0))
-    if v.tags.is_some():
-        auto u1 = v.tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e2))
-    return directconnect_json_obj(parts)
-
-# Serialize CreateTransitVirtualInterfaceRequest to a compact JSON object (declaration order).
-def create_transit_virtual_interface_request_to_json(CreateTransitVirtualInterfaceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"connectionId\":" + directconnect_json_str(v.connectionId))
-    parts.append("\"newTransitVirtualInterface\":" + new_transit_virtual_interface_to_json(v.newTransitVirtualInterface))
-    return directconnect_json_obj(parts)
-
-# Serialize DescribeTagsRequest to a compact JSON object (declaration order).
-def describe_tags_request_to_json(DescribeTagsRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.resourceArns:
-        e0.append(directconnect_json_str(x0))
-    parts.append("\"resourceArns\":" + directconnect_json_arr(e0))
-    return directconnect_json_obj(parts)
-
-# Serialize DisassociateConnectionsFromResiliencyGroupRequest to a compact JSON object (declaration order).
-def disassociate_connections_from_resiliency_group_request_to_json(DisassociateConnectionsFromResiliencyGroupRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.connectionIdentifiers:
-        e0.append(directconnect_json_str(x0))
-    parts.append("\"connectionIdentifiers\":" + directconnect_json_arr(e0))
-    parts.append("\"resiliencyGroupId\":" + directconnect_json_str(v.resiliencyGroupId))
-    if v.clientToken.is_some():
-        auto u1 = v.clientToken.unwrap()
-        parts.append("\"clientToken\":" + directconnect_json_str(u1))
-    return directconnect_json_obj(parts)
-
-# Serialize ListVirtualInterfaceRoutesRequest to a compact JSON object (declaration order).
-def list_virtual_interface_routes_request_to_json(ListVirtualInterfaceRoutesRequest v) -> str:
-    list[str] parts = []
+# Serialize CreateBGPPeerRequest to a CBOR map (member wire name -> value, model order).
+def create_bgp_peer_request_to_cbor(CreateBGPPeerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.virtualInterfaceId.is_some():
         auto u0 = v.virtualInterfaceId.unwrap()
-        parts.append("\"virtualInterfaceId\":" + directconnect_json_str(u0))
-    if v.filters.is_some():
-        auto u1 = v.filters.unwrap()
-        parts.append("\"filters\":" + route_filters_to_json(u1))
-    if v.maxResults.is_some():
-        auto u2 = v.maxResults.unwrap()
-        parts.append("\"maxResults\":" + str(u2))
-    if v.nextToken.is_some():
-        auto u3 = v.nextToken.unwrap()
-        parts.append("\"nextToken\":" + directconnect_json_str(u3))
-    return directconnect_json_obj(parts)
+        keys.append("virtualInterfaceId")
+        vals.append(cbor.cbor_text(u0))
+    if v.newBGPPeer.is_some():
+        auto u1 = v.newBGPPeer.unwrap()
+        keys.append("newBGPPeer")
+        vals.append(new_bgp_peer_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListVirtualInterfaceTestHistoryRequest to a compact JSON object (declaration order).
-def list_virtual_interface_test_history_request_to_json(ListVirtualInterfaceTestHistoryRequest v) -> str:
-    list[str] parts = []
-    if v.testId.is_some():
-        auto u0 = v.testId.unwrap()
-        parts.append("\"testId\":" + directconnect_json_str(u0))
-    if v.virtualInterfaceId.is_some():
-        auto u1 = v.virtualInterfaceId.unwrap()
-        parts.append("\"virtualInterfaceId\":" + directconnect_json_str(u1))
-    if v.bgpPeers.is_some():
-        auto u2 = v.bgpPeers.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(directconnect_json_str(x3))
-        parts.append("\"bgpPeers\":" + directconnect_json_arr(e3))
-    if v.status.is_some():
-        auto u4 = v.status.unwrap()
-        parts.append("\"status\":" + directconnect_json_str(u4))
-    if v.maxResults.is_some():
-        auto u5 = v.maxResults.unwrap()
-        parts.append("\"maxResults\":" + str(u5))
-    if v.nextToken.is_some():
-        auto u6 = v.nextToken.unwrap()
-        parts.append("\"nextToken\":" + directconnect_json_str(u6))
-    return directconnect_json_obj(parts)
-
-# Serialize NewPrivateVirtualInterface to a compact JSON object (declaration order).
-def new_private_virtual_interface_to_json(NewPrivateVirtualInterface v) -> str:
-    list[str] parts = []
-    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
-    parts.append("\"vlan\":" + str(v.vlan))
-    if v.asn.is_some():
-        auto u0 = v.asn.unwrap()
-        parts.append("\"asn\":" + str(u0))
-    if v.asnLong.is_some():
-        auto u1 = v.asnLong.unwrap()
-        parts.append("\"asnLong\":" + str(u1))
-    if v.mtu.is_some():
-        auto u2 = v.mtu.unwrap()
-        parts.append("\"mtu\":" + str(u2))
-    if v.authKey.is_some():
-        auto u3 = v.authKey.unwrap()
-        parts.append("\"authKey\":" + directconnect_json_str(u3))
-    if v.amazonAddress.is_some():
-        auto u4 = v.amazonAddress.unwrap()
-        parts.append("\"amazonAddress\":" + directconnect_json_str(u4))
-    if v.customerAddress.is_some():
-        auto u5 = v.customerAddress.unwrap()
-        parts.append("\"customerAddress\":" + directconnect_json_str(u5))
-    if v.addressFamily.is_some():
-        auto u6 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u6.to_json())
-    if v.virtualGatewayId.is_some():
-        auto u7 = v.virtualGatewayId.unwrap()
-        parts.append("\"virtualGatewayId\":" + directconnect_json_str(u7))
-    if v.directConnectGatewayId.is_some():
-        auto u8 = v.directConnectGatewayId.unwrap()
-        parts.append("\"directConnectGatewayId\":" + directconnect_json_str(u8))
+# Serialize CreateConnectionRequest to a CBOR map (member wire name -> value, model order).
+def create_connection_request_to_cbor(CreateConnectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("location")
+    vals.append(cbor.cbor_text(v.location))
+    keys.append("bandwidth")
+    vals.append(cbor.cbor_text(v.bandwidth))
+    keys.append("connectionName")
+    vals.append(cbor.cbor_text(v.connectionName))
+    if v.lagId.is_some():
+        auto u0 = v.lagId.unwrap()
+        keys.append("lagId")
+        vals.append(cbor.cbor_text(u0))
     if v.tags.is_some():
-        auto u9 = v.tags.unwrap()
-        list[str] e10 = []
-        for x10 in u9:
-            e10.append(x10.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e10))
-    if v.enableSiteLink.is_some():
-        auto u11 = v.enableSiteLink.unwrap()
-        parts.append("\"enableSiteLink\":" + json.dumps(JsonValue.Bool(u11)))
-    if v.prefixPoolAllocatedCountIpv4.is_some():
-        auto u12 = v.prefixPoolAllocatedCountIpv4.unwrap()
-        parts.append("\"prefixPoolAllocatedCountIpv4\":" + str(u12))
-    if v.prefixPoolAllocatedCountIpv6.is_some():
-        auto u13 = v.prefixPoolAllocatedCountIpv6.unwrap()
-        parts.append("\"prefixPoolAllocatedCountIpv6\":" + str(u13))
-    if v.rateLimit.is_some():
-        auto u14 = v.rateLimit.unwrap()
-        parts.append("\"rateLimit\":" + directconnect_json_str(u14))
-    return directconnect_json_obj(parts)
+        auto u1 = v.tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e2))
+    if v.providerName.is_some():
+        auto u3 = v.providerName.unwrap()
+        keys.append("providerName")
+        vals.append(cbor.cbor_text(u3))
+    if v.requestMACSec.is_some():
+        auto u4 = v.requestMACSec.unwrap()
+        keys.append("requestMACSec")
+        vals.append(cbor.cbor_bool(u4))
+    if v.billingMode.is_some():
+        auto u5 = v.billingMode.unwrap()
+        keys.append("billingMode")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize NewPrivateVirtualInterfaceAllocation to a compact JSON object (declaration order).
-def new_private_virtual_interface_allocation_to_json(NewPrivateVirtualInterfaceAllocation v) -> str:
-    list[str] parts = []
-    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
-    parts.append("\"vlan\":" + str(v.vlan))
-    if v.asn.is_some():
-        auto u0 = v.asn.unwrap()
-        parts.append("\"asn\":" + str(u0))
-    if v.asnLong.is_some():
-        auto u1 = v.asnLong.unwrap()
-        parts.append("\"asnLong\":" + str(u1))
-    if v.mtu.is_some():
-        auto u2 = v.mtu.unwrap()
-        parts.append("\"mtu\":" + str(u2))
-    if v.authKey.is_some():
-        auto u3 = v.authKey.unwrap()
-        parts.append("\"authKey\":" + directconnect_json_str(u3))
-    if v.amazonAddress.is_some():
-        auto u4 = v.amazonAddress.unwrap()
-        parts.append("\"amazonAddress\":" + directconnect_json_str(u4))
-    if v.addressFamily.is_some():
-        auto u5 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u5.to_json())
-    if v.customerAddress.is_some():
-        auto u6 = v.customerAddress.unwrap()
-        parts.append("\"customerAddress\":" + directconnect_json_str(u6))
-    if v.tags.is_some():
-        auto u7 = v.tags.unwrap()
-        list[str] e8 = []
-        for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e8))
-    if v.rateLimit.is_some():
-        auto u9 = v.rateLimit.unwrap()
-        parts.append("\"rateLimit\":" + directconnect_json_str(u9))
-    return directconnect_json_obj(parts)
-
-# Serialize NewPublicVirtualInterface to a compact JSON object (declaration order).
-def new_public_virtual_interface_to_json(NewPublicVirtualInterface v) -> str:
-    list[str] parts = []
-    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
-    parts.append("\"vlan\":" + str(v.vlan))
-    if v.asn.is_some():
-        auto u0 = v.asn.unwrap()
-        parts.append("\"asn\":" + str(u0))
-    if v.asnLong.is_some():
-        auto u1 = v.asnLong.unwrap()
-        parts.append("\"asnLong\":" + str(u1))
-    if v.authKey.is_some():
-        auto u2 = v.authKey.unwrap()
-        parts.append("\"authKey\":" + directconnect_json_str(u2))
-    if v.amazonAddress.is_some():
-        auto u3 = v.amazonAddress.unwrap()
-        parts.append("\"amazonAddress\":" + directconnect_json_str(u3))
-    if v.customerAddress.is_some():
-        auto u4 = v.customerAddress.unwrap()
-        parts.append("\"customerAddress\":" + directconnect_json_str(u4))
-    if v.addressFamily.is_some():
-        auto u5 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u5.to_json())
-    if v.routeFilterPrefixes.is_some():
-        auto u6 = v.routeFilterPrefixes.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"routeFilterPrefixes\":" + directconnect_json_arr(e7))
-    if v.tags.is_some():
-        auto u8 = v.tags.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e9))
-    if v.rateLimit.is_some():
-        auto u10 = v.rateLimit.unwrap()
-        parts.append("\"rateLimit\":" + directconnect_json_str(u10))
-    return directconnect_json_obj(parts)
-
-# Serialize NewPublicVirtualInterfaceAllocation to a compact JSON object (declaration order).
-def new_public_virtual_interface_allocation_to_json(NewPublicVirtualInterfaceAllocation v) -> str:
-    list[str] parts = []
-    parts.append("\"virtualInterfaceName\":" + directconnect_json_str(v.virtualInterfaceName))
-    parts.append("\"vlan\":" + str(v.vlan))
-    if v.asn.is_some():
-        auto u0 = v.asn.unwrap()
-        parts.append("\"asn\":" + str(u0))
-    if v.asnLong.is_some():
-        auto u1 = v.asnLong.unwrap()
-        parts.append("\"asnLong\":" + str(u1))
-    if v.authKey.is_some():
-        auto u2 = v.authKey.unwrap()
-        parts.append("\"authKey\":" + directconnect_json_str(u2))
-    if v.amazonAddress.is_some():
-        auto u3 = v.amazonAddress.unwrap()
-        parts.append("\"amazonAddress\":" + directconnect_json_str(u3))
-    if v.customerAddress.is_some():
-        auto u4 = v.customerAddress.unwrap()
-        parts.append("\"customerAddress\":" + directconnect_json_str(u4))
-    if v.addressFamily.is_some():
-        auto u5 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u5.to_json())
-    if v.routeFilterPrefixes.is_some():
-        auto u6 = v.routeFilterPrefixes.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"routeFilterPrefixes\":" + directconnect_json_arr(e7))
-    if v.tags.is_some():
-        auto u8 = v.tags.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e9))
-    if v.rateLimit.is_some():
-        auto u10 = v.rateLimit.unwrap()
-        parts.append("\"rateLimit\":" + directconnect_json_str(u10))
-    return directconnect_json_obj(parts)
-
-# Serialize NewTransitVirtualInterface to a compact JSON object (declaration order).
-def new_transit_virtual_interface_to_json(NewTransitVirtualInterface v) -> str:
-    list[str] parts = []
-    if v.virtualInterfaceName.is_some():
-        auto u0 = v.virtualInterfaceName.unwrap()
-        parts.append("\"virtualInterfaceName\":" + directconnect_json_str(u0))
-    if v.vlan.is_some():
-        auto u1 = v.vlan.unwrap()
-        parts.append("\"vlan\":" + str(u1))
-    if v.asn.is_some():
-        auto u2 = v.asn.unwrap()
-        parts.append("\"asn\":" + str(u2))
-    if v.asnLong.is_some():
-        auto u3 = v.asnLong.unwrap()
-        parts.append("\"asnLong\":" + str(u3))
-    if v.mtu.is_some():
-        auto u4 = v.mtu.unwrap()
-        parts.append("\"mtu\":" + str(u4))
-    if v.authKey.is_some():
-        auto u5 = v.authKey.unwrap()
-        parts.append("\"authKey\":" + directconnect_json_str(u5))
-    if v.amazonAddress.is_some():
-        auto u6 = v.amazonAddress.unwrap()
-        parts.append("\"amazonAddress\":" + directconnect_json_str(u6))
-    if v.customerAddress.is_some():
-        auto u7 = v.customerAddress.unwrap()
-        parts.append("\"customerAddress\":" + directconnect_json_str(u7))
-    if v.addressFamily.is_some():
-        auto u8 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u8.to_json())
-    if v.directConnectGatewayId.is_some():
-        auto u9 = v.directConnectGatewayId.unwrap()
-        parts.append("\"directConnectGatewayId\":" + directconnect_json_str(u9))
-    if v.tags.is_some():
-        auto u10 = v.tags.unwrap()
-        list[str] e11 = []
-        for x11 in u10:
-            e11.append(x11.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e11))
-    if v.enableSiteLink.is_some():
-        auto u12 = v.enableSiteLink.unwrap()
-        parts.append("\"enableSiteLink\":" + json.dumps(JsonValue.Bool(u12)))
-    if v.prefixPoolAllocatedCountIpv4.is_some():
-        auto u13 = v.prefixPoolAllocatedCountIpv4.unwrap()
-        parts.append("\"prefixPoolAllocatedCountIpv4\":" + str(u13))
-    if v.prefixPoolAllocatedCountIpv6.is_some():
-        auto u14 = v.prefixPoolAllocatedCountIpv6.unwrap()
-        parts.append("\"prefixPoolAllocatedCountIpv6\":" + str(u14))
-    if v.rateLimit.is_some():
-        auto u15 = v.rateLimit.unwrap()
-        parts.append("\"rateLimit\":" + directconnect_json_str(u15))
-    return directconnect_json_obj(parts)
-
-# Serialize NewTransitVirtualInterfaceAllocation to a compact JSON object (declaration order).
-def new_transit_virtual_interface_allocation_to_json(NewTransitVirtualInterfaceAllocation v) -> str:
-    list[str] parts = []
-    if v.virtualInterfaceName.is_some():
-        auto u0 = v.virtualInterfaceName.unwrap()
-        parts.append("\"virtualInterfaceName\":" + directconnect_json_str(u0))
-    if v.vlan.is_some():
-        auto u1 = v.vlan.unwrap()
-        parts.append("\"vlan\":" + str(u1))
-    if v.asn.is_some():
-        auto u2 = v.asn.unwrap()
-        parts.append("\"asn\":" + str(u2))
-    if v.asnLong.is_some():
-        auto u3 = v.asnLong.unwrap()
-        parts.append("\"asnLong\":" + str(u3))
-    if v.mtu.is_some():
-        auto u4 = v.mtu.unwrap()
-        parts.append("\"mtu\":" + str(u4))
-    if v.authKey.is_some():
-        auto u5 = v.authKey.unwrap()
-        parts.append("\"authKey\":" + directconnect_json_str(u5))
-    if v.amazonAddress.is_some():
-        auto u6 = v.amazonAddress.unwrap()
-        parts.append("\"amazonAddress\":" + directconnect_json_str(u6))
-    if v.customerAddress.is_some():
-        auto u7 = v.customerAddress.unwrap()
-        parts.append("\"customerAddress\":" + directconnect_json_str(u7))
-    if v.addressFamily.is_some():
-        auto u8 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u8.to_json())
-    if v.tags.is_some():
-        auto u9 = v.tags.unwrap()
-        list[str] e10 = []
-        for x10 in u9:
-            e10.append(x10.to_json())
-        parts.append("\"tags\":" + directconnect_json_arr(e10))
-    if v.rateLimit.is_some():
-        auto u11 = v.rateLimit.unwrap()
-        parts.append("\"rateLimit\":" + directconnect_json_str(u11))
-    return directconnect_json_obj(parts)
-
-# Serialize RouteFilters to a compact JSON object (declaration order).
-def route_filters_to_json(RouteFilters v) -> str:
-    list[str] parts = []
-    if v.routeDirection.is_some():
-        auto u0 = v.routeDirection.unwrap()
-        parts.append("\"routeDirection\":" + u0.to_json())
-    if v.addressFamily.is_some():
-        auto u1 = v.addressFamily.unwrap()
-        parts.append("\"addressFamily\":" + u1.to_json())
-    if v.cidrs.is_some():
-        auto u2 = v.cidrs.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(directconnect_json_str(x3))
-        parts.append("\"cidrs\":" + directconnect_json_arr(e3))
-    if v.asPath.is_some():
-        auto u4 = v.asPath.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(str(x5))
-        parts.append("\"asPath\":" + directconnect_json_arr(e5))
-    if v.communities.is_some():
-        auto u6 = v.communities.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(directconnect_json_str(x7))
-        parts.append("\"communities\":" + directconnect_json_arr(e7))
-    return directconnect_json_obj(parts)
-
-# Serialize StartBgpFailoverTestRequest to a compact JSON object (declaration order).
-def start_bgp_failover_test_request_to_json(StartBgpFailoverTestRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"virtualInterfaceId\":" + directconnect_json_str(v.virtualInterfaceId))
-    if v.bgpPeers.is_some():
-        auto u0 = v.bgpPeers.unwrap()
-        list[str] e1 = []
+# Serialize CreateDirectConnectGatewayAssociationProposalRequest to a CBOR map (member wire name -> value, model order).
+def create_direct_connect_gateway_association_proposal_request_to_cbor(CreateDirectConnectGatewayAssociationProposalRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("directConnectGatewayId")
+    vals.append(cbor.cbor_text(v.directConnectGatewayId))
+    keys.append("directConnectGatewayOwnerAccount")
+    vals.append(cbor.cbor_text(v.directConnectGatewayOwnerAccount))
+    keys.append("gatewayId")
+    vals.append(cbor.cbor_text(v.gatewayId))
+    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u0 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(directconnect_json_str(x1))
-        parts.append("\"bgpPeers\":" + directconnect_json_arr(e1))
-    if v.testDurationInMinutes.is_some():
-        auto u2 = v.testDurationInMinutes.unwrap()
-        parts.append("\"testDurationInMinutes\":" + str(u2))
-    return directconnect_json_obj(parts)
+            e1.append(route_filter_prefix_to_cbor(x1))
+        keys.append("addAllowedPrefixesToDirectConnectGateway")
+        vals.append(cbor.cbor_list(e1))
+    if v.removeAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u2 = v.removeAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(route_filter_prefix_to_cbor(x3))
+        keys.append("removeAllowedPrefixesToDirectConnectGateway")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"resourceArn\":" + directconnect_json_str(v.resourceArn))
-    list[str] e0 = []
-    for x0 in v.tags:
-        e0.append(x0.to_json())
-    parts.append("\"tags\":" + directconnect_json_arr(e0))
-    return directconnect_json_obj(parts)
-
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"resourceArn\":" + directconnect_json_str(v.resourceArn))
-    list[str] e0 = []
-    for x0 in v.tagKeys:
-        e0.append(directconnect_json_str(x0))
-    parts.append("\"tagKeys\":" + directconnect_json_arr(e0))
-    return directconnect_json_obj(parts)
-
-# Serialize UpdateConnectionsBillingModeRequest to a compact JSON object (declaration order).
-def update_connections_billing_mode_request_to_json(UpdateConnectionsBillingModeRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.connectionIds:
-        e0.append(directconnect_json_str(x0))
-    parts.append("\"connectionIds\":" + directconnect_json_arr(e0))
-    parts.append("\"billingMode\":" + v.billingMode.to_json())
-    return directconnect_json_obj(parts)
-
-# Serialize UpdateDirectConnectGatewayAssociationRequest to a compact JSON object (declaration order).
-def update_direct_connect_gateway_association_request_to_json(UpdateDirectConnectGatewayAssociationRequest v) -> str:
-    list[str] parts = []
-    if v.associationId.is_some():
-        auto u0 = v.associationId.unwrap()
-        parts.append("\"associationId\":" + directconnect_json_str(u0))
+# Serialize CreateDirectConnectGatewayAssociationRequest to a CBOR map (member wire name -> value, model order).
+def create_direct_connect_gateway_association_request_to_cbor(CreateDirectConnectGatewayAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("directConnectGatewayId")
+    vals.append(cbor.cbor_text(v.directConnectGatewayId))
+    if v.gatewayId.is_some():
+        auto u0 = v.gatewayId.unwrap()
+        keys.append("gatewayId")
+        vals.append(cbor.cbor_text(u0))
     if v.addAllowedPrefixesToDirectConnectGateway.is_some():
         auto u1 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"addAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e2))
+            e2.append(route_filter_prefix_to_cbor(x2))
+        keys.append("addAllowedPrefixesToDirectConnectGateway")
+        vals.append(cbor.cbor_list(e2))
+    if v.virtualGatewayId.is_some():
+        auto u3 = v.virtualGatewayId.unwrap()
+        keys.append("virtualGatewayId")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateDirectConnectGatewayRequest to a CBOR map (member wire name -> value, model order).
+def create_direct_connect_gateway_request_to_cbor(CreateDirectConnectGatewayRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("directConnectGatewayName")
+    vals.append(cbor.cbor_text(v.directConnectGatewayName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(tag_to_cbor(x1))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e1))
+    if v.amazonSideAsn.is_some():
+        auto u2 = v.amazonSideAsn.unwrap()
+        keys.append("amazonSideAsn")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateInterconnectRequest to a CBOR map (member wire name -> value, model order).
+def create_interconnect_request_to_cbor(CreateInterconnectRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("interconnectName")
+    vals.append(cbor.cbor_text(v.interconnectName))
+    keys.append("bandwidth")
+    vals.append(cbor.cbor_text(v.bandwidth))
+    keys.append("location")
+    vals.append(cbor.cbor_text(v.location))
+    if v.lagId.is_some():
+        auto u0 = v.lagId.unwrap()
+        keys.append("lagId")
+        vals.append(cbor.cbor_text(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e2))
+    if v.providerName.is_some():
+        auto u3 = v.providerName.unwrap()
+        keys.append("providerName")
+        vals.append(cbor.cbor_text(u3))
+    if v.requestMACSec.is_some():
+        auto u4 = v.requestMACSec.unwrap()
+        keys.append("requestMACSec")
+        vals.append(cbor.cbor_bool(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLagRequest to a CBOR map (member wire name -> value, model order).
+def create_lag_request_to_cbor(CreateLagRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("numberOfConnections")
+    vals.append(cbor.cbor_int(v.numberOfConnections))
+    keys.append("location")
+    vals.append(cbor.cbor_text(v.location))
+    keys.append("connectionsBandwidth")
+    vals.append(cbor.cbor_text(v.connectionsBandwidth))
+    keys.append("lagName")
+    vals.append(cbor.cbor_text(v.lagName))
+    if v.connectionId.is_some():
+        auto u0 = v.connectionId.unwrap()
+        keys.append("connectionId")
+        vals.append(cbor.cbor_text(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e2))
+    if v.childConnectionTags.is_some():
+        auto u3 = v.childConnectionTags.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(tag_to_cbor(x4))
+        keys.append("childConnectionTags")
+        vals.append(cbor.cbor_list(e4))
+    if v.providerName.is_some():
+        auto u5 = v.providerName.unwrap()
+        keys.append("providerName")
+        vals.append(cbor.cbor_text(u5))
+    if v.requestMACSec.is_some():
+        auto u6 = v.requestMACSec.unwrap()
+        keys.append("requestMACSec")
+        vals.append(cbor.cbor_bool(u6))
+    if v.billingMode.is_some():
+        auto u7 = v.billingMode.unwrap()
+        keys.append("billingMode")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreatePrivateVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def create_private_virtual_interface_request_to_cbor(CreatePrivateVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("newPrivateVirtualInterface")
+    vals.append(new_private_virtual_interface_to_cbor(v.newPrivateVirtualInterface))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreatePublicVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def create_public_virtual_interface_request_to_cbor(CreatePublicVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("newPublicVirtualInterface")
+    vals.append(new_public_virtual_interface_to_cbor(v.newPublicVirtualInterface))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateResiliencyGroupRequest to a CBOR map (member wire name -> value, model order).
+def create_resiliency_group_request_to_cbor(CreateResiliencyGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resiliencyGroupName")
+    vals.append(cbor.cbor_text(v.resiliencyGroupName))
+    keys.append("intendedResiliencyModel")
+    vals.append(cbor.cbor_text(v.intendedResiliencyModel))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        keys.append("clientToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateTransitVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def create_transit_virtual_interface_request_to_cbor(CreateTransitVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("newTransitVirtualInterface")
+    vals.append(new_transit_virtual_interface_to_cbor(v.newTransitVirtualInterface))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteBGPPeerRequest to a CBOR map (member wire name -> value, model order).
+def delete_bgp_peer_request_to_cbor(DeleteBGPPeerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.virtualInterfaceId.is_some():
+        auto u0 = v.virtualInterfaceId.unwrap()
+        keys.append("virtualInterfaceId")
+        vals.append(cbor.cbor_text(u0))
+    if v.asn.is_some():
+        auto u1 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u1))
+    if v.asnLong.is_some():
+        auto u2 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u2))
+    if v.customerAddress.is_some():
+        auto u3 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u3))
+    if v.bgpPeerId.is_some():
+        auto u4 = v.bgpPeerId.unwrap()
+        keys.append("bgpPeerId")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteConnectionRequest to a CBOR map (member wire name -> value, model order).
+def delete_connection_request_to_cbor(DeleteConnectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDirectConnectGatewayAssociationProposalRequest to a CBOR map (member wire name -> value, model order).
+def delete_direct_connect_gateway_association_proposal_request_to_cbor(DeleteDirectConnectGatewayAssociationProposalRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("proposalId")
+    vals.append(cbor.cbor_text(v.proposalId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDirectConnectGatewayAssociationRequest to a CBOR map (member wire name -> value, model order).
+def delete_direct_connect_gateway_association_request_to_cbor(DeleteDirectConnectGatewayAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.associationId.is_some():
+        auto u0 = v.associationId.unwrap()
+        keys.append("associationId")
+        vals.append(cbor.cbor_text(u0))
+    if v.directConnectGatewayId.is_some():
+        auto u1 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u1))
+    if v.virtualGatewayId.is_some():
+        auto u2 = v.virtualGatewayId.unwrap()
+        keys.append("virtualGatewayId")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDirectConnectGatewayRequest to a CBOR map (member wire name -> value, model order).
+def delete_direct_connect_gateway_request_to_cbor(DeleteDirectConnectGatewayRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("directConnectGatewayId")
+    vals.append(cbor.cbor_text(v.directConnectGatewayId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteInterconnectRequest to a CBOR map (member wire name -> value, model order).
+def delete_interconnect_request_to_cbor(DeleteInterconnectRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("interconnectId")
+    vals.append(cbor.cbor_text(v.interconnectId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteLagRequest to a CBOR map (member wire name -> value, model order).
+def delete_lag_request_to_cbor(DeleteLagRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("lagId")
+    vals.append(cbor.cbor_text(v.lagId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteResiliencyGroupRequest to a CBOR map (member wire name -> value, model order).
+def delete_resiliency_group_request_to_cbor(DeleteResiliencyGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resiliencyGroupId")
+    vals.append(cbor.cbor_text(v.resiliencyGroupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteVirtualInterfaceRequest to a CBOR map (member wire name -> value, model order).
+def delete_virtual_interface_request_to_cbor(DeleteVirtualInterfaceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConnectionLoaRequest to a CBOR map (member wire name -> value, model order).
+def describe_connection_loa_request_to_cbor(DescribeConnectionLoaRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    if v.providerName.is_some():
+        auto u0 = v.providerName.unwrap()
+        keys.append("providerName")
+        vals.append(cbor.cbor_text(u0))
+    if v.loaContentType.is_some():
+        auto u1 = v.loaContentType.unwrap()
+        keys.append("loaContentType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConnectionsOnInterconnectRequest to a CBOR map (member wire name -> value, model order).
+def describe_connections_on_interconnect_request_to_cbor(DescribeConnectionsOnInterconnectRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("interconnectId")
+    vals.append(cbor.cbor_text(v.interconnectId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConnectionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_connections_request_to_cbor(DescribeConnectionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.connectionId.is_some():
+        auto u0 = v.connectionId.unwrap()
+        keys.append("connectionId")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDirectConnectGatewayAssociationProposalsRequest to a CBOR map (member wire name -> value, model order).
+def describe_direct_connect_gateway_association_proposals_request_to_cbor(DescribeDirectConnectGatewayAssociationProposalsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.directConnectGatewayId.is_some():
+        auto u0 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u0))
+    if v.proposalId.is_some():
+        auto u1 = v.proposalId.unwrap()
+        keys.append("proposalId")
+        vals.append(cbor.cbor_text(u1))
+    if v.associatedGatewayId.is_some():
+        auto u2 = v.associatedGatewayId.unwrap()
+        keys.append("associatedGatewayId")
+        vals.append(cbor.cbor_text(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDirectConnectGatewayAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def describe_direct_connect_gateway_associations_request_to_cbor(DescribeDirectConnectGatewayAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.associationId.is_some():
+        auto u0 = v.associationId.unwrap()
+        keys.append("associationId")
+        vals.append(cbor.cbor_text(u0))
+    if v.associatedGatewayId.is_some():
+        auto u1 = v.associatedGatewayId.unwrap()
+        keys.append("associatedGatewayId")
+        vals.append(cbor.cbor_text(u1))
+    if v.directConnectGatewayId.is_some():
+        auto u2 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u4))
+    if v.virtualGatewayId.is_some():
+        auto u5 = v.virtualGatewayId.unwrap()
+        keys.append("virtualGatewayId")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDirectConnectGatewayAttachmentsRequest to a CBOR map (member wire name -> value, model order).
+def describe_direct_connect_gateway_attachments_request_to_cbor(DescribeDirectConnectGatewayAttachmentsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.directConnectGatewayId.is_some():
+        auto u0 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u0))
+    if v.virtualInterfaceId.is_some():
+        auto u1 = v.virtualInterfaceId.unwrap()
+        keys.append("virtualInterfaceId")
+        vals.append(cbor.cbor_text(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDirectConnectGatewaysRequest to a CBOR map (member wire name -> value, model order).
+def describe_direct_connect_gateways_request_to_cbor(DescribeDirectConnectGatewaysRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.directConnectGatewayId.is_some():
+        auto u0 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeHostedConnectionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_hosted_connections_request_to_cbor(DescribeHostedConnectionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeInterconnectLoaRequest to a CBOR map (member wire name -> value, model order).
+def describe_interconnect_loa_request_to_cbor(DescribeInterconnectLoaRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("interconnectId")
+    vals.append(cbor.cbor_text(v.interconnectId))
+    if v.providerName.is_some():
+        auto u0 = v.providerName.unwrap()
+        keys.append("providerName")
+        vals.append(cbor.cbor_text(u0))
+    if v.loaContentType.is_some():
+        auto u1 = v.loaContentType.unwrap()
+        keys.append("loaContentType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeInterconnectsRequest to a CBOR map (member wire name -> value, model order).
+def describe_interconnects_request_to_cbor(DescribeInterconnectsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.interconnectId.is_some():
+        auto u0 = v.interconnectId.unwrap()
+        keys.append("interconnectId")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLagsRequest to a CBOR map (member wire name -> value, model order).
+def describe_lags_request_to_cbor(DescribeLagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.lagId.is_some():
+        auto u0 = v.lagId.unwrap()
+        keys.append("lagId")
+        vals.append(cbor.cbor_text(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLoaRequest to a CBOR map (member wire name -> value, model order).
+def describe_loa_request_to_cbor(DescribeLoaRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    if v.providerName.is_some():
+        auto u0 = v.providerName.unwrap()
+        keys.append("providerName")
+        vals.append(cbor.cbor_text(u0))
+    if v.loaContentType.is_some():
+        auto u1 = v.loaContentType.unwrap()
+        keys.append("loaContentType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeRouterConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def describe_router_configuration_request_to_cbor(DescribeRouterConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    if v.routerTypeIdentifier.is_some():
+        auto u0 = v.routerTypeIdentifier.unwrap()
+        keys.append("routerTypeIdentifier")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTagsRequest to a CBOR map (member wire name -> value, model order).
+def describe_tags_request_to_cbor(DescribeTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.resourceArns:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("resourceArns")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeVirtualInterfacesRequest to a CBOR map (member wire name -> value, model order).
+def describe_virtual_interfaces_request_to_cbor(DescribeVirtualInterfacesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.connectionId.is_some():
+        auto u0 = v.connectionId.unwrap()
+        keys.append("connectionId")
+        vals.append(cbor.cbor_text(u0))
+    if v.virtualInterfaceId.is_some():
+        auto u1 = v.virtualInterfaceId.unwrap()
+        keys.append("virtualInterfaceId")
+        vals.append(cbor.cbor_text(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateConnectionFromLagRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_connection_from_lag_request_to_cbor(DisassociateConnectionFromLagRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("lagId")
+    vals.append(cbor.cbor_text(v.lagId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateConnectionsFromResiliencyGroupRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_connections_from_resiliency_group_request_to_cbor(DisassociateConnectionsFromResiliencyGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.connectionIdentifiers:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("connectionIdentifiers")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("resiliencyGroupId")
+    vals.append(cbor.cbor_text(v.resiliencyGroupId))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        keys.append("clientToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateMacSecKeyRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_mac_sec_key_request_to_cbor(DisassociateMacSecKeyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    keys.append("secretARN")
+    vals.append(cbor.cbor_text(v.secretARN))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetResiliencyGroupRequest to a CBOR map (member wire name -> value, model order).
+def get_resiliency_group_request_to_cbor(GetResiliencyGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resiliencyGroupId")
+    vals.append(cbor.cbor_text(v.resiliencyGroupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListResiliencyGroupAssociationsRequest to a CBOR map (member wire name -> value, model order).
+def list_resiliency_group_associations_request_to_cbor(ListResiliencyGroupAssociationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resiliencyGroupId")
+    vals.append(cbor.cbor_text(v.resiliencyGroupId))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListResiliencyGroupsRequest to a CBOR map (member wire name -> value, model order).
+def list_resiliency_groups_request_to_cbor(ListResiliencyGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListVirtualInterfaceRoutesRequest to a CBOR map (member wire name -> value, model order).
+def list_virtual_interface_routes_request_to_cbor(ListVirtualInterfaceRoutesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.virtualInterfaceId.is_some():
+        auto u0 = v.virtualInterfaceId.unwrap()
+        keys.append("virtualInterfaceId")
+        vals.append(cbor.cbor_text(u0))
+    if v.filters.is_some():
+        auto u1 = v.filters.unwrap()
+        keys.append("filters")
+        vals.append(route_filters_to_cbor(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListVirtualInterfaceTestHistoryRequest to a CBOR map (member wire name -> value, model order).
+def list_virtual_interface_test_history_request_to_cbor(ListVirtualInterfaceTestHistoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.testId.is_some():
+        auto u0 = v.testId.unwrap()
+        keys.append("testId")
+        vals.append(cbor.cbor_text(u0))
+    if v.virtualInterfaceId.is_some():
+        auto u1 = v.virtualInterfaceId.unwrap()
+        keys.append("virtualInterfaceId")
+        vals.append(cbor.cbor_text(u1))
+    if v.bgpPeers.is_some():
+        auto u2 = v.bgpPeers.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(cbor.cbor_text(x3))
+        keys.append("bgpPeers")
+        vals.append(cbor.cbor_list(e3))
+    if v.status.is_some():
+        auto u4 = v.status.unwrap()
+        keys.append("status")
+        vals.append(cbor.cbor_text(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        keys.append("maxResults")
+        vals.append(cbor.cbor_int(u5))
+    if v.nextToken.is_some():
+        auto u6 = v.nextToken.unwrap()
+        keys.append("nextToken")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewBGPPeer to a CBOR map (member wire name -> value, model order).
+def new_bgp_peer_to_cbor(NewBGPPeer v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u1))
+    if v.authKey.is_some():
+        auto u2 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u2))
+    if v.addressFamily.is_some():
+        auto u3 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u3))
+    if v.amazonAddress.is_some():
+        auto u4 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u4))
+    if v.customerAddress.is_some():
+        auto u5 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewPrivateVirtualInterface to a CBOR map (member wire name -> value, model order).
+def new_private_virtual_interface_to_cbor(NewPrivateVirtualInterface v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceName")
+    vals.append(cbor.cbor_text(v.virtualInterfaceName))
+    keys.append("vlan")
+    vals.append(cbor.cbor_int(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u1))
+    if v.mtu.is_some():
+        auto u2 = v.mtu.unwrap()
+        keys.append("mtu")
+        vals.append(cbor.cbor_int(u2))
+    if v.authKey.is_some():
+        auto u3 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u3))
+    if v.amazonAddress.is_some():
+        auto u4 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u4))
+    if v.customerAddress.is_some():
+        auto u5 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u5))
+    if v.addressFamily.is_some():
+        auto u6 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u6))
+    if v.virtualGatewayId.is_some():
+        auto u7 = v.virtualGatewayId.unwrap()
+        keys.append("virtualGatewayId")
+        vals.append(cbor.cbor_text(u7))
+    if v.directConnectGatewayId.is_some():
+        auto u8 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u8))
+    if v.tags.is_some():
+        auto u9 = v.tags.unwrap()
+        list[cbor.CborValue] e10 = []
+        for x10 in u9:
+            e10.append(tag_to_cbor(x10))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e10))
+    if v.enableSiteLink.is_some():
+        auto u11 = v.enableSiteLink.unwrap()
+        keys.append("enableSiteLink")
+        vals.append(cbor.cbor_bool(u11))
+    if v.prefixPoolAllocatedCountIpv4.is_some():
+        auto u12 = v.prefixPoolAllocatedCountIpv4.unwrap()
+        keys.append("prefixPoolAllocatedCountIpv4")
+        vals.append(cbor.cbor_int(u12))
+    if v.prefixPoolAllocatedCountIpv6.is_some():
+        auto u13 = v.prefixPoolAllocatedCountIpv6.unwrap()
+        keys.append("prefixPoolAllocatedCountIpv6")
+        vals.append(cbor.cbor_int(u13))
+    if v.rateLimit.is_some():
+        auto u14 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u14))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewPrivateVirtualInterfaceAllocation to a CBOR map (member wire name -> value, model order).
+def new_private_virtual_interface_allocation_to_cbor(NewPrivateVirtualInterfaceAllocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceName")
+    vals.append(cbor.cbor_text(v.virtualInterfaceName))
+    keys.append("vlan")
+    vals.append(cbor.cbor_int(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u1))
+    if v.mtu.is_some():
+        auto u2 = v.mtu.unwrap()
+        keys.append("mtu")
+        vals.append(cbor.cbor_int(u2))
+    if v.authKey.is_some():
+        auto u3 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u3))
+    if v.amazonAddress.is_some():
+        auto u4 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u4))
+    if v.addressFamily.is_some():
+        auto u5 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u5))
+    if v.customerAddress.is_some():
+        auto u6 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[cbor.CborValue] e8 = []
+        for x8 in u7:
+            e8.append(tag_to_cbor(x8))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e8))
+    if v.rateLimit.is_some():
+        auto u9 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u9))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewPublicVirtualInterface to a CBOR map (member wire name -> value, model order).
+def new_public_virtual_interface_to_cbor(NewPublicVirtualInterface v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceName")
+    vals.append(cbor.cbor_text(v.virtualInterfaceName))
+    keys.append("vlan")
+    vals.append(cbor.cbor_int(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u1))
+    if v.authKey.is_some():
+        auto u2 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u2))
+    if v.amazonAddress.is_some():
+        auto u3 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u3))
+    if v.customerAddress.is_some():
+        auto u4 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u4))
+    if v.addressFamily.is_some():
+        auto u5 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u5))
+    if v.routeFilterPrefixes.is_some():
+        auto u6 = v.routeFilterPrefixes.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(route_filter_prefix_to_cbor(x7))
+        keys.append("routeFilterPrefixes")
+        vals.append(cbor.cbor_list(e7))
+    if v.tags.is_some():
+        auto u8 = v.tags.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(tag_to_cbor(x9))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e9))
+    if v.rateLimit.is_some():
+        auto u10 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u10))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewPublicVirtualInterfaceAllocation to a CBOR map (member wire name -> value, model order).
+def new_public_virtual_interface_allocation_to_cbor(NewPublicVirtualInterfaceAllocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceName")
+    vals.append(cbor.cbor_text(v.virtualInterfaceName))
+    keys.append("vlan")
+    vals.append(cbor.cbor_int(v.vlan))
+    if v.asn.is_some():
+        auto u0 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u0))
+    if v.asnLong.is_some():
+        auto u1 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u1))
+    if v.authKey.is_some():
+        auto u2 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u2))
+    if v.amazonAddress.is_some():
+        auto u3 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u3))
+    if v.customerAddress.is_some():
+        auto u4 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u4))
+    if v.addressFamily.is_some():
+        auto u5 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u5))
+    if v.routeFilterPrefixes.is_some():
+        auto u6 = v.routeFilterPrefixes.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(route_filter_prefix_to_cbor(x7))
+        keys.append("routeFilterPrefixes")
+        vals.append(cbor.cbor_list(e7))
+    if v.tags.is_some():
+        auto u8 = v.tags.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(tag_to_cbor(x9))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e9))
+    if v.rateLimit.is_some():
+        auto u10 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u10))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewTransitVirtualInterface to a CBOR map (member wire name -> value, model order).
+def new_transit_virtual_interface_to_cbor(NewTransitVirtualInterface v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.virtualInterfaceName.is_some():
+        auto u0 = v.virtualInterfaceName.unwrap()
+        keys.append("virtualInterfaceName")
+        vals.append(cbor.cbor_text(u0))
+    if v.vlan.is_some():
+        auto u1 = v.vlan.unwrap()
+        keys.append("vlan")
+        vals.append(cbor.cbor_int(u1))
+    if v.asn.is_some():
+        auto u2 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u2))
+    if v.asnLong.is_some():
+        auto u3 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u3))
+    if v.mtu.is_some():
+        auto u4 = v.mtu.unwrap()
+        keys.append("mtu")
+        vals.append(cbor.cbor_int(u4))
+    if v.authKey.is_some():
+        auto u5 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u5))
+    if v.amazonAddress.is_some():
+        auto u6 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u6))
+    if v.customerAddress.is_some():
+        auto u7 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u7))
+    if v.addressFamily.is_some():
+        auto u8 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u8))
+    if v.directConnectGatewayId.is_some():
+        auto u9 = v.directConnectGatewayId.unwrap()
+        keys.append("directConnectGatewayId")
+        vals.append(cbor.cbor_text(u9))
+    if v.tags.is_some():
+        auto u10 = v.tags.unwrap()
+        list[cbor.CborValue] e11 = []
+        for x11 in u10:
+            e11.append(tag_to_cbor(x11))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e11))
+    if v.enableSiteLink.is_some():
+        auto u12 = v.enableSiteLink.unwrap()
+        keys.append("enableSiteLink")
+        vals.append(cbor.cbor_bool(u12))
+    if v.prefixPoolAllocatedCountIpv4.is_some():
+        auto u13 = v.prefixPoolAllocatedCountIpv4.unwrap()
+        keys.append("prefixPoolAllocatedCountIpv4")
+        vals.append(cbor.cbor_int(u13))
+    if v.prefixPoolAllocatedCountIpv6.is_some():
+        auto u14 = v.prefixPoolAllocatedCountIpv6.unwrap()
+        keys.append("prefixPoolAllocatedCountIpv6")
+        vals.append(cbor.cbor_int(u14))
+    if v.rateLimit.is_some():
+        auto u15 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u15))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NewTransitVirtualInterfaceAllocation to a CBOR map (member wire name -> value, model order).
+def new_transit_virtual_interface_allocation_to_cbor(NewTransitVirtualInterfaceAllocation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.virtualInterfaceName.is_some():
+        auto u0 = v.virtualInterfaceName.unwrap()
+        keys.append("virtualInterfaceName")
+        vals.append(cbor.cbor_text(u0))
+    if v.vlan.is_some():
+        auto u1 = v.vlan.unwrap()
+        keys.append("vlan")
+        vals.append(cbor.cbor_int(u1))
+    if v.asn.is_some():
+        auto u2 = v.asn.unwrap()
+        keys.append("asn")
+        vals.append(cbor.cbor_int(u2))
+    if v.asnLong.is_some():
+        auto u3 = v.asnLong.unwrap()
+        keys.append("asnLong")
+        vals.append(cbor.cbor_int(u3))
+    if v.mtu.is_some():
+        auto u4 = v.mtu.unwrap()
+        keys.append("mtu")
+        vals.append(cbor.cbor_int(u4))
+    if v.authKey.is_some():
+        auto u5 = v.authKey.unwrap()
+        keys.append("authKey")
+        vals.append(cbor.cbor_text(u5))
+    if v.amazonAddress.is_some():
+        auto u6 = v.amazonAddress.unwrap()
+        keys.append("amazonAddress")
+        vals.append(cbor.cbor_text(u6))
+    if v.customerAddress.is_some():
+        auto u7 = v.customerAddress.unwrap()
+        keys.append("customerAddress")
+        vals.append(cbor.cbor_text(u7))
+    if v.addressFamily.is_some():
+        auto u8 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u8))
+    if v.tags.is_some():
+        auto u9 = v.tags.unwrap()
+        list[cbor.CborValue] e10 = []
+        for x10 in u9:
+            e10.append(tag_to_cbor(x10))
+        keys.append("tags")
+        vals.append(cbor.cbor_list(e10))
+    if v.rateLimit.is_some():
+        auto u11 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u11))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RouteFilterPrefix to a CBOR map (member wire name -> value, model order).
+def route_filter_prefix_to_cbor(RouteFilterPrefix v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.cidr.is_some():
+        auto u0 = v.cidr.unwrap()
+        keys.append("cidr")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RouteFilters to a CBOR map (member wire name -> value, model order).
+def route_filters_to_cbor(RouteFilters v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.routeDirection.is_some():
+        auto u0 = v.routeDirection.unwrap()
+        keys.append("routeDirection")
+        vals.append(cbor.cbor_text(u0))
+    if v.addressFamily.is_some():
+        auto u1 = v.addressFamily.unwrap()
+        keys.append("addressFamily")
+        vals.append(cbor.cbor_text(u1))
+    if v.cidrs.is_some():
+        auto u2 = v.cidrs.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(cbor.cbor_text(x3))
+        keys.append("cidrs")
+        vals.append(cbor.cbor_list(e3))
+    if v.asPath.is_some():
+        auto u4 = v.asPath.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(cbor.cbor_int(x5))
+        keys.append("asPath")
+        vals.append(cbor.cbor_list(e5))
+    if v.communities.is_some():
+        auto u6 = v.communities.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(cbor.cbor_text(x7))
+        keys.append("communities")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartBgpFailoverTestRequest to a CBOR map (member wire name -> value, model order).
+def start_bgp_failover_test_request_to_cbor(StartBgpFailoverTestRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    if v.bgpPeers.is_some():
+        auto u0 = v.bgpPeers.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("bgpPeers")
+        vals.append(cbor.cbor_list(e1))
+    if v.testDurationInMinutes.is_some():
+        auto u2 = v.testDurationInMinutes.unwrap()
+        keys.append("testDurationInMinutes")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopBgpFailoverTestRequest to a CBOR map (member wire name -> value, model order).
+def stop_bgp_failover_test_request_to_cbor(StopBgpFailoverTestRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("key")
+    vals.append(cbor.cbor_text(v.key))
+    if v.value.is_some():
+        auto u0 = v.value.unwrap()
+        keys.append("value")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.tags:
+        e0.append(tag_to_cbor(x0))
+    keys.append("tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resourceArn")
+    vals.append(cbor.cbor_text(v.resourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("tagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateConnectionRequest to a CBOR map (member wire name -> value, model order).
+def update_connection_request_to_cbor(UpdateConnectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("connectionId")
+    vals.append(cbor.cbor_text(v.connectionId))
+    if v.connectionName.is_some():
+        auto u0 = v.connectionName.unwrap()
+        keys.append("connectionName")
+        vals.append(cbor.cbor_text(u0))
+    if v.encryptionMode.is_some():
+        auto u1 = v.encryptionMode.unwrap()
+        keys.append("encryptionMode")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateConnectionsBillingModeRequest to a CBOR map (member wire name -> value, model order).
+def update_connections_billing_mode_request_to_cbor(UpdateConnectionsBillingModeRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.connectionIds:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("connectionIds")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("billingMode")
+    vals.append(cbor.cbor_text(v.billingMode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateDirectConnectGatewayAssociationRequest to a CBOR map (member wire name -> value, model order).
+def update_direct_connect_gateway_association_request_to_cbor(UpdateDirectConnectGatewayAssociationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.associationId.is_some():
+        auto u0 = v.associationId.unwrap()
+        keys.append("associationId")
+        vals.append(cbor.cbor_text(u0))
+    if v.addAllowedPrefixesToDirectConnectGateway.is_some():
+        auto u1 = v.addAllowedPrefixesToDirectConnectGateway.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(route_filter_prefix_to_cbor(x2))
+        keys.append("addAllowedPrefixesToDirectConnectGateway")
+        vals.append(cbor.cbor_list(e2))
     if v.removeAllowedPrefixesToDirectConnectGateway.is_some():
         auto u3 = v.removeAllowedPrefixesToDirectConnectGateway.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"removeAllowedPrefixesToDirectConnectGateway\":" + directconnect_json_arr(e4))
-    return directconnect_json_obj(parts)
+            e4.append(route_filter_prefix_to_cbor(x4))
+        keys.append("removeAllowedPrefixesToDirectConnectGateway")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateDirectConnectGatewayRequest to a CBOR map (member wire name -> value, model order).
+def update_direct_connect_gateway_request_to_cbor(UpdateDirectConnectGatewayRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("directConnectGatewayId")
+    vals.append(cbor.cbor_text(v.directConnectGatewayId))
+    keys.append("newDirectConnectGatewayName")
+    vals.append(cbor.cbor_text(v.newDirectConnectGatewayName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLagRequest to a CBOR map (member wire name -> value, model order).
+def update_lag_request_to_cbor(UpdateLagRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("lagId")
+    vals.append(cbor.cbor_text(v.lagId))
+    if v.lagName.is_some():
+        auto u0 = v.lagName.unwrap()
+        keys.append("lagName")
+        vals.append(cbor.cbor_text(u0))
+    if v.minimumLinks.is_some():
+        auto u1 = v.minimumLinks.unwrap()
+        keys.append("minimumLinks")
+        vals.append(cbor.cbor_int(u1))
+    if v.encryptionMode.is_some():
+        auto u2 = v.encryptionMode.unwrap()
+        keys.append("encryptionMode")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateResiliencyGroupRequest to a CBOR map (member wire name -> value, model order).
+def update_resiliency_group_request_to_cbor(UpdateResiliencyGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("resiliencyGroupId")
+    vals.append(cbor.cbor_text(v.resiliencyGroupId))
+    keys.append("resiliencyGroupName")
+    vals.append(cbor.cbor_text(v.resiliencyGroupName))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        keys.append("clientToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateVirtualInterfaceAttributesRequest to a CBOR map (member wire name -> value, model order).
+def update_virtual_interface_attributes_request_to_cbor(UpdateVirtualInterfaceAttributesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("virtualInterfaceId")
+    vals.append(cbor.cbor_text(v.virtualInterfaceId))
+    if v.mtu.is_some():
+        auto u0 = v.mtu.unwrap()
+        keys.append("mtu")
+        vals.append(cbor.cbor_int(u0))
+    if v.enableSiteLink.is_some():
+        auto u1 = v.enableSiteLink.unwrap()
+        keys.append("enableSiteLink")
+        vals.append(cbor.cbor_bool(u1))
+    if v.virtualInterfaceName.is_some():
+        auto u2 = v.virtualInterfaceName.unwrap()
+        keys.append("virtualInterfaceName")
+        vals.append(cbor.cbor_text(u2))
+    if v.prefixPoolAllocatedCountIpv4.is_some():
+        auto u3 = v.prefixPoolAllocatedCountIpv4.unwrap()
+        keys.append("prefixPoolAllocatedCountIpv4")
+        vals.append(cbor.cbor_int(u3))
+    if v.prefixPoolAllocatedCountIpv6.is_some():
+        auto u4 = v.prefixPoolAllocatedCountIpv6.unwrap()
+        keys.append("prefixPoolAllocatedCountIpv6")
+        vals.append(cbor.cbor_int(u4))
+    if v.rateLimit.is_some():
+        auto u5 = v.rateLimit.unwrap()
+        keys.append("rateLimit")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Direct_Connect client: credentials + region, threaded into every operation.
 struct Direct_ConnectClient:
@@ -2272,483 +2826,663 @@ struct Direct_ConnectClient:
 
     # AcceptDirectConnectGatewayAssociationProposal
     # errors: DirectConnectClientException, DirectConnectServerException
-    def accept_direct_connect_gateway_association_proposal(self, AcceptDirectConnectGatewayAssociationProposalRequest input) -> str:
-        auto body = accept_direct_connect_gateway_association_proposal_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AcceptDirectConnectGatewayAssociationProposal", body)
+    def accept_direct_connect_gateway_association_proposal(self, AcceptDirectConnectGatewayAssociationProposalRequest input) -> bytes:
+        auto body = cbor.cbor_encode(accept_direct_connect_gateway_association_proposal_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AcceptDirectConnectGatewayAssociationProposal", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AllocateConnectionOnInterconnect
     # errors: DirectConnectClientException, DirectConnectServerException
-    def allocate_connection_on_interconnect(self, AllocateConnectionOnInterconnectRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocateConnectionOnInterconnect", body)
+    def allocate_connection_on_interconnect(self, AllocateConnectionOnInterconnectRequest input) -> bytes:
+        auto body = cbor.cbor_encode(allocate_connection_on_interconnect_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AllocateConnectionOnInterconnect", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AllocateHostedConnection
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
-    def allocate_hosted_connection(self, AllocateHostedConnectionRequest input) -> str:
-        auto body = allocate_hosted_connection_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocateHostedConnection", body)
+    def allocate_hosted_connection(self, AllocateHostedConnectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(allocate_hosted_connection_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AllocateHostedConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AllocatePrivateVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def allocate_private_virtual_interface(self, AllocatePrivateVirtualInterfaceRequest input) -> str:
-        auto body = allocate_private_virtual_interface_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocatePrivateVirtualInterface", body)
+    def allocate_private_virtual_interface(self, AllocatePrivateVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(allocate_private_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AllocatePrivateVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AllocatePublicVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def allocate_public_virtual_interface(self, AllocatePublicVirtualInterfaceRequest input) -> str:
-        auto body = allocate_public_virtual_interface_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocatePublicVirtualInterface", body)
+    def allocate_public_virtual_interface(self, AllocatePublicVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(allocate_public_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AllocatePublicVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AllocateTransitVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def allocate_transit_virtual_interface(self, AllocateTransitVirtualInterfaceRequest input) -> str:
-        auto body = allocate_transit_virtual_interface_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AllocateTransitVirtualInterface", body)
+    def allocate_transit_virtual_interface(self, AllocateTransitVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(allocate_transit_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AllocateTransitVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateConnectionWithLag
     # errors: DirectConnectClientException, DirectConnectServerException, LimitExceededException
-    def associate_connection_with_lag(self, AssociateConnectionWithLagRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateConnectionWithLag", body)
+    def associate_connection_with_lag(self, AssociateConnectionWithLagRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_connection_with_lag_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AssociateConnectionWithLag", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateConnectionsToResiliencyGroup
     # errors: DirectConnectClientException, DirectConnectServerException, LimitExceededException
-    def associate_connections_to_resiliency_group(self, AssociateConnectionsToResiliencyGroupRequest input) -> str:
-        auto body = associate_connections_to_resiliency_group_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateConnectionsToResiliencyGroup", body)
+    def associate_connections_to_resiliency_group(self, AssociateConnectionsToResiliencyGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_connections_to_resiliency_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AssociateConnectionsToResiliencyGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateHostedConnection
     # errors: DirectConnectClientException, DirectConnectServerException
-    def associate_hosted_connection(self, AssociateHostedConnectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateHostedConnection", body)
+    def associate_hosted_connection(self, AssociateHostedConnectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_hosted_connection_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AssociateHostedConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateMacSecKey
     # errors: DirectConnectClientException, DirectConnectServerException
-    def associate_mac_sec_key(self, AssociateMacSecKeyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateMacSecKey", body)
+    def associate_mac_sec_key(self, AssociateMacSecKeyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_mac_sec_key_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AssociateMacSecKey", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException
-    def associate_virtual_interface(self, AssociateVirtualInterfaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "AssociateVirtualInterface", body)
+    def associate_virtual_interface(self, AssociateVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "AssociateVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ConfirmConnection
     # errors: DirectConnectClientException, DirectConnectServerException
-    def confirm_connection(self, ConfirmConnectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ConfirmConnection", body)
+    def confirm_connection(self, ConfirmConnectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(confirm_connection_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ConfirmConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ConfirmCustomerAgreement
     # errors: DirectConnectClientException, DirectConnectServerException
-    def confirm_customer_agreement(self, ConfirmCustomerAgreementRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ConfirmCustomerAgreement", body)
+    def confirm_customer_agreement(self, ConfirmCustomerAgreementRequest input) -> bytes:
+        auto body = cbor.cbor_encode(confirm_customer_agreement_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ConfirmCustomerAgreement", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ConfirmPrivateVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException
-    def confirm_private_virtual_interface(self, ConfirmPrivateVirtualInterfaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ConfirmPrivateVirtualInterface", body)
+    def confirm_private_virtual_interface(self, ConfirmPrivateVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(confirm_private_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ConfirmPrivateVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ConfirmPublicVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException
-    def confirm_public_virtual_interface(self, ConfirmPublicVirtualInterfaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ConfirmPublicVirtualInterface", body)
+    def confirm_public_virtual_interface(self, ConfirmPublicVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(confirm_public_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ConfirmPublicVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ConfirmTransitVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException
-    def confirm_transit_virtual_interface(self, ConfirmTransitVirtualInterfaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ConfirmTransitVirtualInterface", body)
+    def confirm_transit_virtual_interface(self, ConfirmTransitVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(confirm_transit_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ConfirmTransitVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateBGPPeer
     # errors: DirectConnectClientException, DirectConnectServerException
-    def create_bgp_peer(self, CreateBGPPeerRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateBGPPeer", body)
+    def create_bgp_peer(self, CreateBGPPeerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_bgp_peer_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateBGPPeer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateConnection
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
-    def create_connection(self, CreateConnectionRequest input) -> str:
-        auto body = create_connection_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateConnection", body)
+    def create_connection(self, CreateConnectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_connection_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDirectConnectGateway
     # errors: DirectConnectClientException, DirectConnectServerException
-    def create_direct_connect_gateway(self, CreateDirectConnectGatewayRequest input) -> str:
-        auto body = create_direct_connect_gateway_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateDirectConnectGateway", body)
+    def create_direct_connect_gateway(self, CreateDirectConnectGatewayRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_direct_connect_gateway_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateDirectConnectGateway", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDirectConnectGatewayAssociation
     # errors: DirectConnectClientException, DirectConnectServerException
-    def create_direct_connect_gateway_association(self, CreateDirectConnectGatewayAssociationRequest input) -> str:
-        auto body = create_direct_connect_gateway_association_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateDirectConnectGatewayAssociation", body)
+    def create_direct_connect_gateway_association(self, CreateDirectConnectGatewayAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_direct_connect_gateway_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateDirectConnectGatewayAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDirectConnectGatewayAssociationProposal
     # errors: DirectConnectClientException, DirectConnectServerException
-    def create_direct_connect_gateway_association_proposal(self, CreateDirectConnectGatewayAssociationProposalRequest input) -> str:
-        auto body = create_direct_connect_gateway_association_proposal_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateDirectConnectGatewayAssociationProposal", body)
+    def create_direct_connect_gateway_association_proposal(self, CreateDirectConnectGatewayAssociationProposalRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_direct_connect_gateway_association_proposal_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateDirectConnectGatewayAssociationProposal", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateInterconnect
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
-    def create_interconnect(self, CreateInterconnectRequest input) -> str:
-        auto body = create_interconnect_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateInterconnect", body)
+    def create_interconnect(self, CreateInterconnectRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_interconnect_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateInterconnect", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLag
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
-    def create_lag(self, CreateLagRequest input) -> str:
-        auto body = create_lag_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateLag", body)
+    def create_lag(self, CreateLagRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_lag_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateLag", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePrivateVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def create_private_virtual_interface(self, CreatePrivateVirtualInterfaceRequest input) -> str:
-        auto body = create_private_virtual_interface_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreatePrivateVirtualInterface", body)
+    def create_private_virtual_interface(self, CreatePrivateVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_private_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreatePrivateVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePublicVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def create_public_virtual_interface(self, CreatePublicVirtualInterfaceRequest input) -> str:
-        auto body = create_public_virtual_interface_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreatePublicVirtualInterface", body)
+    def create_public_virtual_interface(self, CreatePublicVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_public_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreatePublicVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateResiliencyGroup
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def create_resiliency_group(self, CreateResiliencyGroupRequest input) -> str:
-        auto body = create_resiliency_group_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateResiliencyGroup", body)
+    def create_resiliency_group(self, CreateResiliencyGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_resiliency_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateResiliencyGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateTransitVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, LimitExceededException, TooManyTagsException
-    def create_transit_virtual_interface(self, CreateTransitVirtualInterfaceRequest input) -> str:
-        auto body = create_transit_virtual_interface_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "CreateTransitVirtualInterface", body)
+    def create_transit_virtual_interface(self, CreateTransitVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_transit_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "CreateTransitVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteBGPPeer
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_bgp_peer(self, DeleteBGPPeerRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteBGPPeer", body)
+    def delete_bgp_peer(self, DeleteBGPPeerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_bgp_peer_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteBGPPeer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteConnection
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_connection(self, DeleteConnectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteConnection", body)
+    def delete_connection(self, DeleteConnectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_connection_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDirectConnectGateway
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_direct_connect_gateway(self, DeleteDirectConnectGatewayRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteDirectConnectGateway", body)
+    def delete_direct_connect_gateway(self, DeleteDirectConnectGatewayRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_direct_connect_gateway_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteDirectConnectGateway", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDirectConnectGatewayAssociation
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_direct_connect_gateway_association(self, DeleteDirectConnectGatewayAssociationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteDirectConnectGatewayAssociation", body)
+    def delete_direct_connect_gateway_association(self, DeleteDirectConnectGatewayAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_direct_connect_gateway_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteDirectConnectGatewayAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDirectConnectGatewayAssociationProposal
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_direct_connect_gateway_association_proposal(self, DeleteDirectConnectGatewayAssociationProposalRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteDirectConnectGatewayAssociationProposal", body)
+    def delete_direct_connect_gateway_association_proposal(self, DeleteDirectConnectGatewayAssociationProposalRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_direct_connect_gateway_association_proposal_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteDirectConnectGatewayAssociationProposal", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteInterconnect
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_interconnect(self, DeleteInterconnectRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteInterconnect", body)
+    def delete_interconnect(self, DeleteInterconnectRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_interconnect_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteInterconnect", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteLag
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_lag(self, DeleteLagRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteLag", body)
+    def delete_lag(self, DeleteLagRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_lag_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteLag", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteResiliencyGroup
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_resiliency_group(self, DeleteResiliencyGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteResiliencyGroup", body)
+    def delete_resiliency_group(self, DeleteResiliencyGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_resiliency_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteResiliencyGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteVirtualInterface
     # errors: DirectConnectClientException, DirectConnectServerException
-    def delete_virtual_interface(self, DeleteVirtualInterfaceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DeleteVirtualInterface", body)
+    def delete_virtual_interface(self, DeleteVirtualInterfaceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_virtual_interface_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DeleteVirtualInterface", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConnectionLoa
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_connection_loa(self, DescribeConnectionLoaRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeConnectionLoa", body)
+    def describe_connection_loa(self, DescribeConnectionLoaRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_connection_loa_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeConnectionLoa", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConnections
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_connections(self, DescribeConnectionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeConnections", body)
+    def describe_connections(self, DescribeConnectionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_connections_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeConnections", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConnectionsOnInterconnect
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_connections_on_interconnect(self, DescribeConnectionsOnInterconnectRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeConnectionsOnInterconnect", body)
+    def describe_connections_on_interconnect(self, DescribeConnectionsOnInterconnectRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_connections_on_interconnect_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeConnectionsOnInterconnect", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCustomerMetadata
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_customer_metadata(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeCustomerMetadata", body)
+    def describe_customer_metadata(self) -> bytes:
+        list[int64] empty = []
+        auto body = bytes(empty)
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeCustomerMetadata", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDirectConnectGatewayAssociationProposals
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_direct_connect_gateway_association_proposals(self, DescribeDirectConnectGatewayAssociationProposalsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGatewayAssociationProposals", body)
+    def describe_direct_connect_gateway_association_proposals(self, DescribeDirectConnectGatewayAssociationProposalsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_direct_connect_gateway_association_proposals_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeDirectConnectGatewayAssociationProposals", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDirectConnectGatewayAssociations
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_direct_connect_gateway_associations(self, DescribeDirectConnectGatewayAssociationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGatewayAssociations", body)
+    def describe_direct_connect_gateway_associations(self, DescribeDirectConnectGatewayAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_direct_connect_gateway_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeDirectConnectGatewayAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDirectConnectGatewayAttachments
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_direct_connect_gateway_attachments(self, DescribeDirectConnectGatewayAttachmentsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGatewayAttachments", body)
+    def describe_direct_connect_gateway_attachments(self, DescribeDirectConnectGatewayAttachmentsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_direct_connect_gateway_attachments_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeDirectConnectGatewayAttachments", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDirectConnectGateways
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_direct_connect_gateways(self, DescribeDirectConnectGatewaysRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGateways", body)
+    def describe_direct_connect_gateways(self, DescribeDirectConnectGatewaysRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_direct_connect_gateways_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeDirectConnectGateways", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeHostedConnections
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_hosted_connections(self, DescribeHostedConnectionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeHostedConnections", body)
+    def describe_hosted_connections(self, DescribeHostedConnectionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_hosted_connections_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeHostedConnections", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeInterconnectLoa
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_interconnect_loa(self, DescribeInterconnectLoaRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeInterconnectLoa", body)
+    def describe_interconnect_loa(self, DescribeInterconnectLoaRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_interconnect_loa_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeInterconnectLoa", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeInterconnects
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_interconnects(self, DescribeInterconnectsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeInterconnects", body)
+    def describe_interconnects(self, DescribeInterconnectsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_interconnects_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeInterconnects", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLags
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_lags(self, DescribeLagsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeLags", body)
+    def describe_lags(self, DescribeLagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_lags_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeLags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLoa
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_loa(self, DescribeLoaRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeLoa", body)
+    def describe_loa(self, DescribeLoaRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_loa_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeLoa", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocations
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_locations(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeLocations", body)
+    def describe_locations(self) -> bytes:
+        list[int64] empty = []
+        auto body = bytes(empty)
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeLocations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeRouterConfiguration
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_router_configuration(self, DescribeRouterConfigurationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeRouterConfiguration", body)
+    def describe_router_configuration(self, DescribeRouterConfigurationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_router_configuration_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeRouterConfiguration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTags
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_tags(self, DescribeTagsRequest input) -> str:
-        auto body = describe_tags_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeTags", body)
+    def describe_tags(self, DescribeTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeVirtualGateways
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_virtual_gateways(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeVirtualGateways", body)
+    def describe_virtual_gateways(self) -> bytes:
+        list[int64] empty = []
+        auto body = bytes(empty)
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeVirtualGateways", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeVirtualInterfaces
     # errors: DirectConnectClientException, DirectConnectServerException
-    def describe_virtual_interfaces(self, DescribeVirtualInterfacesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeVirtualInterfaces", body)
+    def describe_virtual_interfaces(self, DescribeVirtualInterfacesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_virtual_interfaces_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DescribeVirtualInterfaces", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateConnectionFromLag
     # errors: DirectConnectClientException, DirectConnectServerException
-    def disassociate_connection_from_lag(self, DisassociateConnectionFromLagRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DisassociateConnectionFromLag", body)
+    def disassociate_connection_from_lag(self, DisassociateConnectionFromLagRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_connection_from_lag_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DisassociateConnectionFromLag", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateConnectionsFromResiliencyGroup
     # errors: DirectConnectClientException, DirectConnectServerException
-    def disassociate_connections_from_resiliency_group(self, DisassociateConnectionsFromResiliencyGroupRequest input) -> str:
-        auto body = disassociate_connections_from_resiliency_group_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DisassociateConnectionsFromResiliencyGroup", body)
+    def disassociate_connections_from_resiliency_group(self, DisassociateConnectionsFromResiliencyGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_connections_from_resiliency_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DisassociateConnectionsFromResiliencyGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateMacSecKey
     # errors: DirectConnectClientException, DirectConnectServerException
-    def disassociate_mac_sec_key(self, DisassociateMacSecKeyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DisassociateMacSecKey", body)
+    def disassociate_mac_sec_key(self, DisassociateMacSecKeyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_mac_sec_key_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "DisassociateMacSecKey", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetResiliencyGroup
     # errors: DirectConnectClientException, DirectConnectServerException
-    def get_resiliency_group(self, GetResiliencyGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "GetResiliencyGroup", body)
+    def get_resiliency_group(self, GetResiliencyGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_resiliency_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "GetResiliencyGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListResiliencyGroupAssociations
     # errors: DirectConnectClientException, DirectConnectServerException
-    def list_resiliency_group_associations(self, ListResiliencyGroupAssociationsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListResiliencyGroupAssociations", body)
+    def list_resiliency_group_associations(self, ListResiliencyGroupAssociationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_resiliency_group_associations_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ListResiliencyGroupAssociations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListResiliencyGroups
     # errors: DirectConnectClientException, DirectConnectServerException
-    def list_resiliency_groups(self, ListResiliencyGroupsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListResiliencyGroups", body)
+    def list_resiliency_groups(self, ListResiliencyGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_resiliency_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ListResiliencyGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListVirtualInterfaceRoutes
     # errors: DirectConnectClientException, DirectConnectServerException
-    def list_virtual_interface_routes(self, ListVirtualInterfaceRoutesRequest input) -> str:
-        auto body = list_virtual_interface_routes_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListVirtualInterfaceRoutes", body)
+    def list_virtual_interface_routes(self, ListVirtualInterfaceRoutesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_virtual_interface_routes_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ListVirtualInterfaceRoutes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListVirtualInterfaceTestHistory
     # errors: DirectConnectClientException, DirectConnectServerException
-    def list_virtual_interface_test_history(self, ListVirtualInterfaceTestHistoryRequest input) -> str:
-        auto body = list_virtual_interface_test_history_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "ListVirtualInterfaceTestHistory", body)
+    def list_virtual_interface_test_history(self, ListVirtualInterfaceTestHistoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_virtual_interface_test_history_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "ListVirtualInterfaceTestHistory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartBgpFailoverTest
     # errors: DirectConnectClientException, DirectConnectServerException
-    def start_bgp_failover_test(self, StartBgpFailoverTestRequest input) -> str:
-        auto body = start_bgp_failover_test_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "StartBgpFailoverTest", body)
+    def start_bgp_failover_test(self, StartBgpFailoverTestRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_bgp_failover_test_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "StartBgpFailoverTest", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopBgpFailoverTest
     # errors: DirectConnectClientException, DirectConnectServerException
-    def stop_bgp_failover_test(self, StopBgpFailoverTestRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "StopBgpFailoverTest", body)
+    def stop_bgp_failover_test(self, StopBgpFailoverTestRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_bgp_failover_test_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "StopBgpFailoverTest", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: DirectConnectClientException, DirectConnectServerException, DuplicateTagKeysException, TooManyTagsException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: DirectConnectClientException, DirectConnectServerException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateConnection
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_connection(self, UpdateConnectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateConnection", body)
+    def update_connection(self, UpdateConnectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_connection_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateConnection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateConnectionsBillingMode
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_connections_billing_mode(self, UpdateConnectionsBillingModeRequest input) -> str:
-        auto body = update_connections_billing_mode_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateConnectionsBillingMode", body)
+    def update_connections_billing_mode(self, UpdateConnectionsBillingModeRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_connections_billing_mode_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateConnectionsBillingMode", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDirectConnectGateway
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_direct_connect_gateway(self, UpdateDirectConnectGatewayRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateDirectConnectGateway", body)
+    def update_direct_connect_gateway(self, UpdateDirectConnectGatewayRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_direct_connect_gateway_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateDirectConnectGateway", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateDirectConnectGatewayAssociation
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_direct_connect_gateway_association(self, UpdateDirectConnectGatewayAssociationRequest input) -> str:
-        auto body = update_direct_connect_gateway_association_request_to_json(input)
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateDirectConnectGatewayAssociation", body)
+    def update_direct_connect_gateway_association(self, UpdateDirectConnectGatewayAssociationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_direct_connect_gateway_association_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateDirectConnectGatewayAssociation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLag
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_lag(self, UpdateLagRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateLag", body)
+    def update_lag(self, UpdateLagRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_lag_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateLag", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateResiliencyGroup
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_resiliency_group(self, UpdateResiliencyGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateResiliencyGroup", body)
+    def update_resiliency_group(self, UpdateResiliencyGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_resiliency_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateResiliencyGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateVirtualInterfaceAttributes
     # errors: DirectConnectClientException, DirectConnectServerException
-    def update_virtual_interface_attributes(self, UpdateVirtualInterfaceAttributesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "UpdateVirtualInterfaceAttributes", body)
-
-    # Paginator for DescribeDirectConnectGatewayAssociations — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: directConnectGatewayAssociations).
-    def paginate_describe_direct_connect_gateway_associations(self, DescribeDirectConnectGatewayAssociationsRequest input):
-        auto host = endpoints.regional_host(directconnect_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGatewayAssociations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeDirectConnectGatewayAttachments — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: directConnectGatewayAttachments).
-    def paginate_describe_direct_connect_gateway_attachments(self, DescribeDirectConnectGatewayAttachmentsRequest input):
-        auto host = endpoints.regional_host(directconnect_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGatewayAttachments", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeDirectConnectGateways — yields each Response page, threading the
-    # nextToken -> nextToken continuation token until the output token is absent (result key: directConnectGateways).
-    def paginate_describe_direct_connect_gateways(self, DescribeDirectConnectGatewaysRequest input):
-        auto host = endpoints.regional_host(directconnect_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(directconnect_protocol(), self.creds, self.region, "DescribeDirectConnectGateways", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "nextToken")
-            if not np.has_more:
-                break
-            input.nextToken = Optional.Some(np.token)
+    def update_virtual_interface_attributes(self, UpdateVirtualInterfaceAttributesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_virtual_interface_attributes_request_to_cbor(input))
+        auto host = endpoints.regional_host(directconnect_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(directconnect_service(), self.region, host, "OvertureService", "UpdateVirtualInterfaceAttributes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a Direct_ConnectClient bound to credentials + region.
 def directconnect_client(core.Credentials creds, str region) -> Direct_ConnectClient:

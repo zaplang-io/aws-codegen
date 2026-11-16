@@ -16,9 +16,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (smithy-rpc-v2-cbor): 89 operations — 89 with a generated method,
+# Coverage (smithy-rpc-v2-cbor): 90 operations — 90 with a generated method,
 #   0 skipped (input has a non-text-keyed map member).
-#   251 structs (plain carriers), 44 enums, 15 error variants.
+#   255 structs (plain carriers), 44 enums, 15 error variants.
 #   0 paginators generated (10 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (2 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -381,6 +381,7 @@ enum StackAttribute:
     CONTENT_REDIRECTION
     AGENT_ACCESS_CONFIG
     STORAGE_CONNECTOR_AUTHENTICATION
+    AGENT_ACCESS_CONFIG_KMS_KEY_ARN
     Unknown(str value)
 
 @derive(Json)
@@ -480,6 +481,8 @@ struct AgentAccessConfig:
     list[AgentAccessSetting] Settings
     Optional[str] S3BucketArn
     Optional[bool] ScreenshotsUploadEnabled
+    Optional[bool] ReplaySessionEnabled
+    Optional[str] KmsKeyArn
     str ScreenResolution
     str ScreenImageFormat
     Optional[str] UserControlMode
@@ -488,6 +491,8 @@ struct AgentAccessConfigForUpdate:
     Optional[list[AgentAccessSetting]] Settings
     Optional[str] S3BucketArn
     Optional[bool] ScreenshotsUploadEnabled
+    Optional[bool] ReplaySessionEnabled
+    Optional[str] KmsKeyArn
     Optional[str] ScreenResolution
     Optional[str] ScreenImageFormat
     Optional[str] UserControlMode
@@ -789,6 +794,7 @@ struct CreateImageBuilderRequest:
     Optional[list[str]] SoftwaresToInstall
     Optional[list[str]] SoftwaresToUninstall
     Optional[bool] DisableIMDSV1
+    Optional[ImageBuilderAgentAccessConfig] AgentAccessConfig
 
 struct CreateImageBuilderResult:
     Optional[ImageBuilder] ImageBuilder
@@ -1376,6 +1382,23 @@ struct ImageBuilder:
     Optional[VolumeConfig] RootVolumeConfig
     Optional[str] LatestAppstreamAgentVersion
     Optional[bool] DisableIMDSV1
+    Optional[ImageBuilderAgentAccessConfig] AgentAccessConfig
+
+struct ImageBuilderAgentAccessConfig:
+    list[AgentAccessSetting] Settings
+    Optional[str] S3BucketArn
+    Optional[bool] ScreenshotsUploadEnabled
+    str ScreenResolution
+    str ScreenImageFormat
+    Optional[str] UserControlMode
+
+struct ImageBuilderAgentAccessConfigForUpdate:
+    Optional[list[AgentAccessSetting]] Settings
+    Optional[str] S3BucketArn
+    Optional[bool] ScreenshotsUploadEnabled
+    Optional[str] ScreenResolution
+    Optional[str] ScreenImageFormat
+    Optional[str] UserControlMode
 
 struct ImageBuilderStateChangeReason:
     Optional[str] Code
@@ -1707,6 +1730,16 @@ struct UpdateFleetRequest:
 struct UpdateFleetResult:
     Optional[Fleet] Fleet
 
+struct UpdateImageBuilderRequest:
+    str Name
+    Optional[str] Description
+    Optional[str] DisplayName
+    Optional[ImageBuilderAgentAccessConfigForUpdate] AgentAccessConfig
+    Optional[list[str]] AttributesToDelete
+
+struct UpdateImageBuilderResult:
+    Optional[ImageBuilder] ImageBuilder
+
 struct UpdateImagePermissionsRequest:
     str Name
     str SharedAccountId
@@ -1954,14 +1987,22 @@ def agent_access_config_to_cbor(AgentAccessConfig v) -> cbor.CborValue:
         auto u2 = v.ScreenshotsUploadEnabled.unwrap()
         keys.append("ScreenshotsUploadEnabled")
         vals.append(cbor.cbor_bool(u2))
+    if v.ReplaySessionEnabled.is_some():
+        auto u3 = v.ReplaySessionEnabled.unwrap()
+        keys.append("ReplaySessionEnabled")
+        vals.append(cbor.cbor_bool(u3))
+    if v.KmsKeyArn.is_some():
+        auto u4 = v.KmsKeyArn.unwrap()
+        keys.append("KmsKeyArn")
+        vals.append(cbor.cbor_text(u4))
     keys.append("ScreenResolution")
     vals.append(cbor.cbor_text(v.ScreenResolution))
     keys.append("ScreenImageFormat")
     vals.append(cbor.cbor_text(v.ScreenImageFormat))
     if v.UserControlMode.is_some():
-        auto u3 = v.UserControlMode.unwrap()
+        auto u5 = v.UserControlMode.unwrap()
         keys.append("UserControlMode")
-        vals.append(cbor.cbor_text(u3))
+        vals.append(cbor.cbor_text(u5))
     return cbor.cbor_map(keys, vals)
 
 # Serialize AgentAccessConfigForUpdate to a CBOR map (member wire name -> value, model order).
@@ -1983,18 +2024,26 @@ def agent_access_config_for_update_to_cbor(AgentAccessConfigForUpdate v) -> cbor
         auto u3 = v.ScreenshotsUploadEnabled.unwrap()
         keys.append("ScreenshotsUploadEnabled")
         vals.append(cbor.cbor_bool(u3))
-    if v.ScreenResolution.is_some():
-        auto u4 = v.ScreenResolution.unwrap()
-        keys.append("ScreenResolution")
-        vals.append(cbor.cbor_text(u4))
-    if v.ScreenImageFormat.is_some():
-        auto u5 = v.ScreenImageFormat.unwrap()
-        keys.append("ScreenImageFormat")
+    if v.ReplaySessionEnabled.is_some():
+        auto u4 = v.ReplaySessionEnabled.unwrap()
+        keys.append("ReplaySessionEnabled")
+        vals.append(cbor.cbor_bool(u4))
+    if v.KmsKeyArn.is_some():
+        auto u5 = v.KmsKeyArn.unwrap()
+        keys.append("KmsKeyArn")
         vals.append(cbor.cbor_text(u5))
-    if v.UserControlMode.is_some():
-        auto u6 = v.UserControlMode.unwrap()
-        keys.append("UserControlMode")
+    if v.ScreenResolution.is_some():
+        auto u6 = v.ScreenResolution.unwrap()
+        keys.append("ScreenResolution")
         vals.append(cbor.cbor_text(u6))
+    if v.ScreenImageFormat.is_some():
+        auto u7 = v.ScreenImageFormat.unwrap()
+        keys.append("ScreenImageFormat")
+        vals.append(cbor.cbor_text(u7))
+    if v.UserControlMode.is_some():
+        auto u8 = v.UserControlMode.unwrap()
+        keys.append("UserControlMode")
+        vals.append(cbor.cbor_text(u8))
     return cbor.cbor_map(keys, vals)
 
 # Serialize AgentAccessSetting to a CBOR map (member wire name -> value, model order).
@@ -2585,6 +2634,10 @@ def create_image_builder_request_to_cbor(CreateImageBuilderRequest v) -> cbor.Cb
         auto u18 = v.DisableIMDSV1.unwrap()
         keys.append("DisableIMDSV1")
         vals.append(cbor.cbor_bool(u18))
+    if v.AgentAccessConfig.is_some():
+        auto u19 = v.AgentAccessConfig.unwrap()
+        keys.append("AgentAccessConfig")
+        vals.append(image_builder_agent_access_config_to_cbor(u19))
     return cbor.cbor_map(keys, vals)
 
 # Serialize CreateImageBuilderStreamingURLRequest to a CBOR map (member wire name -> value, model order).
@@ -3472,6 +3525,66 @@ def get_export_image_task_request_to_cbor(GetExportImageTaskRequest v) -> cbor.C
         vals.append(cbor.cbor_text(u0))
     return cbor.cbor_map(keys, vals)
 
+# Serialize ImageBuilderAgentAccessConfig to a CBOR map (member wire name -> value, model order).
+def image_builder_agent_access_config_to_cbor(ImageBuilderAgentAccessConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Settings:
+        e0.append(agent_access_setting_to_cbor(x0))
+    keys.append("Settings")
+    vals.append(cbor.cbor_list(e0))
+    if v.S3BucketArn.is_some():
+        auto u1 = v.S3BucketArn.unwrap()
+        keys.append("S3BucketArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.ScreenshotsUploadEnabled.is_some():
+        auto u2 = v.ScreenshotsUploadEnabled.unwrap()
+        keys.append("ScreenshotsUploadEnabled")
+        vals.append(cbor.cbor_bool(u2))
+    keys.append("ScreenResolution")
+    vals.append(cbor.cbor_text(v.ScreenResolution))
+    keys.append("ScreenImageFormat")
+    vals.append(cbor.cbor_text(v.ScreenImageFormat))
+    if v.UserControlMode.is_some():
+        auto u3 = v.UserControlMode.unwrap()
+        keys.append("UserControlMode")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImageBuilderAgentAccessConfigForUpdate to a CBOR map (member wire name -> value, model order).
+def image_builder_agent_access_config_for_update_to_cbor(ImageBuilderAgentAccessConfigForUpdate v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Settings.is_some():
+        auto u0 = v.Settings.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(agent_access_setting_to_cbor(x1))
+        keys.append("Settings")
+        vals.append(cbor.cbor_list(e1))
+    if v.S3BucketArn.is_some():
+        auto u2 = v.S3BucketArn.unwrap()
+        keys.append("S3BucketArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.ScreenshotsUploadEnabled.is_some():
+        auto u3 = v.ScreenshotsUploadEnabled.unwrap()
+        keys.append("ScreenshotsUploadEnabled")
+        vals.append(cbor.cbor_bool(u3))
+    if v.ScreenResolution.is_some():
+        auto u4 = v.ScreenResolution.unwrap()
+        keys.append("ScreenResolution")
+        vals.append(cbor.cbor_text(u4))
+    if v.ScreenImageFormat.is_some():
+        auto u5 = v.ScreenImageFormat.unwrap()
+        keys.append("ScreenImageFormat")
+        vals.append(cbor.cbor_text(u5))
+    if v.UserControlMode.is_some():
+        auto u6 = v.UserControlMode.unwrap()
+        keys.append("UserControlMode")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
 # Serialize ImagePermissions to a CBOR map (member wire name -> value, model order).
 def image_permissions_to_cbor(ImagePermissions v) -> cbor.CborValue:
     list[str] keys = []
@@ -3998,6 +4111,33 @@ def update_fleet_request_to_cbor(UpdateFleetRequest v) -> cbor.CborValue:
         auto u25 = v.DisableIMDSV1.unwrap()
         keys.append("DisableIMDSV1")
         vals.append(cbor.cbor_bool(u25))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateImageBuilderRequest to a CBOR map (member wire name -> value, model order).
+def update_image_builder_request_to_cbor(UpdateImageBuilderRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    if v.DisplayName.is_some():
+        auto u1 = v.DisplayName.unwrap()
+        keys.append("DisplayName")
+        vals.append(cbor.cbor_text(u1))
+    if v.AgentAccessConfig.is_some():
+        auto u2 = v.AgentAccessConfig.unwrap()
+        keys.append("AgentAccessConfig")
+        vals.append(image_builder_agent_access_config_for_update_to_cbor(u2))
+    if v.AttributesToDelete.is_some():
+        auto u3 = v.AttributesToDelete.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(cbor.cbor_text(x4))
+        keys.append("AttributesToDelete")
+        vals.append(cbor.cbor_list(e4))
     return cbor.cbor_map(keys, vals)
 
 # Serialize UpdateImagePermissionsRequest to a CBOR map (member wire name -> value, model order).
@@ -4993,6 +5133,15 @@ struct AppStreamClient:
         auto host = endpoints.regional_host(appstream2_service(), self.region)
         auto t = core.signing_time_now()
         auto req = cbor.cbor_build_request(appstream2_service(), self.region, host, "PhotonAdminProxyService", "UpdateFleet", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # UpdateImageBuilder
+    # errors: ConcurrentModificationException, IncompatibleImageException, InvalidAccountStatusException, InvalidParameterCombinationException, OperationNotPermittedException, RequestLimitExceededException, ResourceNotFoundException
+    def update_image_builder(self, UpdateImageBuilderRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_image_builder_request_to_cbor(input))
+        auto host = endpoints.regional_host(appstream2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(appstream2_service(), self.region, host, "PhotonAdminProxyService", "UpdateImageBuilder", body, t.amz_date)
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateImagePermissions

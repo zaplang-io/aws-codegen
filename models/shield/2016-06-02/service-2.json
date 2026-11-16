@@ -4,8 +4,9 @@
   "apiVersion": "2016-06-02",
   "endpointPrefix": "shield",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceAbbreviation": "AWS Shield",
@@ -14,6 +15,7 @@
   "signatureVersion": "v4",
   "targetPrefix": "AWSShield_20160616",
   "uid": "shield-2016-06-02",
+  "xmlNamespace": "http://ddp.amazonaws.com/doc/2016-06-02/",
   "auth": [
    "aws.auth#sigv4"
   ]

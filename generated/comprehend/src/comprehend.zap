@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: Amazon Comprehend (serviceId Comprehend, API 2017-11-27)
-# Protocol: awsJson 1.1 (targetPrefix Comprehend_20171127)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service comprehend, service shape Comprehend_20171127)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 85 operations — 85 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   291 structs (178 @derive(Json)), 34 enums, 16 error variants.
-#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 85 operations — 85 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   291 structs (plain carriers), 34 enums, 16 error variants.
+#   0 paginators generated (10 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import base64
+import aws_core.cbor
+import datetime
 
-# The Comprehend awsJson protocol: version 1.1, API id "Comprehend_20171127".
-def comprehend_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("Comprehend_20171127", "comprehend")
+# The Comprehend smithy-rpc-v2-cbor protocol: SigV4 service "comprehend" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/Comprehend_20171127/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def comprehend_service() -> str:
+    return "comprehend"
 
 # --- enums -----------------------------------------------------------------
 
@@ -404,185 +408,119 @@ enum ToxicContentType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) AttributeNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AugmentedManifestsListItem:
     str S3Uri
-    Optional[Split] Split
+    Optional[str] Split
     list[str] AttributeNames
     Optional[str] AnnotationDataS3Uri
     Optional[str] SourceDocumentsS3Uri
-    Optional[AugmentedManifestsDocumentTypeFormat] DocumentType
+    Optional[str] DocumentType
 
-# no @derive(Json): member(s) Languages: list[DominantLanguage] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectDominantLanguageItemResult:
     Optional[int64] Index
     Optional[list[DominantLanguage]] Languages
 
-# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectDominantLanguageRequest:
     list[str] TextList
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectDominantLanguageItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectDominantLanguageResponse:
     list[BatchDetectDominantLanguageItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) Entities: list[Entity] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectEntitiesItemResult:
     Optional[int64] Index
     Optional[list[Entity]] Entities
 
-# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectEntitiesRequest:
     list[str] TextList
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectEntitiesItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectEntitiesResponse:
     list[BatchDetectEntitiesItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) KeyPhrases: list[KeyPhrase] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectKeyPhrasesItemResult:
     Optional[int64] Index
     Optional[list[KeyPhrase]] KeyPhrases
 
-# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectKeyPhrasesRequest:
     list[str] TextList
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectKeyPhrasesItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectKeyPhrasesResponse:
     list[BatchDetectKeyPhrasesItemResult] ResultList
     list[BatchItemError] ErrorList
 
-@derive(Json)
 struct BatchDetectSentimentItemResult:
     Optional[int64] Index
-    Optional[SentimentType] Sentiment
+    Optional[str] Sentiment
     Optional[SentimentScore] SentimentScore
 
-# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectSentimentRequest:
     list[str] TextList
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectSentimentItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectSentimentResponse:
     list[BatchDetectSentimentItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) SyntaxTokens: list[SyntaxToken] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectSyntaxItemResult:
     Optional[int64] Index
     Optional[list[SyntaxToken]] SyntaxTokens
 
-# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectSyntaxRequest:
     list[str] TextList
-    SyntaxLanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectSyntaxItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectSyntaxResponse:
     list[BatchDetectSyntaxItemResult] ResultList
     list[BatchItemError] ErrorList
 
-# no @derive(Json): member(s) Entities: list[TargetedSentimentEntity] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectTargetedSentimentItemResult:
     Optional[int64] Index
     Optional[list[TargetedSentimentEntity]] Entities
 
-# no @derive(Json): member(s) TextList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectTargetedSentimentRequest:
     list[str] TextList
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[BatchDetectTargetedSentimentItemResult], ErrorList: list[BatchItemError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDetectTargetedSentimentResponse:
     list[BatchDetectTargetedSentimentItemResult] ResultList
     list[BatchItemError] ErrorList
 
-@derive(Json)
 struct BatchItemError:
     Optional[int64] Index
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct BatchSizeLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Geometry: Geometry, Relationships: list[RelationshipsListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Block:
     Optional[str] Id
-    Optional[BlockType] BlockType
+    Optional[str] BlockType
     Optional[str] Text
     Optional[int64] Page
     Optional[Geometry] Geometry
     Optional[list[RelationshipsListItem]] Relationships
 
-# no @derive(Json): member(s) ChildBlocks: list[ChildBlock] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BlockReference:
     Optional[str] BlockId
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
     Optional[list[ChildBlock]] ChildBlocks
 
-@derive(Json)
 struct BoundingBox:
     Optional[float64] Height
     Optional[float64] Left
     Optional[float64] Top
     Optional[float64] Width
 
-@derive(Json)
 struct ChildBlock:
     Optional[str] ChildBlockId
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
 
-@derive(Json)
 struct ClassifierEvaluationMetrics:
     Optional[float64] Accuracy
     Optional[float64] Precision
@@ -593,25 +531,18 @@ struct ClassifierEvaluationMetrics:
     Optional[float64] MicroF1Score
     Optional[float64] HammingLoss
 
-@derive(Json)
 struct ClassifierMetadata:
     Optional[int64] NumberOfLabels
     Optional[int64] NumberOfTrainedDocuments
     Optional[int64] NumberOfTestDocuments
     Optional[ClassifierEvaluationMetrics] EvaluationMetrics
 
-# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ClassifyDocumentRequest:
     Optional[str] Text
     str EndpointArn
     Optional[bytes] Bytes
     Optional[DocumentReaderConfig] DocumentReaderConfig
 
-# no @derive(Json): member(s) Classes: list[DocumentClass], Labels: list[DocumentLabel], DocumentMetadata: DocumentMetadata, DocumentType: list[DocumentTypeListItem], Errors: list[ErrorsListItem], Warnings: list[WarningsListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ClassifyDocumentResponse:
     Optional[list[DocumentClass]] Classes
     Optional[list[DocumentLabel]] Labels
@@ -620,40 +551,28 @@ struct ClassifyDocumentResponse:
     Optional[list[ErrorsListItem]] Errors
     Optional[list[WarningsListItem]] Warnings
 
-@derive(Json)
 struct ConcurrentModificationException:
     Optional[str] Message
 
-@derive(Json)
 struct ContainsPiiEntitiesRequest:
     str Text
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) Labels: list[EntityLabel] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ContainsPiiEntitiesResponse:
     Optional[list[EntityLabel]] Labels
 
-# no @derive(Json): member(s) InputDataConfig: DatasetInputDataConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDatasetRequest:
     str FlywheelArn
     str DatasetName
-    Optional[DatasetType] DatasetType
+    Optional[str] DatasetType
     Optional[str] Description
     DatasetInputDataConfig InputDataConfig
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateDatasetResponse:
     Optional[str] DatasetArn
 
-# no @derive(Json): member(s) Tags: list[Tag], InputDataConfig: DocumentClassifierInputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateDocumentClassifierRequest:
     str DocumentClassifierName
     Optional[str] VersionName
@@ -662,20 +581,16 @@ struct CreateDocumentClassifierRequest:
     DocumentClassifierInputDataConfig InputDataConfig
     Optional[DocumentClassifierOutputDataConfig] OutputDataConfig
     Optional[str] ClientRequestToken
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
-    Optional[DocumentClassifierMode] Mode
+    Optional[str] Mode
     Optional[str] ModelKmsKeyId
     Optional[str] ModelPolicy
 
-@derive(Json)
 struct CreateDocumentClassifierResponse:
     Optional[str] DocumentClassifierArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateEndpointRequest:
     str EndpointName
     Optional[str] ModelArn
@@ -685,14 +600,10 @@ struct CreateEndpointRequest:
     Optional[str] DataAccessRoleArn
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct CreateEndpointResponse:
     Optional[str] EndpointArn
     Optional[str] ModelArn
 
-# no @derive(Json): member(s) Tags: list[Tag], InputDataConfig: EntityRecognizerInputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateEntityRecognizerRequest:
     str RecognizerName
     Optional[str] VersionName
@@ -700,332 +611,235 @@ struct CreateEntityRecognizerRequest:
     Optional[list[Tag]] Tags
     EntityRecognizerInputDataConfig InputDataConfig
     Optional[str] ClientRequestToken
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
     Optional[str] ModelKmsKeyId
     Optional[str] ModelPolicy
 
-@derive(Json)
 struct CreateEntityRecognizerResponse:
     Optional[str] EntityRecognizerArn
 
-# no @derive(Json): member(s) TaskConfig: TaskConfig, DataSecurityConfig: DataSecurityConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateFlywheelRequest:
     str FlywheelName
     Optional[str] ActiveModelArn
     str DataAccessRoleArn
     Optional[TaskConfig] TaskConfig
-    Optional[ModelType] ModelType
+    Optional[str] ModelType
     str DataLakeS3Uri
     Optional[DataSecurityConfig] DataSecurityConfig
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateFlywheelResponse:
     Optional[str] FlywheelArn
     Optional[str] ActiveModelArn
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DataSecurityConfig:
     Optional[str] ModelKmsKeyId
     Optional[str] VolumeKmsKeyId
     Optional[str] DataLakeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-# no @derive(Json): member(s) AttributeNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DatasetAugmentedManifestsListItem:
     list[str] AttributeNames
     str S3Uri
     Optional[str] AnnotationDataS3Uri
     Optional[str] SourceDocumentsS3Uri
-    Optional[AugmentedManifestsDocumentTypeFormat] DocumentType
+    Optional[str] DocumentType
 
-@derive(Json)
 struct DatasetDocumentClassifierInputDataConfig:
     str S3Uri
     Optional[str] LabelDelimiter
 
-@derive(Json)
 struct DatasetEntityRecognizerAnnotations:
     str S3Uri
 
-@derive(Json)
 struct DatasetEntityRecognizerDocuments:
     str S3Uri
-    Optional[InputFormat] InputFormat
+    Optional[str] InputFormat
 
-@derive(Json)
 struct DatasetEntityRecognizerEntityList:
     str S3Uri
 
-@derive(Json)
 struct DatasetEntityRecognizerInputDataConfig:
     Optional[DatasetEntityRecognizerAnnotations] Annotations
     DatasetEntityRecognizerDocuments Documents
     Optional[DatasetEntityRecognizerEntityList] EntityList
 
-@derive(Json)
 struct DatasetFilter:
-    Optional[DatasetStatus] Status
-    Optional[DatasetType] DatasetType
+    Optional[str] Status
+    Optional[str] DatasetType
     Optional[DateTime] CreationTimeAfter
     Optional[DateTime] CreationTimeBefore
 
-# no @derive(Json): member(s) AugmentedManifests: list[DatasetAugmentedManifestsListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DatasetInputDataConfig:
     Optional[list[DatasetAugmentedManifestsListItem]] AugmentedManifests
-    Optional[DatasetDataFormat] DataFormat
+    Optional[str] DataFormat
     Optional[DatasetDocumentClassifierInputDataConfig] DocumentClassifierInputDataConfig
     Optional[DatasetEntityRecognizerInputDataConfig] EntityRecognizerInputDataConfig
 
-@derive(Json)
 struct DatasetProperties:
     Optional[str] DatasetArn
     Optional[str] DatasetName
-    Optional[DatasetType] DatasetType
+    Optional[str] DatasetType
     Optional[str] DatasetS3Uri
     Optional[str] Description
-    Optional[DatasetStatus] Status
+    Optional[str] Status
     Optional[str] Message
     Optional[int64] NumberOfDocuments
     Optional[DateTime] CreationTime
     Optional[DateTime] EndTime
 
-@derive(Json)
 struct DeleteDocumentClassifierRequest:
     str DocumentClassifierArn
 
-@derive(Json)
 struct DeleteDocumentClassifierResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteEndpointRequest:
     str EndpointArn
 
-@derive(Json)
 struct DeleteEndpointResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteEntityRecognizerRequest:
     str EntityRecognizerArn
 
-@derive(Json)
 struct DeleteEntityRecognizerResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteFlywheelRequest:
     str FlywheelArn
 
-@derive(Json)
 struct DeleteFlywheelResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteResourcePolicyRequest:
     str ResourceArn
     Optional[str] PolicyRevisionId
 
-@derive(Json)
 struct DeleteResourcePolicyResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeDatasetRequest:
     str DatasetArn
 
-@derive(Json)
 struct DescribeDatasetResponse:
     Optional[DatasetProperties] DatasetProperties
 
-@derive(Json)
 struct DescribeDocumentClassificationJobRequest:
     str JobId
 
-# no @derive(Json): member(s) DocumentClassificationJobProperties: DocumentClassificationJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDocumentClassificationJobResponse:
     Optional[DocumentClassificationJobProperties] DocumentClassificationJobProperties
 
-@derive(Json)
 struct DescribeDocumentClassifierRequest:
     str DocumentClassifierArn
 
-# no @derive(Json): member(s) DocumentClassifierProperties: DocumentClassifierProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDocumentClassifierResponse:
     Optional[DocumentClassifierProperties] DocumentClassifierProperties
 
-@derive(Json)
 struct DescribeDominantLanguageDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) DominantLanguageDetectionJobProperties: DominantLanguageDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDominantLanguageDetectionJobResponse:
     Optional[DominantLanguageDetectionJobProperties] DominantLanguageDetectionJobProperties
 
-@derive(Json)
 struct DescribeEndpointRequest:
     str EndpointArn
 
-@derive(Json)
 struct DescribeEndpointResponse:
     Optional[EndpointProperties] EndpointProperties
 
-@derive(Json)
 struct DescribeEntitiesDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) EntitiesDetectionJobProperties: EntitiesDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEntitiesDetectionJobResponse:
     Optional[EntitiesDetectionJobProperties] EntitiesDetectionJobProperties
 
-@derive(Json)
 struct DescribeEntityRecognizerRequest:
     str EntityRecognizerArn
 
-# no @derive(Json): member(s) EntityRecognizerProperties: EntityRecognizerProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEntityRecognizerResponse:
     Optional[EntityRecognizerProperties] EntityRecognizerProperties
 
-@derive(Json)
 struct DescribeEventsDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) EventsDetectionJobProperties: EventsDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEventsDetectionJobResponse:
     Optional[EventsDetectionJobProperties] EventsDetectionJobProperties
 
-@derive(Json)
 struct DescribeFlywheelIterationRequest:
     str FlywheelArn
     str FlywheelIterationId
 
-@derive(Json)
 struct DescribeFlywheelIterationResponse:
     Optional[FlywheelIterationProperties] FlywheelIterationProperties
 
-@derive(Json)
 struct DescribeFlywheelRequest:
     str FlywheelArn
 
-# no @derive(Json): member(s) FlywheelProperties: FlywheelProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeFlywheelResponse:
     Optional[FlywheelProperties] FlywheelProperties
 
-@derive(Json)
 struct DescribeKeyPhrasesDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) KeyPhrasesDetectionJobProperties: KeyPhrasesDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeKeyPhrasesDetectionJobResponse:
     Optional[KeyPhrasesDetectionJobProperties] KeyPhrasesDetectionJobProperties
 
-@derive(Json)
 struct DescribePiiEntitiesDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) PiiEntitiesDetectionJobProperties: PiiEntitiesDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribePiiEntitiesDetectionJobResponse:
     Optional[PiiEntitiesDetectionJobProperties] PiiEntitiesDetectionJobProperties
 
-@derive(Json)
 struct DescribeResourcePolicyRequest:
     str ResourceArn
 
-@derive(Json)
 struct DescribeResourcePolicyResponse:
     Optional[str] ResourcePolicy
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
     Optional[str] PolicyRevisionId
 
-@derive(Json)
 struct DescribeSentimentDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) SentimentDetectionJobProperties: SentimentDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSentimentDetectionJobResponse:
     Optional[SentimentDetectionJobProperties] SentimentDetectionJobProperties
 
-@derive(Json)
 struct DescribeTargetedSentimentDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) TargetedSentimentDetectionJobProperties: TargetedSentimentDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTargetedSentimentDetectionJobResponse:
     Optional[TargetedSentimentDetectionJobProperties] TargetedSentimentDetectionJobProperties
 
-@derive(Json)
 struct DescribeTopicsDetectionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) TopicsDetectionJobProperties: TopicsDetectionJobProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTopicsDetectionJobResponse:
     Optional[TopicsDetectionJobProperties] TopicsDetectionJobProperties
 
-@derive(Json)
 struct DetectDominantLanguageRequest:
     str Text
 
-# no @derive(Json): member(s) Languages: list[DominantLanguage] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectDominantLanguageResponse:
     Optional[list[DominantLanguage]] Languages
 
-# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectEntitiesRequest:
     Optional[str] Text
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] EndpointArn
     Optional[bytes] Bytes
     Optional[DocumentReaderConfig] DocumentReaderConfig
 
-# no @derive(Json): member(s) Entities: list[Entity], DocumentMetadata: DocumentMetadata, DocumentType: list[DocumentTypeListItem], Blocks: list[Block], Errors: list[ErrorsListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectEntitiesResponse:
     Optional[list[Entity]] Entities
     Optional[DocumentMetadata] DocumentMetadata
@@ -1033,101 +847,69 @@ struct DetectEntitiesResponse:
     Optional[list[Block]] Blocks
     Optional[list[ErrorsListItem]] Errors
 
-@derive(Json)
 struct DetectKeyPhrasesRequest:
     str Text
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) KeyPhrases: list[KeyPhrase] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectKeyPhrasesResponse:
     Optional[list[KeyPhrase]] KeyPhrases
 
-@derive(Json)
 struct DetectPiiEntitiesRequest:
     str Text
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) Entities: list[PiiEntity] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectPiiEntitiesResponse:
     Optional[list[PiiEntity]] Entities
 
-@derive(Json)
 struct DetectSentimentRequest:
     str Text
-    LanguageCode LanguageCode
+    str LanguageCode
 
-@derive(Json)
 struct DetectSentimentResponse:
-    Optional[SentimentType] Sentiment
+    Optional[str] Sentiment
     Optional[SentimentScore] SentimentScore
 
-@derive(Json)
 struct DetectSyntaxRequest:
     str Text
-    SyntaxLanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) SyntaxTokens: list[SyntaxToken] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectSyntaxResponse:
     Optional[list[SyntaxToken]] SyntaxTokens
 
-@derive(Json)
 struct DetectTargetedSentimentRequest:
     str Text
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) Entities: list[TargetedSentimentEntity] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectTargetedSentimentResponse:
     Optional[list[TargetedSentimentEntity]] Entities
 
-# no @derive(Json): member(s) TextSegments: list[TextSegment] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectToxicContentRequest:
     list[TextSegment] TextSegments
-    LanguageCode LanguageCode
+    str LanguageCode
 
-# no @derive(Json): member(s) ResultList: list[ToxicLabels] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DetectToxicContentResponse:
     Optional[list[ToxicLabels]] ResultList
 
-@derive(Json)
 struct DocumentClass:
     Optional[str] Name
     Optional[float64] Score
     Optional[int64] Page
 
-# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentClassificationConfig:
-    DocumentClassifierMode Mode
+    str Mode
     Optional[list[str]] Labels
 
-@derive(Json)
 struct DocumentClassificationJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentClassificationJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
@@ -1139,44 +921,35 @@ struct DocumentClassificationJobProperties:
     Optional[VpcConfig] VpcConfig
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct DocumentClassifierDocuments:
     str S3Uri
     Optional[str] TestS3Uri
 
-@derive(Json)
 struct DocumentClassifierFilter:
-    Optional[ModelStatus] Status
+    Optional[str] Status
     Optional[str] DocumentClassifierName
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) AugmentedManifests: list[AugmentedManifestsListItem], DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentClassifierInputDataConfig:
-    Optional[DocumentClassifierDataFormat] DataFormat
+    Optional[str] DataFormat
     Optional[str] S3Uri
     Optional[str] TestS3Uri
     Optional[str] LabelDelimiter
     Optional[list[AugmentedManifestsListItem]] AugmentedManifests
-    Optional[DocumentClassifierDocumentTypeFormat] DocumentType
+    Optional[str] DocumentType
     Optional[DocumentClassifierDocuments] Documents
     Optional[DocumentReaderConfig] DocumentReaderConfig
 
-@derive(Json)
 struct DocumentClassifierOutputDataConfig:
     Optional[str] S3Uri
     Optional[str] KmsKeyId
     Optional[str] FlywheelStatsS3Prefix
 
-# no @derive(Json): member(s) InputDataConfig: DocumentClassifierInputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentClassifierProperties:
     Optional[str] DocumentClassifierArn
-    Optional[LanguageCode] LanguageCode
-    Optional[ModelStatus] Status
+    Optional[str] LanguageCode
+    Optional[str] Status
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
@@ -1188,66 +961,52 @@ struct DocumentClassifierProperties:
     Optional[str] DataAccessRoleArn
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
-    Optional[DocumentClassifierMode] Mode
+    Optional[str] Mode
     Optional[str] ModelKmsKeyId
     Optional[str] VersionName
     Optional[str] SourceModelArn
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct DocumentClassifierSummary:
     Optional[str] DocumentClassifierName
     Optional[int64] NumberOfVersions
     Optional[DateTime] LatestVersionCreatedAt
     Optional[str] LatestVersionName
-    Optional[ModelStatus] LatestVersionStatus
+    Optional[str] LatestVersionStatus
 
-@derive(Json)
 struct DocumentLabel:
     Optional[str] Name
     Optional[float64] Score
     Optional[int64] Page
 
-# no @derive(Json): member(s) ExtractedCharacters: list[ExtractedCharactersListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentMetadata:
     Optional[int64] Pages
     Optional[list[ExtractedCharactersListItem]] ExtractedCharacters
 
-# no @derive(Json): member(s) FeatureTypes: list[DocumentReadFeatureTypes] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DocumentReaderConfig:
-    DocumentReadAction DocumentReadAction
-    Optional[DocumentReadMode] DocumentReadMode
-    Optional[list[DocumentReadFeatureTypes]] FeatureTypes
+    str DocumentReadAction
+    Optional[str] DocumentReadMode
+    Optional[list[str]] FeatureTypes
 
-@derive(Json)
 struct DocumentTypeListItem:
     Optional[int64] Page
-    Optional[DocumentType] Type
+    Optional[str] Type
 
-@derive(Json)
 struct DominantLanguage:
     Optional[str] LanguageCode
     Optional[float64] Score
 
-@derive(Json)
 struct DominantLanguageDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DominantLanguageDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
@@ -1257,17 +1016,15 @@ struct DominantLanguageDetectionJobProperties:
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-@derive(Json)
 struct EndpointFilter:
     Optional[str] ModelArn
-    Optional[EndpointStatus] Status
+    Optional[str] Status
     Optional[DateTime] CreationTimeBefore
     Optional[DateTime] CreationTimeAfter
 
-@derive(Json)
 struct EndpointProperties:
     Optional[str] EndpointArn
-    Optional[EndpointStatus] Status
+    Optional[str] Status
     Optional[str] Message
     Optional[str] ModelArn
     Optional[str] DesiredModelArn
@@ -1279,120 +1036,93 @@ struct EndpointProperties:
     Optional[str] DesiredDataAccessRoleArn
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct EntitiesDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EntitiesDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
     Optional[str] EntityRecognizerArn
     Optional[InputDataConfig] InputDataConfig
     Optional[OutputDataConfig] OutputDataConfig
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] DataAccessRoleArn
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
     Optional[str] FlywheelArn
 
-# no @derive(Json): member(s) BlockReferences: list[BlockReference] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Entity:
     Optional[float64] Score
-    Optional[EntityType] Type
+    Optional[str] Type
     Optional[str] Text
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
     Optional[list[BlockReference]] BlockReferences
 
-@derive(Json)
 struct EntityLabel:
-    Optional[PiiEntityType] Name
+    Optional[str] Name
     Optional[float64] Score
 
-# no @derive(Json): member(s) EntityTypes: list[EntityTypesListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EntityRecognitionConfig:
     list[EntityTypesListItem] EntityTypes
 
-@derive(Json)
 struct EntityRecognizerAnnotations:
     str S3Uri
     Optional[str] TestS3Uri
 
-@derive(Json)
 struct EntityRecognizerDocuments:
     str S3Uri
     Optional[str] TestS3Uri
-    Optional[InputFormat] InputFormat
+    Optional[str] InputFormat
 
-@derive(Json)
 struct EntityRecognizerEntityList:
     str S3Uri
 
-@derive(Json)
 struct EntityRecognizerEvaluationMetrics:
     Optional[float64] Precision
     Optional[float64] Recall
     Optional[float64] F1Score
 
-@derive(Json)
 struct EntityRecognizerFilter:
-    Optional[ModelStatus] Status
+    Optional[str] Status
     Optional[str] RecognizerName
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) EntityTypes: list[EntityTypesListItem], AugmentedManifests: list[AugmentedManifestsListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EntityRecognizerInputDataConfig:
-    Optional[EntityRecognizerDataFormat] DataFormat
+    Optional[str] DataFormat
     list[EntityTypesListItem] EntityTypes
     Optional[EntityRecognizerDocuments] Documents
     Optional[EntityRecognizerAnnotations] Annotations
     Optional[EntityRecognizerEntityList] EntityList
     Optional[list[AugmentedManifestsListItem]] AugmentedManifests
 
-# no @derive(Json): member(s) EntityTypes: list[EntityRecognizerMetadataEntityTypesListItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EntityRecognizerMetadata:
     Optional[int64] NumberOfTrainedDocuments
     Optional[int64] NumberOfTestDocuments
     Optional[EntityRecognizerEvaluationMetrics] EvaluationMetrics
     Optional[list[EntityRecognizerMetadataEntityTypesListItem]] EntityTypes
 
-@derive(Json)
 struct EntityRecognizerMetadataEntityTypesListItem:
     Optional[str] Type
     Optional[EntityTypesEvaluationMetrics] EvaluationMetrics
     Optional[int64] NumberOfTrainMentions
 
-@derive(Json)
 struct EntityRecognizerOutputDataConfig:
     Optional[str] FlywheelStatsS3Prefix
 
-# no @derive(Json): member(s) InputDataConfig: EntityRecognizerInputDataConfig, RecognizerMetadata: EntityRecognizerMetadata, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EntityRecognizerProperties:
     Optional[str] EntityRecognizerArn
-    Optional[LanguageCode] LanguageCode
-    Optional[ModelStatus] Status
+    Optional[str] LanguageCode
+    Optional[str] Status
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
@@ -1409,77 +1139,65 @@ struct EntityRecognizerProperties:
     Optional[str] FlywheelArn
     Optional[EntityRecognizerOutputDataConfig] OutputDataConfig
 
-@derive(Json)
 struct EntityRecognizerSummary:
     Optional[str] RecognizerName
     Optional[int64] NumberOfVersions
     Optional[DateTime] LatestVersionCreatedAt
     Optional[str] LatestVersionName
-    Optional[ModelStatus] LatestVersionStatus
+    Optional[str] LatestVersionStatus
 
-@derive(Json)
 struct EntityTypesEvaluationMetrics:
     Optional[float64] Precision
     Optional[float64] Recall
     Optional[float64] F1Score
 
-@derive(Json)
 struct EntityTypesListItem:
     str Type
 
-@derive(Json)
 struct ErrorsListItem:
     Optional[int64] Page
-    Optional[PageBasedErrorCode] ErrorCode
+    Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct EventsDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, TargetEventTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct EventsDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
     Optional[InputDataConfig] InputDataConfig
     Optional[OutputDataConfig] OutputDataConfig
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] DataAccessRoleArn
     Optional[list[str]] TargetEventTypes
 
-@derive(Json)
 struct ExtractedCharactersListItem:
     Optional[int64] Page
     Optional[int64] Count
 
-@derive(Json)
 struct FlywheelFilter:
-    Optional[FlywheelStatus] Status
+    Optional[str] Status
     Optional[DateTime] CreationTimeAfter
     Optional[DateTime] CreationTimeBefore
 
-@derive(Json)
 struct FlywheelIterationFilter:
     Optional[DateTime] CreationTimeAfter
     Optional[DateTime] CreationTimeBefore
 
-@derive(Json)
 struct FlywheelIterationProperties:
     Optional[str] FlywheelArn
     Optional[str] FlywheelIterationId
     Optional[DateTime] CreationTime
     Optional[DateTime] EndTime
-    Optional[FlywheelIterationStatus] Status
+    Optional[str] Status
     Optional[str] Message
     Optional[str] EvaluatedModelArn
     Optional[FlywheelModelEvaluationMetrics] EvaluatedModelMetrics
@@ -1487,16 +1205,12 @@ struct FlywheelIterationProperties:
     Optional[FlywheelModelEvaluationMetrics] TrainedModelMetrics
     Optional[str] EvaluationManifestS3Prefix
 
-@derive(Json)
 struct FlywheelModelEvaluationMetrics:
     Optional[float64] AverageF1Score
     Optional[float64] AveragePrecision
     Optional[float64] AverageRecall
     Optional[float64] AverageAccuracy
 
-# no @derive(Json): member(s) TaskConfig: TaskConfig, DataSecurityConfig: DataSecurityConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FlywheelProperties:
     Optional[str] FlywheelArn
     Optional[str] ActiveModelArn
@@ -1504,35 +1218,28 @@ struct FlywheelProperties:
     Optional[TaskConfig] TaskConfig
     Optional[str] DataLakeS3Uri
     Optional[DataSecurityConfig] DataSecurityConfig
-    Optional[FlywheelStatus] Status
-    Optional[ModelType] ModelType
+    Optional[str] Status
+    Optional[str] ModelType
     Optional[str] Message
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
     Optional[str] LatestFlywheelIteration
 
-@derive(Json)
 struct FlywheelSummary:
     Optional[str] FlywheelArn
     Optional[str] ActiveModelArn
     Optional[str] DataLakeS3Uri
-    Optional[FlywheelStatus] Status
-    Optional[ModelType] ModelType
+    Optional[str] Status
+    Optional[str] ModelType
     Optional[str] Message
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
     Optional[str] LatestFlywheelIteration
 
-# no @derive(Json): member(s) Polygon: list[Point] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Geometry:
     Optional[BoundingBox] BoundingBox
     Optional[list[Point]] Polygon
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ImportModelRequest:
     str SourceModelArn
     Optional[str] ModelName
@@ -1541,441 +1248,324 @@ struct ImportModelRequest:
     Optional[str] DataAccessRoleArn
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct ImportModelResponse:
     Optional[str] ModelArn
 
-# no @derive(Json): member(s) DocumentReaderConfig: DocumentReaderConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InputDataConfig:
     str S3Uri
-    Optional[InputFormat] InputFormat
+    Optional[str] InputFormat
     Optional[DocumentReaderConfig] DocumentReaderConfig
 
-@derive(Json)
 struct InternalServerException:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidFilterException:
     Optional[str] Message
 
-@derive(Json)
 struct InvalidRequestDetail:
-    Optional[InvalidRequestDetailReason] Reason
+    Optional[str] Reason
 
-@derive(Json)
 struct InvalidRequestException:
     Optional[str] Message
     Optional[str] Reason
     Optional[InvalidRequestDetail] Detail
 
-@derive(Json)
 struct JobNotFoundException:
     Optional[str] Message
 
-@derive(Json)
 struct KeyPhrase:
     Optional[float64] Score
     Optional[str] Text
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
 
-@derive(Json)
 struct KeyPhrasesDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct KeyPhrasesDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
     Optional[InputDataConfig] InputDataConfig
     Optional[OutputDataConfig] OutputDataConfig
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] DataAccessRoleArn
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-@derive(Json)
 struct KmsKeyValidationException:
     Optional[str] Message
 
-@derive(Json)
 struct ListDatasetsRequest:
     Optional[str] FlywheelArn
     Optional[DatasetFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatasetPropertiesList: list[DatasetProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     Optional[list[DatasetProperties]] DatasetPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListDocumentClassificationJobsRequest:
     Optional[DocumentClassificationJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentClassificationJobPropertiesList: list[DocumentClassificationJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDocumentClassificationJobsResponse:
     Optional[list[DocumentClassificationJobProperties]] DocumentClassificationJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListDocumentClassifierSummariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentClassifierSummariesList: list[DocumentClassifierSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDocumentClassifierSummariesResponse:
     Optional[list[DocumentClassifierSummary]] DocumentClassifierSummariesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListDocumentClassifiersRequest:
     Optional[DocumentClassifierFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DocumentClassifierPropertiesList: list[DocumentClassifierProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDocumentClassifiersResponse:
     Optional[list[DocumentClassifierProperties]] DocumentClassifierPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListDominantLanguageDetectionJobsRequest:
     Optional[DominantLanguageDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DominantLanguageDetectionJobPropertiesList: list[DominantLanguageDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListDominantLanguageDetectionJobsResponse:
     Optional[list[DominantLanguageDetectionJobProperties]] DominantLanguageDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListEndpointsRequest:
     Optional[EndpointFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EndpointPropertiesList: list[EndpointProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListEndpointsResponse:
     Optional[list[EndpointProperties]] EndpointPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListEntitiesDetectionJobsRequest:
     Optional[EntitiesDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EntitiesDetectionJobPropertiesList: list[EntitiesDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListEntitiesDetectionJobsResponse:
     Optional[list[EntitiesDetectionJobProperties]] EntitiesDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListEntityRecognizerSummariesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EntityRecognizerSummariesList: list[EntityRecognizerSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListEntityRecognizerSummariesResponse:
     Optional[list[EntityRecognizerSummary]] EntityRecognizerSummariesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListEntityRecognizersRequest:
     Optional[EntityRecognizerFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EntityRecognizerPropertiesList: list[EntityRecognizerProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListEntityRecognizersResponse:
     Optional[list[EntityRecognizerProperties]] EntityRecognizerPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListEventsDetectionJobsRequest:
     Optional[EventsDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventsDetectionJobPropertiesList: list[EventsDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListEventsDetectionJobsResponse:
     Optional[list[EventsDetectionJobProperties]] EventsDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListFlywheelIterationHistoryRequest:
     str FlywheelArn
     Optional[FlywheelIterationFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlywheelIterationPropertiesList: list[FlywheelIterationProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFlywheelIterationHistoryResponse:
     Optional[list[FlywheelIterationProperties]] FlywheelIterationPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListFlywheelsRequest:
     Optional[FlywheelFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlywheelSummaryList: list[FlywheelSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListFlywheelsResponse:
     Optional[list[FlywheelSummary]] FlywheelSummaryList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListKeyPhrasesDetectionJobsRequest:
     Optional[KeyPhrasesDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) KeyPhrasesDetectionJobPropertiesList: list[KeyPhrasesDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListKeyPhrasesDetectionJobsResponse:
     Optional[list[KeyPhrasesDetectionJobProperties]] KeyPhrasesDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListPiiEntitiesDetectionJobsRequest:
     Optional[PiiEntitiesDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PiiEntitiesDetectionJobPropertiesList: list[PiiEntitiesDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPiiEntitiesDetectionJobsResponse:
     Optional[list[PiiEntitiesDetectionJobProperties]] PiiEntitiesDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListSentimentDetectionJobsRequest:
     Optional[SentimentDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SentimentDetectionJobPropertiesList: list[SentimentDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListSentimentDetectionJobsResponse:
     Optional[list[SentimentDetectionJobProperties]] SentimentDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] ResourceArn
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct ListTargetedSentimentDetectionJobsRequest:
     Optional[TargetedSentimentDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TargetedSentimentDetectionJobPropertiesList: list[TargetedSentimentDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTargetedSentimentDetectionJobsResponse:
     Optional[list[TargetedSentimentDetectionJobProperties]] TargetedSentimentDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTopicsDetectionJobsRequest:
     Optional[TopicsDetectionJobFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TopicsDetectionJobPropertiesList: list[TopicsDetectionJobProperties] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTopicsDetectionJobsResponse:
     Optional[list[TopicsDetectionJobProperties]] TopicsDetectionJobPropertiesList
     Optional[str] NextToken
 
-@derive(Json)
 struct MentionSentiment:
-    Optional[SentimentType] Sentiment
+    Optional[str] Sentiment
     Optional[SentimentScore] SentimentScore
 
-@derive(Json)
 struct OutputDataConfig:
     str S3Uri
     Optional[str] KmsKeyId
 
-@derive(Json)
 struct PartOfSpeechTag:
-    Optional[PartOfSpeechTagType] Tag
+    Optional[str] Tag
     Optional[float64] Score
 
-@derive(Json)
 struct PiiEntitiesDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, RedactionConfig: RedactionConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PiiEntitiesDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
     Optional[InputDataConfig] InputDataConfig
     Optional[PiiOutputDataConfig] OutputDataConfig
     Optional[RedactionConfig] RedactionConfig
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] DataAccessRoleArn
-    Optional[PiiEntitiesDetectionMode] Mode
+    Optional[str] Mode
 
-@derive(Json)
 struct PiiEntity:
     Optional[float64] Score
-    Optional[PiiEntityType] Type
+    Optional[str] Type
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
 
-@derive(Json)
 struct PiiOutputDataConfig:
     str S3Uri
     Optional[str] KmsKeyId
 
-@derive(Json)
 struct Point:
     Optional[float64] X
     Optional[float64] Y
 
-@derive(Json)
 struct PutResourcePolicyRequest:
     str ResourceArn
     str ResourcePolicy
     Optional[str] PolicyRevisionId
 
-@derive(Json)
 struct PutResourcePolicyResponse:
     Optional[str] PolicyRevisionId
 
-# no @derive(Json): member(s) PiiEntityTypes: list[PiiEntityType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RedactionConfig:
-    Optional[list[PiiEntityType]] PiiEntityTypes
-    Optional[PiiEntitiesDetectionMaskMode] MaskMode
+    Optional[list[str]] PiiEntityTypes
+    Optional[str] MaskMode
     Optional[str] MaskCharacter
 
-# no @derive(Json): member(s) Ids: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RelationshipsListItem:
     Optional[list[str]] Ids
     Optional[str] Type
 
-@derive(Json)
 struct ResourceInUseException:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceLimitExceededException:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceNotFoundException:
     Optional[str] Message
 
-@derive(Json)
 struct ResourceUnavailableException:
     Optional[str] Message
 
-@derive(Json)
 struct SentimentDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SentimentDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
     Optional[InputDataConfig] InputDataConfig
     Optional[OutputDataConfig] OutputDataConfig
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] DataAccessRoleArn
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-@derive(Json)
 struct SentimentScore:
     Optional[float64] Positive
     Optional[float64] Negative
     Optional[float64] Neutral
     Optional[float64] Mixed
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartDocumentClassificationJobRequest:
     Optional[str] JobName
     Optional[str] DocumentClassifierArn
@@ -1988,16 +1578,12 @@ struct StartDocumentClassificationJobRequest:
     Optional[list[Tag]] Tags
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct StartDocumentClassificationJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] DocumentClassifierArn
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartDominantLanguageDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -2008,147 +1594,117 @@ struct StartDominantLanguageDetectionJobRequest:
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartDominantLanguageDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartEntitiesDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
     str DataAccessRoleArn
     Optional[str] JobName
     Optional[str] EntityRecognizerArn
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] ClientRequestToken
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct StartEntitiesDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] EntityRecognizerArn
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, TargetEventTypes: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartEventsDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
     str DataAccessRoleArn
     Optional[str] JobName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] ClientRequestToken
     list[str] TargetEventTypes
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartEventsDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StartFlywheelIterationRequest:
     str FlywheelArn
     Optional[str] ClientRequestToken
 
-@derive(Json)
 struct StartFlywheelIterationResponse:
     Optional[str] FlywheelArn
     Optional[str] FlywheelIterationId
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartKeyPhrasesDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
     str DataAccessRoleArn
     Optional[str] JobName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] ClientRequestToken
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartKeyPhrasesDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, RedactionConfig: RedactionConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartPiiEntitiesDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
-    PiiEntitiesDetectionMode Mode
+    str Mode
     Optional[RedactionConfig] RedactionConfig
     str DataAccessRoleArn
     Optional[str] JobName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartPiiEntitiesDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartSentimentDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
     str DataAccessRoleArn
     Optional[str] JobName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] ClientRequestToken
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartSentimentDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartTargetedSentimentDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
     str DataAccessRoleArn
     Optional[str] JobName
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[str] ClientRequestToken
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartTargetedSentimentDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartTopicsDetectionJobRequest:
     InputDataConfig InputDataConfig
     OutputDataConfig OutputDataConfig
@@ -2160,94 +1716,74 @@ struct StartTopicsDetectionJobRequest:
     Optional[VpcConfig] VpcConfig
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct StartTopicsDetectionJobResponse:
     Optional[str] JobId
     Optional[str] JobArn
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopDominantLanguageDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopDominantLanguageDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopEntitiesDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopEntitiesDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopEventsDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopEventsDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopKeyPhrasesDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopKeyPhrasesDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopPiiEntitiesDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopPiiEntitiesDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopSentimentDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopSentimentDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopTargetedSentimentDetectionJobRequest:
     str JobId
 
-@derive(Json)
 struct StopTargetedSentimentDetectionJobResponse:
     Optional[str] JobId
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
 
-@derive(Json)
 struct StopTrainingDocumentClassifierRequest:
     str DocumentClassifierArn
 
-@derive(Json)
 struct StopTrainingDocumentClassifierResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct StopTrainingEntityRecognizerRequest:
     str EntityRecognizerArn
 
-@derive(Json)
 struct StopTrainingEntityRecognizerResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SyntaxToken:
     Optional[int64] TokenId
     Optional[str] Text
@@ -2255,108 +1791,83 @@ struct SyntaxToken:
     Optional[int64] EndOffset
     Optional[PartOfSpeechTag] PartOfSpeech
 
-@derive(Json)
 struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TargetedSentimentDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TargetedSentimentDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
     Optional[InputDataConfig] InputDataConfig
     Optional[OutputDataConfig] OutputDataConfig
-    Optional[LanguageCode] LanguageCode
+    Optional[str] LanguageCode
     Optional[str] DataAccessRoleArn
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-# no @derive(Json): member(s) DescriptiveMentionIndex: list[int64], Mentions: list[TargetedSentimentMention] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TargetedSentimentEntity:
     Optional[list[int64]] DescriptiveMentionIndex
     Optional[list[TargetedSentimentMention]] Mentions
 
-@derive(Json)
 struct TargetedSentimentMention:
     Optional[float64] Score
     Optional[float64] GroupScore
     Optional[str] Text
-    Optional[TargetedSentimentEntityType] Type
+    Optional[str] Type
     Optional[MentionSentiment] MentionSentiment
     Optional[int64] BeginOffset
     Optional[int64] EndOffset
 
-# no @derive(Json): member(s) DocumentClassificationConfig: DocumentClassificationConfig, EntityRecognitionConfig: EntityRecognitionConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TaskConfig:
-    LanguageCode LanguageCode
+    str LanguageCode
     Optional[DocumentClassificationConfig] DocumentClassificationConfig
     Optional[EntityRecognitionConfig] EntityRecognitionConfig
 
-@derive(Json)
 struct TextSegment:
     str Text
 
-@derive(Json)
 struct TextSizeLimitExceededException:
     Optional[str] Message
 
-@derive(Json)
 struct TooManyRequestsException:
     Optional[str] Message
 
-@derive(Json)
 struct TooManyTagKeysException:
     Optional[str] Message
 
-@derive(Json)
 struct TooManyTagsException:
     Optional[str] Message
 
-@derive(Json)
 struct TopicsDetectionJobFilter:
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[DateTime] SubmitTimeBefore
     Optional[DateTime] SubmitTimeAfter
 
-# no @derive(Json): member(s) InputDataConfig: InputDataConfig, VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TopicsDetectionJobProperties:
     Optional[str] JobId
     Optional[str] JobArn
     Optional[str] JobName
-    Optional[JobStatus] JobStatus
+    Optional[str] JobStatus
     Optional[str] Message
     Optional[DateTime] SubmitTime
     Optional[DateTime] EndTime
@@ -2367,43 +1878,30 @@ struct TopicsDetectionJobProperties:
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-@derive(Json)
 struct ToxicContent:
-    Optional[ToxicContentType] Name
+    Optional[str] Name
     Optional[float64] Score
 
-# no @derive(Json): member(s) Labels: list[ToxicContent] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ToxicLabels:
     Optional[list[ToxicContent]] Labels
     Optional[float64] Toxicity
 
-@derive(Json)
 struct UnsupportedLanguageException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateDataSecurityConfig:
     Optional[str] ModelKmsKeyId
     Optional[str] VolumeKmsKeyId
     Optional[VpcConfig] VpcConfig
 
-@derive(Json)
 struct UpdateEndpointRequest:
     str EndpointArn
     Optional[str] DesiredModelArn
@@ -2411,36 +1909,25 @@ struct UpdateEndpointRequest:
     Optional[str] DesiredDataAccessRoleArn
     Optional[str] FlywheelArn
 
-@derive(Json)
 struct UpdateEndpointResponse:
     Optional[str] DesiredModelArn
 
-# no @derive(Json): member(s) DataSecurityConfig: UpdateDataSecurityConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFlywheelRequest:
     str FlywheelArn
     Optional[str] ActiveModelArn
     Optional[str] DataAccessRoleArn
     Optional[UpdateDataSecurityConfig] DataSecurityConfig
 
-# no @derive(Json): member(s) FlywheelProperties: FlywheelProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateFlywheelResponse:
     Optional[FlywheelProperties] FlywheelProperties
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Subnets: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] SecurityGroupIds
     list[str] Subnets
 
-@derive(Json)
 struct WarningsListItem:
     Optional[int64] Page
-    Optional[PageBasedWarningCode] WarnCode
+    Optional[str] WarnCode
     Optional[str] WarnMessage
 
 # --- errors ----------------------------------------------------------------
@@ -2450,7 +1937,7 @@ struct WarningsListItem:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2557,839 +2044,2241 @@ def comprehend_error_name(ComprehendErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def comprehend_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListDocumentClassificationJobs
+#   ListDocumentClassifiers
+#   ListDominantLanguageDetectionJobs
+#   ListEndpoints
+#   ListEntitiesDetectionJobs
+#   ListEntityRecognizers
+#   ListKeyPhrasesDetectionJobs
+#   ListPiiEntitiesDetectionJobs
+#   ListSentimentDetectionJobs
+#   ListTopicsDetectionJobs
 
-def comprehend_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def comprehend_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize AugmentedManifestsListItem to a compact JSON object (declaration order).
-def augmented_manifests_list_item_to_json(AugmentedManifestsListItem v) -> str:
-    list[str] parts = []
-    parts.append("\"S3Uri\":" + comprehend_json_str(v.S3Uri))
+# Serialize AugmentedManifestsListItem to a CBOR map (member wire name -> value, model order).
+def augmented_manifests_list_item_to_cbor(AugmentedManifestsListItem v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
     if v.Split.is_some():
         auto u0 = v.Split.unwrap()
-        parts.append("\"Split\":" + u0.to_json())
-    list[str] e1 = []
+        keys.append("Split")
+        vals.append(cbor.cbor_text(u0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.AttributeNames:
-        e1.append(comprehend_json_str(x1))
-    parts.append("\"AttributeNames\":" + comprehend_json_arr(e1))
+        e1.append(cbor.cbor_text(x1))
+    keys.append("AttributeNames")
+    vals.append(cbor.cbor_list(e1))
     if v.AnnotationDataS3Uri.is_some():
         auto u2 = v.AnnotationDataS3Uri.unwrap()
-        parts.append("\"AnnotationDataS3Uri\":" + comprehend_json_str(u2))
+        keys.append("AnnotationDataS3Uri")
+        vals.append(cbor.cbor_text(u2))
     if v.SourceDocumentsS3Uri.is_some():
         auto u3 = v.SourceDocumentsS3Uri.unwrap()
-        parts.append("\"SourceDocumentsS3Uri\":" + comprehend_json_str(u3))
+        keys.append("SourceDocumentsS3Uri")
+        vals.append(cbor.cbor_text(u3))
     if v.DocumentType.is_some():
         auto u4 = v.DocumentType.unwrap()
-        parts.append("\"DocumentType\":" + u4.to_json())
-    return comprehend_json_obj(parts)
+        keys.append("DocumentType")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchDetectDominantLanguageRequest to a compact JSON object (declaration order).
-def batch_detect_dominant_language_request_to_json(BatchDetectDominantLanguageRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDetectDominantLanguageRequest to a CBOR map (member wire name -> value, model order).
+def batch_detect_dominant_language_request_to_cbor(BatchDetectDominantLanguageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TextList:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TextList\":" + comprehend_json_arr(e0))
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TextList")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchDetectEntitiesRequest to a compact JSON object (declaration order).
-def batch_detect_entities_request_to_json(BatchDetectEntitiesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDetectEntitiesRequest to a CBOR map (member wire name -> value, model order).
+def batch_detect_entities_request_to_cbor(BatchDetectEntitiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TextList:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TextList\":" + comprehend_json_arr(e0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TextList")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchDetectKeyPhrasesRequest to a compact JSON object (declaration order).
-def batch_detect_key_phrases_request_to_json(BatchDetectKeyPhrasesRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDetectKeyPhrasesRequest to a CBOR map (member wire name -> value, model order).
+def batch_detect_key_phrases_request_to_cbor(BatchDetectKeyPhrasesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TextList:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TextList\":" + comprehend_json_arr(e0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TextList")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchDetectSentimentRequest to a compact JSON object (declaration order).
-def batch_detect_sentiment_request_to_json(BatchDetectSentimentRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDetectSentimentRequest to a CBOR map (member wire name -> value, model order).
+def batch_detect_sentiment_request_to_cbor(BatchDetectSentimentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TextList:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TextList\":" + comprehend_json_arr(e0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TextList")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchDetectSyntaxRequest to a compact JSON object (declaration order).
-def batch_detect_syntax_request_to_json(BatchDetectSyntaxRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDetectSyntaxRequest to a CBOR map (member wire name -> value, model order).
+def batch_detect_syntax_request_to_cbor(BatchDetectSyntaxRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TextList:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TextList\":" + comprehend_json_arr(e0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TextList")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchDetectTargetedSentimentRequest to a compact JSON object (declaration order).
-def batch_detect_targeted_sentiment_request_to_json(BatchDetectTargetedSentimentRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchDetectTargetedSentimentRequest to a CBOR map (member wire name -> value, model order).
+def batch_detect_targeted_sentiment_request_to_cbor(BatchDetectTargetedSentimentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.TextList:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TextList\":" + comprehend_json_arr(e0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TextList")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ClassifyDocumentRequest to a compact JSON object (declaration order).
-def classify_document_request_to_json(ClassifyDocumentRequest v) -> str:
-    list[str] parts = []
+# Serialize ClassifyDocumentRequest to a CBOR map (member wire name -> value, model order).
+def classify_document_request_to_cbor(ClassifyDocumentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Text.is_some():
         auto u0 = v.Text.unwrap()
-        parts.append("\"Text\":" + comprehend_json_str(u0))
-    parts.append("\"EndpointArn\":" + comprehend_json_str(v.EndpointArn))
+        keys.append("Text")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("EndpointArn")
+    vals.append(cbor.cbor_text(v.EndpointArn))
     if v.Bytes.is_some():
         auto u1 = v.Bytes.unwrap()
-        parts.append("\"Bytes\":" + comprehend_json_str(base64.encode(u1)))
+        keys.append("Bytes")
+        vals.append(cbor.cbor_blob(u1))
     if v.DocumentReaderConfig.is_some():
         auto u2 = v.DocumentReaderConfig.unwrap()
-        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u2))
-    return comprehend_json_obj(parts)
+        keys.append("DocumentReaderConfig")
+        vals.append(document_reader_config_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDatasetRequest to a compact JSON object (declaration order).
-def create_dataset_request_to_json(CreateDatasetRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FlywheelArn\":" + comprehend_json_str(v.FlywheelArn))
-    parts.append("\"DatasetName\":" + comprehend_json_str(v.DatasetName))
+# Serialize ContainsPiiEntitiesRequest to a CBOR map (member wire name -> value, model order).
+def contains_pii_entities_request_to_cbor(ContainsPiiEntitiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateDatasetRequest to a CBOR map (member wire name -> value, model order).
+def create_dataset_request_to_cbor(CreateDatasetRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
+    keys.append("DatasetName")
+    vals.append(cbor.cbor_text(v.DatasetName))
     if v.DatasetType.is_some():
         auto u0 = v.DatasetType.unwrap()
-        parts.append("\"DatasetType\":" + u0.to_json())
+        keys.append("DatasetType")
+        vals.append(cbor.cbor_text(u0))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + comprehend_json_str(u1))
-    parts.append("\"InputDataConfig\":" + dataset_input_data_config_to_json(v.InputDataConfig))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("InputDataConfig")
+    vals.append(dataset_input_data_config_to_cbor(v.InputDataConfig))
     if v.ClientRequestToken.is_some():
         auto u2 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e4))
-    return comprehend_json_obj(parts)
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateDocumentClassifierRequest to a compact JSON object (declaration order).
-def create_document_classifier_request_to_json(CreateDocumentClassifierRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DocumentClassifierName\":" + comprehend_json_str(v.DocumentClassifierName))
+# Serialize CreateDocumentClassifierRequest to a CBOR map (member wire name -> value, model order).
+def create_document_classifier_request_to_cbor(CreateDocumentClassifierRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentClassifierName")
+    vals.append(cbor.cbor_text(v.DocumentClassifierName))
     if v.VersionName.is_some():
         auto u0 = v.VersionName.unwrap()
-        parts.append("\"VersionName\":" + comprehend_json_str(u0))
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+        keys.append("VersionName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e2))
-    parts.append("\"InputDataConfig\":" + document_classifier_input_data_config_to_json(v.InputDataConfig))
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    keys.append("InputDataConfig")
+    vals.append(document_classifier_input_data_config_to_cbor(v.InputDataConfig))
     if v.OutputDataConfig.is_some():
         auto u3 = v.OutputDataConfig.unwrap()
-        parts.append("\"OutputDataConfig\":" + u3.to_json())
+        keys.append("OutputDataConfig")
+        vals.append(document_classifier_output_data_config_to_cbor(u3))
     if v.ClientRequestToken.is_some():
         auto u4 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u4))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u4))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.VolumeKmsKeyId.is_some():
         auto u5 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u5))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u5))
     if v.VpcConfig.is_some():
         auto u6 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u6))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u6))
     if v.Mode.is_some():
         auto u7 = v.Mode.unwrap()
-        parts.append("\"Mode\":" + u7.to_json())
+        keys.append("Mode")
+        vals.append(cbor.cbor_text(u7))
     if v.ModelKmsKeyId.is_some():
         auto u8 = v.ModelKmsKeyId.unwrap()
-        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u8))
+        keys.append("ModelKmsKeyId")
+        vals.append(cbor.cbor_text(u8))
     if v.ModelPolicy.is_some():
         auto u9 = v.ModelPolicy.unwrap()
-        parts.append("\"ModelPolicy\":" + comprehend_json_str(u9))
-    return comprehend_json_obj(parts)
+        keys.append("ModelPolicy")
+        vals.append(cbor.cbor_text(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateEndpointRequest to a compact JSON object (declaration order).
-def create_endpoint_request_to_json(CreateEndpointRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"EndpointName\":" + comprehend_json_str(v.EndpointName))
+# Serialize CreateEndpointRequest to a CBOR map (member wire name -> value, model order).
+def create_endpoint_request_to_cbor(CreateEndpointRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EndpointName")
+    vals.append(cbor.cbor_text(v.EndpointName))
     if v.ModelArn.is_some():
         auto u0 = v.ModelArn.unwrap()
-        parts.append("\"ModelArn\":" + comprehend_json_str(u0))
-    parts.append("\"DesiredInferenceUnits\":" + str(v.DesiredInferenceUnits))
+        keys.append("ModelArn")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DesiredInferenceUnits")
+    vals.append(cbor.cbor_int(v.DesiredInferenceUnits))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e3))
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
     if v.DataAccessRoleArn.is_some():
         auto u4 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(u4))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u4))
     if v.FlywheelArn.is_some():
         auto u5 = v.FlywheelArn.unwrap()
-        parts.append("\"FlywheelArn\":" + comprehend_json_str(u5))
-    return comprehend_json_obj(parts)
+        keys.append("FlywheelArn")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateEntityRecognizerRequest to a compact JSON object (declaration order).
-def create_entity_recognizer_request_to_json(CreateEntityRecognizerRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"RecognizerName\":" + comprehend_json_str(v.RecognizerName))
+# Serialize CreateEntityRecognizerRequest to a CBOR map (member wire name -> value, model order).
+def create_entity_recognizer_request_to_cbor(CreateEntityRecognizerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RecognizerName")
+    vals.append(cbor.cbor_text(v.RecognizerName))
     if v.VersionName.is_some():
         auto u0 = v.VersionName.unwrap()
-        parts.append("\"VersionName\":" + comprehend_json_str(u0))
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+        keys.append("VersionName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e2))
-    parts.append("\"InputDataConfig\":" + entity_recognizer_input_data_config_to_json(v.InputDataConfig))
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    keys.append("InputDataConfig")
+    vals.append(entity_recognizer_input_data_config_to_cbor(v.InputDataConfig))
     if v.ClientRequestToken.is_some():
         auto u3 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u3))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u3))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.VolumeKmsKeyId.is_some():
         auto u4 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u4))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u4))
     if v.VpcConfig.is_some():
         auto u5 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u5))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u5))
     if v.ModelKmsKeyId.is_some():
         auto u6 = v.ModelKmsKeyId.unwrap()
-        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u6))
+        keys.append("ModelKmsKeyId")
+        vals.append(cbor.cbor_text(u6))
     if v.ModelPolicy.is_some():
         auto u7 = v.ModelPolicy.unwrap()
-        parts.append("\"ModelPolicy\":" + comprehend_json_str(u7))
-    return comprehend_json_obj(parts)
+        keys.append("ModelPolicy")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateFlywheelRequest to a compact JSON object (declaration order).
-def create_flywheel_request_to_json(CreateFlywheelRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FlywheelName\":" + comprehend_json_str(v.FlywheelName))
+# Serialize CreateFlywheelRequest to a CBOR map (member wire name -> value, model order).
+def create_flywheel_request_to_cbor(CreateFlywheelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelName")
+    vals.append(cbor.cbor_text(v.FlywheelName))
     if v.ActiveModelArn.is_some():
         auto u0 = v.ActiveModelArn.unwrap()
-        parts.append("\"ActiveModelArn\":" + comprehend_json_str(u0))
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+        keys.append("ActiveModelArn")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.TaskConfig.is_some():
         auto u1 = v.TaskConfig.unwrap()
-        parts.append("\"TaskConfig\":" + task_config_to_json(u1))
+        keys.append("TaskConfig")
+        vals.append(task_config_to_cbor(u1))
     if v.ModelType.is_some():
         auto u2 = v.ModelType.unwrap()
-        parts.append("\"ModelType\":" + u2.to_json())
-    parts.append("\"DataLakeS3Uri\":" + comprehend_json_str(v.DataLakeS3Uri))
+        keys.append("ModelType")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("DataLakeS3Uri")
+    vals.append(cbor.cbor_text(v.DataLakeS3Uri))
     if v.DataSecurityConfig.is_some():
         auto u3 = v.DataSecurityConfig.unwrap()
-        parts.append("\"DataSecurityConfig\":" + data_security_config_to_json(u3))
+        keys.append("DataSecurityConfig")
+        vals.append(data_security_config_to_cbor(u3))
     if v.ClientRequestToken.is_some():
         auto u4 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u4))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u4))
     if v.Tags.is_some():
         auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e6))
-    return comprehend_json_obj(parts)
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DataSecurityConfig to a compact JSON object (declaration order).
-def data_security_config_to_json(DataSecurityConfig v) -> str:
-    list[str] parts = []
+# Serialize DataSecurityConfig to a CBOR map (member wire name -> value, model order).
+def data_security_config_to_cbor(DataSecurityConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ModelKmsKeyId.is_some():
         auto u0 = v.ModelKmsKeyId.unwrap()
-        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u0))
+        keys.append("ModelKmsKeyId")
+        vals.append(cbor.cbor_text(u0))
     if v.VolumeKmsKeyId.is_some():
         auto u1 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u1))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u1))
     if v.DataLakeKmsKeyId.is_some():
         auto u2 = v.DataLakeKmsKeyId.unwrap()
-        parts.append("\"DataLakeKmsKeyId\":" + comprehend_json_str(u2))
+        keys.append("DataLakeKmsKeyId")
+        vals.append(cbor.cbor_text(u2))
     if v.VpcConfig.is_some():
         auto u3 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
-    return comprehend_json_obj(parts)
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DatasetAugmentedManifestsListItem to a compact JSON object (declaration order).
-def dataset_augmented_manifests_list_item_to_json(DatasetAugmentedManifestsListItem v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize DatasetAugmentedManifestsListItem to a CBOR map (member wire name -> value, model order).
+def dataset_augmented_manifests_list_item_to_cbor(DatasetAugmentedManifestsListItem v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.AttributeNames:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"AttributeNames\":" + comprehend_json_arr(e0))
-    parts.append("\"S3Uri\":" + comprehend_json_str(v.S3Uri))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("AttributeNames")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
     if v.AnnotationDataS3Uri.is_some():
         auto u1 = v.AnnotationDataS3Uri.unwrap()
-        parts.append("\"AnnotationDataS3Uri\":" + comprehend_json_str(u1))
+        keys.append("AnnotationDataS3Uri")
+        vals.append(cbor.cbor_text(u1))
     if v.SourceDocumentsS3Uri.is_some():
         auto u2 = v.SourceDocumentsS3Uri.unwrap()
-        parts.append("\"SourceDocumentsS3Uri\":" + comprehend_json_str(u2))
+        keys.append("SourceDocumentsS3Uri")
+        vals.append(cbor.cbor_text(u2))
     if v.DocumentType.is_some():
         auto u3 = v.DocumentType.unwrap()
-        parts.append("\"DocumentType\":" + u3.to_json())
-    return comprehend_json_obj(parts)
+        keys.append("DocumentType")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DatasetInputDataConfig to a compact JSON object (declaration order).
-def dataset_input_data_config_to_json(DatasetInputDataConfig v) -> str:
-    list[str] parts = []
-    if v.AugmentedManifests.is_some():
-        auto u0 = v.AugmentedManifests.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(dataset_augmented_manifests_list_item_to_json(x1))
-        parts.append("\"AugmentedManifests\":" + comprehend_json_arr(e1))
-    if v.DataFormat.is_some():
-        auto u2 = v.DataFormat.unwrap()
-        parts.append("\"DataFormat\":" + u2.to_json())
-    if v.DocumentClassifierInputDataConfig.is_some():
-        auto u3 = v.DocumentClassifierInputDataConfig.unwrap()
-        parts.append("\"DocumentClassifierInputDataConfig\":" + u3.to_json())
-    if v.EntityRecognizerInputDataConfig.is_some():
-        auto u4 = v.EntityRecognizerInputDataConfig.unwrap()
-        parts.append("\"EntityRecognizerInputDataConfig\":" + u4.to_json())
-    return comprehend_json_obj(parts)
-
-# Serialize DetectEntitiesRequest to a compact JSON object (declaration order).
-def detect_entities_request_to_json(DetectEntitiesRequest v) -> str:
-    list[str] parts = []
-    if v.Text.is_some():
-        auto u0 = v.Text.unwrap()
-        parts.append("\"Text\":" + comprehend_json_str(u0))
-    if v.LanguageCode.is_some():
-        auto u1 = v.LanguageCode.unwrap()
-        parts.append("\"LanguageCode\":" + u1.to_json())
-    if v.EndpointArn.is_some():
-        auto u2 = v.EndpointArn.unwrap()
-        parts.append("\"EndpointArn\":" + comprehend_json_str(u2))
-    if v.Bytes.is_some():
-        auto u3 = v.Bytes.unwrap()
-        parts.append("\"Bytes\":" + comprehend_json_str(base64.encode(u3)))
-    if v.DocumentReaderConfig.is_some():
-        auto u4 = v.DocumentReaderConfig.unwrap()
-        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u4))
-    return comprehend_json_obj(parts)
-
-# Serialize DetectToxicContentRequest to a compact JSON object (declaration order).
-def detect_toxic_content_request_to_json(DetectToxicContentRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.TextSegments:
-        e0.append(x0.to_json())
-    parts.append("\"TextSegments\":" + comprehend_json_arr(e0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
-    return comprehend_json_obj(parts)
-
-# Serialize DocumentClassificationConfig to a compact JSON object (declaration order).
-def document_classification_config_to_json(DocumentClassificationConfig v) -> str:
-    list[str] parts = []
-    parts.append("\"Mode\":" + v.Mode.to_json())
-    if v.Labels.is_some():
-        auto u0 = v.Labels.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(comprehend_json_str(x1))
-        parts.append("\"Labels\":" + comprehend_json_arr(e1))
-    return comprehend_json_obj(parts)
-
-# Serialize DocumentClassifierInputDataConfig to a compact JSON object (declaration order).
-def document_classifier_input_data_config_to_json(DocumentClassifierInputDataConfig v) -> str:
-    list[str] parts = []
-    if v.DataFormat.is_some():
-        auto u0 = v.DataFormat.unwrap()
-        parts.append("\"DataFormat\":" + u0.to_json())
-    if v.S3Uri.is_some():
-        auto u1 = v.S3Uri.unwrap()
-        parts.append("\"S3Uri\":" + comprehend_json_str(u1))
-    if v.TestS3Uri.is_some():
-        auto u2 = v.TestS3Uri.unwrap()
-        parts.append("\"TestS3Uri\":" + comprehend_json_str(u2))
+# Serialize DatasetDocumentClassifierInputDataConfig to a CBOR map (member wire name -> value, model order).
+def dataset_document_classifier_input_data_config_to_cbor(DatasetDocumentClassifierInputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
     if v.LabelDelimiter.is_some():
-        auto u3 = v.LabelDelimiter.unwrap()
-        parts.append("\"LabelDelimiter\":" + comprehend_json_str(u3))
-    if v.AugmentedManifests.is_some():
-        auto u4 = v.AugmentedManifests.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(augmented_manifests_list_item_to_json(x5))
-        parts.append("\"AugmentedManifests\":" + comprehend_json_arr(e5))
-    if v.DocumentType.is_some():
-        auto u6 = v.DocumentType.unwrap()
-        parts.append("\"DocumentType\":" + u6.to_json())
-    if v.Documents.is_some():
-        auto u7 = v.Documents.unwrap()
-        parts.append("\"Documents\":" + u7.to_json())
-    if v.DocumentReaderConfig.is_some():
-        auto u8 = v.DocumentReaderConfig.unwrap()
-        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u8))
-    return comprehend_json_obj(parts)
+        auto u0 = v.LabelDelimiter.unwrap()
+        keys.append("LabelDelimiter")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DocumentReaderConfig to a compact JSON object (declaration order).
-def document_reader_config_to_json(DocumentReaderConfig v) -> str:
-    list[str] parts = []
-    parts.append("\"DocumentReadAction\":" + v.DocumentReadAction.to_json())
-    if v.DocumentReadMode.is_some():
-        auto u0 = v.DocumentReadMode.unwrap()
-        parts.append("\"DocumentReadMode\":" + u0.to_json())
-    if v.FeatureTypes.is_some():
-        auto u1 = v.FeatureTypes.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"FeatureTypes\":" + comprehend_json_arr(e2))
-    return comprehend_json_obj(parts)
+# Serialize DatasetEntityRecognizerAnnotations to a CBOR map (member wire name -> value, model order).
+def dataset_entity_recognizer_annotations_to_cbor(DatasetEntityRecognizerAnnotations v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize EntityRecognitionConfig to a compact JSON object (declaration order).
-def entity_recognition_config_to_json(EntityRecognitionConfig v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.EntityTypes:
-        e0.append(x0.to_json())
-    parts.append("\"EntityTypes\":" + comprehend_json_arr(e0))
-    return comprehend_json_obj(parts)
-
-# Serialize EntityRecognizerInputDataConfig to a compact JSON object (declaration order).
-def entity_recognizer_input_data_config_to_json(EntityRecognizerInputDataConfig v) -> str:
-    list[str] parts = []
-    if v.DataFormat.is_some():
-        auto u0 = v.DataFormat.unwrap()
-        parts.append("\"DataFormat\":" + u0.to_json())
-    list[str] e1 = []
-    for x1 in v.EntityTypes:
-        e1.append(x1.to_json())
-    parts.append("\"EntityTypes\":" + comprehend_json_arr(e1))
-    if v.Documents.is_some():
-        auto u2 = v.Documents.unwrap()
-        parts.append("\"Documents\":" + u2.to_json())
-    if v.Annotations.is_some():
-        auto u3 = v.Annotations.unwrap()
-        parts.append("\"Annotations\":" + u3.to_json())
-    if v.EntityList.is_some():
-        auto u4 = v.EntityList.unwrap()
-        parts.append("\"EntityList\":" + u4.to_json())
-    if v.AugmentedManifests.is_some():
-        auto u5 = v.AugmentedManifests.unwrap()
-        list[str] e6 = []
-        for x6 in u5:
-            e6.append(augmented_manifests_list_item_to_json(x6))
-        parts.append("\"AugmentedManifests\":" + comprehend_json_arr(e6))
-    return comprehend_json_obj(parts)
-
-# Serialize ImportModelRequest to a compact JSON object (declaration order).
-def import_model_request_to_json(ImportModelRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"SourceModelArn\":" + comprehend_json_str(v.SourceModelArn))
-    if v.ModelName.is_some():
-        auto u0 = v.ModelName.unwrap()
-        parts.append("\"ModelName\":" + comprehend_json_str(u0))
-    if v.VersionName.is_some():
-        auto u1 = v.VersionName.unwrap()
-        parts.append("\"VersionName\":" + comprehend_json_str(u1))
-    if v.ModelKmsKeyId.is_some():
-        auto u2 = v.ModelKmsKeyId.unwrap()
-        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u2))
-    if v.DataAccessRoleArn.is_some():
-        auto u3 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(u3))
-    if v.Tags.is_some():
-        auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e5))
-    return comprehend_json_obj(parts)
-
-# Serialize InputDataConfig to a compact JSON object (declaration order).
-def input_data_config_to_json(InputDataConfig v) -> str:
-    list[str] parts = []
-    parts.append("\"S3Uri\":" + comprehend_json_str(v.S3Uri))
+# Serialize DatasetEntityRecognizerDocuments to a CBOR map (member wire name -> value, model order).
+def dataset_entity_recognizer_documents_to_cbor(DatasetEntityRecognizerDocuments v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
     if v.InputFormat.is_some():
         auto u0 = v.InputFormat.unwrap()
-        parts.append("\"InputFormat\":" + u0.to_json())
+        keys.append("InputFormat")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DatasetEntityRecognizerEntityList to a CBOR map (member wire name -> value, model order).
+def dataset_entity_recognizer_entity_list_to_cbor(DatasetEntityRecognizerEntityList v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DatasetEntityRecognizerInputDataConfig to a CBOR map (member wire name -> value, model order).
+def dataset_entity_recognizer_input_data_config_to_cbor(DatasetEntityRecognizerInputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Annotations.is_some():
+        auto u0 = v.Annotations.unwrap()
+        keys.append("Annotations")
+        vals.append(dataset_entity_recognizer_annotations_to_cbor(u0))
+    keys.append("Documents")
+    vals.append(dataset_entity_recognizer_documents_to_cbor(v.Documents))
+    if v.EntityList.is_some():
+        auto u1 = v.EntityList.unwrap()
+        keys.append("EntityList")
+        vals.append(dataset_entity_recognizer_entity_list_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DatasetFilter to a CBOR map (member wire name -> value, model order).
+def dataset_filter_to_cbor(DatasetFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.DatasetType.is_some():
+        auto u1 = v.DatasetType.unwrap()
+        keys.append("DatasetType")
+        vals.append(cbor.cbor_text(u1))
+    if v.CreationTimeAfter.is_some():
+        auto u2 = v.CreationTimeAfter.unwrap()
+        keys.append("CreationTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.CreationTimeBefore.is_some():
+        auto u3 = v.CreationTimeBefore.unwrap()
+        keys.append("CreationTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DatasetInputDataConfig to a CBOR map (member wire name -> value, model order).
+def dataset_input_data_config_to_cbor(DatasetInputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AugmentedManifests.is_some():
+        auto u0 = v.AugmentedManifests.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(dataset_augmented_manifests_list_item_to_cbor(x1))
+        keys.append("AugmentedManifests")
+        vals.append(cbor.cbor_list(e1))
+    if v.DataFormat.is_some():
+        auto u2 = v.DataFormat.unwrap()
+        keys.append("DataFormat")
+        vals.append(cbor.cbor_text(u2))
+    if v.DocumentClassifierInputDataConfig.is_some():
+        auto u3 = v.DocumentClassifierInputDataConfig.unwrap()
+        keys.append("DocumentClassifierInputDataConfig")
+        vals.append(dataset_document_classifier_input_data_config_to_cbor(u3))
+    if v.EntityRecognizerInputDataConfig.is_some():
+        auto u4 = v.EntityRecognizerInputDataConfig.unwrap()
+        keys.append("EntityRecognizerInputDataConfig")
+        vals.append(dataset_entity_recognizer_input_data_config_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteDocumentClassifierRequest to a CBOR map (member wire name -> value, model order).
+def delete_document_classifier_request_to_cbor(DeleteDocumentClassifierRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentClassifierArn")
+    vals.append(cbor.cbor_text(v.DocumentClassifierArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteEndpointRequest to a CBOR map (member wire name -> value, model order).
+def delete_endpoint_request_to_cbor(DeleteEndpointRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EndpointArn")
+    vals.append(cbor.cbor_text(v.EndpointArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteEntityRecognizerRequest to a CBOR map (member wire name -> value, model order).
+def delete_entity_recognizer_request_to_cbor(DeleteEntityRecognizerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EntityRecognizerArn")
+    vals.append(cbor.cbor_text(v.EntityRecognizerArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteFlywheelRequest to a CBOR map (member wire name -> value, model order).
+def delete_flywheel_request_to_cbor(DeleteFlywheelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def delete_resource_policy_request_to_cbor(DeleteResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    if v.PolicyRevisionId.is_some():
+        auto u0 = v.PolicyRevisionId.unwrap()
+        keys.append("PolicyRevisionId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDatasetRequest to a CBOR map (member wire name -> value, model order).
+def describe_dataset_request_to_cbor(DescribeDatasetRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DatasetArn")
+    vals.append(cbor.cbor_text(v.DatasetArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDocumentClassificationJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_document_classification_job_request_to_cbor(DescribeDocumentClassificationJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDocumentClassifierRequest to a CBOR map (member wire name -> value, model order).
+def describe_document_classifier_request_to_cbor(DescribeDocumentClassifierRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentClassifierArn")
+    vals.append(cbor.cbor_text(v.DocumentClassifierArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDominantLanguageDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_dominant_language_detection_job_request_to_cbor(DescribeDominantLanguageDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeEndpointRequest to a CBOR map (member wire name -> value, model order).
+def describe_endpoint_request_to_cbor(DescribeEndpointRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EndpointArn")
+    vals.append(cbor.cbor_text(v.EndpointArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeEntitiesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_entities_detection_job_request_to_cbor(DescribeEntitiesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeEntityRecognizerRequest to a CBOR map (member wire name -> value, model order).
+def describe_entity_recognizer_request_to_cbor(DescribeEntityRecognizerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EntityRecognizerArn")
+    vals.append(cbor.cbor_text(v.EntityRecognizerArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeEventsDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_events_detection_job_request_to_cbor(DescribeEventsDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFlywheelIterationRequest to a CBOR map (member wire name -> value, model order).
+def describe_flywheel_iteration_request_to_cbor(DescribeFlywheelIterationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
+    keys.append("FlywheelIterationId")
+    vals.append(cbor.cbor_text(v.FlywheelIterationId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeFlywheelRequest to a CBOR map (member wire name -> value, model order).
+def describe_flywheel_request_to_cbor(DescribeFlywheelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeKeyPhrasesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_key_phrases_detection_job_request_to_cbor(DescribeKeyPhrasesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribePiiEntitiesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_pii_entities_detection_job_request_to_cbor(DescribePiiEntitiesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def describe_resource_policy_request_to_cbor(DescribeResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeSentimentDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_sentiment_detection_job_request_to_cbor(DescribeSentimentDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTargetedSentimentDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_targeted_sentiment_detection_job_request_to_cbor(DescribeTargetedSentimentDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTopicsDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def describe_topics_detection_job_request_to_cbor(DescribeTopicsDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectDominantLanguageRequest to a CBOR map (member wire name -> value, model order).
+def detect_dominant_language_request_to_cbor(DetectDominantLanguageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectEntitiesRequest to a CBOR map (member wire name -> value, model order).
+def detect_entities_request_to_cbor(DetectEntitiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Text.is_some():
+        auto u0 = v.Text.unwrap()
+        keys.append("Text")
+        vals.append(cbor.cbor_text(u0))
+    if v.LanguageCode.is_some():
+        auto u1 = v.LanguageCode.unwrap()
+        keys.append("LanguageCode")
+        vals.append(cbor.cbor_text(u1))
+    if v.EndpointArn.is_some():
+        auto u2 = v.EndpointArn.unwrap()
+        keys.append("EndpointArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.Bytes.is_some():
+        auto u3 = v.Bytes.unwrap()
+        keys.append("Bytes")
+        vals.append(cbor.cbor_blob(u3))
+    if v.DocumentReaderConfig.is_some():
+        auto u4 = v.DocumentReaderConfig.unwrap()
+        keys.append("DocumentReaderConfig")
+        vals.append(document_reader_config_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectKeyPhrasesRequest to a CBOR map (member wire name -> value, model order).
+def detect_key_phrases_request_to_cbor(DetectKeyPhrasesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectPiiEntitiesRequest to a CBOR map (member wire name -> value, model order).
+def detect_pii_entities_request_to_cbor(DetectPiiEntitiesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectSentimentRequest to a CBOR map (member wire name -> value, model order).
+def detect_sentiment_request_to_cbor(DetectSentimentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectSyntaxRequest to a CBOR map (member wire name -> value, model order).
+def detect_syntax_request_to_cbor(DetectSyntaxRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectTargetedSentimentRequest to a CBOR map (member wire name -> value, model order).
+def detect_targeted_sentiment_request_to_cbor(DetectTargetedSentimentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DetectToxicContentRequest to a CBOR map (member wire name -> value, model order).
+def detect_toxic_content_request_to_cbor(DetectToxicContentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.TextSegments:
+        e0.append(text_segment_to_cbor(x0))
+    keys.append("TextSegments")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentClassificationConfig to a CBOR map (member wire name -> value, model order).
+def document_classification_config_to_cbor(DocumentClassificationConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Mode")
+    vals.append(cbor.cbor_text(v.Mode))
+    if v.Labels.is_some():
+        auto u0 = v.Labels.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("Labels")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentClassificationJobFilter to a CBOR map (member wire name -> value, model order).
+def document_classification_job_filter_to_cbor(DocumentClassificationJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentClassifierDocuments to a CBOR map (member wire name -> value, model order).
+def document_classifier_documents_to_cbor(DocumentClassifierDocuments v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    if v.TestS3Uri.is_some():
+        auto u0 = v.TestS3Uri.unwrap()
+        keys.append("TestS3Uri")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentClassifierFilter to a CBOR map (member wire name -> value, model order).
+def document_classifier_filter_to_cbor(DocumentClassifierFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.DocumentClassifierName.is_some():
+        auto u1 = v.DocumentClassifierName.unwrap()
+        keys.append("DocumentClassifierName")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentClassifierInputDataConfig to a CBOR map (member wire name -> value, model order).
+def document_classifier_input_data_config_to_cbor(DocumentClassifierInputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DataFormat.is_some():
+        auto u0 = v.DataFormat.unwrap()
+        keys.append("DataFormat")
+        vals.append(cbor.cbor_text(u0))
+    if v.S3Uri.is_some():
+        auto u1 = v.S3Uri.unwrap()
+        keys.append("S3Uri")
+        vals.append(cbor.cbor_text(u1))
+    if v.TestS3Uri.is_some():
+        auto u2 = v.TestS3Uri.unwrap()
+        keys.append("TestS3Uri")
+        vals.append(cbor.cbor_text(u2))
+    if v.LabelDelimiter.is_some():
+        auto u3 = v.LabelDelimiter.unwrap()
+        keys.append("LabelDelimiter")
+        vals.append(cbor.cbor_text(u3))
+    if v.AugmentedManifests.is_some():
+        auto u4 = v.AugmentedManifests.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(augmented_manifests_list_item_to_cbor(x5))
+        keys.append("AugmentedManifests")
+        vals.append(cbor.cbor_list(e5))
+    if v.DocumentType.is_some():
+        auto u6 = v.DocumentType.unwrap()
+        keys.append("DocumentType")
+        vals.append(cbor.cbor_text(u6))
+    if v.Documents.is_some():
+        auto u7 = v.Documents.unwrap()
+        keys.append("Documents")
+        vals.append(document_classifier_documents_to_cbor(u7))
+    if v.DocumentReaderConfig.is_some():
+        auto u8 = v.DocumentReaderConfig.unwrap()
+        keys.append("DocumentReaderConfig")
+        vals.append(document_reader_config_to_cbor(u8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentClassifierOutputDataConfig to a CBOR map (member wire name -> value, model order).
+def document_classifier_output_data_config_to_cbor(DocumentClassifierOutputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.S3Uri.is_some():
+        auto u0 = v.S3Uri.unwrap()
+        keys.append("S3Uri")
+        vals.append(cbor.cbor_text(u0))
+    if v.KmsKeyId.is_some():
+        auto u1 = v.KmsKeyId.unwrap()
+        keys.append("KmsKeyId")
+        vals.append(cbor.cbor_text(u1))
+    if v.FlywheelStatsS3Prefix.is_some():
+        auto u2 = v.FlywheelStatsS3Prefix.unwrap()
+        keys.append("FlywheelStatsS3Prefix")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DocumentReaderConfig to a CBOR map (member wire name -> value, model order).
+def document_reader_config_to_cbor(DocumentReaderConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentReadAction")
+    vals.append(cbor.cbor_text(v.DocumentReadAction))
+    if v.DocumentReadMode.is_some():
+        auto u0 = v.DocumentReadMode.unwrap()
+        keys.append("DocumentReadMode")
+        vals.append(cbor.cbor_text(u0))
+    if v.FeatureTypes.is_some():
+        auto u1 = v.FeatureTypes.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(cbor.cbor_text(x2))
+        keys.append("FeatureTypes")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DominantLanguageDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def dominant_language_detection_job_filter_to_cbor(DominantLanguageDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EndpointFilter to a CBOR map (member wire name -> value, model order).
+def endpoint_filter_to_cbor(EndpointFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ModelArn.is_some():
+        auto u0 = v.ModelArn.unwrap()
+        keys.append("ModelArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u1))
+    if v.CreationTimeBefore.is_some():
+        auto u2 = v.CreationTimeBefore.unwrap()
+        keys.append("CreationTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.CreationTimeAfter.is_some():
+        auto u3 = v.CreationTimeAfter.unwrap()
+        keys.append("CreationTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntitiesDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def entities_detection_job_filter_to_cbor(EntitiesDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityRecognitionConfig to a CBOR map (member wire name -> value, model order).
+def entity_recognition_config_to_cbor(EntityRecognitionConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.EntityTypes:
+        e0.append(entity_types_list_item_to_cbor(x0))
+    keys.append("EntityTypes")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityRecognizerAnnotations to a CBOR map (member wire name -> value, model order).
+def entity_recognizer_annotations_to_cbor(EntityRecognizerAnnotations v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    if v.TestS3Uri.is_some():
+        auto u0 = v.TestS3Uri.unwrap()
+        keys.append("TestS3Uri")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityRecognizerDocuments to a CBOR map (member wire name -> value, model order).
+def entity_recognizer_documents_to_cbor(EntityRecognizerDocuments v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    if v.TestS3Uri.is_some():
+        auto u0 = v.TestS3Uri.unwrap()
+        keys.append("TestS3Uri")
+        vals.append(cbor.cbor_text(u0))
+    if v.InputFormat.is_some():
+        auto u1 = v.InputFormat.unwrap()
+        keys.append("InputFormat")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityRecognizerEntityList to a CBOR map (member wire name -> value, model order).
+def entity_recognizer_entity_list_to_cbor(EntityRecognizerEntityList v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityRecognizerFilter to a CBOR map (member wire name -> value, model order).
+def entity_recognizer_filter_to_cbor(EntityRecognizerFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.RecognizerName.is_some():
+        auto u1 = v.RecognizerName.unwrap()
+        keys.append("RecognizerName")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityRecognizerInputDataConfig to a CBOR map (member wire name -> value, model order).
+def entity_recognizer_input_data_config_to_cbor(EntityRecognizerInputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.DataFormat.is_some():
+        auto u0 = v.DataFormat.unwrap()
+        keys.append("DataFormat")
+        vals.append(cbor.cbor_text(u0))
+    list[cbor.CborValue] e1 = []
+    for x1 in v.EntityTypes:
+        e1.append(entity_types_list_item_to_cbor(x1))
+    keys.append("EntityTypes")
+    vals.append(cbor.cbor_list(e1))
+    if v.Documents.is_some():
+        auto u2 = v.Documents.unwrap()
+        keys.append("Documents")
+        vals.append(entity_recognizer_documents_to_cbor(u2))
+    if v.Annotations.is_some():
+        auto u3 = v.Annotations.unwrap()
+        keys.append("Annotations")
+        vals.append(entity_recognizer_annotations_to_cbor(u3))
+    if v.EntityList.is_some():
+        auto u4 = v.EntityList.unwrap()
+        keys.append("EntityList")
+        vals.append(entity_recognizer_entity_list_to_cbor(u4))
+    if v.AugmentedManifests.is_some():
+        auto u5 = v.AugmentedManifests.unwrap()
+        list[cbor.CborValue] e6 = []
+        for x6 in u5:
+            e6.append(augmented_manifests_list_item_to_cbor(x6))
+        keys.append("AugmentedManifests")
+        vals.append(cbor.cbor_list(e6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EntityTypesListItem to a CBOR map (member wire name -> value, model order).
+def entity_types_list_item_to_cbor(EntityTypesListItem v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EventsDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def events_detection_job_filter_to_cbor(EventsDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FlywheelFilter to a CBOR map (member wire name -> value, model order).
+def flywheel_filter_to_cbor(FlywheelFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    if v.CreationTimeAfter.is_some():
+        auto u1 = v.CreationTimeAfter.unwrap()
+        keys.append("CreationTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    if v.CreationTimeBefore.is_some():
+        auto u2 = v.CreationTimeBefore.unwrap()
+        keys.append("CreationTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FlywheelIterationFilter to a CBOR map (member wire name -> value, model order).
+def flywheel_iteration_filter_to_cbor(FlywheelIterationFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.CreationTimeAfter.is_some():
+        auto u0 = v.CreationTimeAfter.unwrap()
+        keys.append("CreationTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
+    if v.CreationTimeBefore.is_some():
+        auto u1 = v.CreationTimeBefore.unwrap()
+        keys.append("CreationTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImportModelRequest to a CBOR map (member wire name -> value, model order).
+def import_model_request_to_cbor(ImportModelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SourceModelArn")
+    vals.append(cbor.cbor_text(v.SourceModelArn))
+    if v.ModelName.is_some():
+        auto u0 = v.ModelName.unwrap()
+        keys.append("ModelName")
+        vals.append(cbor.cbor_text(u0))
+    if v.VersionName.is_some():
+        auto u1 = v.VersionName.unwrap()
+        keys.append("VersionName")
+        vals.append(cbor.cbor_text(u1))
+    if v.ModelKmsKeyId.is_some():
+        auto u2 = v.ModelKmsKeyId.unwrap()
+        keys.append("ModelKmsKeyId")
+        vals.append(cbor.cbor_text(u2))
+    if v.DataAccessRoleArn.is_some():
+        auto u3 = v.DataAccessRoleArn.unwrap()
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize InputDataConfig to a CBOR map (member wire name -> value, model order).
+def input_data_config_to_cbor(InputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    if v.InputFormat.is_some():
+        auto u0 = v.InputFormat.unwrap()
+        keys.append("InputFormat")
+        vals.append(cbor.cbor_text(u0))
     if v.DocumentReaderConfig.is_some():
         auto u1 = v.DocumentReaderConfig.unwrap()
-        parts.append("\"DocumentReaderConfig\":" + document_reader_config_to_json(u1))
-    return comprehend_json_obj(parts)
+        keys.append("DocumentReaderConfig")
+        vals.append(document_reader_config_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize RedactionConfig to a compact JSON object (declaration order).
-def redaction_config_to_json(RedactionConfig v) -> str:
-    list[str] parts = []
+# Serialize KeyPhrasesDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def key_phrases_detection_job_filter_to_cbor(KeyPhrasesDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDatasetsRequest to a CBOR map (member wire name -> value, model order).
+def list_datasets_request_to_cbor(ListDatasetsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FlywheelArn.is_some():
+        auto u0 = v.FlywheelArn.unwrap()
+        keys.append("FlywheelArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.Filter.is_some():
+        auto u1 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(dataset_filter_to_cbor(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDocumentClassificationJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_document_classification_jobs_request_to_cbor(ListDocumentClassificationJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(document_classification_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDocumentClassifierSummariesRequest to a CBOR map (member wire name -> value, model order).
+def list_document_classifier_summaries_request_to_cbor(ListDocumentClassifierSummariesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDocumentClassifiersRequest to a CBOR map (member wire name -> value, model order).
+def list_document_classifiers_request_to_cbor(ListDocumentClassifiersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(document_classifier_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListDominantLanguageDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_dominant_language_detection_jobs_request_to_cbor(ListDominantLanguageDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(dominant_language_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListEndpointsRequest to a CBOR map (member wire name -> value, model order).
+def list_endpoints_request_to_cbor(ListEndpointsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(endpoint_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListEntitiesDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_entities_detection_jobs_request_to_cbor(ListEntitiesDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(entities_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListEntityRecognizerSummariesRequest to a CBOR map (member wire name -> value, model order).
+def list_entity_recognizer_summaries_request_to_cbor(ListEntityRecognizerSummariesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListEntityRecognizersRequest to a CBOR map (member wire name -> value, model order).
+def list_entity_recognizers_request_to_cbor(ListEntityRecognizersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(entity_recognizer_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListEventsDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_events_detection_jobs_request_to_cbor(ListEventsDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(events_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFlywheelIterationHistoryRequest to a CBOR map (member wire name -> value, model order).
+def list_flywheel_iteration_history_request_to_cbor(ListFlywheelIterationHistoryRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(flywheel_iteration_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListFlywheelsRequest to a CBOR map (member wire name -> value, model order).
+def list_flywheels_request_to_cbor(ListFlywheelsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(flywheel_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListKeyPhrasesDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_key_phrases_detection_jobs_request_to_cbor(ListKeyPhrasesDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(key_phrases_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPiiEntitiesDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_pii_entities_detection_jobs_request_to_cbor(ListPiiEntitiesDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(pii_entities_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListSentimentDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_sentiment_detection_jobs_request_to_cbor(ListSentimentDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(sentiment_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTargetedSentimentDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_targeted_sentiment_detection_jobs_request_to_cbor(ListTargetedSentimentDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(targeted_sentiment_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTopicsDetectionJobsRequest to a CBOR map (member wire name -> value, model order).
+def list_topics_detection_jobs_request_to_cbor(ListTopicsDetectionJobsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        keys.append("Filter")
+        vals.append(topics_detection_job_filter_to_cbor(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OutputDataConfig to a CBOR map (member wire name -> value, model order).
+def output_data_config_to_cbor(OutputDataConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3Uri")
+    vals.append(cbor.cbor_text(v.S3Uri))
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        keys.append("KmsKeyId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PiiEntitiesDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def pii_entities_detection_job_filter_to_cbor(PiiEntitiesDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def put_resource_policy_request_to_cbor(PutResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    keys.append("ResourcePolicy")
+    vals.append(cbor.cbor_text(v.ResourcePolicy))
+    if v.PolicyRevisionId.is_some():
+        auto u0 = v.PolicyRevisionId.unwrap()
+        keys.append("PolicyRevisionId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RedactionConfig to a CBOR map (member wire name -> value, model order).
+def redaction_config_to_cbor(RedactionConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.PiiEntityTypes.is_some():
         auto u0 = v.PiiEntityTypes.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"PiiEntityTypes\":" + comprehend_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("PiiEntityTypes")
+        vals.append(cbor.cbor_list(e1))
     if v.MaskMode.is_some():
         auto u2 = v.MaskMode.unwrap()
-        parts.append("\"MaskMode\":" + u2.to_json())
+        keys.append("MaskMode")
+        vals.append(cbor.cbor_text(u2))
     if v.MaskCharacter.is_some():
         auto u3 = v.MaskCharacter.unwrap()
-        parts.append("\"MaskCharacter\":" + comprehend_json_str(u3))
-    return comprehend_json_obj(parts)
+        keys.append("MaskCharacter")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartDocumentClassificationJobRequest to a compact JSON object (declaration order).
-def start_document_classification_job_request_to_json(StartDocumentClassificationJobRequest v) -> str:
-    list[str] parts = []
+# Serialize SentimentDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def sentiment_detection_job_filter_to_cbor(SentimentDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartDocumentClassificationJobRequest to a CBOR map (member wire name -> value, model order).
+def start_document_classification_job_request_to_cbor(StartDocumentClassificationJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
     if v.DocumentClassifierArn.is_some():
         auto u1 = v.DocumentClassifierArn.unwrap()
-        parts.append("\"DocumentClassifierArn\":" + comprehend_json_str(u1))
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+        keys.append("DocumentClassifierArn")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.ClientRequestToken.is_some():
         auto u2 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u2))
     if v.VolumeKmsKeyId.is_some():
         auto u3 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u3))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u3))
     if v.VpcConfig.is_some():
         auto u4 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u4))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u4))
     if v.Tags.is_some():
         auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e6))
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
     if v.FlywheelArn.is_some():
         auto u7 = v.FlywheelArn.unwrap()
-        parts.append("\"FlywheelArn\":" + comprehend_json_str(u7))
-    return comprehend_json_obj(parts)
+        keys.append("FlywheelArn")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartDominantLanguageDetectionJobRequest to a compact JSON object (declaration order).
-def start_dominant_language_detection_job_request_to_json(StartDominantLanguageDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartDominantLanguageDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_dominant_language_detection_job_request_to_cbor(StartDominantLanguageDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
     if v.VolumeKmsKeyId.is_some():
         auto u2 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u2))
     if v.VpcConfig.is_some():
         auto u3 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u3))
     if v.Tags.is_some():
         auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e5))
-    return comprehend_json_obj(parts)
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartEntitiesDetectionJobRequest to a compact JSON object (declaration order).
-def start_entities_detection_job_request_to_json(StartEntitiesDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartEntitiesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_entities_detection_job_request_to_cbor(StartEntitiesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
     if v.EntityRecognizerArn.is_some():
         auto u1 = v.EntityRecognizerArn.unwrap()
-        parts.append("\"EntityRecognizerArn\":" + comprehend_json_str(u1))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("EntityRecognizerArn")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.ClientRequestToken.is_some():
         auto u2 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u2))
     if v.VolumeKmsKeyId.is_some():
         auto u3 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u3))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u3))
     if v.VpcConfig.is_some():
         auto u4 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u4))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u4))
     if v.Tags.is_some():
         auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e6))
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
     if v.FlywheelArn.is_some():
         auto u7 = v.FlywheelArn.unwrap()
-        parts.append("\"FlywheelArn\":" + comprehend_json_str(u7))
-    return comprehend_json_obj(parts)
+        keys.append("FlywheelArn")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartEventsDetectionJobRequest to a compact JSON object (declaration order).
-def start_events_detection_job_request_to_json(StartEventsDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartEventsDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_events_detection_job_request_to_cbor(StartEventsDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
-    list[str] e2 = []
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
+    list[cbor.CborValue] e2 = []
     for x2 in v.TargetEventTypes:
-        e2.append(comprehend_json_str(x2))
-    parts.append("\"TargetEventTypes\":" + comprehend_json_arr(e2))
+        e2.append(cbor.cbor_text(x2))
+    keys.append("TargetEventTypes")
+    vals.append(cbor.cbor_list(e2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e4))
-    return comprehend_json_obj(parts)
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartKeyPhrasesDetectionJobRequest to a compact JSON object (declaration order).
-def start_key_phrases_detection_job_request_to_json(StartKeyPhrasesDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartFlywheelIterationRequest to a CBOR map (member wire name -> value, model order).
+def start_flywheel_iteration_request_to_cbor(StartFlywheelIterationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartKeyPhrasesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_key_phrases_detection_job_request_to_cbor(StartKeyPhrasesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
     if v.VolumeKmsKeyId.is_some():
         auto u2 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u2))
     if v.VpcConfig.is_some():
         auto u3 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u3))
     if v.Tags.is_some():
         auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e5))
-    return comprehend_json_obj(parts)
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartPiiEntitiesDetectionJobRequest to a compact JSON object (declaration order).
-def start_pii_entities_detection_job_request_to_json(StartPiiEntitiesDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"Mode\":" + v.Mode.to_json())
+# Serialize StartPiiEntitiesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_pii_entities_detection_job_request_to_cbor(StartPiiEntitiesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("Mode")
+    vals.append(cbor.cbor_text(v.Mode))
     if v.RedactionConfig.is_some():
         auto u0 = v.RedactionConfig.unwrap()
-        parts.append("\"RedactionConfig\":" + redaction_config_to_json(u0))
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+        keys.append("RedactionConfig")
+        vals.append(redaction_config_to_cbor(u0))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u1 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u1))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.ClientRequestToken.is_some():
         auto u2 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e4))
-    return comprehend_json_obj(parts)
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartSentimentDetectionJobRequest to a compact JSON object (declaration order).
-def start_sentiment_detection_job_request_to_json(StartSentimentDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartSentimentDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_sentiment_detection_job_request_to_cbor(StartSentimentDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
     if v.VolumeKmsKeyId.is_some():
         auto u2 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u2))
     if v.VpcConfig.is_some():
         auto u3 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u3))
     if v.Tags.is_some():
         auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e5))
-    return comprehend_json_obj(parts)
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartTargetedSentimentDetectionJobRequest to a compact JSON object (declaration order).
-def start_targeted_sentiment_detection_job_request_to_json(StartTargetedSentimentDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartTargetedSentimentDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_targeted_sentiment_detection_job_request_to_cbor(StartTargetedSentimentDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.ClientRequestToken.is_some():
         auto u1 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u1))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u1))
     if v.VolumeKmsKeyId.is_some():
         auto u2 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u2))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u2))
     if v.VpcConfig.is_some():
         auto u3 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u3))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u3))
     if v.Tags.is_some():
         auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e5))
-    return comprehend_json_obj(parts)
+            e5.append(tag_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize StartTopicsDetectionJobRequest to a compact JSON object (declaration order).
-def start_topics_detection_job_request_to_json(StartTopicsDetectionJobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
-    parts.append("\"OutputDataConfig\":" + v.OutputDataConfig.to_json())
-    parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(v.DataAccessRoleArn))
+# Serialize StartTopicsDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def start_topics_detection_job_request_to_cbor(StartTopicsDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("InputDataConfig")
+    vals.append(input_data_config_to_cbor(v.InputDataConfig))
+    keys.append("OutputDataConfig")
+    vals.append(output_data_config_to_cbor(v.OutputDataConfig))
+    keys.append("DataAccessRoleArn")
+    vals.append(cbor.cbor_text(v.DataAccessRoleArn))
     if v.JobName.is_some():
         auto u0 = v.JobName.unwrap()
-        parts.append("\"JobName\":" + comprehend_json_str(u0))
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
     if v.NumberOfTopics.is_some():
         auto u1 = v.NumberOfTopics.unwrap()
-        parts.append("\"NumberOfTopics\":" + str(u1))
+        keys.append("NumberOfTopics")
+        vals.append(cbor.cbor_int(u1))
     if v.ClientRequestToken.is_some():
         auto u2 = v.ClientRequestToken.unwrap()
-        parts.append("\"ClientRequestToken\":" + comprehend_json_str(u2))
+        keys.append("ClientRequestToken")
+        vals.append(cbor.cbor_text(u2))
     if v.VolumeKmsKeyId.is_some():
         auto u3 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u3))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u3))
     if v.VpcConfig.is_some():
         auto u4 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u4))
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u4))
     if v.Tags.is_some():
         auto u5 = v.Tags.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(x6.to_json())
-        parts.append("\"Tags\":" + comprehend_json_arr(e6))
-    return comprehend_json_obj(parts)
+            e6.append(tag_to_cbor(x6))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + comprehend_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize StopDominantLanguageDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_dominant_language_detection_job_request_to_cbor(StopDominantLanguageDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopEntitiesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_entities_detection_job_request_to_cbor(StopEntitiesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopEventsDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_events_detection_job_request_to_cbor(StopEventsDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopKeyPhrasesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_key_phrases_detection_job_request_to_cbor(StopKeyPhrasesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopPiiEntitiesDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_pii_entities_detection_job_request_to_cbor(StopPiiEntitiesDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopSentimentDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_sentiment_detection_job_request_to_cbor(StopSentimentDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopTargetedSentimentDetectionJobRequest to a CBOR map (member wire name -> value, model order).
+def stop_targeted_sentiment_detection_job_request_to_cbor(StopTargetedSentimentDetectionJobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("JobId")
+    vals.append(cbor.cbor_text(v.JobId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopTrainingDocumentClassifierRequest to a CBOR map (member wire name -> value, model order).
+def stop_training_document_classifier_request_to_cbor(StopTrainingDocumentClassifierRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DocumentClassifierArn")
+    vals.append(cbor.cbor_text(v.DocumentClassifierArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StopTrainingEntityRecognizerRequest to a CBOR map (member wire name -> value, model order).
+def stop_training_entity_recognizer_request_to_cbor(StopTrainingEntityRecognizerRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EntityRecognizerArn")
+    vals.append(cbor.cbor_text(v.EntityRecognizerArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + comprehend_json_arr(e0))
-    return comprehend_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TaskConfig to a compact JSON object (declaration order).
-def task_config_to_json(TaskConfig v) -> str:
-    list[str] parts = []
-    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+# Serialize TargetedSentimentDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def targeted_sentiment_detection_job_filter_to_cbor(TargetedSentimentDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TaskConfig to a CBOR map (member wire name -> value, model order).
+def task_config_to_cbor(TaskConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LanguageCode")
+    vals.append(cbor.cbor_text(v.LanguageCode))
     if v.DocumentClassificationConfig.is_some():
         auto u0 = v.DocumentClassificationConfig.unwrap()
-        parts.append("\"DocumentClassificationConfig\":" + document_classification_config_to_json(u0))
+        keys.append("DocumentClassificationConfig")
+        vals.append(document_classification_config_to_cbor(u0))
     if v.EntityRecognitionConfig.is_some():
         auto u1 = v.EntityRecognitionConfig.unwrap()
-        parts.append("\"EntityRecognitionConfig\":" + entity_recognition_config_to_json(u1))
-    return comprehend_json_obj(parts)
+        keys.append("EntityRecognitionConfig")
+        vals.append(entity_recognition_config_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + comprehend_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize TextSegment to a CBOR map (member wire name -> value, model order).
+def text_segment_to_cbor(TextSegment v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Text")
+    vals.append(cbor.cbor_text(v.Text))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TopicsDetectionJobFilter to a CBOR map (member wire name -> value, model order).
+def topics_detection_job_filter_to_cbor(TopicsDetectionJobFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        keys.append("JobName")
+        vals.append(cbor.cbor_text(u0))
+    if v.JobStatus.is_some():
+        auto u1 = v.JobStatus.unwrap()
+        keys.append("JobStatus")
+        vals.append(cbor.cbor_text(u1))
+    if v.SubmitTimeBefore.is_some():
+        auto u2 = v.SubmitTimeBefore.unwrap()
+        keys.append("SubmitTimeBefore")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.SubmitTimeAfter.is_some():
+        auto u3 = v.SubmitTimeAfter.unwrap()
+        keys.append("SubmitTimeAfter")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"TagKeys\":" + comprehend_json_arr(e0))
-    return comprehend_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateDataSecurityConfig to a compact JSON object (declaration order).
-def update_data_security_config_to_json(UpdateDataSecurityConfig v) -> str:
-    list[str] parts = []
+# Serialize UpdateDataSecurityConfig to a CBOR map (member wire name -> value, model order).
+def update_data_security_config_to_cbor(UpdateDataSecurityConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ModelKmsKeyId.is_some():
         auto u0 = v.ModelKmsKeyId.unwrap()
-        parts.append("\"ModelKmsKeyId\":" + comprehend_json_str(u0))
+        keys.append("ModelKmsKeyId")
+        vals.append(cbor.cbor_text(u0))
     if v.VolumeKmsKeyId.is_some():
         auto u1 = v.VolumeKmsKeyId.unwrap()
-        parts.append("\"VolumeKmsKeyId\":" + comprehend_json_str(u1))
+        keys.append("VolumeKmsKeyId")
+        vals.append(cbor.cbor_text(u1))
     if v.VpcConfig.is_some():
         auto u2 = v.VpcConfig.unwrap()
-        parts.append("\"VpcConfig\":" + vpc_config_to_json(u2))
-    return comprehend_json_obj(parts)
+        keys.append("VpcConfig")
+        vals.append(vpc_config_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateFlywheelRequest to a compact JSON object (declaration order).
-def update_flywheel_request_to_json(UpdateFlywheelRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FlywheelArn\":" + comprehend_json_str(v.FlywheelArn))
+# Serialize UpdateEndpointRequest to a CBOR map (member wire name -> value, model order).
+def update_endpoint_request_to_cbor(UpdateEndpointRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EndpointArn")
+    vals.append(cbor.cbor_text(v.EndpointArn))
+    if v.DesiredModelArn.is_some():
+        auto u0 = v.DesiredModelArn.unwrap()
+        keys.append("DesiredModelArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.DesiredInferenceUnits.is_some():
+        auto u1 = v.DesiredInferenceUnits.unwrap()
+        keys.append("DesiredInferenceUnits")
+        vals.append(cbor.cbor_int(u1))
+    if v.DesiredDataAccessRoleArn.is_some():
+        auto u2 = v.DesiredDataAccessRoleArn.unwrap()
+        keys.append("DesiredDataAccessRoleArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.FlywheelArn.is_some():
+        auto u3 = v.FlywheelArn.unwrap()
+        keys.append("FlywheelArn")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateFlywheelRequest to a CBOR map (member wire name -> value, model order).
+def update_flywheel_request_to_cbor(UpdateFlywheelRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FlywheelArn")
+    vals.append(cbor.cbor_text(v.FlywheelArn))
     if v.ActiveModelArn.is_some():
         auto u0 = v.ActiveModelArn.unwrap()
-        parts.append("\"ActiveModelArn\":" + comprehend_json_str(u0))
+        keys.append("ActiveModelArn")
+        vals.append(cbor.cbor_text(u0))
     if v.DataAccessRoleArn.is_some():
         auto u1 = v.DataAccessRoleArn.unwrap()
-        parts.append("\"DataAccessRoleArn\":" + comprehend_json_str(u1))
+        keys.append("DataAccessRoleArn")
+        vals.append(cbor.cbor_text(u1))
     if v.DataSecurityConfig.is_some():
         auto u2 = v.DataSecurityConfig.unwrap()
-        parts.append("\"DataSecurityConfig\":" + update_data_security_config_to_json(u2))
-    return comprehend_json_obj(parts)
+        keys.append("DataSecurityConfig")
+        vals.append(update_data_security_config_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize VpcConfig to a compact JSON object (declaration order).
-def vpc_config_to_json(VpcConfig v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize VpcConfig to a CBOR map (member wire name -> value, model order).
+def vpc_config_to_cbor(VpcConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.SecurityGroupIds:
-        e0.append(comprehend_json_str(x0))
-    parts.append("\"SecurityGroupIds\":" + comprehend_json_arr(e0))
-    list[str] e1 = []
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SecurityGroupIds")
+    vals.append(cbor.cbor_list(e0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.Subnets:
-        e1.append(comprehend_json_str(x1))
-    parts.append("\"Subnets\":" + comprehend_json_arr(e1))
-    return comprehend_json_obj(parts)
+        e1.append(cbor.cbor_text(x1))
+    keys.append("Subnets")
+    vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Comprehend client: credentials + region, threaded into every operation.
 struct ComprehendClient:
@@ -3398,653 +4287,768 @@ struct ComprehendClient:
 
     # BatchDetectDominantLanguage
     # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException
-    def batch_detect_dominant_language(self, BatchDetectDominantLanguageRequest input) -> str:
-        auto body = batch_detect_dominant_language_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectDominantLanguage", body)
+    def batch_detect_dominant_language(self, BatchDetectDominantLanguageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_detect_dominant_language_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "BatchDetectDominantLanguage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchDetectEntities
     # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def batch_detect_entities(self, BatchDetectEntitiesRequest input) -> str:
-        auto body = batch_detect_entities_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectEntities", body)
+    def batch_detect_entities(self, BatchDetectEntitiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_detect_entities_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "BatchDetectEntities", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchDetectKeyPhrases
     # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def batch_detect_key_phrases(self, BatchDetectKeyPhrasesRequest input) -> str:
-        auto body = batch_detect_key_phrases_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectKeyPhrases", body)
+    def batch_detect_key_phrases(self, BatchDetectKeyPhrasesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_detect_key_phrases_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "BatchDetectKeyPhrases", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchDetectSentiment
     # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def batch_detect_sentiment(self, BatchDetectSentimentRequest input) -> str:
-        auto body = batch_detect_sentiment_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectSentiment", body)
+    def batch_detect_sentiment(self, BatchDetectSentimentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_detect_sentiment_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "BatchDetectSentiment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchDetectSyntax
     # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def batch_detect_syntax(self, BatchDetectSyntaxRequest input) -> str:
-        auto body = batch_detect_syntax_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectSyntax", body)
+    def batch_detect_syntax(self, BatchDetectSyntaxRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_detect_syntax_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "BatchDetectSyntax", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchDetectTargetedSentiment
     # errors: BatchSizeLimitExceededException, InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def batch_detect_targeted_sentiment(self, BatchDetectTargetedSentimentRequest input) -> str:
-        auto body = batch_detect_targeted_sentiment_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "BatchDetectTargetedSentiment", body)
+    def batch_detect_targeted_sentiment(self, BatchDetectTargetedSentimentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_detect_targeted_sentiment_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "BatchDetectTargetedSentiment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ClassifyDocument
     # errors: InternalServerException, InvalidRequestException, ResourceUnavailableException, TextSizeLimitExceededException
-    def classify_document(self, ClassifyDocumentRequest input) -> str:
-        auto body = classify_document_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ClassifyDocument", body)
+    def classify_document(self, ClassifyDocumentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(classify_document_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ClassifyDocument", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ContainsPiiEntities
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def contains_pii_entities(self, ContainsPiiEntitiesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ContainsPiiEntities", body)
+    def contains_pii_entities(self, ContainsPiiEntitiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(contains_pii_entities_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ContainsPiiEntities", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDataset
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, TooManyRequestsException, TooManyTagsException
-    def create_dataset(self, CreateDatasetRequest input) -> str:
-        auto body = create_dataset_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateDataset", body)
+    def create_dataset(self, CreateDatasetRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_dataset_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "CreateDataset", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateDocumentClassifier
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, TooManyRequestsException, TooManyTagsException, UnsupportedLanguageException
-    def create_document_classifier(self, CreateDocumentClassifierRequest input) -> str:
-        auto body = create_document_classifier_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateDocumentClassifier", body)
+    def create_document_classifier(self, CreateDocumentClassifierRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_document_classifier_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "CreateDocumentClassifier", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateEndpoint
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
-    def create_endpoint(self, CreateEndpointRequest input) -> str:
-        auto body = create_endpoint_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateEndpoint", body)
+    def create_endpoint(self, CreateEndpointRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_endpoint_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "CreateEndpoint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateEntityRecognizer
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, TooManyRequestsException, TooManyTagsException, UnsupportedLanguageException
-    def create_entity_recognizer(self, CreateEntityRecognizerRequest input) -> str:
-        auto body = create_entity_recognizer_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateEntityRecognizer", body)
+    def create_entity_recognizer(self, CreateEntityRecognizerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_entity_recognizer_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "CreateEntityRecognizer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateFlywheel
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException, UnsupportedLanguageException
-    def create_flywheel(self, CreateFlywheelRequest input) -> str:
-        auto body = create_flywheel_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "CreateFlywheel", body)
+    def create_flywheel(self, CreateFlywheelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_flywheel_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "CreateFlywheel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteDocumentClassifier
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException
-    def delete_document_classifier(self, DeleteDocumentClassifierRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DeleteDocumentClassifier", body)
+    def delete_document_classifier(self, DeleteDocumentClassifierRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_document_classifier_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DeleteDocumentClassifier", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteEndpoint
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, TooManyRequestsException
-    def delete_endpoint(self, DeleteEndpointRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DeleteEndpoint", body)
+    def delete_endpoint(self, DeleteEndpointRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_endpoint_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DeleteEndpoint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteEntityRecognizer
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException
-    def delete_entity_recognizer(self, DeleteEntityRecognizerRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DeleteEntityRecognizer", body)
+    def delete_entity_recognizer(self, DeleteEntityRecognizerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_entity_recognizer_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DeleteEntityRecognizer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteFlywheel
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException
-    def delete_flywheel(self, DeleteFlywheelRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DeleteFlywheel", body)
+    def delete_flywheel(self, DeleteFlywheelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_flywheel_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DeleteFlywheel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteResourcePolicy
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
-    def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
+    def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DeleteResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDataset
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def describe_dataset(self, DescribeDatasetRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeDataset", body)
+    def describe_dataset(self, DescribeDatasetRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_dataset_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeDataset", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDocumentClassificationJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_document_classification_job(self, DescribeDocumentClassificationJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeDocumentClassificationJob", body)
+    def describe_document_classification_job(self, DescribeDocumentClassificationJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_document_classification_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeDocumentClassificationJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDocumentClassifier
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def describe_document_classifier(self, DescribeDocumentClassifierRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeDocumentClassifier", body)
+    def describe_document_classifier(self, DescribeDocumentClassifierRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_document_classifier_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeDocumentClassifier", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDominantLanguageDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_dominant_language_detection_job(self, DescribeDominantLanguageDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeDominantLanguageDetectionJob", body)
+    def describe_dominant_language_detection_job(self, DescribeDominantLanguageDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_dominant_language_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeDominantLanguageDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEndpoint
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def describe_endpoint(self, DescribeEndpointRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeEndpoint", body)
+    def describe_endpoint(self, DescribeEndpointRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_endpoint_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeEndpoint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEntitiesDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_entities_detection_job(self, DescribeEntitiesDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeEntitiesDetectionJob", body)
+    def describe_entities_detection_job(self, DescribeEntitiesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_entities_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeEntitiesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEntityRecognizer
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def describe_entity_recognizer(self, DescribeEntityRecognizerRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeEntityRecognizer", body)
+    def describe_entity_recognizer(self, DescribeEntityRecognizerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_entity_recognizer_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeEntityRecognizer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEventsDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_events_detection_job(self, DescribeEventsDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeEventsDetectionJob", body)
+    def describe_events_detection_job(self, DescribeEventsDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_events_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeEventsDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeFlywheel
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def describe_flywheel(self, DescribeFlywheelRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeFlywheel", body)
+    def describe_flywheel(self, DescribeFlywheelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_flywheel_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeFlywheel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeFlywheelIteration
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def describe_flywheel_iteration(self, DescribeFlywheelIterationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeFlywheelIteration", body)
+    def describe_flywheel_iteration(self, DescribeFlywheelIterationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_flywheel_iteration_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeFlywheelIteration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeKeyPhrasesDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_key_phrases_detection_job(self, DescribeKeyPhrasesDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeKeyPhrasesDetectionJob", body)
+    def describe_key_phrases_detection_job(self, DescribeKeyPhrasesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_key_phrases_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeKeyPhrasesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribePiiEntitiesDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_pii_entities_detection_job(self, DescribePiiEntitiesDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribePiiEntitiesDetectionJob", body)
+    def describe_pii_entities_detection_job(self, DescribePiiEntitiesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_pii_entities_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribePiiEntitiesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeResourcePolicy
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
-    def describe_resource_policy(self, DescribeResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeResourcePolicy", body)
+    def describe_resource_policy(self, DescribeResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSentimentDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_sentiment_detection_job(self, DescribeSentimentDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeSentimentDetectionJob", body)
+    def describe_sentiment_detection_job(self, DescribeSentimentDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_sentiment_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeSentimentDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTargetedSentimentDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_targeted_sentiment_detection_job(self, DescribeTargetedSentimentDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeTargetedSentimentDetectionJob", body)
+    def describe_targeted_sentiment_detection_job(self, DescribeTargetedSentimentDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_targeted_sentiment_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeTargetedSentimentDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTopicsDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException, TooManyRequestsException
-    def describe_topics_detection_job(self, DescribeTopicsDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DescribeTopicsDetectionJob", body)
+    def describe_topics_detection_job(self, DescribeTopicsDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_topics_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DescribeTopicsDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectDominantLanguage
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException
-    def detect_dominant_language(self, DetectDominantLanguageRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectDominantLanguage", body)
+    def detect_dominant_language(self, DetectDominantLanguageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_dominant_language_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectDominantLanguage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectEntities
     # errors: InternalServerException, InvalidRequestException, ResourceUnavailableException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_entities(self, DetectEntitiesRequest input) -> str:
-        auto body = detect_entities_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectEntities", body)
+    def detect_entities(self, DetectEntitiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_entities_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectEntities", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectKeyPhrases
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_key_phrases(self, DetectKeyPhrasesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectKeyPhrases", body)
+    def detect_key_phrases(self, DetectKeyPhrasesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_key_phrases_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectKeyPhrases", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectPiiEntities
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_pii_entities(self, DetectPiiEntitiesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectPiiEntities", body)
+    def detect_pii_entities(self, DetectPiiEntitiesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_pii_entities_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectPiiEntities", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectSentiment
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_sentiment(self, DetectSentimentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectSentiment", body)
+    def detect_sentiment(self, DetectSentimentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_sentiment_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectSentiment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectSyntax
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_syntax(self, DetectSyntaxRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectSyntax", body)
+    def detect_syntax(self, DetectSyntaxRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_syntax_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectSyntax", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectTargetedSentiment
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_targeted_sentiment(self, DetectTargetedSentimentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectTargetedSentiment", body)
+    def detect_targeted_sentiment(self, DetectTargetedSentimentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_targeted_sentiment_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectTargetedSentiment", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DetectToxicContent
     # errors: InternalServerException, InvalidRequestException, TextSizeLimitExceededException, UnsupportedLanguageException
-    def detect_toxic_content(self, DetectToxicContentRequest input) -> str:
-        auto body = detect_toxic_content_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "DetectToxicContent", body)
+    def detect_toxic_content(self, DetectToxicContentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(detect_toxic_content_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "DetectToxicContent", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportModel
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
-    def import_model(self, ImportModelRequest input) -> str:
-        auto body = import_model_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ImportModel", body)
+    def import_model(self, ImportModelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(import_model_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ImportModel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDatasets
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def list_datasets(self, ListDatasetsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDatasets", body)
+    def list_datasets(self, ListDatasetsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_datasets_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListDatasets", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDocumentClassificationJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_document_classification_jobs(self, ListDocumentClassificationJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDocumentClassificationJobs", body)
+    def list_document_classification_jobs(self, ListDocumentClassificationJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_document_classification_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListDocumentClassificationJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDocumentClassifierSummaries
     # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
-    def list_document_classifier_summaries(self, ListDocumentClassifierSummariesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDocumentClassifierSummaries", body)
+    def list_document_classifier_summaries(self, ListDocumentClassifierSummariesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_document_classifier_summaries_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListDocumentClassifierSummaries", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDocumentClassifiers
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_document_classifiers(self, ListDocumentClassifiersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDocumentClassifiers", body)
+    def list_document_classifiers(self, ListDocumentClassifiersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_document_classifiers_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListDocumentClassifiers", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListDominantLanguageDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_dominant_language_detection_jobs(self, ListDominantLanguageDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDominantLanguageDetectionJobs", body)
+    def list_dominant_language_detection_jobs(self, ListDominantLanguageDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_dominant_language_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListDominantLanguageDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListEndpoints
     # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
-    def list_endpoints(self, ListEndpointsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEndpoints", body)
+    def list_endpoints(self, ListEndpointsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_endpoints_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListEndpoints", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListEntitiesDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_entities_detection_jobs(self, ListEntitiesDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEntitiesDetectionJobs", body)
+    def list_entities_detection_jobs(self, ListEntitiesDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_entities_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListEntitiesDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListEntityRecognizerSummaries
     # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
-    def list_entity_recognizer_summaries(self, ListEntityRecognizerSummariesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEntityRecognizerSummaries", body)
+    def list_entity_recognizer_summaries(self, ListEntityRecognizerSummariesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_entity_recognizer_summaries_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListEntityRecognizerSummaries", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListEntityRecognizers
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_entity_recognizers(self, ListEntityRecognizersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEntityRecognizers", body)
+    def list_entity_recognizers(self, ListEntityRecognizersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_entity_recognizers_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListEntityRecognizers", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListEventsDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_events_detection_jobs(self, ListEventsDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEventsDetectionJobs", body)
+    def list_events_detection_jobs(self, ListEventsDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_events_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListEventsDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFlywheelIterationHistory
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def list_flywheel_iteration_history(self, ListFlywheelIterationHistoryRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListFlywheelIterationHistory", body)
+    def list_flywheel_iteration_history(self, ListFlywheelIterationHistoryRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_flywheel_iteration_history_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListFlywheelIterationHistory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListFlywheels
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_flywheels(self, ListFlywheelsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListFlywheels", body)
+    def list_flywheels(self, ListFlywheelsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_flywheels_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListFlywheels", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListKeyPhrasesDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_key_phrases_detection_jobs(self, ListKeyPhrasesDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListKeyPhrasesDetectionJobs", body)
+    def list_key_phrases_detection_jobs(self, ListKeyPhrasesDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_key_phrases_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListKeyPhrasesDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPiiEntitiesDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_pii_entities_detection_jobs(self, ListPiiEntitiesDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListPiiEntitiesDetectionJobs", body)
+    def list_pii_entities_detection_jobs(self, ListPiiEntitiesDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_pii_entities_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListPiiEntitiesDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListSentimentDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_sentiment_detection_jobs(self, ListSentimentDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListSentimentDetectionJobs", body)
+    def list_sentiment_detection_jobs(self, ListSentimentDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_sentiment_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListSentimentDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTargetedSentimentDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_targeted_sentiment_detection_jobs(self, ListTargetedSentimentDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListTargetedSentimentDetectionJobs", body)
+    def list_targeted_sentiment_detection_jobs(self, ListTargetedSentimentDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_targeted_sentiment_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListTargetedSentimentDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTopicsDetectionJobs
     # errors: InternalServerException, InvalidFilterException, InvalidRequestException, TooManyRequestsException
-    def list_topics_detection_jobs(self, ListTopicsDetectionJobsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListTopicsDetectionJobs", body)
+    def list_topics_detection_jobs(self, ListTopicsDetectionJobsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_topics_detection_jobs_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "ListTopicsDetectionJobs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutResourcePolicy
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
-    def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+    def put_resource_policy(self, PutResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(put_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "PutResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartDocumentClassificationJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
-    def start_document_classification_job(self, StartDocumentClassificationJobRequest input) -> str:
-        auto body = start_document_classification_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartDocumentClassificationJob", body)
+    def start_document_classification_job(self, StartDocumentClassificationJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_document_classification_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartDocumentClassificationJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartDominantLanguageDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_dominant_language_detection_job(self, StartDominantLanguageDetectionJobRequest input) -> str:
-        auto body = start_dominant_language_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartDominantLanguageDetectionJob", body)
+    def start_dominant_language_detection_job(self, StartDominantLanguageDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_dominant_language_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartDominantLanguageDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartEntitiesDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, TooManyTagsException
-    def start_entities_detection_job(self, StartEntitiesDetectionJobRequest input) -> str:
-        auto body = start_entities_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartEntitiesDetectionJob", body)
+    def start_entities_detection_job(self, StartEntitiesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_entities_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartEntitiesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartEventsDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_events_detection_job(self, StartEventsDetectionJobRequest input) -> str:
-        auto body = start_events_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartEventsDetectionJob", body)
+    def start_events_detection_job(self, StartEventsDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_events_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartEventsDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartFlywheelIteration
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, TooManyRequestsException
-    def start_flywheel_iteration(self, StartFlywheelIterationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartFlywheelIteration", body)
+    def start_flywheel_iteration(self, StartFlywheelIterationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_flywheel_iteration_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartFlywheelIteration", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartKeyPhrasesDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_key_phrases_detection_job(self, StartKeyPhrasesDetectionJobRequest input) -> str:
-        auto body = start_key_phrases_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartKeyPhrasesDetectionJob", body)
+    def start_key_phrases_detection_job(self, StartKeyPhrasesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_key_phrases_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartKeyPhrasesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartPiiEntitiesDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_pii_entities_detection_job(self, StartPiiEntitiesDetectionJobRequest input) -> str:
-        auto body = start_pii_entities_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartPiiEntitiesDetectionJob", body)
+    def start_pii_entities_detection_job(self, StartPiiEntitiesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_pii_entities_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartPiiEntitiesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartSentimentDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_sentiment_detection_job(self, StartSentimentDetectionJobRequest input) -> str:
-        auto body = start_sentiment_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartSentimentDetectionJob", body)
+    def start_sentiment_detection_job(self, StartSentimentDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_sentiment_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartSentimentDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartTargetedSentimentDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_targeted_sentiment_detection_job(self, StartTargetedSentimentDetectionJobRequest input) -> str:
-        auto body = start_targeted_sentiment_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartTargetedSentimentDetectionJob", body)
+    def start_targeted_sentiment_detection_job(self, StartTargetedSentimentDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_targeted_sentiment_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartTargetedSentimentDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartTopicsDetectionJob
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceInUseException, TooManyRequestsException, TooManyTagsException
-    def start_topics_detection_job(self, StartTopicsDetectionJobRequest input) -> str:
-        auto body = start_topics_detection_job_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StartTopicsDetectionJob", body)
+    def start_topics_detection_job(self, StartTopicsDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_topics_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StartTopicsDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopDominantLanguageDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_dominant_language_detection_job(self, StopDominantLanguageDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopDominantLanguageDetectionJob", body)
+    def stop_dominant_language_detection_job(self, StopDominantLanguageDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_dominant_language_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopDominantLanguageDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopEntitiesDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_entities_detection_job(self, StopEntitiesDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopEntitiesDetectionJob", body)
+    def stop_entities_detection_job(self, StopEntitiesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_entities_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopEntitiesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopEventsDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_events_detection_job(self, StopEventsDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopEventsDetectionJob", body)
+    def stop_events_detection_job(self, StopEventsDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_events_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopEventsDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopKeyPhrasesDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_key_phrases_detection_job(self, StopKeyPhrasesDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopKeyPhrasesDetectionJob", body)
+    def stop_key_phrases_detection_job(self, StopKeyPhrasesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_key_phrases_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopKeyPhrasesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopPiiEntitiesDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_pii_entities_detection_job(self, StopPiiEntitiesDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopPiiEntitiesDetectionJob", body)
+    def stop_pii_entities_detection_job(self, StopPiiEntitiesDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_pii_entities_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopPiiEntitiesDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopSentimentDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_sentiment_detection_job(self, StopSentimentDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopSentimentDetectionJob", body)
+    def stop_sentiment_detection_job(self, StopSentimentDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_sentiment_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopSentimentDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopTargetedSentimentDetectionJob
     # errors: InternalServerException, InvalidRequestException, JobNotFoundException
-    def stop_targeted_sentiment_detection_job(self, StopTargetedSentimentDetectionJobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopTargetedSentimentDetectionJob", body)
+    def stop_targeted_sentiment_detection_job(self, StopTargetedSentimentDetectionJobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_targeted_sentiment_detection_job_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopTargetedSentimentDetectionJob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopTrainingDocumentClassifier
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def stop_training_document_classifier(self, StopTrainingDocumentClassifierRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopTrainingDocumentClassifier", body)
+    def stop_training_document_classifier(self, StopTrainingDocumentClassifierRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_training_document_classifier_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopTrainingDocumentClassifier", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StopTrainingEntityRecognizer
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyRequestsException
-    def stop_training_entity_recognizer(self, StopTrainingEntityRecognizerRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "StopTrainingEntityRecognizer", body)
+    def stop_training_entity_recognizer(self, StopTrainingEntityRecognizerRequest input) -> bytes:
+        auto body = cbor.cbor_encode(stop_training_entity_recognizer_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "StopTrainingEntityRecognizer", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: ConcurrentModificationException, InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyTagsException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: ConcurrentModificationException, InternalServerException, InvalidRequestException, ResourceNotFoundException, TooManyTagKeysException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateEndpoint
     # errors: InternalServerException, InvalidRequestException, ResourceInUseException, ResourceLimitExceededException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException
-    def update_endpoint(self, UpdateEndpointRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "UpdateEndpoint", body)
+    def update_endpoint(self, UpdateEndpointRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_endpoint_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "UpdateEndpoint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateFlywheel
     # errors: InternalServerException, InvalidRequestException, KmsKeyValidationException, ResourceNotFoundException, TooManyRequestsException
-    def update_flywheel(self, UpdateFlywheelRequest input) -> str:
-        auto body = update_flywheel_request_to_json(input)
-        return awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "UpdateFlywheel", body)
-
-    # Paginator for ListDocumentClassificationJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: DocumentClassificationJobPropertiesList).
-    def paginate_list_document_classification_jobs(self, ListDocumentClassificationJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDocumentClassificationJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListDocumentClassifiers — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: DocumentClassifierPropertiesList).
-    def paginate_list_document_classifiers(self, ListDocumentClassifiersRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDocumentClassifiers", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListDominantLanguageDetectionJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: DominantLanguageDetectionJobPropertiesList).
-    def paginate_list_dominant_language_detection_jobs(self, ListDominantLanguageDetectionJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListDominantLanguageDetectionJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListEndpoints — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: EndpointPropertiesList).
-    def paginate_list_endpoints(self, ListEndpointsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEndpoints", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListEntitiesDetectionJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: EntitiesDetectionJobPropertiesList).
-    def paginate_list_entities_detection_jobs(self, ListEntitiesDetectionJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEntitiesDetectionJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListEntityRecognizers — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: EntityRecognizerPropertiesList).
-    def paginate_list_entity_recognizers(self, ListEntityRecognizersRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListEntityRecognizers", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListKeyPhrasesDetectionJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: KeyPhrasesDetectionJobPropertiesList).
-    def paginate_list_key_phrases_detection_jobs(self, ListKeyPhrasesDetectionJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListKeyPhrasesDetectionJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListPiiEntitiesDetectionJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: PiiEntitiesDetectionJobPropertiesList).
-    def paginate_list_pii_entities_detection_jobs(self, ListPiiEntitiesDetectionJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListPiiEntitiesDetectionJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListSentimentDetectionJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: SentimentDetectionJobPropertiesList).
-    def paginate_list_sentiment_detection_jobs(self, ListSentimentDetectionJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListSentimentDetectionJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTopicsDetectionJobs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: TopicsDetectionJobPropertiesList).
-    def paginate_list_topics_detection_jobs(self, ListTopicsDetectionJobsRequest input):
-        auto host = endpoints.regional_host(comprehend_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(comprehend_protocol(), self.creds, self.region, "ListTopicsDetectionJobs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_flywheel(self, UpdateFlywheelRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_flywheel_request_to_cbor(input))
+        auto host = endpoints.regional_host(comprehend_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(comprehend_service(), self.region, host, "Comprehend_20171127", "UpdateFlywheel", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a ComprehendClient bound to credentials + region.
 def comprehend_client(core.Credentials creds, str region) -> ComprehendClient:

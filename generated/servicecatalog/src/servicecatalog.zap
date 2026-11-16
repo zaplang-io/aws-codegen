@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Service Catalog (serviceId Service Catalog, API 2015-12-10)
-# Protocol: awsJson 1.1 (targetPrefix AWS242ServiceCatalogService)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service servicecatalog, service shape AWS242ServiceCatalogService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 90 operations — 85 with a generated method,
-#   5 skipped (input has a non-string-keyed map or free-form document member).
-#   248 structs (157 @derive(Json)), 30 enums, 8 error variants.
-#   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 90 operations — 90 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   248 structs (plain carriers), 30 enums, 8 error variants.
+#   0 paginators generated (17 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 
-# The Service_Catalog awsJson protocol: version 1.1, API id "AWS242ServiceCatalogService".
-def servicecatalog_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("AWS242ServiceCatalogService", "servicecatalog")
+# The Service_Catalog smithy-rpc-v2-cbor protocol: SigV4 service "servicecatalog" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/AWS242ServiceCatalogService/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def servicecatalog_service() -> str:
+    return "servicecatalog"
 
 # --- enums -----------------------------------------------------------------
 
@@ -296,57 +300,47 @@ enum Status:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AcceptPortfolioShareInput:
     Optional[str] AcceptLanguage
     str PortfolioId
-    Optional[PortfolioShareType] PortfolioShareType
+    Optional[str] PortfolioShareType
 
-@derive(Json)
 struct AcceptPortfolioShareOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AccessLevelFilter:
-    Optional[AccessLevelFilterKey] Key
+    Optional[str] Key
     Optional[str] Value
 
-@derive(Json)
 struct AssociateBudgetWithResourceInput:
     str BudgetName
     str ResourceId
 
-@derive(Json)
 struct AssociateBudgetWithResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociatePrincipalWithPortfolioInput:
     Optional[str] AcceptLanguage
     str PortfolioId
     str PrincipalARN
-    PrincipalType PrincipalType
+    str PrincipalType
 
-@derive(Json)
 struct AssociatePrincipalWithPortfolioOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociateProductWithPortfolioInput:
     Optional[str] AcceptLanguage
     str ProductId
     str PortfolioId
     Optional[str] SourcePortfolioId
 
-@derive(Json)
 struct AssociateProductWithPortfolioOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociateServiceActionWithProvisioningArtifactInput:
     str ProductId
     str ProvisioningArtifactId
@@ -354,63 +348,44 @@ struct AssociateServiceActionWithProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     Optional[str] IdempotencyToken
 
-@derive(Json)
 struct AssociateServiceActionWithProvisioningArtifactOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociateTagOptionWithResourceInput:
     str ResourceId
     str TagOptionId
 
-@derive(Json)
 struct AssociateTagOptionWithResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ServiceActionAssociations: list[ServiceActionAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchAssociateServiceActionWithProvisioningArtifactInput:
     list[ServiceActionAssociation] ServiceActionAssociations
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) FailedServiceActionAssociations: list[FailedServiceActionAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchAssociateServiceActionWithProvisioningArtifactOutput:
     Optional[list[FailedServiceActionAssociation]] FailedServiceActionAssociations
 
-# no @derive(Json): member(s) ServiceActionAssociations: list[ServiceActionAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDisassociateServiceActionFromProvisioningArtifactInput:
     list[ServiceActionAssociation] ServiceActionAssociations
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) FailedServiceActionAssociations: list[FailedServiceActionAssociation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchDisassociateServiceActionFromProvisioningArtifactOutput:
     Optional[list[FailedServiceActionAssociation]] FailedServiceActionAssociations
 
-@derive(Json)
 struct BudgetDetail:
     Optional[str] BudgetName
 
-@derive(Json)
 struct CloudWatchDashboard:
     Optional[str] Name
 
-@derive(Json)
 struct CodeStarParameters:
     str ConnectionArn
     str Repository
     str Branch
     str ArtifactPath
 
-@derive(Json)
 struct ConstraintDetail:
     Optional[str] ConstraintId
     Optional[str] Type
@@ -419,14 +394,10 @@ struct ConstraintDetail:
     Optional[str] ProductId
     Optional[str] PortfolioId
 
-@derive(Json)
 struct ConstraintSummary:
     Optional[str] Type
     Optional[str] Description
 
-# no @derive(Json): member(s) SourceProvisioningArtifactIdentifiers: list[dict[str, str]], CopyOptions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CopyProductInput:
     Optional[str] AcceptLanguage
     str SourceProductArn
@@ -436,11 +407,9 @@ struct CopyProductInput:
     Optional[list[str]] CopyOptions
     str IdempotencyToken
 
-@derive(Json)
 struct CopyProductOutput:
     Optional[str] CopyProductToken
 
-@derive(Json)
 struct CreateConstraintInput:
     Optional[str] AcceptLanguage
     str PortfolioId
@@ -450,15 +419,11 @@ struct CreateConstraintInput:
     Optional[str] Description
     str IdempotencyToken
 
-@derive(Json)
 struct CreateConstraintOutput:
     Optional[ConstraintDetail] ConstraintDetail
     Optional[str] ConstraintParameters
-    Optional[Status] Status
+    Optional[str] Status
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePortfolioInput:
     Optional[str] AcceptLanguage
     str DisplayName
@@ -467,14 +432,10 @@ struct CreatePortfolioInput:
     Optional[list[Tag]] Tags
     str IdempotencyToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreatePortfolioOutput:
     Optional[PortfolioDetail] PortfolioDetail
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreatePortfolioShareInput:
     Optional[str] AcceptLanguage
     str PortfolioId
@@ -483,13 +444,9 @@ struct CreatePortfolioShareInput:
     Optional[bool] ShareTagOptions
     Optional[bool] SharePrincipals
 
-@derive(Json)
 struct CreatePortfolioShareOutput:
     Optional[str] PortfolioShareToken
 
-# no @derive(Json): member(s) Tags: list[Tag], ProvisioningArtifactParameters: ProvisioningArtifactProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProductInput:
     Optional[str] AcceptLanguage
     str Name
@@ -499,23 +456,17 @@ struct CreateProductInput:
     Optional[str] SupportDescription
     Optional[str] SupportEmail
     Optional[str] SupportUrl
-    ProductType ProductType
+    str ProductType
     Optional[list[Tag]] Tags
     Optional[ProvisioningArtifactProperties] ProvisioningArtifactParameters
     str IdempotencyToken
     Optional[SourceConnection] SourceConnection
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProductOutput:
     Optional[ProductViewDetail] ProductViewDetail
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) NotificationArns: list[str], ProvisioningParameters: list[UpdateProvisioningParameter], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProvisionedProductPlanInput:
     Optional[str] AcceptLanguage
     str PlanName
@@ -529,7 +480,6 @@ struct CreateProvisionedProductPlanInput:
     str IdempotencyToken
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateProvisionedProductPlanOutput:
     Optional[str] PlanName
     Optional[str] PlanId
@@ -537,206 +487,156 @@ struct CreateProvisionedProductPlanOutput:
     Optional[str] ProvisionedProductName
     Optional[str] ProvisioningArtifactId
 
-# no @derive(Json): member(s) Parameters: ProvisioningArtifactProperties not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     str ProductId
     ProvisioningArtifactProperties Parameters
     str IdempotencyToken
 
-# no @derive(Json): member(s) Info: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProvisioningArtifactOutput:
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[dict[str, str]] Info
-    Optional[Status] Status
+    Optional[str] Status
 
-# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateServiceActionInput:
     str Name
     str DefinitionType
-    dict[ServiceActionDefinitionKey, str] Definition
+    dict[str, str] Definition
     Optional[str] Description
     Optional[str] AcceptLanguage
     str IdempotencyToken
 
-# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateServiceActionOutput:
     Optional[ServiceActionDetail] ServiceActionDetail
 
-@derive(Json)
 struct CreateTagOptionInput:
     str Key
     str Value
 
-@derive(Json)
 struct CreateTagOptionOutput:
     Optional[TagOptionDetail] TagOptionDetail
 
-@derive(Json)
 struct DeleteConstraintInput:
     Optional[str] AcceptLanguage
     str Id
 
-@derive(Json)
 struct DeleteConstraintOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeletePortfolioInput:
     Optional[str] AcceptLanguage
     str Id
 
-@derive(Json)
 struct DeletePortfolioOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeletePortfolioShareInput:
     Optional[str] AcceptLanguage
     str PortfolioId
     Optional[str] AccountId
     Optional[OrganizationNode] OrganizationNode
 
-@derive(Json)
 struct DeletePortfolioShareOutput:
     Optional[str] PortfolioShareToken
 
-@derive(Json)
 struct DeleteProductInput:
     Optional[str] AcceptLanguage
     str Id
 
-@derive(Json)
 struct DeleteProductOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteProvisionedProductPlanInput:
     Optional[str] AcceptLanguage
     str PlanId
     Optional[bool] IgnoreErrors
 
-@derive(Json)
 struct DeleteProvisionedProductPlanOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     str ProductId
     str ProvisioningArtifactId
 
-@derive(Json)
 struct DeleteProvisioningArtifactOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteServiceActionInput:
     str Id
     Optional[str] AcceptLanguage
     Optional[str] IdempotencyToken
 
-@derive(Json)
 struct DeleteServiceActionOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteTagOptionInput:
     str Id
 
-@derive(Json)
 struct DeleteTagOptionOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeConstraintInput:
     Optional[str] AcceptLanguage
     str Id
 
-@derive(Json)
 struct DescribeConstraintOutput:
     Optional[ConstraintDetail] ConstraintDetail
     Optional[str] ConstraintParameters
-    Optional[Status] Status
+    Optional[str] Status
 
-@derive(Json)
 struct DescribeCopyProductStatusInput:
     Optional[str] AcceptLanguage
     str CopyProductToken
 
-@derive(Json)
 struct DescribeCopyProductStatusOutput:
-    Optional[CopyProductStatus] CopyProductStatus
+    Optional[str] CopyProductStatus
     Optional[str] TargetProductId
     Optional[str] StatusDetail
 
-@derive(Json)
 struct DescribePortfolioInput:
     Optional[str] AcceptLanguage
     str Id
 
-# no @derive(Json): member(s) Tags: list[Tag], TagOptions: list[TagOptionDetail], Budgets: list[BudgetDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribePortfolioOutput:
     Optional[PortfolioDetail] PortfolioDetail
     Optional[list[Tag]] Tags
     Optional[list[TagOptionDetail]] TagOptions
     Optional[list[BudgetDetail]] Budgets
 
-@derive(Json)
 struct DescribePortfolioShareStatusInput:
     str PortfolioShareToken
 
-# no @derive(Json): member(s) ShareDetails: ShareDetails not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribePortfolioShareStatusOutput:
     Optional[str] PortfolioShareToken
     Optional[str] PortfolioId
     Optional[str] OrganizationNodeValue
-    Optional[ShareStatus] Status
+    Optional[str] Status
     Optional[ShareDetails] ShareDetails
 
-@derive(Json)
 struct DescribePortfolioSharesInput:
     str PortfolioId
-    DescribePortfolioShareType Type
+    str Type
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) PortfolioShareDetails: list[PortfolioShareDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribePortfolioSharesOutput:
     Optional[str] NextPageToken
     Optional[list[PortfolioShareDetail]] PortfolioShareDetails
 
-@derive(Json)
 struct DescribeProductAsAdminInput:
     Optional[str] AcceptLanguage
     Optional[str] Id
     Optional[str] Name
     Optional[str] SourcePortfolioId
 
-# no @derive(Json): member(s) ProvisioningArtifactSummaries: list[ProvisioningArtifactSummary], Tags: list[Tag], TagOptions: list[TagOptionDetail], Budgets: list[BudgetDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProductAsAdminOutput:
     Optional[ProductViewDetail] ProductViewDetail
     Optional[list[ProvisioningArtifactSummary]] ProvisioningArtifactSummaries
@@ -744,62 +644,45 @@ struct DescribeProductAsAdminOutput:
     Optional[list[TagOptionDetail]] TagOptions
     Optional[list[BudgetDetail]] Budgets
 
-@derive(Json)
 struct DescribeProductInput:
     Optional[str] AcceptLanguage
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) ProvisioningArtifacts: list[ProvisioningArtifact], Budgets: list[BudgetDetail], LaunchPaths: list[LaunchPath] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProductOutput:
     Optional[ProductViewSummary] ProductViewSummary
     Optional[list[ProvisioningArtifact]] ProvisioningArtifacts
     Optional[list[BudgetDetail]] Budgets
     Optional[list[LaunchPath]] LaunchPaths
 
-@derive(Json)
 struct DescribeProductViewInput:
     Optional[str] AcceptLanguage
     str Id
 
-# no @derive(Json): member(s) ProvisioningArtifacts: list[ProvisioningArtifact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProductViewOutput:
     Optional[ProductViewSummary] ProductViewSummary
     Optional[list[ProvisioningArtifact]] ProvisioningArtifacts
 
-@derive(Json)
 struct DescribeProvisionedProductInput:
     Optional[str] AcceptLanguage
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) CloudWatchDashboards: list[CloudWatchDashboard] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProvisionedProductOutput:
     Optional[ProvisionedProductDetail] ProvisionedProductDetail
     Optional[list[CloudWatchDashboard]] CloudWatchDashboards
 
-@derive(Json)
 struct DescribeProvisionedProductPlanInput:
     Optional[str] AcceptLanguage
     str PlanId
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProvisionedProductPlanDetails: ProvisionedProductPlanDetails, ResourceChanges: list[ResourceChange] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProvisionedProductPlanOutput:
     Optional[ProvisionedProductPlanDetails] ProvisionedProductPlanDetails
     Optional[list[ResourceChange]] ResourceChanges
     Optional[str] NextPageToken
 
-@derive(Json)
 struct DescribeProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     Optional[str] ProvisioningArtifactId
@@ -809,16 +692,12 @@ struct DescribeProvisioningArtifactInput:
     Optional[bool] Verbose
     Optional[bool] IncludeProvisioningArtifactParameters
 
-# no @derive(Json): member(s) Info: dict[str, str], ProvisioningArtifactParameters: list[ProvisioningArtifactParameter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProvisioningArtifactOutput:
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[dict[str, str]] Info
-    Optional[Status] Status
+    Optional[str] Status
     Optional[list[ProvisioningArtifactParameter]] ProvisioningArtifactParameters
 
-@derive(Json)
 struct DescribeProvisioningParametersInput:
     Optional[str] AcceptLanguage
     Optional[str] ProductId
@@ -828,9 +707,6 @@ struct DescribeProvisioningParametersInput:
     Optional[str] PathId
     Optional[str] PathName
 
-# no @derive(Json): member(s) ProvisioningArtifactParameters: list[ProvisioningArtifactParameter], ConstraintSummaries: list[ConstraintSummary], UsageInstructions: list[UsageInstruction], TagOptions: list[TagOptionSummary], ProvisioningArtifactPreferences: ProvisioningArtifactPreferences, ProvisioningArtifactOutputs: list[ProvisioningArtifactOutput], ProvisioningArtifactOutputKeys: list[ProvisioningArtifactOutput] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProvisioningParametersOutput:
     Optional[list[ProvisioningArtifactParameter]] ProvisioningArtifactParameters
     Optional[list[ConstraintSummary]] ConstraintSummaries
@@ -840,96 +716,73 @@ struct DescribeProvisioningParametersOutput:
     Optional[list[ProvisioningArtifactOutput]] ProvisioningArtifactOutputs
     Optional[list[ProvisioningArtifactOutput]] ProvisioningArtifactOutputKeys
 
-@derive(Json)
 struct DescribeRecordInput:
     Optional[str] AcceptLanguage
     str Id
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail, RecordOutputs: list[RecordOutput] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeRecordOutput:
     Optional[RecordDetail] RecordDetail
     Optional[list[RecordOutput]] RecordOutputs
     Optional[str] NextPageToken
 
-@derive(Json)
 struct DescribeServiceActionExecutionParametersInput:
     str ProvisionedProductId
     str ServiceActionId
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionParameters: list[ExecutionParameter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeServiceActionExecutionParametersOutput:
     Optional[list[ExecutionParameter]] ServiceActionParameters
 
-@derive(Json)
 struct DescribeServiceActionInput:
     str Id
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeServiceActionOutput:
     Optional[ServiceActionDetail] ServiceActionDetail
 
-@derive(Json)
 struct DescribeTagOptionInput:
     str Id
 
-@derive(Json)
 struct DescribeTagOptionOutput:
     Optional[TagOptionDetail] TagOptionDetail
 
-@derive(Json)
 struct DisableAWSOrganizationsAccessInput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableAWSOrganizationsAccessOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateBudgetFromResourceInput:
     str BudgetName
     str ResourceId
 
-@derive(Json)
 struct DisassociateBudgetFromResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociatePrincipalFromPortfolioInput:
     Optional[str] AcceptLanguage
     str PortfolioId
     str PrincipalARN
-    Optional[PrincipalType] PrincipalType
+    Optional[str] PrincipalType
 
-@derive(Json)
 struct DisassociatePrincipalFromPortfolioOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateProductFromPortfolioInput:
     Optional[str] AcceptLanguage
     str ProductId
     str PortfolioId
 
-@derive(Json)
 struct DisassociateProductFromPortfolioOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateServiceActionFromProvisioningArtifactInput:
     str ProductId
     str ProvisioningArtifactId
@@ -937,55 +790,41 @@ struct DisassociateServiceActionFromProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     Optional[str] IdempotencyToken
 
-@derive(Json)
 struct DisassociateServiceActionFromProvisioningArtifactOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateTagOptionFromResourceInput:
     str ResourceId
     str TagOptionId
 
-@derive(Json)
 struct DisassociateTagOptionFromResourceOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DuplicateResourceException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableAWSOrganizationsAccessInput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableAWSOrganizationsAccessOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EngineWorkflowResourceIdentifier:
     Optional[UniqueTagResourceIdentifier] UniqueTag
 
-@derive(Json)
 struct ExecuteProvisionedProductPlanInput:
     Optional[str] AcceptLanguage
     str PlanId
     str IdempotencyToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExecuteProvisionedProductPlanOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExecuteProvisionedProductServiceActionInput:
     str ProvisionedProductId
     str ServiceActionId
@@ -993,40 +832,28 @@ struct ExecuteProvisionedProductServiceActionInput:
     Optional[str] AcceptLanguage
     Optional[dict[str, list[str]]] Parameters
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExecuteProvisionedProductServiceActionOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) DefaultValues: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ExecutionParameter:
     Optional[str] Name
     Optional[str] Type
     Optional[list[str]] DefaultValues
 
-@derive(Json)
 struct FailedServiceActionAssociation:
     Optional[str] ServiceActionId
     Optional[str] ProductId
     Optional[str] ProvisioningArtifactId
-    Optional[ServiceActionAssociationErrorCode] ErrorCode
+    Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-@derive(Json)
 struct GetAWSOrganizationsAccessStatusInput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GetAWSOrganizationsAccessStatusOutput:
-    Optional[AccessStatus] AccessStatus
+    Optional[str] AccessStatus
 
-# no @derive(Json): member(s) OutputKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetProvisionedProductOutputsInput:
     Optional[str] AcceptLanguage
     Optional[str] ProvisionedProductId
@@ -1035,14 +862,10 @@ struct GetProvisionedProductOutputsInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Outputs: list[RecordOutput] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct GetProvisionedProductOutputsOutput:
     Optional[list[RecordOutput]] Outputs
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ImportAsProvisionedProductInput:
     Optional[str] AcceptLanguage
     str ProductId
@@ -1051,78 +874,58 @@ struct ImportAsProvisionedProductInput:
     str PhysicalId
     str IdempotencyToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ImportAsProvisionedProductOutput:
     Optional[RecordDetail] RecordDetail
 
-@derive(Json)
 struct InvalidParametersException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidStateException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct LastSync:
     Optional[DateTime] LastSyncTime
-    Optional[LastSyncStatus] LastSyncStatus
+    Optional[str] LastSyncStatus
     Optional[str] LastSyncStatusMessage
     Optional[DateTime] LastSuccessfulSyncTime
     Optional[str] LastSuccessfulSyncProvisioningArtifactId
 
-@derive(Json)
 struct LaunchPath:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) ConstraintSummaries: list[ConstraintSummary], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LaunchPathSummary:
     Optional[str] Id
     Optional[list[ConstraintSummary]] ConstraintSummaries
     Optional[list[Tag]] Tags
     Optional[str] Name
 
-@derive(Json)
 struct LimitExceededException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ListAcceptedPortfolioSharesInput:
     Optional[str] AcceptLanguage
     Optional[str] PageToken
     Optional[int64] PageSize
-    Optional[PortfolioShareType] PortfolioShareType
+    Optional[str] PortfolioShareType
 
-# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAcceptedPortfolioSharesOutput:
     Optional[list[PortfolioDetail]] PortfolioDetails
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListBudgetsForResourceInput:
     Optional[str] AcceptLanguage
     str ResourceId
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Budgets: list[BudgetDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListBudgetsForResourceOutput:
     Optional[list[BudgetDetail]] Budgets
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListConstraintsForPortfolioInput:
     Optional[str] AcceptLanguage
     str PortfolioId
@@ -1130,43 +933,31 @@ struct ListConstraintsForPortfolioInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ConstraintDetails: list[ConstraintDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListConstraintsForPortfolioOutput:
     Optional[list[ConstraintDetail]] ConstraintDetails
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListLaunchPathsInput:
     Optional[str] AcceptLanguage
     str ProductId
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) LaunchPathSummaries: list[LaunchPathSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListLaunchPathsOutput:
     Optional[list[LaunchPathSummary]] LaunchPathSummaries
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListOrganizationPortfolioAccessInput:
     Optional[str] AcceptLanguage
     str PortfolioId
-    OrganizationNodeType OrganizationNodeType
+    str OrganizationNodeType
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) OrganizationNodes: list[OrganizationNode] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListOrganizationPortfolioAccessOutput:
     Optional[list[OrganizationNode]] OrganizationNodes
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListPortfolioAccessInput:
     Optional[str] AcceptLanguage
     str PortfolioId
@@ -1174,55 +965,39 @@ struct ListPortfolioAccessInput:
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) AccountIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPortfolioAccessOutput:
     Optional[list[str]] AccountIds
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListPortfoliosForProductInput:
     Optional[str] AcceptLanguage
     str ProductId
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPortfoliosForProductOutput:
     Optional[list[PortfolioDetail]] PortfolioDetails
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListPortfoliosInput:
     Optional[str] AcceptLanguage
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) PortfolioDetails: list[PortfolioDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPortfoliosOutput:
     Optional[list[PortfolioDetail]] PortfolioDetails
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListPrincipalsForPortfolioInput:
     Optional[str] AcceptLanguage
     str PortfolioId
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Principals: list[Principal] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListPrincipalsForPortfolioOutput:
     Optional[list[Principal]] Principals
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListProvisionedProductPlansInput:
     Optional[str] AcceptLanguage
     Optional[str] ProvisionProductId
@@ -1230,40 +1005,28 @@ struct ListProvisionedProductPlansInput:
     Optional[str] PageToken
     Optional[AccessLevelFilter] AccessLevelFilter
 
-# no @derive(Json): member(s) ProvisionedProductPlans: list[ProvisionedProductPlanSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProvisionedProductPlansOutput:
     Optional[list[ProvisionedProductPlanSummary]] ProvisionedProductPlans
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListProvisioningArtifactsForServiceActionInput:
     str ServiceActionId
     Optional[int64] PageSize
     Optional[str] PageToken
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ProvisioningArtifactViews: list[ProvisioningArtifactView] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProvisioningArtifactsForServiceActionOutput:
     Optional[list[ProvisioningArtifactView]] ProvisioningArtifactViews
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListProvisioningArtifactsInput:
     Optional[str] AcceptLanguage
     str ProductId
 
-# no @derive(Json): member(s) ProvisioningArtifactDetails: list[ProvisioningArtifactDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProvisioningArtifactsOutput:
     Optional[list[ProvisioningArtifactDetail]] ProvisioningArtifactDetails
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListRecordHistoryInput:
     Optional[str] AcceptLanguage
     Optional[AccessLevelFilter] AccessLevelFilter
@@ -1271,33 +1034,24 @@ struct ListRecordHistoryInput:
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) RecordDetails: list[RecordDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListRecordHistoryOutput:
     Optional[list[RecordDetail]] RecordDetails
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListRecordHistorySearchFilter:
     Optional[str] Key
     Optional[str] Value
 
-@derive(Json)
 struct ListResourcesForTagOptionInput:
     str TagOptionId
     Optional[str] ResourceType
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ResourceDetails: list[ResourceDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListResourcesForTagOptionOutput:
     Optional[list[ResourceDetail]] ResourceDetails
     Optional[str] PageToken
 
-@derive(Json)
 struct ListServiceActionsForProvisioningArtifactInput:
     str ProductId
     str ProvisioningArtifactId
@@ -1305,118 +1059,87 @@ struct ListServiceActionsForProvisioningArtifactInput:
     Optional[str] PageToken
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionSummaries: list[ServiceActionSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListServiceActionsForProvisioningArtifactOutput:
     Optional[list[ServiceActionSummary]] ServiceActionSummaries
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListServiceActionsInput:
     Optional[str] AcceptLanguage
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ServiceActionSummaries: list[ServiceActionSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListServiceActionsOutput:
     Optional[list[ServiceActionSummary]] ServiceActionSummaries
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListStackInstancesForProvisionedProductInput:
     Optional[str] AcceptLanguage
     str ProvisionedProductId
     Optional[str] PageToken
     Optional[int64] PageSize
 
-# no @derive(Json): member(s) StackInstances: list[StackInstance] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListStackInstancesForProvisionedProductOutput:
     Optional[list[StackInstance]] StackInstances
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ListTagOptionsFilters:
     Optional[str] Key
     Optional[str] Value
     Optional[bool] Active
 
-@derive(Json)
 struct ListTagOptionsInput:
     Optional[ListTagOptionsFilters] Filters
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) TagOptionDetails: list[TagOptionDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagOptionsOutput:
     Optional[list[TagOptionDetail]] TagOptionDetails
     Optional[str] PageToken
 
-# no @derive(Json): member(s) Outputs: list[RecordOutput] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NotifyProvisionProductEngineWorkflowResultInput:
     str WorkflowToken
     str RecordId
-    EngineWorkflowStatus Status
+    str Status
     Optional[str] FailureReason
     Optional[EngineWorkflowResourceIdentifier] ResourceIdentifier
     Optional[list[RecordOutput]] Outputs
     str IdempotencyToken
 
-@derive(Json)
 struct NotifyProvisionProductEngineWorkflowResultOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct NotifyTerminateProvisionedProductEngineWorkflowResultInput:
     str WorkflowToken
     str RecordId
-    EngineWorkflowStatus Status
+    str Status
     Optional[str] FailureReason
     str IdempotencyToken
 
-@derive(Json)
 struct NotifyTerminateProvisionedProductEngineWorkflowResultOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Outputs: list[RecordOutput] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct NotifyUpdateProvisionedProductEngineWorkflowResultInput:
     str WorkflowToken
     str RecordId
-    EngineWorkflowStatus Status
+    str Status
     Optional[str] FailureReason
     Optional[list[RecordOutput]] Outputs
     str IdempotencyToken
 
-@derive(Json)
 struct NotifyUpdateProvisionedProductEngineWorkflowResultOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct OperationNotSupportedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct OrganizationNode:
-    Optional[OrganizationNodeType] Type
+    Optional[str] Type
     Optional[str] Value
 
-# no @derive(Json): member(s) AllowedValues: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ParameterConstraints:
     Optional[list[str]] AllowedValues
     Optional[str] AllowedPattern
@@ -1426,7 +1149,6 @@ struct ParameterConstraints:
     Optional[str] MaxValue
     Optional[str] MinValue
 
-@derive(Json)
 struct PortfolioDetail:
     Optional[str] Id
     Optional[str] ARN
@@ -1435,49 +1157,41 @@ struct PortfolioDetail:
     Optional[DateTime] CreatedTime
     Optional[str] ProviderName
 
-@derive(Json)
 struct PortfolioShareDetail:
     Optional[str] PrincipalId
-    Optional[DescribePortfolioShareType] Type
+    Optional[str] Type
     Optional[bool] Accepted
     Optional[bool] ShareTagOptions
     Optional[bool] SharePrincipals
 
-@derive(Json)
 struct Principal:
     Optional[str] PrincipalARN
-    Optional[PrincipalType] PrincipalType
+    Optional[str] PrincipalType
 
-@derive(Json)
 struct ProductViewAggregationValue:
     Optional[str] Value
     Optional[int64] ApproximateCount
 
-@derive(Json)
 struct ProductViewDetail:
     Optional[ProductViewSummary] ProductViewSummary
-    Optional[Status] Status
+    Optional[str] Status
     Optional[str] ProductARN
     Optional[DateTime] CreatedTime
     Optional[SourceConnectionDetail] SourceConnection
 
-@derive(Json)
 struct ProductViewSummary:
     Optional[str] Id
     Optional[str] ProductId
     Optional[str] Name
     Optional[str] Owner
     Optional[str] ShortDescription
-    Optional[ProductType] Type
+    Optional[str] Type
     Optional[str] Distributor
     Optional[bool] HasDefaultPath
     Optional[str] SupportEmail
     Optional[str] SupportDescription
     Optional[str] SupportUrl
 
-# no @derive(Json): member(s) ProvisioningParameters: list[ProvisioningParameter], ProvisioningPreferences: ProvisioningPreferences, Tags: list[Tag], NotificationArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisionProductInput:
     Optional[str] AcceptLanguage
     Optional[str] ProductId
@@ -1493,21 +1207,15 @@ struct ProvisionProductInput:
     Optional[list[str]] NotificationArns
     str ProvisionToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisionProductOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisionedProductAttribute:
     Optional[str] Name
     Optional[str] Arn
     Optional[str] Type
     Optional[str] Id
-    Optional[ProvisionedProductStatus] Status
+    Optional[str] Status
     Optional[str] StatusMessage
     Optional[DateTime] CreatedTime
     Optional[str] IdempotencyToken
@@ -1523,13 +1231,12 @@ struct ProvisionedProductAttribute:
     Optional[str] UserArn
     Optional[str] UserArnSession
 
-@derive(Json)
 struct ProvisionedProductDetail:
     Optional[str] Name
     Optional[str] Arn
     Optional[str] Type
     Optional[str] Id
-    Optional[ProvisionedProductStatus] Status
+    Optional[str] Status
     Optional[str] StatusMessage
     Optional[DateTime] CreatedTime
     Optional[str] IdempotencyToken
@@ -1540,9 +1247,6 @@ struct ProvisionedProductDetail:
     Optional[str] ProvisioningArtifactId
     Optional[str] LaunchRoleArn
 
-# no @derive(Json): member(s) NotificationArns: list[str], ProvisioningParameters: list[UpdateProvisioningParameter], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisionedProductPlanDetails:
     Optional[DateTime] CreatedTime
     Optional[str] PathId
@@ -1553,14 +1257,13 @@ struct ProvisionedProductPlanDetails:
     Optional[str] ProvisionProductName
     Optional[str] PlanType
     Optional[str] ProvisioningArtifactId
-    Optional[ProvisionedProductPlanStatus] Status
+    Optional[str] Status
     Optional[DateTime] UpdatedTime
     Optional[list[str]] NotificationArns
     Optional[list[UpdateProvisioningParameter]] ProvisioningParameters
     Optional[list[Tag]] Tags
     Optional[str] StatusMessage
 
-@derive(Json)
 struct ProvisionedProductPlanSummary:
     Optional[str] PlanName
     Optional[str] PlanId
@@ -1569,33 +1272,27 @@ struct ProvisionedProductPlanSummary:
     Optional[str] PlanType
     Optional[str] ProvisioningArtifactId
 
-@derive(Json)
 struct ProvisioningArtifact:
     Optional[str] Id
     Optional[str] Name
     Optional[str] Description
     Optional[DateTime] CreatedTime
-    Optional[ProvisioningArtifactGuidance] Guidance
+    Optional[str] Guidance
 
-@derive(Json)
 struct ProvisioningArtifactDetail:
     Optional[str] Id
     Optional[str] Name
     Optional[str] Description
-    Optional[ProvisioningArtifactType] Type
+    Optional[str] Type
     Optional[DateTime] CreatedTime
     Optional[bool] Active
-    Optional[ProvisioningArtifactGuidance] Guidance
+    Optional[str] Guidance
     Optional[str] SourceRevision
 
-@derive(Json)
 struct ProvisioningArtifactOutput:
     Optional[str] Key
     Optional[str] Description
 
-# no @derive(Json): member(s) ParameterConstraints: ParameterConstraints not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisioningArtifactParameter:
     Optional[str] ParameterKey
     Optional[str] DefaultValue
@@ -1604,26 +1301,17 @@ struct ProvisioningArtifactParameter:
     Optional[str] Description
     Optional[ParameterConstraints] ParameterConstraints
 
-# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisioningArtifactPreferences:
     Optional[list[str]] StackSetAccounts
     Optional[list[str]] StackSetRegions
 
-# no @derive(Json): member(s) Info: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisioningArtifactProperties:
     Optional[str] Name
     Optional[str] Description
     Optional[dict[str, str]] Info
-    Optional[ProvisioningArtifactType] Type
+    Optional[str] Type
     Optional[bool] DisableTemplateValidation
 
-# no @derive(Json): member(s) ProvisioningArtifactMetadata: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisioningArtifactSummary:
     Optional[str] Id
     Optional[str] Name
@@ -1631,19 +1319,14 @@ struct ProvisioningArtifactSummary:
     Optional[DateTime] CreatedTime
     Optional[dict[str, str]] ProvisioningArtifactMetadata
 
-@derive(Json)
 struct ProvisioningArtifactView:
     Optional[ProductViewSummary] ProductViewSummary
     Optional[ProvisioningArtifact] ProvisioningArtifact
 
-@derive(Json)
 struct ProvisioningParameter:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProvisioningPreferences:
     Optional[list[str]] StackSetAccounts
     Optional[list[str]] StackSetRegions
@@ -1652,13 +1335,10 @@ struct ProvisioningPreferences:
     Optional[int64] StackSetMaxConcurrencyCount
     Optional[int64] StackSetMaxConcurrencyPercentage
 
-# no @derive(Json): member(s) RecordErrors: list[RecordError], RecordTags: list[RecordTag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RecordDetail:
     Optional[str] RecordId
     Optional[str] ProvisionedProductName
-    Optional[RecordStatus] Status
+    Optional[str] Status
     Optional[DateTime] CreatedTime
     Optional[DateTime] UpdatedTime
     Optional[str] ProvisionedProductType
@@ -1671,52 +1351,42 @@ struct RecordDetail:
     Optional[list[RecordTag]] RecordTags
     Optional[str] LaunchRoleArn
 
-@derive(Json)
 struct RecordError:
     Optional[str] Code
     Optional[str] Description
 
-@derive(Json)
 struct RecordOutput:
     Optional[str] OutputKey
     Optional[str] OutputValue
     Optional[str] Description
 
-@derive(Json)
 struct RecordTag:
     Optional[str] Key
     Optional[str] Value
 
-@derive(Json)
 struct RejectPortfolioShareInput:
     Optional[str] AcceptLanguage
     str PortfolioId
-    Optional[PortfolioShareType] PortfolioShareType
+    Optional[str] PortfolioShareType
 
-@derive(Json)
 struct RejectPortfolioShareOutput:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Scope: list[ResourceAttribute], Details: list[ResourceChangeDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ResourceChange:
-    Optional[ChangeAction] Action
+    Optional[str] Action
     Optional[str] LogicalResourceId
     Optional[str] PhysicalResourceId
     Optional[str] ResourceType
-    Optional[Replacement] Replacement
-    Optional[list[ResourceAttribute]] Scope
+    Optional[str] Replacement
+    Optional[list[str]] Scope
     Optional[list[ResourceChangeDetail]] Details
 
-@derive(Json)
 struct ResourceChangeDetail:
     Optional[ResourceTargetDefinition] Target
-    Optional[EvaluationType] Evaluation
+    Optional[str] Evaluation
     Optional[str] CausingEntity
 
-@derive(Json)
 struct ResourceDetail:
     Optional[str] Id
     Optional[str] ARN
@@ -1724,157 +1394,115 @@ struct ResourceDetail:
     Optional[str] Description
     Optional[DateTime] CreatedTime
 
-@derive(Json)
 struct ResourceInUseException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ResourceNotFoundException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ResourceTargetDefinition:
-    Optional[ResourceAttribute] Attribute
+    Optional[str] Attribute
     Optional[str] Name
-    Optional[RequiresRecreation] RequiresRecreation
+    Optional[str] RequiresRecreation
 
-@derive(Json)
 struct ScanProvisionedProductsInput:
     Optional[str] AcceptLanguage
     Optional[AccessLevelFilter] AccessLevelFilter
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProvisionedProducts: list[ProvisionedProductDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ScanProvisionedProductsOutput:
     Optional[list[ProvisionedProductDetail]] ProvisionedProducts
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filters: dict[ProductViewFilterBy, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SearchProductsAsAdminInput:
     Optional[str] AcceptLanguage
     Optional[str] PortfolioId
-    Optional[dict[ProductViewFilterBy, list[str]]] Filters
-    Optional[ProductViewSortBy] SortBy
-    Optional[SortOrder] SortOrder
+    Optional[dict[str, list[str]]] Filters
+    Optional[str] SortBy
+    Optional[str] SortOrder
     Optional[str] PageToken
     Optional[int64] PageSize
     Optional[str] ProductSource
 
-# no @derive(Json): member(s) ProductViewDetails: list[ProductViewDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SearchProductsAsAdminOutput:
     Optional[list[ProductViewDetail]] ProductViewDetails
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filters: dict[ProductViewFilterBy, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SearchProductsInput:
     Optional[str] AcceptLanguage
-    Optional[dict[ProductViewFilterBy, list[str]]] Filters
+    Optional[dict[str, list[str]]] Filters
     Optional[int64] PageSize
-    Optional[ProductViewSortBy] SortBy
-    Optional[SortOrder] SortOrder
+    Optional[str] SortBy
+    Optional[str] SortOrder
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProductViewSummaries: list[ProductViewSummary], ProductViewAggregations: dict[str, list[ProductViewAggregationValue]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SearchProductsOutput:
     Optional[list[ProductViewSummary]] ProductViewSummaries
     Optional[dict[str, list[ProductViewAggregationValue]]] ProductViewAggregations
     Optional[str] NextPageToken
 
-# no @derive(Json): member(s) Filters: dict[str, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SearchProvisionedProductsInput:
     Optional[str] AcceptLanguage
     Optional[AccessLevelFilter] AccessLevelFilter
     Optional[dict[str, list[str]]] Filters
     Optional[str] SortBy
-    Optional[SortOrder] SortOrder
+    Optional[str] SortOrder
     Optional[int64] PageSize
     Optional[str] PageToken
 
-# no @derive(Json): member(s) ProvisionedProducts: list[ProvisionedProductAttribute] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SearchProvisionedProductsOutput:
     Optional[list[ProvisionedProductAttribute]] ProvisionedProducts
     Optional[int64] TotalResultsCount
     Optional[str] NextPageToken
 
-@derive(Json)
 struct ServiceActionAssociation:
     str ServiceActionId
     str ProductId
     str ProvisioningArtifactId
 
-# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ServiceActionDetail:
     Optional[ServiceActionSummary] ServiceActionSummary
-    Optional[dict[ServiceActionDefinitionKey, str]] Definition
+    Optional[dict[str, str]] Definition
 
-@derive(Json)
 struct ServiceActionSummary:
     Optional[str] Id
     Optional[str] Name
     Optional[str] Description
     Optional[str] DefinitionType
 
-# no @derive(Json): member(s) SuccessfulShares: list[str], ShareErrors: list[ShareError] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ShareDetails:
     Optional[list[str]] SuccessfulShares
     Optional[list[ShareError]] ShareErrors
 
-# no @derive(Json): member(s) Accounts: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ShareError:
     Optional[list[str]] Accounts
     Optional[str] Message
     Optional[str] Error
 
-@derive(Json)
 struct SourceConnection:
     Optional[str] Type
     SourceConnectionParameters ConnectionParameters
 
-@derive(Json)
 struct SourceConnectionDetail:
     Optional[str] Type
     Optional[SourceConnectionParameters] ConnectionParameters
     Optional[LastSync] LastSync
 
-@derive(Json)
 struct SourceConnectionParameters:
     Optional[CodeStarParameters] CodeStar
 
-@derive(Json)
 struct StackInstance:
     Optional[str] Account
     Optional[str] Region
-    Optional[StackInstanceStatus] StackInstanceStatus
+    Optional[str] StackInstanceStatus
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-@derive(Json)
 struct TagOptionDetail:
     Optional[str] Key
     Optional[str] Value
@@ -1882,19 +1510,14 @@ struct TagOptionDetail:
     Optional[str] Id
     Optional[str] Owner
 
-@derive(Json)
 struct TagOptionNotMigratedException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagOptionSummary:
     Optional[str] Key
     Optional[list[str]] Values
 
-@derive(Json)
 struct TerminateProvisionedProductInput:
     Optional[str] ProvisionedProductName
     Optional[str] ProvisionedProductId
@@ -1903,33 +1526,24 @@ struct TerminateProvisionedProductInput:
     Optional[str] AcceptLanguage
     Optional[bool] RetainPhysicalResources
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TerminateProvisionedProductOutput:
     Optional[RecordDetail] RecordDetail
 
-@derive(Json)
 struct UniqueTagResourceIdentifier:
     Optional[str] Key
     Optional[str] Value
 
-@derive(Json)
 struct UpdateConstraintInput:
     Optional[str] AcceptLanguage
     str Id
     Optional[str] Description
     Optional[str] Parameters
 
-@derive(Json)
 struct UpdateConstraintOutput:
     Optional[ConstraintDetail] ConstraintDetail
     Optional[str] ConstraintParameters
-    Optional[Status] Status
+    Optional[str] Status
 
-# no @derive(Json): member(s) AddTags: list[Tag], RemoveTags: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdatePortfolioInput:
     Optional[str] AcceptLanguage
     str Id
@@ -1939,14 +1553,10 @@ struct UpdatePortfolioInput:
     Optional[list[Tag]] AddTags
     Optional[list[str]] RemoveTags
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdatePortfolioOutput:
     Optional[PortfolioDetail] PortfolioDetail
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct UpdatePortfolioShareInput:
     Optional[str] AcceptLanguage
     str PortfolioId
@@ -1955,14 +1565,10 @@ struct UpdatePortfolioShareInput:
     Optional[bool] ShareTagOptions
     Optional[bool] SharePrincipals
 
-@derive(Json)
 struct UpdatePortfolioShareOutput:
     Optional[str] PortfolioShareToken
-    Optional[ShareStatus] Status
+    Optional[str] Status
 
-# no @derive(Json): member(s) AddTags: list[Tag], RemoveTags: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProductInput:
     Optional[str] AcceptLanguage
     str Id
@@ -1977,16 +1583,10 @@ struct UpdateProductInput:
     Optional[list[str]] RemoveTags
     Optional[SourceConnection] SourceConnection
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProductOutput:
     Optional[ProductViewDetail] ProductViewDetail
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ProvisioningParameters: list[UpdateProvisioningParameter], ProvisioningPreferences: UpdateProvisioningPreferences, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProvisionedProductInput:
     Optional[str] AcceptLanguage
     Optional[str] ProvisionedProductName
@@ -2002,31 +1602,21 @@ struct UpdateProvisionedProductInput:
     Optional[list[Tag]] Tags
     str UpdateToken
 
-# no @derive(Json): member(s) RecordDetail: RecordDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProvisionedProductOutput:
     Optional[RecordDetail] RecordDetail
 
-# no @derive(Json): member(s) ProvisionedProductProperties: dict[PropertyKey, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProvisionedProductPropertiesInput:
     Optional[str] AcceptLanguage
     str ProvisionedProductId
-    dict[PropertyKey, str] ProvisionedProductProperties
+    dict[str, str] ProvisionedProductProperties
     str IdempotencyToken
 
-# no @derive(Json): member(s) ProvisionedProductProperties: dict[PropertyKey, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProvisionedProductPropertiesOutput:
     Optional[str] ProvisionedProductId
-    Optional[dict[PropertyKey, str]] ProvisionedProductProperties
+    Optional[dict[str, str]] ProvisionedProductProperties
     Optional[str] RecordId
-    Optional[RecordStatus] Status
+    Optional[str] Status
 
-@derive(Json)
 struct UpdateProvisioningArtifactInput:
     Optional[str] AcceptLanguage
     str ProductId
@@ -2034,25 +1624,18 @@ struct UpdateProvisioningArtifactInput:
     Optional[str] Name
     Optional[str] Description
     Optional[bool] Active
-    Optional[ProvisioningArtifactGuidance] Guidance
+    Optional[str] Guidance
 
-# no @derive(Json): member(s) Info: dict[str, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProvisioningArtifactOutput:
     Optional[ProvisioningArtifactDetail] ProvisioningArtifactDetail
     Optional[dict[str, str]] Info
-    Optional[Status] Status
+    Optional[str] Status
 
-@derive(Json)
 struct UpdateProvisioningParameter:
     Optional[str] Key
     Optional[str] Value
     Optional[bool] UsePreviousValue
 
-# no @derive(Json): member(s) StackSetAccounts: list[str], StackSetRegions: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProvisioningPreferences:
     Optional[list[str]] StackSetAccounts
     Optional[list[str]] StackSetRegions
@@ -2060,35 +1643,26 @@ struct UpdateProvisioningPreferences:
     Optional[int64] StackSetFailureTolerancePercentage
     Optional[int64] StackSetMaxConcurrencyCount
     Optional[int64] StackSetMaxConcurrencyPercentage
-    Optional[StackSetOperationType] StackSetOperationType
+    Optional[str] StackSetOperationType
 
-# no @derive(Json): member(s) Definition: dict[ServiceActionDefinitionKey, str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateServiceActionInput:
     str Id
     Optional[str] Name
-    Optional[dict[ServiceActionDefinitionKey, str]] Definition
+    Optional[dict[str, str]] Definition
     Optional[str] Description
     Optional[str] AcceptLanguage
 
-# no @derive(Json): member(s) ServiceActionDetail: ServiceActionDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateServiceActionOutput:
     Optional[ServiceActionDetail] ServiceActionDetail
 
-@derive(Json)
 struct UpdateTagOptionInput:
     str Id
     Optional[str] Value
     Optional[bool] Active
 
-@derive(Json)
 struct UpdateTagOptionOutput:
     Optional[TagOptionDetail] TagOptionDetail
 
-@derive(Json)
 struct UsageInstruction:
     Optional[str] Type
     Optional[str] Value
@@ -2100,7 +1674,7 @@ struct UsageInstruction:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -2167,580 +1741,2291 @@ def servicecatalog_error_name(Service_CatalogErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable — a map
-# with a non-string key, or a free-form document member):
-#   CreateServiceAction (input CreateServiceActionInput)
-#   SearchProducts (input SearchProductsInput)
-#   SearchProductsAsAdmin (input SearchProductsAsAdminInput)
-#   UpdateProvisionedProductProperties (input UpdateProvisionedProductPropertiesInput)
-#   UpdateServiceAction (input UpdateServiceActionInput)
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListAcceptedPortfolioShares
+#   ListConstraintsForPortfolio
+#   ListLaunchPaths
+#   ListOrganizationPortfolioAccess
+#   ListPortfolios
+#   ListPortfoliosForProduct
+#   ListPrincipalsForPortfolio
+#   ListProvisionedProductPlans
+#   ListProvisioningArtifactsForServiceAction
+#   ListRecordHistory
+#   ListResourcesForTagOption
+#   ListServiceActions
+#   ListServiceActionsForProvisioningArtifact
+#   ListStackInstancesForProvisionedProduct
+#   ListTagOptions
+#   ScanProvisionedProducts
+#   SearchProductsAsAdmin
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   SearchProductsAsAdmin (input not serializable (no generated method))
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def servicecatalog_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
-
-def servicecatalog_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
-
-def servicecatalog_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize BatchAssociateServiceActionWithProvisioningArtifactInput to a compact JSON object (declaration order).
-def batch_associate_service_action_with_provisioning_artifact_input_to_json(BatchAssociateServiceActionWithProvisioningArtifactInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.ServiceActionAssociations:
-        e0.append(x0.to_json())
-    parts.append("\"ServiceActionAssociations\":" + servicecatalog_json_arr(e0))
-    if v.AcceptLanguage.is_some():
-        auto u1 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u1))
-    return servicecatalog_json_obj(parts)
-
-# Serialize BatchDisassociateServiceActionFromProvisioningArtifactInput to a compact JSON object (declaration order).
-def batch_disassociate_service_action_from_provisioning_artifact_input_to_json(BatchDisassociateServiceActionFromProvisioningArtifactInput v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.ServiceActionAssociations:
-        e0.append(x0.to_json())
-    parts.append("\"ServiceActionAssociations\":" + servicecatalog_json_arr(e0))
-    if v.AcceptLanguage.is_some():
-        auto u1 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u1))
-    return servicecatalog_json_obj(parts)
-
-# Serialize CopyProductInput to a compact JSON object (declaration order).
-def copy_product_input_to_json(CopyProductInput v) -> str:
-    list[str] parts = []
+# Serialize AcceptPortfolioShareInput to a CBOR map (member wire name -> value, model order).
+def accept_portfolio_share_input_to_cbor(AcceptPortfolioShareInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"SourceProductArn\":" + servicecatalog_json_str(v.SourceProductArn))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.PortfolioShareType.is_some():
+        auto u1 = v.PortfolioShareType.unwrap()
+        keys.append("PortfolioShareType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AccessLevelFilter to a CBOR map (member wire name -> value, model order).
+def access_level_filter_to_cbor(AccessLevelFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateBudgetWithResourceInput to a CBOR map (member wire name -> value, model order).
+def associate_budget_with_resource_input_to_cbor(AssociateBudgetWithResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BudgetName")
+    vals.append(cbor.cbor_text(v.BudgetName))
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociatePrincipalWithPortfolioInput to a CBOR map (member wire name -> value, model order).
+def associate_principal_with_portfolio_input_to_cbor(AssociatePrincipalWithPortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    keys.append("PrincipalARN")
+    vals.append(cbor.cbor_text(v.PrincipalARN))
+    keys.append("PrincipalType")
+    vals.append(cbor.cbor_text(v.PrincipalType))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateProductWithPortfolioInput to a CBOR map (member wire name -> value, model order).
+def associate_product_with_portfolio_input_to_cbor(AssociateProductWithPortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.SourcePortfolioId.is_some():
+        auto u1 = v.SourcePortfolioId.unwrap()
+        keys.append("SourcePortfolioId")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateServiceActionWithProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def associate_service_action_with_provisioning_artifact_input_to_cbor(AssociateServiceActionWithProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    keys.append("ServiceActionId")
+    vals.append(cbor.cbor_text(v.ServiceActionId))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.IdempotencyToken.is_some():
+        auto u1 = v.IdempotencyToken.unwrap()
+        keys.append("IdempotencyToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateTagOptionWithResourceInput to a CBOR map (member wire name -> value, model order).
+def associate_tag_option_with_resource_input_to_cbor(AssociateTagOptionWithResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("TagOptionId")
+    vals.append(cbor.cbor_text(v.TagOptionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize BatchAssociateServiceActionWithProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def batch_associate_service_action_with_provisioning_artifact_input_to_cbor(BatchAssociateServiceActionWithProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.ServiceActionAssociations:
+        e0.append(service_action_association_to_cbor(x0))
+    keys.append("ServiceActionAssociations")
+    vals.append(cbor.cbor_list(e0))
+    if v.AcceptLanguage.is_some():
+        auto u1 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize BatchDisassociateServiceActionFromProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def batch_disassociate_service_action_from_provisioning_artifact_input_to_cbor(BatchDisassociateServiceActionFromProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.ServiceActionAssociations:
+        e0.append(service_action_association_to_cbor(x0))
+    keys.append("ServiceActionAssociations")
+    vals.append(cbor.cbor_list(e0))
+    if v.AcceptLanguage.is_some():
+        auto u1 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CodeStarParameters to a CBOR map (member wire name -> value, model order).
+def code_star_parameters_to_cbor(CodeStarParameters v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ConnectionArn")
+    vals.append(cbor.cbor_text(v.ConnectionArn))
+    keys.append("Repository")
+    vals.append(cbor.cbor_text(v.Repository))
+    keys.append("Branch")
+    vals.append(cbor.cbor_text(v.Branch))
+    keys.append("ArtifactPath")
+    vals.append(cbor.cbor_text(v.ArtifactPath))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CopyProductInput to a CBOR map (member wire name -> value, model order).
+def copy_product_input_to_cbor(CopyProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("SourceProductArn")
+    vals.append(cbor.cbor_text(v.SourceProductArn))
     if v.TargetProductId.is_some():
         auto u1 = v.TargetProductId.unwrap()
-        parts.append("\"TargetProductId\":" + servicecatalog_json_str(u1))
+        keys.append("TargetProductId")
+        vals.append(cbor.cbor_text(u1))
     if v.TargetProductName.is_some():
         auto u2 = v.TargetProductName.unwrap()
-        parts.append("\"TargetProductName\":" + servicecatalog_json_str(u2))
+        keys.append("TargetProductName")
+        vals.append(cbor.cbor_text(u2))
     if v.SourceProvisioningArtifactIdentifiers.is_some():
         auto u3 = v.SourceProvisioningArtifactIdentifiers.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            list[str] m5 = []
+            list[str] mk5 = []
+            list[cbor.CborValue] mv5 = []
             for k5 in sorted(x4.keys()):
-                m5.append(servicecatalog_json_str(k5) + ":" + servicecatalog_json_str(x4[k5]))
-            e4.append(servicecatalog_json_obj(m5))
-        parts.append("\"SourceProvisioningArtifactIdentifiers\":" + servicecatalog_json_arr(e4))
+                mk5.append(k5)
+                mv5.append(cbor.cbor_text(x4[k5]))
+            e4.append(cbor.cbor_map(mk5, mv5))
+        keys.append("SourceProvisioningArtifactIdentifiers")
+        vals.append(cbor.cbor_list(e4))
     if v.CopyOptions.is_some():
         auto u6 = v.CopyOptions.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(servicecatalog_json_str(x7))
-        parts.append("\"CopyOptions\":" + servicecatalog_json_arr(e7))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
-    return servicecatalog_json_obj(parts)
+            e7.append(cbor.cbor_text(x7))
+        keys.append("CopyOptions")
+        vals.append(cbor.cbor_list(e7))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreatePortfolioInput to a compact JSON object (declaration order).
-def create_portfolio_input_to_json(CreatePortfolioInput v) -> str:
-    list[str] parts = []
+# Serialize CreateConstraintInput to a CBOR map (member wire name -> value, model order).
+def create_constraint_input_to_cbor(CreateConstraintInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"DisplayName\":" + servicecatalog_json_str(v.DisplayName))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("Parameters")
+    vals.append(cbor.cbor_text(v.Parameters))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicecatalog_json_str(u1))
-    parts.append("\"ProviderName\":" + servicecatalog_json_str(v.ProviderName))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreatePortfolioInput to a CBOR map (member wire name -> value, model order).
+def create_portfolio_input_to_cbor(CreatePortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("DisplayName")
+    vals.append(cbor.cbor_text(v.DisplayName))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("ProviderName")
+    vals.append(cbor.cbor_text(v.ProviderName))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + servicecatalog_json_arr(e3))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
-    return servicecatalog_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProductInput to a compact JSON object (declaration order).
-def create_product_input_to_json(CreateProductInput v) -> str:
-    list[str] parts = []
+# Serialize CreatePortfolioShareInput to a CBOR map (member wire name -> value, model order).
+def create_portfolio_share_input_to_cbor(CreatePortfolioShareInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"Name\":" + servicecatalog_json_str(v.Name))
-    parts.append("\"Owner\":" + servicecatalog_json_str(v.Owner))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.AccountId.is_some():
+        auto u1 = v.AccountId.unwrap()
+        keys.append("AccountId")
+        vals.append(cbor.cbor_text(u1))
+    if v.OrganizationNode.is_some():
+        auto u2 = v.OrganizationNode.unwrap()
+        keys.append("OrganizationNode")
+        vals.append(organization_node_to_cbor(u2))
+    if v.ShareTagOptions.is_some():
+        auto u3 = v.ShareTagOptions.unwrap()
+        keys.append("ShareTagOptions")
+        vals.append(cbor.cbor_bool(u3))
+    if v.SharePrincipals.is_some():
+        auto u4 = v.SharePrincipals.unwrap()
+        keys.append("SharePrincipals")
+        vals.append(cbor.cbor_bool(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateProductInput to a CBOR map (member wire name -> value, model order).
+def create_product_input_to_cbor(CreateProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("Owner")
+    vals.append(cbor.cbor_text(v.Owner))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicecatalog_json_str(u1))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
     if v.Distributor.is_some():
         auto u2 = v.Distributor.unwrap()
-        parts.append("\"Distributor\":" + servicecatalog_json_str(u2))
+        keys.append("Distributor")
+        vals.append(cbor.cbor_text(u2))
     if v.SupportDescription.is_some():
         auto u3 = v.SupportDescription.unwrap()
-        parts.append("\"SupportDescription\":" + servicecatalog_json_str(u3))
+        keys.append("SupportDescription")
+        vals.append(cbor.cbor_text(u3))
     if v.SupportEmail.is_some():
         auto u4 = v.SupportEmail.unwrap()
-        parts.append("\"SupportEmail\":" + servicecatalog_json_str(u4))
+        keys.append("SupportEmail")
+        vals.append(cbor.cbor_text(u4))
     if v.SupportUrl.is_some():
         auto u5 = v.SupportUrl.unwrap()
-        parts.append("\"SupportUrl\":" + servicecatalog_json_str(u5))
-    parts.append("\"ProductType\":" + v.ProductType.to_json())
+        keys.append("SupportUrl")
+        vals.append(cbor.cbor_text(u5))
+    keys.append("ProductType")
+    vals.append(cbor.cbor_text(v.ProductType))
     if v.Tags.is_some():
         auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + servicecatalog_json_arr(e7))
+            e7.append(tag_to_cbor(x7))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e7))
     if v.ProvisioningArtifactParameters.is_some():
         auto u8 = v.ProvisioningArtifactParameters.unwrap()
-        parts.append("\"ProvisioningArtifactParameters\":" + provisioning_artifact_properties_to_json(u8))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+        keys.append("ProvisioningArtifactParameters")
+        vals.append(provisioning_artifact_properties_to_cbor(u8))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
     if v.SourceConnection.is_some():
         auto u9 = v.SourceConnection.unwrap()
-        parts.append("\"SourceConnection\":" + u9.to_json())
-    return servicecatalog_json_obj(parts)
+        keys.append("SourceConnection")
+        vals.append(source_connection_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProvisionedProductPlanInput to a compact JSON object (declaration order).
-def create_provisioned_product_plan_input_to_json(CreateProvisionedProductPlanInput v) -> str:
-    list[str] parts = []
+# Serialize CreateProvisionedProductPlanInput to a CBOR map (member wire name -> value, model order).
+def create_provisioned_product_plan_input_to_cbor(CreateProvisionedProductPlanInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"PlanName\":" + servicecatalog_json_str(v.PlanName))
-    parts.append("\"PlanType\":" + servicecatalog_json_str(v.PlanType))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PlanName")
+    vals.append(cbor.cbor_text(v.PlanName))
+    keys.append("PlanType")
+    vals.append(cbor.cbor_text(v.PlanType))
     if v.NotificationArns.is_some():
         auto u1 = v.NotificationArns.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(servicecatalog_json_str(x2))
-        parts.append("\"NotificationArns\":" + servicecatalog_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("NotificationArns")
+        vals.append(cbor.cbor_list(e2))
     if v.PathId.is_some():
         auto u3 = v.PathId.unwrap()
-        parts.append("\"PathId\":" + servicecatalog_json_str(u3))
-    parts.append("\"ProductId\":" + servicecatalog_json_str(v.ProductId))
-    parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(v.ProvisionedProductName))
-    parts.append("\"ProvisioningArtifactId\":" + servicecatalog_json_str(v.ProvisioningArtifactId))
+        keys.append("PathId")
+        vals.append(cbor.cbor_text(u3))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisionedProductName")
+    vals.append(cbor.cbor_text(v.ProvisionedProductName))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
     if v.ProvisioningParameters.is_some():
         auto u4 = v.ProvisioningParameters.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"ProvisioningParameters\":" + servicecatalog_json_arr(e5))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
+            e5.append(update_provisioning_parameter_to_cbor(x5))
+        keys.append("ProvisioningParameters")
+        vals.append(cbor.cbor_list(e5))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
     if v.Tags.is_some():
         auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + servicecatalog_json_arr(e7))
-    return servicecatalog_json_obj(parts)
+            e7.append(tag_to_cbor(x7))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProvisioningArtifactInput to a compact JSON object (declaration order).
-def create_provisioning_artifact_input_to_json(CreateProvisioningArtifactInput v) -> str:
-    list[str] parts = []
+# Serialize CreateProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def create_provisioning_artifact_input_to_cbor(CreateProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"ProductId\":" + servicecatalog_json_str(v.ProductId))
-    parts.append("\"Parameters\":" + provisioning_artifact_properties_to_json(v.Parameters))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
-    return servicecatalog_json_obj(parts)
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("Parameters")
+    vals.append(provisioning_artifact_properties_to_cbor(v.Parameters))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ExecuteProvisionedProductServiceActionInput to a compact JSON object (declaration order).
-def execute_provisioned_product_service_action_input_to_json(ExecuteProvisionedProductServiceActionInput v) -> str:
-    list[str] parts = []
-    parts.append("\"ProvisionedProductId\":" + servicecatalog_json_str(v.ProvisionedProductId))
-    parts.append("\"ServiceActionId\":" + servicecatalog_json_str(v.ServiceActionId))
-    parts.append("\"ExecuteToken\":" + servicecatalog_json_str(v.ExecuteToken))
-    if v.AcceptLanguage.is_some():
-        auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    if v.Parameters.is_some():
-        auto u1 = v.Parameters.unwrap()
-        list[str] m2 = []
-        for k2 in sorted(u1.keys()):
-            list[str] e3 = []
-            for x3 in u1[k2]:
-                e3.append(servicecatalog_json_str(x3))
-            m2.append(servicecatalog_json_str(k2) + ":" + servicecatalog_json_arr(e3))
-        parts.append("\"Parameters\":" + servicecatalog_json_obj(m2))
-    return servicecatalog_json_obj(parts)
-
-# Serialize GetProvisionedProductOutputsInput to a compact JSON object (declaration order).
-def get_provisioned_product_outputs_input_to_json(GetProvisionedProductOutputsInput v) -> str:
-    list[str] parts = []
-    if v.AcceptLanguage.is_some():
-        auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    if v.ProvisionedProductId.is_some():
-        auto u1 = v.ProvisionedProductId.unwrap()
-        parts.append("\"ProvisionedProductId\":" + servicecatalog_json_str(u1))
-    if v.ProvisionedProductName.is_some():
-        auto u2 = v.ProvisionedProductName.unwrap()
-        parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(u2))
-    if v.OutputKeys.is_some():
-        auto u3 = v.OutputKeys.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(servicecatalog_json_str(x4))
-        parts.append("\"OutputKeys\":" + servicecatalog_json_arr(e4))
-    if v.PageSize.is_some():
-        auto u5 = v.PageSize.unwrap()
-        parts.append("\"PageSize\":" + str(u5))
-    if v.PageToken.is_some():
-        auto u6 = v.PageToken.unwrap()
-        parts.append("\"PageToken\":" + servicecatalog_json_str(u6))
-    return servicecatalog_json_obj(parts)
-
-# Serialize NotifyProvisionProductEngineWorkflowResultInput to a compact JSON object (declaration order).
-def notify_provision_product_engine_workflow_result_input_to_json(NotifyProvisionProductEngineWorkflowResultInput v) -> str:
-    list[str] parts = []
-    parts.append("\"WorkflowToken\":" + servicecatalog_json_str(v.WorkflowToken))
-    parts.append("\"RecordId\":" + servicecatalog_json_str(v.RecordId))
-    parts.append("\"Status\":" + v.Status.to_json())
-    if v.FailureReason.is_some():
-        auto u0 = v.FailureReason.unwrap()
-        parts.append("\"FailureReason\":" + servicecatalog_json_str(u0))
-    if v.ResourceIdentifier.is_some():
-        auto u1 = v.ResourceIdentifier.unwrap()
-        parts.append("\"ResourceIdentifier\":" + u1.to_json())
-    if v.Outputs.is_some():
-        auto u2 = v.Outputs.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Outputs\":" + servicecatalog_json_arr(e3))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
-    return servicecatalog_json_obj(parts)
-
-# Serialize NotifyUpdateProvisionedProductEngineWorkflowResultInput to a compact JSON object (declaration order).
-def notify_update_provisioned_product_engine_workflow_result_input_to_json(NotifyUpdateProvisionedProductEngineWorkflowResultInput v) -> str:
-    list[str] parts = []
-    parts.append("\"WorkflowToken\":" + servicecatalog_json_str(v.WorkflowToken))
-    parts.append("\"RecordId\":" + servicecatalog_json_str(v.RecordId))
-    parts.append("\"Status\":" + v.Status.to_json())
-    if v.FailureReason.is_some():
-        auto u0 = v.FailureReason.unwrap()
-        parts.append("\"FailureReason\":" + servicecatalog_json_str(u0))
-    if v.Outputs.is_some():
-        auto u1 = v.Outputs.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Outputs\":" + servicecatalog_json_arr(e2))
-    parts.append("\"IdempotencyToken\":" + servicecatalog_json_str(v.IdempotencyToken))
-    return servicecatalog_json_obj(parts)
-
-# Serialize ProvisionProductInput to a compact JSON object (declaration order).
-def provision_product_input_to_json(ProvisionProductInput v) -> str:
-    list[str] parts = []
-    if v.AcceptLanguage.is_some():
-        auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    if v.ProductId.is_some():
-        auto u1 = v.ProductId.unwrap()
-        parts.append("\"ProductId\":" + servicecatalog_json_str(u1))
-    if v.ProductName.is_some():
-        auto u2 = v.ProductName.unwrap()
-        parts.append("\"ProductName\":" + servicecatalog_json_str(u2))
-    if v.ProvisioningArtifactId.is_some():
-        auto u3 = v.ProvisioningArtifactId.unwrap()
-        parts.append("\"ProvisioningArtifactId\":" + servicecatalog_json_str(u3))
-    if v.ProvisioningArtifactName.is_some():
-        auto u4 = v.ProvisioningArtifactName.unwrap()
-        parts.append("\"ProvisioningArtifactName\":" + servicecatalog_json_str(u4))
-    if v.PathId.is_some():
-        auto u5 = v.PathId.unwrap()
-        parts.append("\"PathId\":" + servicecatalog_json_str(u5))
-    if v.PathName.is_some():
-        auto u6 = v.PathName.unwrap()
-        parts.append("\"PathName\":" + servicecatalog_json_str(u6))
-    parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(v.ProvisionedProductName))
-    if v.ProvisioningParameters.is_some():
-        auto u7 = v.ProvisioningParameters.unwrap()
-        list[str] e8 = []
-        for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"ProvisioningParameters\":" + servicecatalog_json_arr(e8))
-    if v.ProvisioningPreferences.is_some():
-        auto u9 = v.ProvisioningPreferences.unwrap()
-        parts.append("\"ProvisioningPreferences\":" + provisioning_preferences_to_json(u9))
-    if v.Tags.is_some():
-        auto u10 = v.Tags.unwrap()
-        list[str] e11 = []
-        for x11 in u10:
-            e11.append(x11.to_json())
-        parts.append("\"Tags\":" + servicecatalog_json_arr(e11))
-    if v.NotificationArns.is_some():
-        auto u12 = v.NotificationArns.unwrap()
-        list[str] e13 = []
-        for x13 in u12:
-            e13.append(servicecatalog_json_str(x13))
-        parts.append("\"NotificationArns\":" + servicecatalog_json_arr(e13))
-    parts.append("\"ProvisionToken\":" + servicecatalog_json_str(v.ProvisionToken))
-    return servicecatalog_json_obj(parts)
-
-# Serialize ProvisioningArtifactProperties to a compact JSON object (declaration order).
-def provisioning_artifact_properties_to_json(ProvisioningArtifactProperties v) -> str:
-    list[str] parts = []
-    if v.Name.is_some():
-        auto u0 = v.Name.unwrap()
-        parts.append("\"Name\":" + servicecatalog_json_str(u0))
+# Serialize CreateServiceActionInput to a CBOR map (member wire name -> value, model order).
+def create_service_action_input_to_cbor(CreateServiceActionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("DefinitionType")
+    vals.append(cbor.cbor_text(v.DefinitionType))
+    list[str] mk0 = []
+    list[cbor.CborValue] mv0 = []
+    for k0 in sorted(v.Definition.keys()):
+        mk0.append(k0)
+        mv0.append(cbor.cbor_text(v.Definition[k0]))
+    keys.append("Definition")
+    vals.append(cbor.cbor_map(mk0, mv0))
     if v.Description.is_some():
         auto u1 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicecatalog_json_str(u1))
-    if v.Info.is_some():
-        auto u2 = v.Info.unwrap()
-        list[str] m3 = []
-        for k3 in sorted(u2.keys()):
-            m3.append(servicecatalog_json_str(k3) + ":" + servicecatalog_json_str(u2[k3]))
-        parts.append("\"Info\":" + servicecatalog_json_obj(m3))
-    if v.Type.is_some():
-        auto u4 = v.Type.unwrap()
-        parts.append("\"Type\":" + u4.to_json())
-    if v.DisableTemplateValidation.is_some():
-        auto u5 = v.DisableTemplateValidation.unwrap()
-        parts.append("\"DisableTemplateValidation\":" + json.dumps(JsonValue.Bool(u5)))
-    return servicecatalog_json_obj(parts)
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    if v.AcceptLanguage.is_some():
+        auto u2 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ProvisioningPreferences to a compact JSON object (declaration order).
-def provisioning_preferences_to_json(ProvisioningPreferences v) -> str:
-    list[str] parts = []
-    if v.StackSetAccounts.is_some():
-        auto u0 = v.StackSetAccounts.unwrap()
-        list[str] e1 = []
-        for x1 in u0:
-            e1.append(servicecatalog_json_str(x1))
-        parts.append("\"StackSetAccounts\":" + servicecatalog_json_arr(e1))
-    if v.StackSetRegions.is_some():
-        auto u2 = v.StackSetRegions.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(servicecatalog_json_str(x3))
-        parts.append("\"StackSetRegions\":" + servicecatalog_json_arr(e3))
-    if v.StackSetFailureToleranceCount.is_some():
-        auto u4 = v.StackSetFailureToleranceCount.unwrap()
-        parts.append("\"StackSetFailureToleranceCount\":" + str(u4))
-    if v.StackSetFailureTolerancePercentage.is_some():
-        auto u5 = v.StackSetFailureTolerancePercentage.unwrap()
-        parts.append("\"StackSetFailureTolerancePercentage\":" + str(u5))
-    if v.StackSetMaxConcurrencyCount.is_some():
-        auto u6 = v.StackSetMaxConcurrencyCount.unwrap()
-        parts.append("\"StackSetMaxConcurrencyCount\":" + str(u6))
-    if v.StackSetMaxConcurrencyPercentage.is_some():
-        auto u7 = v.StackSetMaxConcurrencyPercentage.unwrap()
-        parts.append("\"StackSetMaxConcurrencyPercentage\":" + str(u7))
-    return servicecatalog_json_obj(parts)
+# Serialize CreateTagOptionInput to a CBOR map (member wire name -> value, model order).
+def create_tag_option_input_to_cbor(CreateTagOptionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize SearchProvisionedProductsInput to a compact JSON object (declaration order).
-def search_provisioned_products_input_to_json(SearchProvisionedProductsInput v) -> str:
-    list[str] parts = []
+# Serialize DeleteConstraintInput to a CBOR map (member wire name -> value, model order).
+def delete_constraint_input_to_cbor(DeleteConstraintInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    if v.AccessLevelFilter.is_some():
-        auto u1 = v.AccessLevelFilter.unwrap()
-        parts.append("\"AccessLevelFilter\":" + u1.to_json())
-    if v.Filters.is_some():
-        auto u2 = v.Filters.unwrap()
-        list[str] m3 = []
-        for k3 in sorted(u2.keys()):
-            list[str] e4 = []
-            for x4 in u2[k3]:
-                e4.append(servicecatalog_json_str(x4))
-            m3.append(servicecatalog_json_str(k3) + ":" + servicecatalog_json_arr(e4))
-        parts.append("\"Filters\":" + servicecatalog_json_obj(m3))
-    if v.SortBy.is_some():
-        auto u5 = v.SortBy.unwrap()
-        parts.append("\"SortBy\":" + servicecatalog_json_str(u5))
-    if v.SortOrder.is_some():
-        auto u6 = v.SortOrder.unwrap()
-        parts.append("\"SortOrder\":" + u6.to_json())
-    if v.PageSize.is_some():
-        auto u7 = v.PageSize.unwrap()
-        parts.append("\"PageSize\":" + str(u7))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeletePortfolioInput to a CBOR map (member wire name -> value, model order).
+def delete_portfolio_input_to_cbor(DeletePortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeletePortfolioShareInput to a CBOR map (member wire name -> value, model order).
+def delete_portfolio_share_input_to_cbor(DeletePortfolioShareInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.AccountId.is_some():
+        auto u1 = v.AccountId.unwrap()
+        keys.append("AccountId")
+        vals.append(cbor.cbor_text(u1))
+    if v.OrganizationNode.is_some():
+        auto u2 = v.OrganizationNode.unwrap()
+        keys.append("OrganizationNode")
+        vals.append(organization_node_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProductInput to a CBOR map (member wire name -> value, model order).
+def delete_product_input_to_cbor(DeleteProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProvisionedProductPlanInput to a CBOR map (member wire name -> value, model order).
+def delete_provisioned_product_plan_input_to_cbor(DeleteProvisionedProductPlanInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PlanId")
+    vals.append(cbor.cbor_text(v.PlanId))
+    if v.IgnoreErrors.is_some():
+        auto u1 = v.IgnoreErrors.unwrap()
+        keys.append("IgnoreErrors")
+        vals.append(cbor.cbor_bool(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def delete_provisioning_artifact_input_to_cbor(DeleteProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteServiceActionInput to a CBOR map (member wire name -> value, model order).
+def delete_service_action_input_to_cbor(DeleteServiceActionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.IdempotencyToken.is_some():
+        auto u1 = v.IdempotencyToken.unwrap()
+        keys.append("IdempotencyToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTagOptionInput to a CBOR map (member wire name -> value, model order).
+def delete_tag_option_input_to_cbor(DeleteTagOptionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeConstraintInput to a CBOR map (member wire name -> value, model order).
+def describe_constraint_input_to_cbor(DescribeConstraintInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeCopyProductStatusInput to a CBOR map (member wire name -> value, model order).
+def describe_copy_product_status_input_to_cbor(DescribeCopyProductStatusInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("CopyProductToken")
+    vals.append(cbor.cbor_text(v.CopyProductToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribePortfolioInput to a CBOR map (member wire name -> value, model order).
+def describe_portfolio_input_to_cbor(DescribePortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribePortfolioShareStatusInput to a CBOR map (member wire name -> value, model order).
+def describe_portfolio_share_status_input_to_cbor(DescribePortfolioShareStatusInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PortfolioShareToken")
+    vals.append(cbor.cbor_text(v.PortfolioShareToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribePortfolioSharesInput to a CBOR map (member wire name -> value, model order).
+def describe_portfolio_shares_input_to_cbor(DescribePortfolioSharesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
     if v.PageToken.is_some():
-        auto u8 = v.PageToken.unwrap()
-        parts.append("\"PageToken\":" + servicecatalog_json_str(u8))
-    return servicecatalog_json_obj(parts)
+        auto u0 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdatePortfolioInput to a compact JSON object (declaration order).
-def update_portfolio_input_to_json(UpdatePortfolioInput v) -> str:
-    list[str] parts = []
+# Serialize DescribeProductAsAdminInput to a CBOR map (member wire name -> value, model order).
+def describe_product_as_admin_input_to_cbor(DescribeProductAsAdminInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"Id\":" + servicecatalog_json_str(v.Id))
-    if v.DisplayName.is_some():
-        auto u1 = v.DisplayName.unwrap()
-        parts.append("\"DisplayName\":" + servicecatalog_json_str(u1))
-    if v.Description.is_some():
-        auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicecatalog_json_str(u2))
-    if v.ProviderName.is_some():
-        auto u3 = v.ProviderName.unwrap()
-        parts.append("\"ProviderName\":" + servicecatalog_json_str(u3))
-    if v.AddTags.is_some():
-        auto u4 = v.AddTags.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"AddTags\":" + servicecatalog_json_arr(e5))
-    if v.RemoveTags.is_some():
-        auto u6 = v.RemoveTags.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(servicecatalog_json_str(x7))
-        parts.append("\"RemoveTags\":" + servicecatalog_json_arr(e7))
-    return servicecatalog_json_obj(parts)
-
-# Serialize UpdateProductInput to a compact JSON object (declaration order).
-def update_product_input_to_json(UpdateProductInput v) -> str:
-    list[str] parts = []
-    if v.AcceptLanguage.is_some():
-        auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    parts.append("\"Id\":" + servicecatalog_json_str(v.Id))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        keys.append("Id")
+        vals.append(cbor.cbor_text(u1))
     if v.Name.is_some():
-        auto u1 = v.Name.unwrap()
-        parts.append("\"Name\":" + servicecatalog_json_str(u1))
-    if v.Owner.is_some():
-        auto u2 = v.Owner.unwrap()
-        parts.append("\"Owner\":" + servicecatalog_json_str(u2))
-    if v.Description.is_some():
-        auto u3 = v.Description.unwrap()
-        parts.append("\"Description\":" + servicecatalog_json_str(u3))
-    if v.Distributor.is_some():
-        auto u4 = v.Distributor.unwrap()
-        parts.append("\"Distributor\":" + servicecatalog_json_str(u4))
-    if v.SupportDescription.is_some():
-        auto u5 = v.SupportDescription.unwrap()
-        parts.append("\"SupportDescription\":" + servicecatalog_json_str(u5))
-    if v.SupportEmail.is_some():
-        auto u6 = v.SupportEmail.unwrap()
-        parts.append("\"SupportEmail\":" + servicecatalog_json_str(u6))
-    if v.SupportUrl.is_some():
-        auto u7 = v.SupportUrl.unwrap()
-        parts.append("\"SupportUrl\":" + servicecatalog_json_str(u7))
-    if v.AddTags.is_some():
-        auto u8 = v.AddTags.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"AddTags\":" + servicecatalog_json_arr(e9))
-    if v.RemoveTags.is_some():
-        auto u10 = v.RemoveTags.unwrap()
-        list[str] e11 = []
-        for x11 in u10:
-            e11.append(servicecatalog_json_str(x11))
-        parts.append("\"RemoveTags\":" + servicecatalog_json_arr(e11))
-    if v.SourceConnection.is_some():
-        auto u12 = v.SourceConnection.unwrap()
-        parts.append("\"SourceConnection\":" + u12.to_json())
-    return servicecatalog_json_obj(parts)
+        auto u2 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u2))
+    if v.SourcePortfolioId.is_some():
+        auto u3 = v.SourcePortfolioId.unwrap()
+        keys.append("SourcePortfolioId")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateProvisionedProductInput to a compact JSON object (declaration order).
-def update_provisioned_product_input_to_json(UpdateProvisionedProductInput v) -> str:
-    list[str] parts = []
+# Serialize DescribeProductInput to a CBOR map (member wire name -> value, model order).
+def describe_product_input_to_cbor(DescribeProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.AcceptLanguage.is_some():
         auto u0 = v.AcceptLanguage.unwrap()
-        parts.append("\"AcceptLanguage\":" + servicecatalog_json_str(u0))
-    if v.ProvisionedProductName.is_some():
-        auto u1 = v.ProvisionedProductName.unwrap()
-        parts.append("\"ProvisionedProductName\":" + servicecatalog_json_str(u1))
-    if v.ProvisionedProductId.is_some():
-        auto u2 = v.ProvisionedProductId.unwrap()
-        parts.append("\"ProvisionedProductId\":" + servicecatalog_json_str(u2))
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        keys.append("Id")
+        vals.append(cbor.cbor_text(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProductViewInput to a CBOR map (member wire name -> value, model order).
+def describe_product_view_input_to_cbor(DescribeProductViewInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProvisionedProductInput to a CBOR map (member wire name -> value, model order).
+def describe_provisioned_product_input_to_cbor(DescribeProvisionedProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.Id.is_some():
+        auto u1 = v.Id.unwrap()
+        keys.append("Id")
+        vals.append(cbor.cbor_text(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProvisionedProductPlanInput to a CBOR map (member wire name -> value, model order).
+def describe_provisioned_product_plan_input_to_cbor(DescribeProvisionedProductPlanInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PlanId")
+    vals.append(cbor.cbor_text(v.PlanId))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def describe_provisioning_artifact_input_to_cbor(DescribeProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProvisioningArtifactId.is_some():
+        auto u1 = v.ProvisioningArtifactId.unwrap()
+        keys.append("ProvisioningArtifactId")
+        vals.append(cbor.cbor_text(u1))
     if v.ProductId.is_some():
-        auto u3 = v.ProductId.unwrap()
-        parts.append("\"ProductId\":" + servicecatalog_json_str(u3))
+        auto u2 = v.ProductId.unwrap()
+        keys.append("ProductId")
+        vals.append(cbor.cbor_text(u2))
+    if v.ProvisioningArtifactName.is_some():
+        auto u3 = v.ProvisioningArtifactName.unwrap()
+        keys.append("ProvisioningArtifactName")
+        vals.append(cbor.cbor_text(u3))
     if v.ProductName.is_some():
         auto u4 = v.ProductName.unwrap()
-        parts.append("\"ProductName\":" + servicecatalog_json_str(u4))
-    if v.ProvisioningArtifactId.is_some():
-        auto u5 = v.ProvisioningArtifactId.unwrap()
-        parts.append("\"ProvisioningArtifactId\":" + servicecatalog_json_str(u5))
-    if v.ProvisioningArtifactName.is_some():
-        auto u6 = v.ProvisioningArtifactName.unwrap()
-        parts.append("\"ProvisioningArtifactName\":" + servicecatalog_json_str(u6))
-    if v.PathId.is_some():
-        auto u7 = v.PathId.unwrap()
-        parts.append("\"PathId\":" + servicecatalog_json_str(u7))
-    if v.PathName.is_some():
-        auto u8 = v.PathName.unwrap()
-        parts.append("\"PathName\":" + servicecatalog_json_str(u8))
-    if v.ProvisioningParameters.is_some():
-        auto u9 = v.ProvisioningParameters.unwrap()
-        list[str] e10 = []
-        for x10 in u9:
-            e10.append(x10.to_json())
-        parts.append("\"ProvisioningParameters\":" + servicecatalog_json_arr(e10))
-    if v.ProvisioningPreferences.is_some():
-        auto u11 = v.ProvisioningPreferences.unwrap()
-        parts.append("\"ProvisioningPreferences\":" + update_provisioning_preferences_to_json(u11))
-    if v.Tags.is_some():
-        auto u12 = v.Tags.unwrap()
-        list[str] e13 = []
-        for x13 in u12:
-            e13.append(x13.to_json())
-        parts.append("\"Tags\":" + servicecatalog_json_arr(e13))
-    parts.append("\"UpdateToken\":" + servicecatalog_json_str(v.UpdateToken))
-    return servicecatalog_json_obj(parts)
+        keys.append("ProductName")
+        vals.append(cbor.cbor_text(u4))
+    if v.Verbose.is_some():
+        auto u5 = v.Verbose.unwrap()
+        keys.append("Verbose")
+        vals.append(cbor.cbor_bool(u5))
+    if v.IncludeProvisioningArtifactParameters.is_some():
+        auto u6 = v.IncludeProvisioningArtifactParameters.unwrap()
+        keys.append("IncludeProvisioningArtifactParameters")
+        vals.append(cbor.cbor_bool(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateProvisioningPreferences to a compact JSON object (declaration order).
-def update_provisioning_preferences_to_json(UpdateProvisioningPreferences v) -> str:
-    list[str] parts = []
+# Serialize DescribeProvisioningParametersInput to a CBOR map (member wire name -> value, model order).
+def describe_provisioning_parameters_input_to_cbor(DescribeProvisioningParametersInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProductId.is_some():
+        auto u1 = v.ProductId.unwrap()
+        keys.append("ProductId")
+        vals.append(cbor.cbor_text(u1))
+    if v.ProductName.is_some():
+        auto u2 = v.ProductName.unwrap()
+        keys.append("ProductName")
+        vals.append(cbor.cbor_text(u2))
+    if v.ProvisioningArtifactId.is_some():
+        auto u3 = v.ProvisioningArtifactId.unwrap()
+        keys.append("ProvisioningArtifactId")
+        vals.append(cbor.cbor_text(u3))
+    if v.ProvisioningArtifactName.is_some():
+        auto u4 = v.ProvisioningArtifactName.unwrap()
+        keys.append("ProvisioningArtifactName")
+        vals.append(cbor.cbor_text(u4))
+    if v.PathId.is_some():
+        auto u5 = v.PathId.unwrap()
+        keys.append("PathId")
+        vals.append(cbor.cbor_text(u5))
+    if v.PathName.is_some():
+        auto u6 = v.PathName.unwrap()
+        keys.append("PathName")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeRecordInput to a CBOR map (member wire name -> value, model order).
+def describe_record_input_to_cbor(DescribeRecordInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeServiceActionExecutionParametersInput to a CBOR map (member wire name -> value, model order).
+def describe_service_action_execution_parameters_input_to_cbor(DescribeServiceActionExecutionParametersInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProvisionedProductId")
+    vals.append(cbor.cbor_text(v.ProvisionedProductId))
+    keys.append("ServiceActionId")
+    vals.append(cbor.cbor_text(v.ServiceActionId))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeServiceActionInput to a CBOR map (member wire name -> value, model order).
+def describe_service_action_input_to_cbor(DescribeServiceActionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTagOptionInput to a CBOR map (member wire name -> value, model order).
+def describe_tag_option_input_to_cbor(DescribeTagOptionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableAWSOrganizationsAccessInput to a CBOR map (member wire name -> value, model order).
+def disable_aws_organizations_access_input_to_cbor(DisableAWSOrganizationsAccessInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateBudgetFromResourceInput to a CBOR map (member wire name -> value, model order).
+def disassociate_budget_from_resource_input_to_cbor(DisassociateBudgetFromResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BudgetName")
+    vals.append(cbor.cbor_text(v.BudgetName))
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociatePrincipalFromPortfolioInput to a CBOR map (member wire name -> value, model order).
+def disassociate_principal_from_portfolio_input_to_cbor(DisassociatePrincipalFromPortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    keys.append("PrincipalARN")
+    vals.append(cbor.cbor_text(v.PrincipalARN))
+    if v.PrincipalType.is_some():
+        auto u1 = v.PrincipalType.unwrap()
+        keys.append("PrincipalType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateProductFromPortfolioInput to a CBOR map (member wire name -> value, model order).
+def disassociate_product_from_portfolio_input_to_cbor(DisassociateProductFromPortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateServiceActionFromProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def disassociate_service_action_from_provisioning_artifact_input_to_cbor(DisassociateServiceActionFromProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    keys.append("ServiceActionId")
+    vals.append(cbor.cbor_text(v.ServiceActionId))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.IdempotencyToken.is_some():
+        auto u1 = v.IdempotencyToken.unwrap()
+        keys.append("IdempotencyToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateTagOptionFromResourceInput to a CBOR map (member wire name -> value, model order).
+def disassociate_tag_option_from_resource_input_to_cbor(DisassociateTagOptionFromResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    keys.append("TagOptionId")
+    vals.append(cbor.cbor_text(v.TagOptionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableAWSOrganizationsAccessInput to a CBOR map (member wire name -> value, model order).
+def enable_aws_organizations_access_input_to_cbor(EnableAWSOrganizationsAccessInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EngineWorkflowResourceIdentifier to a CBOR map (member wire name -> value, model order).
+def engine_workflow_resource_identifier_to_cbor(EngineWorkflowResourceIdentifier v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UniqueTag.is_some():
+        auto u0 = v.UniqueTag.unwrap()
+        keys.append("UniqueTag")
+        vals.append(unique_tag_resource_identifier_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ExecuteProvisionedProductPlanInput to a CBOR map (member wire name -> value, model order).
+def execute_provisioned_product_plan_input_to_cbor(ExecuteProvisionedProductPlanInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PlanId")
+    vals.append(cbor.cbor_text(v.PlanId))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ExecuteProvisionedProductServiceActionInput to a CBOR map (member wire name -> value, model order).
+def execute_provisioned_product_service_action_input_to_cbor(ExecuteProvisionedProductServiceActionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProvisionedProductId")
+    vals.append(cbor.cbor_text(v.ProvisionedProductId))
+    keys.append("ServiceActionId")
+    vals.append(cbor.cbor_text(v.ServiceActionId))
+    keys.append("ExecuteToken")
+    vals.append(cbor.cbor_text(v.ExecuteToken))
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
+        for k2 in sorted(u1.keys()):
+            list[cbor.CborValue] e3 = []
+            for x3 in u1[k2]:
+                e3.append(cbor.cbor_text(x3))
+            mk2.append(k2)
+            mv2.append(cbor.cbor_list(e3))
+        keys.append("Parameters")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetAWSOrganizationsAccessStatusInput to a CBOR map (member wire name -> value, model order).
+def get_aws_organizations_access_status_input_to_cbor(GetAWSOrganizationsAccessStatusInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetProvisionedProductOutputsInput to a CBOR map (member wire name -> value, model order).
+def get_provisioned_product_outputs_input_to_cbor(GetProvisionedProductOutputsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProvisionedProductId.is_some():
+        auto u1 = v.ProvisionedProductId.unwrap()
+        keys.append("ProvisionedProductId")
+        vals.append(cbor.cbor_text(u1))
+    if v.ProvisionedProductName.is_some():
+        auto u2 = v.ProvisionedProductName.unwrap()
+        keys.append("ProvisionedProductName")
+        vals.append(cbor.cbor_text(u2))
+    if v.OutputKeys.is_some():
+        auto u3 = v.OutputKeys.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(cbor.cbor_text(x4))
+        keys.append("OutputKeys")
+        vals.append(cbor.cbor_list(e4))
+    if v.PageSize.is_some():
+        auto u5 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u5))
+    if v.PageToken.is_some():
+        auto u6 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ImportAsProvisionedProductInput to a CBOR map (member wire name -> value, model order).
+def import_as_provisioned_product_input_to_cbor(ImportAsProvisionedProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    keys.append("ProvisionedProductName")
+    vals.append(cbor.cbor_text(v.ProvisionedProductName))
+    keys.append("PhysicalId")
+    vals.append(cbor.cbor_text(v.PhysicalId))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAcceptedPortfolioSharesInput to a CBOR map (member wire name -> value, model order).
+def list_accepted_portfolio_shares_input_to_cbor(ListAcceptedPortfolioSharesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    if v.PortfolioShareType.is_some():
+        auto u3 = v.PortfolioShareType.unwrap()
+        keys.append("PortfolioShareType")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListBudgetsForResourceInput to a CBOR map (member wire name -> value, model order).
+def list_budgets_for_resource_input_to_cbor(ListBudgetsForResourceInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListConstraintsForPortfolioInput to a CBOR map (member wire name -> value, model order).
+def list_constraints_for_portfolio_input_to_cbor(ListConstraintsForPortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.ProductId.is_some():
+        auto u1 = v.ProductId.unwrap()
+        keys.append("ProductId")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    if v.PageToken.is_some():
+        auto u3 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListLaunchPathsInput to a CBOR map (member wire name -> value, model order).
+def list_launch_paths_input_to_cbor(ListLaunchPathsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListOrganizationPortfolioAccessInput to a CBOR map (member wire name -> value, model order).
+def list_organization_portfolio_access_input_to_cbor(ListOrganizationPortfolioAccessInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    keys.append("OrganizationNodeType")
+    vals.append(cbor.cbor_text(v.OrganizationNodeType))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPortfolioAccessInput to a CBOR map (member wire name -> value, model order).
+def list_portfolio_access_input_to_cbor(ListPortfolioAccessInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.OrganizationParentId.is_some():
+        auto u1 = v.OrganizationParentId.unwrap()
+        keys.append("OrganizationParentId")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.PageSize.is_some():
+        auto u3 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPortfoliosForProductInput to a CBOR map (member wire name -> value, model order).
+def list_portfolios_for_product_input_to_cbor(ListPortfoliosForProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPortfoliosInput to a CBOR map (member wire name -> value, model order).
+def list_portfolios_input_to_cbor(ListPortfoliosInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListPrincipalsForPortfolioInput to a CBOR map (member wire name -> value, model order).
+def list_principals_for_portfolio_input_to_cbor(ListPrincipalsForPortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListProvisionedProductPlansInput to a CBOR map (member wire name -> value, model order).
+def list_provisioned_product_plans_input_to_cbor(ListProvisionedProductPlansInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProvisionProductId.is_some():
+        auto u1 = v.ProvisionProductId.unwrap()
+        keys.append("ProvisionProductId")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    if v.PageToken.is_some():
+        auto u3 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u3))
+    if v.AccessLevelFilter.is_some():
+        auto u4 = v.AccessLevelFilter.unwrap()
+        keys.append("AccessLevelFilter")
+        vals.append(access_level_filter_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListProvisioningArtifactsForServiceActionInput to a CBOR map (member wire name -> value, model order).
+def list_provisioning_artifacts_for_service_action_input_to_cbor(ListProvisioningArtifactsForServiceActionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceActionId")
+    vals.append(cbor.cbor_text(v.ServiceActionId))
+    if v.PageSize.is_some():
+        auto u0 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u0))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.AcceptLanguage.is_some():
+        auto u2 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListProvisioningArtifactsInput to a CBOR map (member wire name -> value, model order).
+def list_provisioning_artifacts_input_to_cbor(ListProvisioningArtifactsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListRecordHistoryInput to a CBOR map (member wire name -> value, model order).
+def list_record_history_input_to_cbor(ListRecordHistoryInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.AccessLevelFilter.is_some():
+        auto u1 = v.AccessLevelFilter.unwrap()
+        keys.append("AccessLevelFilter")
+        vals.append(access_level_filter_to_cbor(u1))
+    if v.SearchFilter.is_some():
+        auto u2 = v.SearchFilter.unwrap()
+        keys.append("SearchFilter")
+        vals.append(list_record_history_search_filter_to_cbor(u2))
+    if v.PageSize.is_some():
+        auto u3 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u3))
+    if v.PageToken.is_some():
+        auto u4 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListRecordHistorySearchFilter to a CBOR map (member wire name -> value, model order).
+def list_record_history_search_filter_to_cbor(ListRecordHistorySearchFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListResourcesForTagOptionInput to a CBOR map (member wire name -> value, model order).
+def list_resources_for_tag_option_input_to_cbor(ListResourcesForTagOptionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TagOptionId")
+    vals.append(cbor.cbor_text(v.TagOptionId))
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        keys.append("ResourceType")
+        vals.append(cbor.cbor_text(u0))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListServiceActionsForProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def list_service_actions_for_provisioning_artifact_input_to_cbor(ListServiceActionsForProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    if v.PageSize.is_some():
+        auto u0 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u0))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.AcceptLanguage.is_some():
+        auto u2 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListServiceActionsInput to a CBOR map (member wire name -> value, model order).
+def list_service_actions_input_to_cbor(ListServiceActionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListStackInstancesForProvisionedProductInput to a CBOR map (member wire name -> value, model order).
+def list_stack_instances_for_provisioned_product_input_to_cbor(ListStackInstancesForProvisionedProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProvisionedProductId")
+    vals.append(cbor.cbor_text(v.ProvisionedProductId))
+    if v.PageToken.is_some():
+        auto u1 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagOptionsFilters to a CBOR map (member wire name -> value, model order).
+def list_tag_options_filters_to_cbor(ListTagOptionsFilters v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    if v.Active.is_some():
+        auto u2 = v.Active.unwrap()
+        keys.append("Active")
+        vals.append(cbor.cbor_bool(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagOptionsInput to a CBOR map (member wire name -> value, model order).
+def list_tag_options_input_to_cbor(ListTagOptionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        keys.append("Filters")
+        vals.append(list_tag_options_filters_to_cbor(u0))
+    if v.PageSize.is_some():
+        auto u1 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u1))
+    if v.PageToken.is_some():
+        auto u2 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NotifyProvisionProductEngineWorkflowResultInput to a CBOR map (member wire name -> value, model order).
+def notify_provision_product_engine_workflow_result_input_to_cbor(NotifyProvisionProductEngineWorkflowResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkflowToken")
+    vals.append(cbor.cbor_text(v.WorkflowToken))
+    keys.append("RecordId")
+    vals.append(cbor.cbor_text(v.RecordId))
+    keys.append("Status")
+    vals.append(cbor.cbor_text(v.Status))
+    if v.FailureReason.is_some():
+        auto u0 = v.FailureReason.unwrap()
+        keys.append("FailureReason")
+        vals.append(cbor.cbor_text(u0))
+    if v.ResourceIdentifier.is_some():
+        auto u1 = v.ResourceIdentifier.unwrap()
+        keys.append("ResourceIdentifier")
+        vals.append(engine_workflow_resource_identifier_to_cbor(u1))
+    if v.Outputs.is_some():
+        auto u2 = v.Outputs.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(record_output_to_cbor(x3))
+        keys.append("Outputs")
+        vals.append(cbor.cbor_list(e3))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NotifyTerminateProvisionedProductEngineWorkflowResultInput to a CBOR map (member wire name -> value, model order).
+def notify_terminate_provisioned_product_engine_workflow_result_input_to_cbor(NotifyTerminateProvisionedProductEngineWorkflowResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkflowToken")
+    vals.append(cbor.cbor_text(v.WorkflowToken))
+    keys.append("RecordId")
+    vals.append(cbor.cbor_text(v.RecordId))
+    keys.append("Status")
+    vals.append(cbor.cbor_text(v.Status))
+    if v.FailureReason.is_some():
+        auto u0 = v.FailureReason.unwrap()
+        keys.append("FailureReason")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NotifyUpdateProvisionedProductEngineWorkflowResultInput to a CBOR map (member wire name -> value, model order).
+def notify_update_provisioned_product_engine_workflow_result_input_to_cbor(NotifyUpdateProvisionedProductEngineWorkflowResultInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("WorkflowToken")
+    vals.append(cbor.cbor_text(v.WorkflowToken))
+    keys.append("RecordId")
+    vals.append(cbor.cbor_text(v.RecordId))
+    keys.append("Status")
+    vals.append(cbor.cbor_text(v.Status))
+    if v.FailureReason.is_some():
+        auto u0 = v.FailureReason.unwrap()
+        keys.append("FailureReason")
+        vals.append(cbor.cbor_text(u0))
+    if v.Outputs.is_some():
+        auto u1 = v.Outputs.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(record_output_to_cbor(x2))
+        keys.append("Outputs")
+        vals.append(cbor.cbor_list(e2))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OrganizationNode to a CBOR map (member wire name -> value, model order).
+def organization_node_to_cbor(OrganizationNode v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProvisionProductInput to a CBOR map (member wire name -> value, model order).
+def provision_product_input_to_cbor(ProvisionProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProductId.is_some():
+        auto u1 = v.ProductId.unwrap()
+        keys.append("ProductId")
+        vals.append(cbor.cbor_text(u1))
+    if v.ProductName.is_some():
+        auto u2 = v.ProductName.unwrap()
+        keys.append("ProductName")
+        vals.append(cbor.cbor_text(u2))
+    if v.ProvisioningArtifactId.is_some():
+        auto u3 = v.ProvisioningArtifactId.unwrap()
+        keys.append("ProvisioningArtifactId")
+        vals.append(cbor.cbor_text(u3))
+    if v.ProvisioningArtifactName.is_some():
+        auto u4 = v.ProvisioningArtifactName.unwrap()
+        keys.append("ProvisioningArtifactName")
+        vals.append(cbor.cbor_text(u4))
+    if v.PathId.is_some():
+        auto u5 = v.PathId.unwrap()
+        keys.append("PathId")
+        vals.append(cbor.cbor_text(u5))
+    if v.PathName.is_some():
+        auto u6 = v.PathName.unwrap()
+        keys.append("PathName")
+        vals.append(cbor.cbor_text(u6))
+    keys.append("ProvisionedProductName")
+    vals.append(cbor.cbor_text(v.ProvisionedProductName))
+    if v.ProvisioningParameters.is_some():
+        auto u7 = v.ProvisioningParameters.unwrap()
+        list[cbor.CborValue] e8 = []
+        for x8 in u7:
+            e8.append(provisioning_parameter_to_cbor(x8))
+        keys.append("ProvisioningParameters")
+        vals.append(cbor.cbor_list(e8))
+    if v.ProvisioningPreferences.is_some():
+        auto u9 = v.ProvisioningPreferences.unwrap()
+        keys.append("ProvisioningPreferences")
+        vals.append(provisioning_preferences_to_cbor(u9))
+    if v.Tags.is_some():
+        auto u10 = v.Tags.unwrap()
+        list[cbor.CborValue] e11 = []
+        for x11 in u10:
+            e11.append(tag_to_cbor(x11))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e11))
+    if v.NotificationArns.is_some():
+        auto u12 = v.NotificationArns.unwrap()
+        list[cbor.CborValue] e13 = []
+        for x13 in u12:
+            e13.append(cbor.cbor_text(x13))
+        keys.append("NotificationArns")
+        vals.append(cbor.cbor_list(e13))
+    keys.append("ProvisionToken")
+    vals.append(cbor.cbor_text(v.ProvisionToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProvisioningArtifactProperties to a CBOR map (member wire name -> value, model order).
+def provisioning_artifact_properties_to_cbor(ProvisioningArtifactProperties v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    if v.Info.is_some():
+        auto u2 = v.Info.unwrap()
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
+        for k3 in sorted(u2.keys()):
+            mk3.append(k3)
+            mv3.append(cbor.cbor_text(u2[k3]))
+        keys.append("Info")
+        vals.append(cbor.cbor_map(mk3, mv3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u4))
+    if v.DisableTemplateValidation.is_some():
+        auto u5 = v.DisableTemplateValidation.unwrap()
+        keys.append("DisableTemplateValidation")
+        vals.append(cbor.cbor_bool(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProvisioningParameter to a CBOR map (member wire name -> value, model order).
+def provisioning_parameter_to_cbor(ProvisioningParameter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ProvisioningPreferences to a CBOR map (member wire name -> value, model order).
+def provisioning_preferences_to_cbor(ProvisioningPreferences v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.StackSetAccounts.is_some():
         auto u0 = v.StackSetAccounts.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(servicecatalog_json_str(x1))
-        parts.append("\"StackSetAccounts\":" + servicecatalog_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("StackSetAccounts")
+        vals.append(cbor.cbor_list(e1))
     if v.StackSetRegions.is_some():
         auto u2 = v.StackSetRegions.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(servicecatalog_json_str(x3))
-        parts.append("\"StackSetRegions\":" + servicecatalog_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("StackSetRegions")
+        vals.append(cbor.cbor_list(e3))
     if v.StackSetFailureToleranceCount.is_some():
         auto u4 = v.StackSetFailureToleranceCount.unwrap()
-        parts.append("\"StackSetFailureToleranceCount\":" + str(u4))
+        keys.append("StackSetFailureToleranceCount")
+        vals.append(cbor.cbor_int(u4))
     if v.StackSetFailureTolerancePercentage.is_some():
         auto u5 = v.StackSetFailureTolerancePercentage.unwrap()
-        parts.append("\"StackSetFailureTolerancePercentage\":" + str(u5))
+        keys.append("StackSetFailureTolerancePercentage")
+        vals.append(cbor.cbor_int(u5))
     if v.StackSetMaxConcurrencyCount.is_some():
         auto u6 = v.StackSetMaxConcurrencyCount.unwrap()
-        parts.append("\"StackSetMaxConcurrencyCount\":" + str(u6))
+        keys.append("StackSetMaxConcurrencyCount")
+        vals.append(cbor.cbor_int(u6))
     if v.StackSetMaxConcurrencyPercentage.is_some():
         auto u7 = v.StackSetMaxConcurrencyPercentage.unwrap()
-        parts.append("\"StackSetMaxConcurrencyPercentage\":" + str(u7))
+        keys.append("StackSetMaxConcurrencyPercentage")
+        vals.append(cbor.cbor_int(u7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RecordOutput to a CBOR map (member wire name -> value, model order).
+def record_output_to_cbor(RecordOutput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.OutputKey.is_some():
+        auto u0 = v.OutputKey.unwrap()
+        keys.append("OutputKey")
+        vals.append(cbor.cbor_text(u0))
+    if v.OutputValue.is_some():
+        auto u1 = v.OutputValue.unwrap()
+        keys.append("OutputValue")
+        vals.append(cbor.cbor_text(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RejectPortfolioShareInput to a CBOR map (member wire name -> value, model order).
+def reject_portfolio_share_input_to_cbor(RejectPortfolioShareInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.PortfolioShareType.is_some():
+        auto u1 = v.PortfolioShareType.unwrap()
+        keys.append("PortfolioShareType")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ScanProvisionedProductsInput to a CBOR map (member wire name -> value, model order).
+def scan_provisioned_products_input_to_cbor(ScanProvisionedProductsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.AccessLevelFilter.is_some():
+        auto u1 = v.AccessLevelFilter.unwrap()
+        keys.append("AccessLevelFilter")
+        vals.append(access_level_filter_to_cbor(u1))
+    if v.PageSize.is_some():
+        auto u2 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u2))
+    if v.PageToken.is_some():
+        auto u3 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SearchProductsAsAdminInput to a CBOR map (member wire name -> value, model order).
+def search_products_as_admin_input_to_cbor(SearchProductsAsAdminInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.PortfolioId.is_some():
+        auto u1 = v.PortfolioId.unwrap()
+        keys.append("PortfolioId")
+        vals.append(cbor.cbor_text(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
+        for k3 in sorted(u2.keys()):
+            list[cbor.CborValue] e4 = []
+            for x4 in u2[k3]:
+                e4.append(cbor.cbor_text(x4))
+            mk3.append(k3)
+            mv3.append(cbor.cbor_list(e4))
+        keys.append("Filters")
+        vals.append(cbor.cbor_map(mk3, mv3))
+    if v.SortBy.is_some():
+        auto u5 = v.SortBy.unwrap()
+        keys.append("SortBy")
+        vals.append(cbor.cbor_text(u5))
+    if v.SortOrder.is_some():
+        auto u6 = v.SortOrder.unwrap()
+        keys.append("SortOrder")
+        vals.append(cbor.cbor_text(u6))
+    if v.PageToken.is_some():
+        auto u7 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u7))
+    if v.PageSize.is_some():
+        auto u8 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u8))
+    if v.ProductSource.is_some():
+        auto u9 = v.ProductSource.unwrap()
+        keys.append("ProductSource")
+        vals.append(cbor.cbor_text(u9))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SearchProductsInput to a CBOR map (member wire name -> value, model order).
+def search_products_input_to_cbor(SearchProductsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
+        for k2 in sorted(u1.keys()):
+            list[cbor.CborValue] e3 = []
+            for x3 in u1[k2]:
+                e3.append(cbor.cbor_text(x3))
+            mk2.append(k2)
+            mv2.append(cbor.cbor_list(e3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    if v.PageSize.is_some():
+        auto u4 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u4))
+    if v.SortBy.is_some():
+        auto u5 = v.SortBy.unwrap()
+        keys.append("SortBy")
+        vals.append(cbor.cbor_text(u5))
+    if v.SortOrder.is_some():
+        auto u6 = v.SortOrder.unwrap()
+        keys.append("SortOrder")
+        vals.append(cbor.cbor_text(u6))
+    if v.PageToken.is_some():
+        auto u7 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SearchProvisionedProductsInput to a CBOR map (member wire name -> value, model order).
+def search_provisioned_products_input_to_cbor(SearchProvisionedProductsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.AccessLevelFilter.is_some():
+        auto u1 = v.AccessLevelFilter.unwrap()
+        keys.append("AccessLevelFilter")
+        vals.append(access_level_filter_to_cbor(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
+        for k3 in sorted(u2.keys()):
+            list[cbor.CborValue] e4 = []
+            for x4 in u2[k3]:
+                e4.append(cbor.cbor_text(x4))
+            mk3.append(k3)
+            mv3.append(cbor.cbor_list(e4))
+        keys.append("Filters")
+        vals.append(cbor.cbor_map(mk3, mv3))
+    if v.SortBy.is_some():
+        auto u5 = v.SortBy.unwrap()
+        keys.append("SortBy")
+        vals.append(cbor.cbor_text(u5))
+    if v.SortOrder.is_some():
+        auto u6 = v.SortOrder.unwrap()
+        keys.append("SortOrder")
+        vals.append(cbor.cbor_text(u6))
+    if v.PageSize.is_some():
+        auto u7 = v.PageSize.unwrap()
+        keys.append("PageSize")
+        vals.append(cbor.cbor_int(u7))
+    if v.PageToken.is_some():
+        auto u8 = v.PageToken.unwrap()
+        keys.append("PageToken")
+        vals.append(cbor.cbor_text(u8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ServiceActionAssociation to a CBOR map (member wire name -> value, model order).
+def service_action_association_to_cbor(ServiceActionAssociation v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServiceActionId")
+    vals.append(cbor.cbor_text(v.ServiceActionId))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SourceConnection to a CBOR map (member wire name -> value, model order).
+def source_connection_to_cbor(SourceConnection v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ConnectionParameters")
+    vals.append(source_connection_parameters_to_cbor(v.ConnectionParameters))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SourceConnectionParameters to a CBOR map (member wire name -> value, model order).
+def source_connection_parameters_to_cbor(SourceConnectionParameters v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.CodeStar.is_some():
+        auto u0 = v.CodeStar.unwrap()
+        keys.append("CodeStar")
+        vals.append(code_star_parameters_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TerminateProvisionedProductInput to a CBOR map (member wire name -> value, model order).
+def terminate_provisioned_product_input_to_cbor(TerminateProvisionedProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ProvisionedProductName.is_some():
+        auto u0 = v.ProvisionedProductName.unwrap()
+        keys.append("ProvisionedProductName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProvisionedProductId.is_some():
+        auto u1 = v.ProvisionedProductId.unwrap()
+        keys.append("ProvisionedProductId")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("TerminateToken")
+    vals.append(cbor.cbor_text(v.TerminateToken))
+    if v.IgnoreErrors.is_some():
+        auto u2 = v.IgnoreErrors.unwrap()
+        keys.append("IgnoreErrors")
+        vals.append(cbor.cbor_bool(u2))
+    if v.AcceptLanguage.is_some():
+        auto u3 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u3))
+    if v.RetainPhysicalResources.is_some():
+        auto u4 = v.RetainPhysicalResources.unwrap()
+        keys.append("RetainPhysicalResources")
+        vals.append(cbor.cbor_bool(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UniqueTagResourceIdentifier to a CBOR map (member wire name -> value, model order).
+def unique_tag_resource_identifier_to_cbor(UniqueTagResourceIdentifier v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateConstraintInput to a CBOR map (member wire name -> value, model order).
+def update_constraint_input_to_cbor(UpdateConstraintInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        keys.append("Parameters")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdatePortfolioInput to a CBOR map (member wire name -> value, model order).
+def update_portfolio_input_to_cbor(UpdatePortfolioInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.DisplayName.is_some():
+        auto u1 = v.DisplayName.unwrap()
+        keys.append("DisplayName")
+        vals.append(cbor.cbor_text(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    if v.ProviderName.is_some():
+        auto u3 = v.ProviderName.unwrap()
+        keys.append("ProviderName")
+        vals.append(cbor.cbor_text(u3))
+    if v.AddTags.is_some():
+        auto u4 = v.AddTags.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(tag_to_cbor(x5))
+        keys.append("AddTags")
+        vals.append(cbor.cbor_list(e5))
+    if v.RemoveTags.is_some():
+        auto u6 = v.RemoveTags.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(cbor.cbor_text(x7))
+        keys.append("RemoveTags")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdatePortfolioShareInput to a CBOR map (member wire name -> value, model order).
+def update_portfolio_share_input_to_cbor(UpdatePortfolioShareInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("PortfolioId")
+    vals.append(cbor.cbor_text(v.PortfolioId))
+    if v.AccountId.is_some():
+        auto u1 = v.AccountId.unwrap()
+        keys.append("AccountId")
+        vals.append(cbor.cbor_text(u1))
+    if v.OrganizationNode.is_some():
+        auto u2 = v.OrganizationNode.unwrap()
+        keys.append("OrganizationNode")
+        vals.append(organization_node_to_cbor(u2))
+    if v.ShareTagOptions.is_some():
+        auto u3 = v.ShareTagOptions.unwrap()
+        keys.append("ShareTagOptions")
+        vals.append(cbor.cbor_bool(u3))
+    if v.SharePrincipals.is_some():
+        auto u4 = v.SharePrincipals.unwrap()
+        keys.append("SharePrincipals")
+        vals.append(cbor.cbor_bool(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProductInput to a CBOR map (member wire name -> value, model order).
+def update_product_input_to_cbor(UpdateProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u1))
+    if v.Owner.is_some():
+        auto u2 = v.Owner.unwrap()
+        keys.append("Owner")
+        vals.append(cbor.cbor_text(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u3))
+    if v.Distributor.is_some():
+        auto u4 = v.Distributor.unwrap()
+        keys.append("Distributor")
+        vals.append(cbor.cbor_text(u4))
+    if v.SupportDescription.is_some():
+        auto u5 = v.SupportDescription.unwrap()
+        keys.append("SupportDescription")
+        vals.append(cbor.cbor_text(u5))
+    if v.SupportEmail.is_some():
+        auto u6 = v.SupportEmail.unwrap()
+        keys.append("SupportEmail")
+        vals.append(cbor.cbor_text(u6))
+    if v.SupportUrl.is_some():
+        auto u7 = v.SupportUrl.unwrap()
+        keys.append("SupportUrl")
+        vals.append(cbor.cbor_text(u7))
+    if v.AddTags.is_some():
+        auto u8 = v.AddTags.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(tag_to_cbor(x9))
+        keys.append("AddTags")
+        vals.append(cbor.cbor_list(e9))
+    if v.RemoveTags.is_some():
+        auto u10 = v.RemoveTags.unwrap()
+        list[cbor.CborValue] e11 = []
+        for x11 in u10:
+            e11.append(cbor.cbor_text(x11))
+        keys.append("RemoveTags")
+        vals.append(cbor.cbor_list(e11))
+    if v.SourceConnection.is_some():
+        auto u12 = v.SourceConnection.unwrap()
+        keys.append("SourceConnection")
+        vals.append(source_connection_to_cbor(u12))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProvisionedProductInput to a CBOR map (member wire name -> value, model order).
+def update_provisioned_product_input_to_cbor(UpdateProvisionedProductInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    if v.ProvisionedProductName.is_some():
+        auto u1 = v.ProvisionedProductName.unwrap()
+        keys.append("ProvisionedProductName")
+        vals.append(cbor.cbor_text(u1))
+    if v.ProvisionedProductId.is_some():
+        auto u2 = v.ProvisionedProductId.unwrap()
+        keys.append("ProvisionedProductId")
+        vals.append(cbor.cbor_text(u2))
+    if v.ProductId.is_some():
+        auto u3 = v.ProductId.unwrap()
+        keys.append("ProductId")
+        vals.append(cbor.cbor_text(u3))
+    if v.ProductName.is_some():
+        auto u4 = v.ProductName.unwrap()
+        keys.append("ProductName")
+        vals.append(cbor.cbor_text(u4))
+    if v.ProvisioningArtifactId.is_some():
+        auto u5 = v.ProvisioningArtifactId.unwrap()
+        keys.append("ProvisioningArtifactId")
+        vals.append(cbor.cbor_text(u5))
+    if v.ProvisioningArtifactName.is_some():
+        auto u6 = v.ProvisioningArtifactName.unwrap()
+        keys.append("ProvisioningArtifactName")
+        vals.append(cbor.cbor_text(u6))
+    if v.PathId.is_some():
+        auto u7 = v.PathId.unwrap()
+        keys.append("PathId")
+        vals.append(cbor.cbor_text(u7))
+    if v.PathName.is_some():
+        auto u8 = v.PathName.unwrap()
+        keys.append("PathName")
+        vals.append(cbor.cbor_text(u8))
+    if v.ProvisioningParameters.is_some():
+        auto u9 = v.ProvisioningParameters.unwrap()
+        list[cbor.CborValue] e10 = []
+        for x10 in u9:
+            e10.append(update_provisioning_parameter_to_cbor(x10))
+        keys.append("ProvisioningParameters")
+        vals.append(cbor.cbor_list(e10))
+    if v.ProvisioningPreferences.is_some():
+        auto u11 = v.ProvisioningPreferences.unwrap()
+        keys.append("ProvisioningPreferences")
+        vals.append(update_provisioning_preferences_to_cbor(u11))
+    if v.Tags.is_some():
+        auto u12 = v.Tags.unwrap()
+        list[cbor.CborValue] e13 = []
+        for x13 in u12:
+            e13.append(tag_to_cbor(x13))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e13))
+    keys.append("UpdateToken")
+    vals.append(cbor.cbor_text(v.UpdateToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProvisionedProductPropertiesInput to a CBOR map (member wire name -> value, model order).
+def update_provisioned_product_properties_input_to_cbor(UpdateProvisionedProductPropertiesInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProvisionedProductId")
+    vals.append(cbor.cbor_text(v.ProvisionedProductId))
+    list[str] mk1 = []
+    list[cbor.CborValue] mv1 = []
+    for k1 in sorted(v.ProvisionedProductProperties.keys()):
+        mk1.append(k1)
+        mv1.append(cbor.cbor_text(v.ProvisionedProductProperties[k1]))
+    keys.append("ProvisionedProductProperties")
+    vals.append(cbor.cbor_map(mk1, mv1))
+    keys.append("IdempotencyToken")
+    vals.append(cbor.cbor_text(v.IdempotencyToken))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProvisioningArtifactInput to a CBOR map (member wire name -> value, model order).
+def update_provisioning_artifact_input_to_cbor(UpdateProvisioningArtifactInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AcceptLanguage.is_some():
+        auto u0 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("ProductId")
+    vals.append(cbor.cbor_text(v.ProductId))
+    keys.append("ProvisioningArtifactId")
+    vals.append(cbor.cbor_text(v.ProvisioningArtifactId))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
+    if v.Active.is_some():
+        auto u3 = v.Active.unwrap()
+        keys.append("Active")
+        vals.append(cbor.cbor_bool(u3))
+    if v.Guidance.is_some():
+        auto u4 = v.Guidance.unwrap()
+        keys.append("Guidance")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProvisioningParameter to a CBOR map (member wire name -> value, model order).
+def update_provisioning_parameter_to_cbor(UpdateProvisioningParameter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    if v.UsePreviousValue.is_some():
+        auto u2 = v.UsePreviousValue.unwrap()
+        keys.append("UsePreviousValue")
+        vals.append(cbor.cbor_bool(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateProvisioningPreferences to a CBOR map (member wire name -> value, model order).
+def update_provisioning_preferences_to_cbor(UpdateProvisioningPreferences v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.StackSetAccounts.is_some():
+        auto u0 = v.StackSetAccounts.unwrap()
+        list[cbor.CborValue] e1 = []
+        for x1 in u0:
+            e1.append(cbor.cbor_text(x1))
+        keys.append("StackSetAccounts")
+        vals.append(cbor.cbor_list(e1))
+    if v.StackSetRegions.is_some():
+        auto u2 = v.StackSetRegions.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(cbor.cbor_text(x3))
+        keys.append("StackSetRegions")
+        vals.append(cbor.cbor_list(e3))
+    if v.StackSetFailureToleranceCount.is_some():
+        auto u4 = v.StackSetFailureToleranceCount.unwrap()
+        keys.append("StackSetFailureToleranceCount")
+        vals.append(cbor.cbor_int(u4))
+    if v.StackSetFailureTolerancePercentage.is_some():
+        auto u5 = v.StackSetFailureTolerancePercentage.unwrap()
+        keys.append("StackSetFailureTolerancePercentage")
+        vals.append(cbor.cbor_int(u5))
+    if v.StackSetMaxConcurrencyCount.is_some():
+        auto u6 = v.StackSetMaxConcurrencyCount.unwrap()
+        keys.append("StackSetMaxConcurrencyCount")
+        vals.append(cbor.cbor_int(u6))
+    if v.StackSetMaxConcurrencyPercentage.is_some():
+        auto u7 = v.StackSetMaxConcurrencyPercentage.unwrap()
+        keys.append("StackSetMaxConcurrencyPercentage")
+        vals.append(cbor.cbor_int(u7))
     if v.StackSetOperationType.is_some():
         auto u8 = v.StackSetOperationType.unwrap()
-        parts.append("\"StackSetOperationType\":" + u8.to_json())
-    return servicecatalog_json_obj(parts)
+        keys.append("StackSetOperationType")
+        vals.append(cbor.cbor_text(u8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateServiceActionInput to a CBOR map (member wire name -> value, model order).
+def update_service_action_input_to_cbor(UpdateServiceActionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    if v.Definition.is_some():
+        auto u1 = v.Definition.unwrap()
+        list[str] mk2 = []
+        list[cbor.CborValue] mv2 = []
+        for k2 in sorted(u1.keys()):
+            mk2.append(k2)
+            mv2.append(cbor.cbor_text(u1[k2]))
+        keys.append("Definition")
+        vals.append(cbor.cbor_map(mk2, mv2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u3))
+    if v.AcceptLanguage.is_some():
+        auto u4 = v.AcceptLanguage.unwrap()
+        keys.append("AcceptLanguage")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateTagOptionInput to a CBOR map (member wire name -> value, model order).
+def update_tag_option_input_to_cbor(UpdateTagOptionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u0))
+    if v.Active.is_some():
+        auto u1 = v.Active.unwrap()
+        keys.append("Active")
+        vals.append(cbor.cbor_bool(u1))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Service_Catalog client: credentials + region, threaded into every operation.
 struct Service_CatalogClient:
@@ -2749,723 +4034,813 @@ struct Service_CatalogClient:
 
     # AcceptPortfolioShare
     # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def accept_portfolio_share(self, AcceptPortfolioShareInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AcceptPortfolioShare", body)
+    def accept_portfolio_share(self, AcceptPortfolioShareInput input) -> bytes:
+        auto body = cbor.cbor_encode(accept_portfolio_share_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "AcceptPortfolioShare", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateBudgetWithResource
     # errors: DuplicateResourceException, InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def associate_budget_with_resource(self, AssociateBudgetWithResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AssociateBudgetWithResource", body)
+    def associate_budget_with_resource(self, AssociateBudgetWithResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(associate_budget_with_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "AssociateBudgetWithResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociatePrincipalWithPortfolio
     # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def associate_principal_with_portfolio(self, AssociatePrincipalWithPortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AssociatePrincipalWithPortfolio", body)
+    def associate_principal_with_portfolio(self, AssociatePrincipalWithPortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(associate_principal_with_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "AssociatePrincipalWithPortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateProductWithPortfolio
     # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def associate_product_with_portfolio(self, AssociateProductWithPortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AssociateProductWithPortfolio", body)
+    def associate_product_with_portfolio(self, AssociateProductWithPortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(associate_product_with_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "AssociateProductWithPortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateServiceActionWithProvisioningArtifact
     # errors: DuplicateResourceException, InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def associate_service_action_with_provisioning_artifact(self, AssociateServiceActionWithProvisioningArtifactInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AssociateServiceActionWithProvisioningArtifact", body)
+    def associate_service_action_with_provisioning_artifact(self, AssociateServiceActionWithProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(associate_service_action_with_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "AssociateServiceActionWithProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateTagOptionWithResource
     # errors: DuplicateResourceException, InvalidParametersException, InvalidStateException, LimitExceededException, ResourceNotFoundException, TagOptionNotMigratedException
-    def associate_tag_option_with_resource(self, AssociateTagOptionWithResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "AssociateTagOptionWithResource", body)
+    def associate_tag_option_with_resource(self, AssociateTagOptionWithResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(associate_tag_option_with_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "AssociateTagOptionWithResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchAssociateServiceActionWithProvisioningArtifact
     # errors: InvalidParametersException
-    def batch_associate_service_action_with_provisioning_artifact(self, BatchAssociateServiceActionWithProvisioningArtifactInput input) -> str:
-        auto body = batch_associate_service_action_with_provisioning_artifact_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "BatchAssociateServiceActionWithProvisioningArtifact", body)
+    def batch_associate_service_action_with_provisioning_artifact(self, BatchAssociateServiceActionWithProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_associate_service_action_with_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "BatchAssociateServiceActionWithProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # BatchDisassociateServiceActionFromProvisioningArtifact
     # errors: InvalidParametersException
-    def batch_disassociate_service_action_from_provisioning_artifact(self, BatchDisassociateServiceActionFromProvisioningArtifactInput input) -> str:
-        auto body = batch_disassociate_service_action_from_provisioning_artifact_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "BatchDisassociateServiceActionFromProvisioningArtifact", body)
+    def batch_disassociate_service_action_from_provisioning_artifact(self, BatchDisassociateServiceActionFromProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(batch_disassociate_service_action_from_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "BatchDisassociateServiceActionFromProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CopyProduct
     # errors: InvalidParametersException, ResourceNotFoundException
-    def copy_product(self, CopyProductInput input) -> str:
-        auto body = copy_product_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CopyProduct", body)
+    def copy_product(self, CopyProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(copy_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CopyProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateConstraint
     # errors: DuplicateResourceException, InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def create_constraint(self, CreateConstraintInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateConstraint", body)
+    def create_constraint(self, CreateConstraintInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_constraint_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreateConstraint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePortfolio
     # errors: InvalidParametersException, LimitExceededException, TagOptionNotMigratedException
-    def create_portfolio(self, CreatePortfolioInput input) -> str:
-        auto body = create_portfolio_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreatePortfolio", body)
+    def create_portfolio(self, CreatePortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreatePortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreatePortfolioShare
     # errors: InvalidParametersException, InvalidStateException, LimitExceededException, OperationNotSupportedException, ResourceNotFoundException
-    def create_portfolio_share(self, CreatePortfolioShareInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreatePortfolioShare", body)
+    def create_portfolio_share(self, CreatePortfolioShareInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_portfolio_share_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreatePortfolioShare", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateProduct
     # errors: InvalidParametersException, LimitExceededException, TagOptionNotMigratedException
-    def create_product(self, CreateProductInput input) -> str:
-        auto body = create_product_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateProduct", body)
+    def create_product(self, CreateProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreateProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateProvisionedProductPlan
     # errors: InvalidParametersException, InvalidStateException, ResourceNotFoundException
-    def create_provisioned_product_plan(self, CreateProvisionedProductPlanInput input) -> str:
-        auto body = create_provisioned_product_plan_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateProvisionedProductPlan", body)
+    def create_provisioned_product_plan(self, CreateProvisionedProductPlanInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_provisioned_product_plan_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreateProvisionedProductPlan", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateProvisioningArtifact
     # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException
-    def create_provisioning_artifact(self, CreateProvisioningArtifactInput input) -> str:
-        auto body = create_provisioning_artifact_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateProvisioningArtifact", body)
+    def create_provisioning_artifact(self, CreateProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreateProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # CreateServiceAction
+    # errors: InvalidParametersException, LimitExceededException
+    def create_service_action(self, CreateServiceActionInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_service_action_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreateServiceAction", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateTagOption
     # errors: DuplicateResourceException, LimitExceededException, TagOptionNotMigratedException
-    def create_tag_option(self, CreateTagOptionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "CreateTagOption", body)
+    def create_tag_option(self, CreateTagOptionInput input) -> bytes:
+        auto body = cbor.cbor_encode(create_tag_option_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "CreateTagOption", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteConstraint
     # errors: InvalidParametersException, ResourceNotFoundException
-    def delete_constraint(self, DeleteConstraintInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeleteConstraint", body)
+    def delete_constraint(self, DeleteConstraintInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_constraint_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeleteConstraint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeletePortfolio
     # errors: InvalidParametersException, ResourceInUseException, ResourceNotFoundException, TagOptionNotMigratedException
-    def delete_portfolio(self, DeletePortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeletePortfolio", body)
+    def delete_portfolio(self, DeletePortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeletePortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeletePortfolioShare
     # errors: InvalidParametersException, InvalidStateException, OperationNotSupportedException, ResourceNotFoundException
-    def delete_portfolio_share(self, DeletePortfolioShareInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeletePortfolioShare", body)
+    def delete_portfolio_share(self, DeletePortfolioShareInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_portfolio_share_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeletePortfolioShare", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProduct
     # errors: InvalidParametersException, ResourceInUseException, ResourceNotFoundException, TagOptionNotMigratedException
-    def delete_product(self, DeleteProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeleteProduct", body)
+    def delete_product(self, DeleteProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeleteProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProvisionedProductPlan
     # errors: InvalidParametersException, ResourceNotFoundException
-    def delete_provisioned_product_plan(self, DeleteProvisionedProductPlanInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeleteProvisionedProductPlan", body)
+    def delete_provisioned_product_plan(self, DeleteProvisionedProductPlanInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_provisioned_product_plan_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeleteProvisionedProductPlan", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProvisioningArtifact
     # errors: InvalidParametersException, ResourceInUseException, ResourceNotFoundException
-    def delete_provisioning_artifact(self, DeleteProvisioningArtifactInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeleteProvisioningArtifact", body)
+    def delete_provisioning_artifact(self, DeleteProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeleteProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteServiceAction
     # errors: InvalidParametersException, ResourceInUseException, ResourceNotFoundException
-    def delete_service_action(self, DeleteServiceActionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeleteServiceAction", body)
+    def delete_service_action(self, DeleteServiceActionInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_service_action_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeleteServiceAction", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTagOption
     # errors: ResourceInUseException, ResourceNotFoundException, TagOptionNotMigratedException
-    def delete_tag_option(self, DeleteTagOptionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DeleteTagOption", body)
+    def delete_tag_option(self, DeleteTagOptionInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_tag_option_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DeleteTagOption", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeConstraint
     # errors: ResourceNotFoundException
-    def describe_constraint(self, DescribeConstraintInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeConstraint", body)
+    def describe_constraint(self, DescribeConstraintInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_constraint_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeConstraint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeCopyProductStatus
     # errors: ResourceNotFoundException
-    def describe_copy_product_status(self, DescribeCopyProductStatusInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeCopyProductStatus", body)
+    def describe_copy_product_status(self, DescribeCopyProductStatusInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_copy_product_status_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeCopyProductStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribePortfolio
     # errors: ResourceNotFoundException
-    def describe_portfolio(self, DescribePortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribePortfolio", body)
+    def describe_portfolio(self, DescribePortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribePortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribePortfolioShareStatus
     # errors: InvalidParametersException, OperationNotSupportedException, ResourceNotFoundException
-    def describe_portfolio_share_status(self, DescribePortfolioShareStatusInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribePortfolioShareStatus", body)
+    def describe_portfolio_share_status(self, DescribePortfolioShareStatusInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_portfolio_share_status_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribePortfolioShareStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribePortfolioShares
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_portfolio_shares(self, DescribePortfolioSharesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribePortfolioShares", body)
+    def describe_portfolio_shares(self, DescribePortfolioSharesInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_portfolio_shares_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribePortfolioShares", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProduct
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_product(self, DescribeProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProduct", body)
+    def describe_product(self, DescribeProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProductAsAdmin
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_product_as_admin(self, DescribeProductAsAdminInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProductAsAdmin", body)
+    def describe_product_as_admin(self, DescribeProductAsAdminInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_product_as_admin_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProductAsAdmin", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProductView
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_product_view(self, DescribeProductViewInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProductView", body)
+    def describe_product_view(self, DescribeProductViewInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_product_view_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProductView", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProvisionedProduct
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_provisioned_product(self, DescribeProvisionedProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProvisionedProduct", body)
+    def describe_provisioned_product(self, DescribeProvisionedProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_provisioned_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProvisionedProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProvisionedProductPlan
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_provisioned_product_plan(self, DescribeProvisionedProductPlanInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProvisionedProductPlan", body)
+    def describe_provisioned_product_plan(self, DescribeProvisionedProductPlanInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_provisioned_product_plan_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProvisionedProductPlan", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProvisioningArtifact
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_provisioning_artifact(self, DescribeProvisioningArtifactInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProvisioningArtifact", body)
+    def describe_provisioning_artifact(self, DescribeProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProvisioningParameters
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_provisioning_parameters(self, DescribeProvisioningParametersInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeProvisioningParameters", body)
+    def describe_provisioning_parameters(self, DescribeProvisioningParametersInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_provisioning_parameters_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeProvisioningParameters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeRecord
     # errors: ResourceNotFoundException
-    def describe_record(self, DescribeRecordInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeRecord", body)
+    def describe_record(self, DescribeRecordInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_record_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeRecord", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeServiceAction
     # errors: ResourceNotFoundException
-    def describe_service_action(self, DescribeServiceActionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeServiceAction", body)
+    def describe_service_action(self, DescribeServiceActionInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_service_action_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeServiceAction", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeServiceActionExecutionParameters
     # errors: InvalidParametersException, ResourceNotFoundException
-    def describe_service_action_execution_parameters(self, DescribeServiceActionExecutionParametersInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeServiceActionExecutionParameters", body)
+    def describe_service_action_execution_parameters(self, DescribeServiceActionExecutionParametersInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_service_action_execution_parameters_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeServiceActionExecutionParameters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTagOption
     # errors: ResourceNotFoundException, TagOptionNotMigratedException
-    def describe_tag_option(self, DescribeTagOptionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DescribeTagOption", body)
+    def describe_tag_option(self, DescribeTagOptionInput input) -> bytes:
+        auto body = cbor.cbor_encode(describe_tag_option_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DescribeTagOption", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableAWSOrganizationsAccess
     # errors: InvalidStateException, OperationNotSupportedException, ResourceNotFoundException
-    def disable_aws_organizations_access(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DisableAWSOrganizationsAccess", body)
+    def disable_aws_organizations_access(self, DisableAWSOrganizationsAccessInput input) -> bytes:
+        auto body = cbor.cbor_encode(disable_aws_organizations_access_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DisableAWSOrganizationsAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateBudgetFromResource
     # errors: ResourceNotFoundException
-    def disassociate_budget_from_resource(self, DisassociateBudgetFromResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DisassociateBudgetFromResource", body)
+    def disassociate_budget_from_resource(self, DisassociateBudgetFromResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_budget_from_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DisassociateBudgetFromResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociatePrincipalFromPortfolio
     # errors: InvalidParametersException, ResourceNotFoundException
-    def disassociate_principal_from_portfolio(self, DisassociatePrincipalFromPortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DisassociatePrincipalFromPortfolio", body)
+    def disassociate_principal_from_portfolio(self, DisassociatePrincipalFromPortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_principal_from_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DisassociatePrincipalFromPortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateProductFromPortfolio
     # errors: InvalidParametersException, ResourceInUseException, ResourceNotFoundException
-    def disassociate_product_from_portfolio(self, DisassociateProductFromPortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DisassociateProductFromPortfolio", body)
+    def disassociate_product_from_portfolio(self, DisassociateProductFromPortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_product_from_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DisassociateProductFromPortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateServiceActionFromProvisioningArtifact
     # errors: InvalidParametersException, ResourceNotFoundException
-    def disassociate_service_action_from_provisioning_artifact(self, DisassociateServiceActionFromProvisioningArtifactInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DisassociateServiceActionFromProvisioningArtifact", body)
+    def disassociate_service_action_from_provisioning_artifact(self, DisassociateServiceActionFromProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_service_action_from_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DisassociateServiceActionFromProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateTagOptionFromResource
     # errors: ResourceNotFoundException, TagOptionNotMigratedException
-    def disassociate_tag_option_from_resource(self, DisassociateTagOptionFromResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "DisassociateTagOptionFromResource", body)
+    def disassociate_tag_option_from_resource(self, DisassociateTagOptionFromResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_tag_option_from_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "DisassociateTagOptionFromResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableAWSOrganizationsAccess
     # errors: InvalidStateException, OperationNotSupportedException, ResourceNotFoundException
-    def enable_aws_organizations_access(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "EnableAWSOrganizationsAccess", body)
+    def enable_aws_organizations_access(self, EnableAWSOrganizationsAccessInput input) -> bytes:
+        auto body = cbor.cbor_encode(enable_aws_organizations_access_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "EnableAWSOrganizationsAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ExecuteProvisionedProductPlan
     # errors: InvalidParametersException, InvalidStateException, ResourceNotFoundException
-    def execute_provisioned_product_plan(self, ExecuteProvisionedProductPlanInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ExecuteProvisionedProductPlan", body)
+    def execute_provisioned_product_plan(self, ExecuteProvisionedProductPlanInput input) -> bytes:
+        auto body = cbor.cbor_encode(execute_provisioned_product_plan_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ExecuteProvisionedProductPlan", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ExecuteProvisionedProductServiceAction
     # errors: InvalidParametersException, InvalidStateException, ResourceNotFoundException
-    def execute_provisioned_product_service_action(self, ExecuteProvisionedProductServiceActionInput input) -> str:
-        auto body = execute_provisioned_product_service_action_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ExecuteProvisionedProductServiceAction", body)
+    def execute_provisioned_product_service_action(self, ExecuteProvisionedProductServiceActionInput input) -> bytes:
+        auto body = cbor.cbor_encode(execute_provisioned_product_service_action_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ExecuteProvisionedProductServiceAction", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetAWSOrganizationsAccessStatus
     # errors: OperationNotSupportedException, ResourceNotFoundException
-    def get_aws_organizations_access_status(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "GetAWSOrganizationsAccessStatus", body)
+    def get_aws_organizations_access_status(self, GetAWSOrganizationsAccessStatusInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_aws_organizations_access_status_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "GetAWSOrganizationsAccessStatus", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetProvisionedProductOutputs
     # errors: InvalidParametersException, ResourceNotFoundException
-    def get_provisioned_product_outputs(self, GetProvisionedProductOutputsInput input) -> str:
-        auto body = get_provisioned_product_outputs_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "GetProvisionedProductOutputs", body)
+    def get_provisioned_product_outputs(self, GetProvisionedProductOutputsInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_provisioned_product_outputs_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "GetProvisionedProductOutputs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ImportAsProvisionedProduct
     # errors: DuplicateResourceException, InvalidParametersException, InvalidStateException, ResourceNotFoundException
-    def import_as_provisioned_product(self, ImportAsProvisionedProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ImportAsProvisionedProduct", body)
+    def import_as_provisioned_product(self, ImportAsProvisionedProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(import_as_provisioned_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ImportAsProvisionedProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAcceptedPortfolioShares
     # errors: InvalidParametersException, OperationNotSupportedException
-    def list_accepted_portfolio_shares(self, ListAcceptedPortfolioSharesInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListAcceptedPortfolioShares", body)
+    def list_accepted_portfolio_shares(self, ListAcceptedPortfolioSharesInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_accepted_portfolio_shares_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListAcceptedPortfolioShares", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListBudgetsForResource
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_budgets_for_resource(self, ListBudgetsForResourceInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListBudgetsForResource", body)
+    def list_budgets_for_resource(self, ListBudgetsForResourceInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_budgets_for_resource_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListBudgetsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListConstraintsForPortfolio
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_constraints_for_portfolio(self, ListConstraintsForPortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListConstraintsForPortfolio", body)
+    def list_constraints_for_portfolio(self, ListConstraintsForPortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_constraints_for_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListConstraintsForPortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListLaunchPaths
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_launch_paths(self, ListLaunchPathsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListLaunchPaths", body)
+    def list_launch_paths(self, ListLaunchPathsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_launch_paths_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListLaunchPaths", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListOrganizationPortfolioAccess
     # errors: InvalidParametersException, OperationNotSupportedException, ResourceNotFoundException
-    def list_organization_portfolio_access(self, ListOrganizationPortfolioAccessInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListOrganizationPortfolioAccess", body)
+    def list_organization_portfolio_access(self, ListOrganizationPortfolioAccessInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_organization_portfolio_access_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListOrganizationPortfolioAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPortfolioAccess
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_portfolio_access(self, ListPortfolioAccessInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPortfolioAccess", body)
+    def list_portfolio_access(self, ListPortfolioAccessInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_portfolio_access_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListPortfolioAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPortfolios
     # errors: InvalidParametersException
-    def list_portfolios(self, ListPortfoliosInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPortfolios", body)
+    def list_portfolios(self, ListPortfoliosInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_portfolios_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListPortfolios", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPortfoliosForProduct
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_portfolios_for_product(self, ListPortfoliosForProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPortfoliosForProduct", body)
+    def list_portfolios_for_product(self, ListPortfoliosForProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_portfolios_for_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListPortfoliosForProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListPrincipalsForPortfolio
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_principals_for_portfolio(self, ListPrincipalsForPortfolioInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPrincipalsForPortfolio", body)
+    def list_principals_for_portfolio(self, ListPrincipalsForPortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_principals_for_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListPrincipalsForPortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListProvisionedProductPlans
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_provisioned_product_plans(self, ListProvisionedProductPlansInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListProvisionedProductPlans", body)
+    def list_provisioned_product_plans(self, ListProvisionedProductPlansInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_provisioned_product_plans_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListProvisionedProductPlans", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListProvisioningArtifacts
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_provisioning_artifacts(self, ListProvisioningArtifactsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListProvisioningArtifacts", body)
+    def list_provisioning_artifacts(self, ListProvisioningArtifactsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_provisioning_artifacts_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListProvisioningArtifacts", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListProvisioningArtifactsForServiceAction
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_provisioning_artifacts_for_service_action(self, ListProvisioningArtifactsForServiceActionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListProvisioningArtifactsForServiceAction", body)
+    def list_provisioning_artifacts_for_service_action(self, ListProvisioningArtifactsForServiceActionInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_provisioning_artifacts_for_service_action_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListProvisioningArtifactsForServiceAction", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListRecordHistory
     # errors: InvalidParametersException
-    def list_record_history(self, ListRecordHistoryInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListRecordHistory", body)
+    def list_record_history(self, ListRecordHistoryInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_record_history_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListRecordHistory", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListResourcesForTagOption
     # errors: InvalidParametersException, ResourceNotFoundException, TagOptionNotMigratedException
-    def list_resources_for_tag_option(self, ListResourcesForTagOptionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListResourcesForTagOption", body)
+    def list_resources_for_tag_option(self, ListResourcesForTagOptionInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_resources_for_tag_option_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListResourcesForTagOption", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListServiceActions
     # errors: InvalidParametersException
-    def list_service_actions(self, ListServiceActionsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListServiceActions", body)
+    def list_service_actions(self, ListServiceActionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_service_actions_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListServiceActions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListServiceActionsForProvisioningArtifact
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_service_actions_for_provisioning_artifact(self, ListServiceActionsForProvisioningArtifactInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListServiceActionsForProvisioningArtifact", body)
+    def list_service_actions_for_provisioning_artifact(self, ListServiceActionsForProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_service_actions_for_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListServiceActionsForProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListStackInstancesForProvisionedProduct
     # errors: InvalidParametersException, ResourceNotFoundException
-    def list_stack_instances_for_provisioned_product(self, ListStackInstancesForProvisionedProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListStackInstancesForProvisionedProduct", body)
+    def list_stack_instances_for_provisioned_product(self, ListStackInstancesForProvisionedProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_stack_instances_for_provisioned_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListStackInstancesForProvisionedProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagOptions
     # errors: InvalidParametersException, TagOptionNotMigratedException
-    def list_tag_options(self, ListTagOptionsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListTagOptions", body)
+    def list_tag_options(self, ListTagOptionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_tag_options_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ListTagOptions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # NotifyProvisionProductEngineWorkflowResult
     # errors: InvalidParametersException, ResourceNotFoundException
-    def notify_provision_product_engine_workflow_result(self, NotifyProvisionProductEngineWorkflowResultInput input) -> str:
-        auto body = notify_provision_product_engine_workflow_result_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "NotifyProvisionProductEngineWorkflowResult", body)
+    def notify_provision_product_engine_workflow_result(self, NotifyProvisionProductEngineWorkflowResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(notify_provision_product_engine_workflow_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "NotifyProvisionProductEngineWorkflowResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # NotifyTerminateProvisionedProductEngineWorkflowResult
     # errors: InvalidParametersException, ResourceNotFoundException
-    def notify_terminate_provisioned_product_engine_workflow_result(self, NotifyTerminateProvisionedProductEngineWorkflowResultInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "NotifyTerminateProvisionedProductEngineWorkflowResult", body)
+    def notify_terminate_provisioned_product_engine_workflow_result(self, NotifyTerminateProvisionedProductEngineWorkflowResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(notify_terminate_provisioned_product_engine_workflow_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "NotifyTerminateProvisionedProductEngineWorkflowResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # NotifyUpdateProvisionedProductEngineWorkflowResult
     # errors: InvalidParametersException, ResourceNotFoundException
-    def notify_update_provisioned_product_engine_workflow_result(self, NotifyUpdateProvisionedProductEngineWorkflowResultInput input) -> str:
-        auto body = notify_update_provisioned_product_engine_workflow_result_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "NotifyUpdateProvisionedProductEngineWorkflowResult", body)
+    def notify_update_provisioned_product_engine_workflow_result(self, NotifyUpdateProvisionedProductEngineWorkflowResultInput input) -> bytes:
+        auto body = cbor.cbor_encode(notify_update_provisioned_product_engine_workflow_result_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "NotifyUpdateProvisionedProductEngineWorkflowResult", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ProvisionProduct
     # errors: DuplicateResourceException, InvalidParametersException, ResourceNotFoundException
-    def provision_product(self, ProvisionProductInput input) -> str:
-        auto body = provision_product_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ProvisionProduct", body)
+    def provision_product(self, ProvisionProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(provision_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ProvisionProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RejectPortfolioShare
     # errors: ResourceNotFoundException
-    def reject_portfolio_share(self, RejectPortfolioShareInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "RejectPortfolioShare", body)
+    def reject_portfolio_share(self, RejectPortfolioShareInput input) -> bytes:
+        auto body = cbor.cbor_encode(reject_portfolio_share_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "RejectPortfolioShare", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ScanProvisionedProducts
     # errors: InvalidParametersException
-    def scan_provisioned_products(self, ScanProvisionedProductsInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ScanProvisionedProducts", body)
+    def scan_provisioned_products(self, ScanProvisionedProductsInput input) -> bytes:
+        auto body = cbor.cbor_encode(scan_provisioned_products_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "ScanProvisionedProducts", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # SearchProducts
+    # errors: InvalidParametersException
+    def search_products(self, SearchProductsInput input) -> bytes:
+        auto body = cbor.cbor_encode(search_products_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "SearchProducts", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # SearchProductsAsAdmin
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def search_products_as_admin(self, SearchProductsAsAdminInput input) -> bytes:
+        auto body = cbor.cbor_encode(search_products_as_admin_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "SearchProductsAsAdmin", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # SearchProvisionedProducts
     # errors: InvalidParametersException
-    def search_provisioned_products(self, SearchProvisionedProductsInput input) -> str:
-        auto body = search_provisioned_products_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "SearchProvisionedProducts", body)
+    def search_provisioned_products(self, SearchProvisionedProductsInput input) -> bytes:
+        auto body = cbor.cbor_encode(search_provisioned_products_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "SearchProvisionedProducts", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TerminateProvisionedProduct
     # errors: ResourceNotFoundException
-    def terminate_provisioned_product(self, TerminateProvisionedProductInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "TerminateProvisionedProduct", body)
+    def terminate_provisioned_product(self, TerminateProvisionedProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(terminate_provisioned_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "TerminateProvisionedProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateConstraint
     # errors: InvalidParametersException, ResourceNotFoundException
-    def update_constraint(self, UpdateConstraintInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateConstraint", body)
+    def update_constraint(self, UpdateConstraintInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_constraint_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateConstraint", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdatePortfolio
     # errors: InvalidParametersException, LimitExceededException, ResourceNotFoundException, TagOptionNotMigratedException
-    def update_portfolio(self, UpdatePortfolioInput input) -> str:
-        auto body = update_portfolio_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdatePortfolio", body)
+    def update_portfolio(self, UpdatePortfolioInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_portfolio_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdatePortfolio", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdatePortfolioShare
     # errors: InvalidParametersException, InvalidStateException, OperationNotSupportedException, ResourceNotFoundException
-    def update_portfolio_share(self, UpdatePortfolioShareInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdatePortfolioShare", body)
+    def update_portfolio_share(self, UpdatePortfolioShareInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_portfolio_share_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdatePortfolioShare", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProduct
     # errors: InvalidParametersException, ResourceNotFoundException, TagOptionNotMigratedException
-    def update_product(self, UpdateProductInput input) -> str:
-        auto body = update_product_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateProduct", body)
+    def update_product(self, UpdateProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProvisionedProduct
     # errors: InvalidParametersException, ResourceNotFoundException
-    def update_provisioned_product(self, UpdateProvisionedProductInput input) -> str:
-        auto body = update_provisioned_product_input_to_json(input)
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateProvisionedProduct", body)
+    def update_provisioned_product(self, UpdateProvisionedProductInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_provisioned_product_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateProvisionedProduct", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # UpdateProvisionedProductProperties
+    # errors: InvalidParametersException, InvalidStateException, ResourceNotFoundException
+    def update_provisioned_product_properties(self, UpdateProvisionedProductPropertiesInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_provisioned_product_properties_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateProvisionedProductProperties", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProvisioningArtifact
     # errors: InvalidParametersException, ResourceNotFoundException
-    def update_provisioning_artifact(self, UpdateProvisioningArtifactInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateProvisioningArtifact", body)
+    def update_provisioning_artifact(self, UpdateProvisioningArtifactInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_provisioning_artifact_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateProvisioningArtifact", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # UpdateServiceAction
+    # errors: InvalidParametersException, ResourceNotFoundException
+    def update_service_action(self, UpdateServiceActionInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_service_action_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateServiceAction", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateTagOption
     # errors: DuplicateResourceException, InvalidParametersException, ResourceNotFoundException, TagOptionNotMigratedException
-    def update_tag_option(self, UpdateTagOptionInput input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "UpdateTagOption", body)
-
-    # Paginator for ListAcceptedPortfolioShares — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: PortfolioDetails).
-    def paginate_list_accepted_portfolio_shares(self, ListAcceptedPortfolioSharesInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListAcceptedPortfolioShares", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListConstraintsForPortfolio — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: ConstraintDetails).
-    def paginate_list_constraints_for_portfolio(self, ListConstraintsForPortfolioInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListConstraintsForPortfolio", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListLaunchPaths — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: LaunchPathSummaries).
-    def paginate_list_launch_paths(self, ListLaunchPathsInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListLaunchPaths", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListOrganizationPortfolioAccess — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: OrganizationNodes).
-    def paginate_list_organization_portfolio_access(self, ListOrganizationPortfolioAccessInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListOrganizationPortfolioAccess", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListPortfolios — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: PortfolioDetails).
-    def paginate_list_portfolios(self, ListPortfoliosInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPortfolios", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListPortfoliosForProduct — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: PortfolioDetails).
-    def paginate_list_portfolios_for_product(self, ListPortfoliosForProductInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPortfoliosForProduct", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListPrincipalsForPortfolio — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: Principals).
-    def paginate_list_principals_for_portfolio(self, ListPrincipalsForPortfolioInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListPrincipalsForPortfolio", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListProvisionedProductPlans — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: ProvisionedProductPlans).
-    def paginate_list_provisioned_product_plans(self, ListProvisionedProductPlansInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListProvisionedProductPlans", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListProvisioningArtifactsForServiceAction — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: ProvisioningArtifactViews).
-    def paginate_list_provisioning_artifacts_for_service_action(self, ListProvisioningArtifactsForServiceActionInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListProvisioningArtifactsForServiceAction", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListRecordHistory — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: RecordDetails).
-    def paginate_list_record_history(self, ListRecordHistoryInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListRecordHistory", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListResourcesForTagOption — yields each Response page, threading the
-    # PageToken -> PageToken continuation token until the output token is absent (result key: ResourceDetails).
-    def paginate_list_resources_for_tag_option(self, ListResourcesForTagOptionInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListResourcesForTagOption", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "PageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListServiceActions — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: ServiceActionSummaries).
-    def paginate_list_service_actions(self, ListServiceActionsInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListServiceActions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListServiceActionsForProvisioningArtifact — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: ServiceActionSummaries).
-    def paginate_list_service_actions_for_provisioning_artifact(self, ListServiceActionsForProvisioningArtifactInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListServiceActionsForProvisioningArtifact", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ListTagOptions — yields each Response page, threading the
-    # PageToken -> PageToken continuation token until the output token is absent (result key: TagOptionDetails).
-    def paginate_list_tag_options(self, ListTagOptionsInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ListTagOptions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "PageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
-
-    # Paginator for ScanProvisionedProducts — yields each Response page, threading the
-    # NextPageToken -> PageToken continuation token until the output token is absent (result key: ProvisionedProducts).
-    def paginate_scan_provisioned_products(self, ScanProvisionedProductsInput input):
-        auto host = endpoints.regional_host(servicecatalog_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(servicecatalog_protocol(), self.creds, self.region, "ScanProvisionedProducts", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextPageToken")
-            if not np.has_more:
-                break
-            input.PageToken = Optional.Some(np.token)
+    def update_tag_option(self, UpdateTagOptionInput input) -> bytes:
+        auto body = cbor.cbor_encode(update_tag_option_input_to_cbor(input))
+        auto host = endpoints.regional_host(servicecatalog_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(servicecatalog_service(), self.region, host, "AWS242ServiceCatalogService", "UpdateTagOption", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a Service_CatalogClient bound to credentials + region.
 def servicecatalog_client(core.Credentials creds, str region) -> Service_CatalogClient:

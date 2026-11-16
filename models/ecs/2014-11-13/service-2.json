@@ -3056,7 +3056,9 @@
     "v100",
     "a10g",
     "h100",
-    "t4g"
+    "t4g",
+    "l40s",
+    "l4"
    ]
   },
   "AcceleratorNameSet": {
@@ -3249,6 +3251,12 @@
    "member": {
     "shape": "Attachment"
    }
+  },
+  "AttestationPolicyStatus": {
+   "type": "string",
+   "enum": [
+    "CONFIGURED"
+   ]
   },
   "Attribute": {
    "type": "structure",
@@ -5362,6 +5370,9 @@
     },
     "host": {
      "shape": "HostVolumeProperties"
+    },
+    "logDriverVolumeConfiguration": {
+     "shape": "LogDriverVolumeConfiguration"
     }
    }
   },
@@ -8103,6 +8114,9 @@
     },
     "capacityReservations": {
      "shape": "CapacityReservationRequest"
+    },
+    "nitroEnclavesEnabled": {
+     "shape": "BoxedBoolean"
     }
    }
   },
@@ -8240,6 +8254,14 @@
     "host",
     "task",
     "none"
+   ]
+  },
+  "IsolationMode": {
+   "type": "string",
+   "enum": [
+    "SHARED",
+    "ISOLATED_SANDBOX",
+    "CONFIDENTIAL_SANDBOX"
    ]
   },
   "KernelCapabilities": {
@@ -8948,6 +8970,17 @@
     "splunk",
     "awsfirelens"
    ]
+  },
+  "LogDriverVolumeConfiguration": {
+   "type": "structure",
+   "required": [
+    "driver"
+   ],
+   "members": {
+    "driver": {
+     "shape": "LogDriver"
+    }
+   }
   },
   "Long": {
    "type": "long"
@@ -10195,6 +10228,9 @@
     },
     "enableFaultInjection": {
      "shape": "BoxedBoolean"
+    },
+    "trustedExecutionConfiguration": {
+     "shape": "TrustedExecutionConfiguration"
     }
    }
   },
@@ -11885,6 +11921,9 @@
     },
     "fargateEphemeralStorage": {
      "shape": "TaskEphemeralStorage"
+    },
+    "trustedExecutionSummary": {
+     "shape": "TrustedExecutionSummary"
     }
    }
   },
@@ -11968,6 +12007,9 @@
     },
     "enableFaultInjection": {
      "shape": "BoxedBoolean"
+    },
+    "trustedExecutionConfiguration": {
+     "shape": "TrustedExecutionConfiguration"
     }
    }
   },
@@ -12369,6 +12411,34 @@
     "tcp",
     "udp"
    ]
+  },
+  "TrustedExecutionConfiguration": {
+   "type": "structure",
+   "required": [
+    "isolationMode"
+   ],
+   "members": {
+    "isolationMode": {
+     "shape": "IsolationMode"
+    },
+    "attestationPolicy": {
+     "shape": "String"
+    }
+   }
+  },
+  "TrustedExecutionSummary": {
+   "type": "structure",
+   "required": [
+    "isolationMode"
+   ],
+   "members": {
+    "isolationMode": {
+     "shape": "IsolationMode"
+    },
+    "attestationPolicyStatus": {
+     "shape": "AttestationPolicyStatus"
+    }
+   }
   },
   "Ulimit": {
    "type": "structure",

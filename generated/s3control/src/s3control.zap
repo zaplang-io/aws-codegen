@@ -17,7 +17,7 @@
 #
 # Coverage (rest-xml): 97 operations — 96 with a generated method,
 #   1 skipped (a body member is not yet serializable by the XML emitter).
-#   319 structs (plain carriers), 49 enums, 12 error variants.
+#   319 structs (plain carriers), 50 enums, 12 error variants.
 #   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -138,6 +138,13 @@ enum GranteeType:
     DIRECTORY_USER
     DIRECTORY_GROUP
     IAM
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InstanceScope:
+    SELF
+    ALL
     Unknown(str value)
 
 @derive(Json)
@@ -1022,11 +1029,13 @@ struct GetDataAccessRequest:
     Optional[str] Privilege
     Optional[str] TargetType
     Optional[str] AuditContext
+    Optional[str] InstanceScope
 
 struct GetDataAccessResult:
     Optional[Credentials] Credentials
     Optional[str] MatchedGrantTarget
     Optional[Grantee] Grantee
+    Optional[str] MatchedInstanceArn
 
 struct GetJobTaggingRequest:
     str AccountId
@@ -1341,6 +1350,7 @@ struct ListCallerAccessGrantsEntry:
     Optional[str] Permission
     Optional[str] GrantScope
     Optional[str] ApplicationArn
+    Optional[str] AccessGrantsInstanceArn
 
 struct ListCallerAccessGrantsRequest:
     str AccountId
@@ -1348,6 +1358,7 @@ struct ListCallerAccessGrantsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[bool] AllowedByApplication
+    Optional[str] InstanceScope
 
 struct ListCallerAccessGrantsResult:
     Optional[str] NextToken
@@ -3317,6 +3328,8 @@ struct S3_ControlClient:
             query["targetType"] = input.TargetType.unwrap_or("")
         if input.AuditContext.is_some():
             query["auditContext"] = input.AuditContext.unwrap_or("")
+        if input.InstanceScope.is_some():
+            query["instanceScope"] = input.InstanceScope.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
         auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/dataaccess", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
@@ -3523,6 +3536,8 @@ struct S3_ControlClient:
         if input.AllowedByApplication.is_some():
             auto qt0 = s3_control_bind_bool(input.AllowedByApplication.unwrap_or(False))
             query["allowedByApplication"] = qt0
+        if input.InstanceScope.is_some():
+            query["instanceScope"] = input.InstanceScope.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
         auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/caller/grants", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")

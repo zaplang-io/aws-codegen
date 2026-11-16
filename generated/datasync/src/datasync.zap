@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS DataSync (serviceId DataSync, API 2018-11-09)
-# Protocol: awsJson 1.1 (targetPrefix FmrsService)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service datasync, service shape FmrsService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 53 operations — 53 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   151 structs (103 @derive(Json)), 40 enums, 2 error variants.
-#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 53 operations — 53 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   156 structs (plain carriers), 40 enums, 2 error variants.
+#   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,12 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
-import base64
+import aws_core.cbor
 
-# The DataSync awsJson protocol: version 1.1, API id "FmrsService".
-def datasync_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("FmrsService", "datasync")
+# The DataSync smithy-rpc-v2-cbor protocol: SigV4 service "datasync" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/FmrsService/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def datasync_service() -> str:
+    return "datasync"
 
 # --- enums -----------------------------------------------------------------
 
@@ -66,6 +69,7 @@ enum AzureAccessTier:
 enum AzureBlobAuthenticationType:
     SAS
     NONE
+    OIDC
     Unknown(str value)
 
 @derive(Json)
@@ -366,34 +370,34 @@ enum VerifyMode:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AgentListEntry:
     Optional[str] AgentArn
     Optional[str] Name
-    Optional[AgentStatus] Status
+    Optional[str] Status
     Optional[Platform] Platform
 
-@derive(Json)
 struct AzureBlobSasConfiguration:
     str Token
 
-@derive(Json)
+struct AzureFederatedIdentityConfig:
+    Optional[str] AwsIamRole
+    Optional[AzureOidcConfig] AzureOidc
+
+struct AzureOidcConfig:
+    str TenantId
+    str ClientId
+
 struct CancelTaskExecutionRequest:
     str TaskExecutionArn
 
-@derive(Json)
 struct CancelTaskExecutionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct CmkSecretConfig:
     Optional[str] SecretArn
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Tags: list[TagListEntry], SubnetArns: list[str], SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateAgentRequest:
     str ActivationKey
     Optional[str] AgentName
@@ -402,32 +406,25 @@ struct CreateAgentRequest:
     Optional[list[str]] SubnetArns
     Optional[list[str]] SecurityGroupArns
 
-@derive(Json)
 struct CreateAgentResponse:
     Optional[str] AgentArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationAzureBlobRequest:
     str ContainerUrl
-    AzureBlobAuthenticationType AuthenticationType
+    str AuthenticationType
     Optional[AzureBlobSasConfiguration] SasConfiguration
+    Optional[AzureFederatedIdentityConfig] FederatedIdentity
     Optional[str] BlobType
-    Optional[AzureAccessTier] AccessTier
+    Optional[str] AccessTier
     Optional[str] Subdirectory
     Optional[list[str]] AgentArns
     Optional[list[TagListEntry]] Tags
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct CreateLocationAzureBlobResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) Ec2Config: Ec2Config, Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationEfsRequest:
     Optional[str] Subdirectory
     str EfsFilesystemArn
@@ -435,28 +432,20 @@ struct CreateLocationEfsRequest:
     Optional[list[TagListEntry]] Tags
     Optional[str] AccessPointArn
     Optional[str] FileSystemAccessRoleArn
-    Optional[EfsInTransitEncryption] InTransitEncryption
+    Optional[str] InTransitEncryption
 
-@derive(Json)
 struct CreateLocationEfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationFsxLustreRequest:
     str FsxFilesystemArn
     list[str] SecurityGroupArns
     Optional[str] Subdirectory
     Optional[list[TagListEntry]] Tags
 
-@derive(Json)
 struct CreateLocationFsxLustreResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationFsxOntapRequest:
     FsxProtocol Protocol
     list[str] SecurityGroupArns
@@ -464,13 +453,9 @@ struct CreateLocationFsxOntapRequest:
     Optional[str] Subdirectory
     Optional[list[TagListEntry]] Tags
 
-@derive(Json)
 struct CreateLocationFsxOntapResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationFsxOpenZfsRequest:
     str FsxFilesystemArn
     FsxProtocol Protocol
@@ -478,13 +463,9 @@ struct CreateLocationFsxOpenZfsRequest:
     Optional[str] Subdirectory
     Optional[list[TagListEntry]] Tags
 
-@derive(Json)
 struct CreateLocationFsxOpenZfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationFsxWindowsRequest:
     Optional[str] Subdirectory
     str FsxFilesystemArn
@@ -496,13 +477,9 @@ struct CreateLocationFsxWindowsRequest:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct CreateLocationFsxWindowsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationHdfsRequest:
     Optional[str] Subdirectory
     list[HdfsNameNode] NameNodes
@@ -510,7 +487,7 @@ struct CreateLocationHdfsRequest:
     Optional[int64] ReplicationFactor
     Optional[str] KmsKeyProviderUri
     Optional[QopConfiguration] QopConfiguration
-    HdfsAuthenticationType AuthenticationType
+    str AuthenticationType
     Optional[str] SimpleUser
     Optional[str] KerberosPrincipal
     Optional[bytes] KerberosKeytab
@@ -520,13 +497,9 @@ struct CreateLocationHdfsRequest:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct CreateLocationHdfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) OnPremConfig: OnPremConfig, Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationNfsRequest:
     str Subdirectory
     str ServerHostname
@@ -534,49 +507,38 @@ struct CreateLocationNfsRequest:
     Optional[NfsMountOptions] MountOptions
     Optional[list[TagListEntry]] Tags
 
-@derive(Json)
 struct CreateLocationNfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationObjectStorageRequest:
     str ServerHostname
     Optional[int64] ServerPort
-    Optional[ObjectStorageServerProtocol] ServerProtocol
+    Optional[str] ServerProtocol
     Optional[str] Subdirectory
     str BucketName
     Optional[str] AccessKey
     Optional[str] SecretKey
+    Optional[ObjectStorageFederatedIdentityConfig] FederatedIdentity
     Optional[list[str]] AgentArns
     Optional[list[TagListEntry]] Tags
     Optional[bytes] ServerCertificate
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct CreateLocationObjectStorageResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationS3Request:
     Optional[str] Subdirectory
     str S3BucketArn
-    Optional[S3StorageClass] S3StorageClass
+    Optional[str] S3StorageClass
     S3Config S3Config
     Optional[list[str]] AgentArns
     Optional[list[TagListEntry]] Tags
 
-@derive(Json)
 struct CreateLocationS3Response:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry], DnsIpAddresses: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateLocationSmbRequest:
     str Subdirectory
     str ServerHostname
@@ -588,19 +550,15 @@ struct CreateLocationSmbRequest:
     list[str] AgentArns
     Optional[SmbMountOptions] MountOptions
     Optional[list[TagListEntry]] Tags
-    Optional[SmbAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
     Optional[list[str]] DnsIpAddresses
     Optional[str] KerberosPrincipal
     Optional[bytes] KerberosKeytab
     Optional[bytes] KerberosKrb5Conf
 
-@derive(Json)
 struct CreateLocationSmbResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) Excludes: list[FilterRule], Tags: list[TagListEntry], Includes: list[FilterRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateTaskRequest:
     str SourceLocationArn
     str DestinationLocationArn
@@ -613,87 +571,68 @@ struct CreateTaskRequest:
     Optional[list[FilterRule]] Includes
     Optional[ManifestConfig] ManifestConfig
     Optional[TaskReportConfig] TaskReportConfig
-    Optional[TaskMode] TaskMode
+    Optional[str] TaskMode
 
-@derive(Json)
 struct CreateTaskResponse:
     Optional[str] TaskArn
 
-@derive(Json)
 struct CustomSecretConfig:
     Optional[str] SecretArn
     Optional[str] SecretAccessRoleArn
 
-@derive(Json)
 struct DeleteAgentRequest:
     str AgentArn
 
-@derive(Json)
 struct DeleteAgentResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteLocationRequest:
     str LocationArn
 
-@derive(Json)
 struct DeleteLocationResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteTaskRequest:
     str TaskArn
 
-@derive(Json)
 struct DeleteTaskResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeAgentRequest:
     str AgentArn
 
-# no @derive(Json): member(s) PrivateLinkConfig: PrivateLinkConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeAgentResponse:
     Optional[str] AgentArn
     Optional[str] Name
-    Optional[AgentStatus] Status
+    Optional[str] Status
     Optional[DateTime] LastConnectionTime
     Optional[DateTime] CreationTime
-    Optional[EndpointType] EndpointType
+    Optional[str] EndpointType
     Optional[PrivateLinkConfig] PrivateLinkConfig
     Optional[Platform] Platform
 
-@derive(Json)
 struct DescribeLocationAzureBlobRequest:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationAzureBlobResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
-    Optional[AzureBlobAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
+    Optional[AzureFederatedIdentityConfig] FederatedIdentity
     Optional[str] BlobType
-    Optional[AzureAccessTier] AccessTier
+    Optional[str] AccessTier
     Optional[list[str]] AgentArns
     Optional[DateTime] CreationTime
     Optional[ManagedSecretConfig] ManagedSecretConfig
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct DescribeLocationEfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) Ec2Config: Ec2Config not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationEfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -701,28 +640,20 @@ struct DescribeLocationEfsResponse:
     Optional[DateTime] CreationTime
     Optional[str] AccessPointArn
     Optional[str] FileSystemAccessRoleArn
-    Optional[EfsInTransitEncryption] InTransitEncryption
+    Optional[str] InTransitEncryption
 
-@derive(Json)
 struct DescribeLocationFsxLustreRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationFsxLustreResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
     Optional[list[str]] SecurityGroupArns
     Optional[DateTime] CreationTime
 
-@derive(Json)
 struct DescribeLocationFsxOntapRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationFsxOntapResponse:
     Optional[DateTime] CreationTime
     Optional[str] LocationArn
@@ -732,13 +663,9 @@ struct DescribeLocationFsxOntapResponse:
     Optional[str] StorageVirtualMachineArn
     Optional[str] FsxFilesystemArn
 
-@derive(Json)
 struct DescribeLocationFsxOpenZfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationFsxOpenZfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -746,13 +673,9 @@ struct DescribeLocationFsxOpenZfsResponse:
     Optional[FsxProtocol] Protocol
     Optional[DateTime] CreationTime
 
-@derive(Json)
 struct DescribeLocationFsxWindowsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationFsxWindowsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -764,13 +687,9 @@ struct DescribeLocationFsxWindowsResponse:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct DescribeLocationHdfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationHdfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -779,7 +698,7 @@ struct DescribeLocationHdfsResponse:
     Optional[int64] ReplicationFactor
     Optional[str] KmsKeyProviderUri
     Optional[QopConfiguration] QopConfiguration
-    Optional[HdfsAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
     Optional[str] SimpleUser
     Optional[str] KerberosPrincipal
     Optional[list[str]] AgentArns
@@ -788,13 +707,9 @@ struct DescribeLocationHdfsResponse:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct DescribeLocationNfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) OnPremConfig: OnPremConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationNfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -802,19 +717,16 @@ struct DescribeLocationNfsResponse:
     Optional[NfsMountOptions] MountOptions
     Optional[DateTime] CreationTime
 
-@derive(Json)
 struct DescribeLocationObjectStorageRequest:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationObjectStorageResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
     Optional[str] AccessKey
+    Optional[ObjectStorageFederatedIdentityConfig] FederatedIdentity
     Optional[int64] ServerPort
-    Optional[ObjectStorageServerProtocol] ServerProtocol
+    Optional[str] ServerProtocol
     Optional[list[str]] AgentArns
     Optional[DateTime] CreationTime
     Optional[bytes] ServerCertificate
@@ -822,28 +734,20 @@ struct DescribeLocationObjectStorageResponse:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct DescribeLocationS3Request:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationS3Response:
     Optional[str] LocationArn
     Optional[str] LocationUri
-    Optional[S3StorageClass] S3StorageClass
+    Optional[str] S3StorageClass
     Optional[S3Config] S3Config
     Optional[list[str]] AgentArns
     Optional[DateTime] CreationTime
 
-@derive(Json)
 struct DescribeLocationSmbRequest:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], DnsIpAddresses: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeLocationSmbResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -854,21 +758,17 @@ struct DescribeLocationSmbResponse:
     Optional[DateTime] CreationTime
     Optional[list[str]] DnsIpAddresses
     Optional[str] KerberosPrincipal
-    Optional[SmbAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
     Optional[ManagedSecretConfig] ManagedSecretConfig
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct DescribeTaskExecutionRequest:
     str TaskExecutionArn
 
-# no @derive(Json): member(s) Excludes: list[FilterRule], Includes: list[FilterRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTaskExecutionResponse:
     Optional[str] TaskExecutionArn
-    Optional[TaskExecutionStatus] Status
+    Optional[str] Status
     Optional[Options] Options
     Optional[list[FilterRule]] Excludes
     Optional[list[FilterRule]] Includes
@@ -887,7 +787,7 @@ struct DescribeTaskExecutionResponse:
     Optional[int64] FilesVerified
     Optional[ReportResult] ReportResult
     Optional[int64] EstimatedFilesToDelete
-    Optional[TaskMode] TaskMode
+    Optional[str] TaskMode
     Optional[int64] FilesPrepared
     Optional[TaskExecutionFilesListedDetail] FilesListed
     Optional[TaskExecutionFilesFailedDetail] FilesFailed
@@ -903,16 +803,12 @@ struct DescribeTaskExecutionResponse:
     Optional[DateTime] LaunchTime
     Optional[DateTime] EndTime
 
-@derive(Json)
 struct DescribeTaskRequest:
     str TaskArn
 
-# no @derive(Json): member(s) SourceNetworkInterfaceArns: list[str], DestinationNetworkInterfaceArns: list[str], Excludes: list[FilterRule], Includes: list[FilterRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeTaskResponse:
     Optional[str] TaskArn
-    Optional[TaskStatus] Status
+    Optional[str] Status
     Optional[str] Name
     Optional[str] CurrentTaskExecutionArn
     Optional[str] SourceLocationArn
@@ -930,30 +826,23 @@ struct DescribeTaskResponse:
     Optional[ManifestConfig] ManifestConfig
     Optional[TaskReportConfig] TaskReportConfig
     Optional[TaskScheduleDetails] ScheduleDetails
-    Optional[TaskMode] TaskMode
+    Optional[str] TaskMode
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Ec2Config:
     str SubnetArn
     list[str] SecurityGroupArns
 
-@derive(Json)
 struct FilterRule:
     Optional[str] FilterType
     Optional[str] Value
 
-@derive(Json)
 struct FsxProtocol:
     Optional[FsxProtocolNfs] NFS
     Optional[FsxProtocolSmb] SMB
 
-@derive(Json)
 struct FsxProtocolNfs:
     Optional[NfsMountOptions] MountOptions
 
-@derive(Json)
 struct FsxProtocolSmb:
     Optional[str] Domain
     Optional[SmbMountOptions] MountOptions
@@ -963,12 +852,10 @@ struct FsxProtocolSmb:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct FsxUpdateProtocol:
     Optional[FsxProtocolNfs] NFS
     Optional[FsxUpdateProtocolSmb] SMB
 
-@derive(Json)
 struct FsxUpdateProtocolSmb:
     Optional[str] Domain
     Optional[SmbMountOptions] MountOptions
@@ -977,209 +864,167 @@ struct FsxUpdateProtocolSmb:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
+struct GoogleOidcConfig:
+    str ProjectName
+    str ProjectNumber
+    str IdentityPoolName
+    str IdentityProviderName
+
 struct HdfsNameNode:
     str Hostname
     int64 Port
 
-@derive(Json)
 struct InternalException:
     Optional[str] message
     Optional[str] errorCode
 
-@derive(Json)
 struct InvalidRequestException:
     Optional[str] message
     Optional[str] errorCode
     Optional[str] datasyncErrorCode
 
-@derive(Json)
 struct ListAgentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Agents: list[AgentListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAgentsResponse:
     Optional[list[AgentListEntry]] Agents
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[LocationFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListLocationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[LocationFilter]] Filters
 
-# no @derive(Json): member(s) Locations: list[LocationListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListLocationsResponse:
     Optional[list[LocationListEntry]] Locations
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceArn
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[TagListEntry]] Tags
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTaskExecutionsRequest:
     Optional[str] TaskArn
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TaskExecutions: list[TaskExecutionListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTaskExecutionsResponse:
     Optional[list[TaskExecutionListEntry]] TaskExecutions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[TaskFilter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTasksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[TaskFilter]] Filters
 
-# no @derive(Json): member(s) Tasks: list[TaskListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTasksResponse:
     Optional[list[TaskListEntry]] Tasks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct LocationFilter:
-    LocationFilterName Name
+    str Name
     list[str] Values
-    Operator Operator
+    str Operator
 
-@derive(Json)
 struct LocationListEntry:
     Optional[str] LocationArn
     Optional[str] LocationUri
 
-@derive(Json)
 struct ManagedSecretConfig:
     Optional[str] SecretArn
 
-@derive(Json)
 struct ManifestConfig:
     Optional[str] Action
     Optional[str] Format
     Optional[SourceManifestConfig] Source
 
-@derive(Json)
 struct NfsMountOptions:
-    Optional[NfsVersion] Version
+    Optional[str] Version
 
-# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
+struct ObjectStorageExternalIdentityConfig:
+    Optional[GoogleOidcConfig] GoogleOidc
+
+struct ObjectStorageFederatedIdentityConfig:
+    Optional[str] AwsIamRole
+    Optional[ObjectStorageExternalIdentityConfig] ExternalIdentity
+
 struct OnPremConfig:
     list[str] AgentArns
 
-@derive(Json)
 struct Options:
-    Optional[VerifyMode] VerifyMode
-    Optional[OverwriteMode] OverwriteMode
-    Optional[Atime] Atime
-    Optional[Mtime] Mtime
-    Optional[Uid] Uid
-    Optional[Gid] Gid
-    Optional[PreserveDeletedFiles] PreserveDeletedFiles
-    Optional[PreserveDevices] PreserveDevices
-    Optional[PosixPermissions] PosixPermissions
+    Optional[str] VerifyMode
+    Optional[str] OverwriteMode
+    Optional[str] Atime
+    Optional[str] Mtime
+    Optional[str] Uid
+    Optional[str] Gid
+    Optional[str] PreserveDeletedFiles
+    Optional[str] PreserveDevices
+    Optional[str] PosixPermissions
     Optional[int64] BytesPerSecond
-    Optional[TaskQueueing] TaskQueueing
-    Optional[LogLevel] LogLevel
-    Optional[TransferMode] TransferMode
-    Optional[SmbSecurityDescriptorCopyFlags] SecurityDescriptorCopyFlags
-    Optional[ObjectTags] ObjectTags
-    Optional[ObjectMetadata] ObjectMetadata
+    Optional[str] TaskQueueing
+    Optional[str] LogLevel
+    Optional[str] TransferMode
+    Optional[str] SecurityDescriptorCopyFlags
+    Optional[str] ObjectTags
+    Optional[str] ObjectMetadata
 
-@derive(Json)
 struct Platform:
     Optional[str] Version
 
-# no @derive(Json): member(s) SubnetArns: list[str], SecurityGroupArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PrivateLinkConfig:
     Optional[str] VpcEndpointId
     Optional[str] PrivateLinkEndpoint
     Optional[list[str]] SubnetArns
     Optional[list[str]] SecurityGroupArns
 
-@derive(Json)
 struct QopConfiguration:
-    Optional[HdfsRpcProtection] RpcProtection
-    Optional[HdfsDataTransferProtection] DataTransferProtection
+    Optional[str] RpcProtection
+    Optional[str] DataTransferProtection
 
-@derive(Json)
 struct ReportDestination:
     Optional[ReportDestinationS3] S3
 
-@derive(Json)
 struct ReportDestinationS3:
     Optional[str] Subdirectory
     str S3BucketArn
     str BucketAccessRoleArn
 
-@derive(Json)
 struct ReportOverride:
-    Optional[ReportLevel] ReportLevel
+    Optional[str] ReportLevel
 
-@derive(Json)
 struct ReportOverrides:
     Optional[ReportOverride] Transferred
     Optional[ReportOverride] Verified
     Optional[ReportOverride] Deleted
     Optional[ReportOverride] Skipped
 
-@derive(Json)
 struct ReportResult:
-    Optional[PhaseStatus] Status
+    Optional[str] Status
     Optional[str] ErrorCode
     Optional[str] ErrorDetail
 
-@derive(Json)
 struct S3Config:
     str BucketAccessRoleArn
 
-@derive(Json)
 struct S3ManifestConfig:
     str ManifestObjectPath
     str BucketAccessRoleArn
     str S3BucketArn
     Optional[str] ManifestObjectVersionId
 
-@derive(Json)
 struct SmbMountOptions:
-    Optional[SmbVersion] Version
+    Optional[str] Version
 
-@derive(Json)
 struct SourceManifestConfig:
     S3ManifestConfig S3
 
-# no @derive(Json): member(s) Includes: list[FilterRule], Excludes: list[FilterRule], Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct StartTaskExecutionRequest:
     str TaskArn
     Optional[Options] OverrideOptions
@@ -1189,40 +1034,31 @@ struct StartTaskExecutionRequest:
     Optional[TaskReportConfig] TaskReportConfig
     Optional[list[TagListEntry]] Tags
 
-@derive(Json)
 struct StartTaskExecutionResponse:
     Optional[str] TaskExecutionArn
 
-@derive(Json)
 struct TagListEntry:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[TagListEntry] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[TagListEntry] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TaskExecutionFilesFailedDetail:
     Optional[int64] Prepare
     Optional[int64] Transfer
     Optional[int64] Verify
     Optional[int64] Delete
 
-@derive(Json)
 struct TaskExecutionFilesListedDetail:
     Optional[int64] AtSource
     Optional[int64] AtDestinationForDelete
 
-@derive(Json)
 struct TaskExecutionFoldersFailedDetail:
     Optional[int64] List
     Optional[int64] Prepare
@@ -1230,150 +1066,122 @@ struct TaskExecutionFoldersFailedDetail:
     Optional[int64] Verify
     Optional[int64] Delete
 
-@derive(Json)
 struct TaskExecutionFoldersListedDetail:
     Optional[int64] AtSource
     Optional[int64] AtDestinationForDelete
 
-@derive(Json)
 struct TaskExecutionListEntry:
     Optional[str] TaskExecutionArn
-    Optional[TaskExecutionStatus] Status
-    Optional[TaskMode] TaskMode
+    Optional[str] Status
+    Optional[str] TaskMode
 
-@derive(Json)
 struct TaskExecutionResultDetail:
     Optional[int64] PrepareDuration
-    Optional[PhaseStatus] PrepareStatus
+    Optional[str] PrepareStatus
     Optional[int64] TotalDuration
     Optional[int64] TransferDuration
-    Optional[PhaseStatus] TransferStatus
+    Optional[str] TransferStatus
     Optional[int64] VerifyDuration
-    Optional[PhaseStatus] VerifyStatus
+    Optional[str] VerifyStatus
     Optional[str] ErrorCode
     Optional[str] ErrorDetail
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TaskFilter:
-    TaskFilterName Name
+    str Name
     list[str] Values
-    Operator Operator
+    str Operator
 
-@derive(Json)
 struct TaskListEntry:
     Optional[str] TaskArn
-    Optional[TaskStatus] Status
+    Optional[str] Status
     Optional[str] Name
-    Optional[TaskMode] TaskMode
+    Optional[str] TaskMode
 
-@derive(Json)
 struct TaskReportConfig:
     Optional[ReportDestination] Destination
-    Optional[ReportOutputType] OutputType
-    Optional[ReportLevel] ReportLevel
-    Optional[ObjectVersionIds] ObjectVersionIds
+    Optional[str] OutputType
+    Optional[str] ReportLevel
+    Optional[str] ObjectVersionIds
     Optional[ReportOverrides] Overrides
 
-@derive(Json)
 struct TaskSchedule:
     str ScheduleExpression
-    Optional[ScheduleStatus] Status
+    Optional[str] Status
 
-@derive(Json)
 struct TaskScheduleDetails:
     Optional[DateTime] StatusUpdateTime
     Optional[str] DisabledReason
-    Optional[ScheduleDisabledBy] DisabledBy
+    Optional[str] DisabledBy
 
-# no @derive(Json): member(s) Keys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] Keys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateAgentRequest:
     str AgentArn
     Optional[str] Name
 
-@derive(Json)
 struct UpdateAgentResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLocationAzureBlobRequest:
     str LocationArn
     Optional[str] Subdirectory
-    Optional[AzureBlobAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
     Optional[AzureBlobSasConfiguration] SasConfiguration
+    Optional[AzureFederatedIdentityConfig] FederatedIdentity
     Optional[str] BlobType
-    Optional[AzureAccessTier] AccessTier
+    Optional[str] AccessTier
     Optional[list[str]] AgentArns
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct UpdateLocationAzureBlobResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateLocationEfsRequest:
     str LocationArn
     Optional[str] Subdirectory
     Optional[str] AccessPointArn
     Optional[str] FileSystemAccessRoleArn
-    Optional[EfsInTransitEncryption] InTransitEncryption
+    Optional[str] InTransitEncryption
 
-@derive(Json)
 struct UpdateLocationEfsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateLocationFsxLustreRequest:
     str LocationArn
     Optional[str] Subdirectory
 
-@derive(Json)
 struct UpdateLocationFsxLustreResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateLocationFsxOntapRequest:
     str LocationArn
     Optional[FsxUpdateProtocol] Protocol
     Optional[str] Subdirectory
 
-@derive(Json)
 struct UpdateLocationFsxOntapResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateLocationFsxOpenZfsRequest:
     str LocationArn
     Optional[FsxProtocol] Protocol
     Optional[str] Subdirectory
 
-@derive(Json)
 struct UpdateLocationFsxOpenZfsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateLocationFsxWindowsRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1383,14 +1191,10 @@ struct UpdateLocationFsxWindowsRequest:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct UpdateLocationFsxWindowsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLocationHdfsRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1399,7 +1203,7 @@ struct UpdateLocationHdfsRequest:
     Optional[int64] ReplicationFactor
     Optional[str] KmsKeyProviderUri
     Optional[QopConfiguration] QopConfiguration
-    Optional[HdfsAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
     Optional[str] SimpleUser
     Optional[str] KerberosPrincipal
     Optional[bytes] KerberosKeytab
@@ -1408,14 +1212,10 @@ struct UpdateLocationHdfsRequest:
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct UpdateLocationHdfsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) OnPremConfig: OnPremConfig not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLocationNfsRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1423,47 +1223,38 @@ struct UpdateLocationNfsRequest:
     Optional[OnPremConfig] OnPremConfig
     Optional[NfsMountOptions] MountOptions
 
-@derive(Json)
 struct UpdateLocationNfsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLocationObjectStorageRequest:
     str LocationArn
     Optional[int64] ServerPort
-    Optional[ObjectStorageServerProtocol] ServerProtocol
+    Optional[str] ServerProtocol
     Optional[str] Subdirectory
     Optional[str] ServerHostname
     Optional[str] AccessKey
     Optional[str] SecretKey
+    Optional[ObjectStorageFederatedIdentityConfig] FederatedIdentity
     Optional[list[str]] AgentArns
     Optional[bytes] ServerCertificate
     Optional[CmkSecretConfig] CmkSecretConfig
     Optional[CustomSecretConfig] CustomSecretConfig
 
-@derive(Json)
 struct UpdateLocationObjectStorageResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateLocationS3Request:
     str LocationArn
     Optional[str] Subdirectory
-    Optional[S3StorageClass] S3StorageClass
+    Optional[str] S3StorageClass
     Optional[S3Config] S3Config
 
-@derive(Json)
 struct UpdateLocationS3Response:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) AgentArns: list[str], DnsIpAddresses: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateLocationSmbRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1475,30 +1266,24 @@ struct UpdateLocationSmbRequest:
     Optional[CustomSecretConfig] CustomSecretConfig
     Optional[list[str]] AgentArns
     Optional[SmbMountOptions] MountOptions
-    Optional[SmbAuthenticationType] AuthenticationType
+    Optional[str] AuthenticationType
     Optional[list[str]] DnsIpAddresses
     Optional[str] KerberosPrincipal
     Optional[bytes] KerberosKeytab
     Optional[bytes] KerberosKrb5Conf
 
-@derive(Json)
 struct UpdateLocationSmbResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateTaskExecutionRequest:
     str TaskExecutionArn
     Options Options
 
-@derive(Json)
 struct UpdateTaskExecutionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Excludes: list[FilterRule], Includes: list[FilterRule] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateTaskRequest:
     str TaskArn
     Optional[Options] Options
@@ -1510,9 +1295,8 @@ struct UpdateTaskRequest:
     Optional[ManifestConfig] ManifestConfig
     Optional[TaskReportConfig] TaskReportConfig
 
-@derive(Json)
 struct UpdateTaskResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
 # --- errors ----------------------------------------------------------------
@@ -1522,7 +1306,7 @@ struct UpdateTaskResponse:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -1559,817 +1343,1870 @@ def datasync_error_name(DataSyncErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def datasync_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListAgents
+#   ListLocations
+#   ListTagsForResource
+#   ListTaskExecutions
+#   ListTasks
 
-def datasync_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def datasync_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize AzureBlobSasConfiguration to a CBOR map (member wire name -> value, model order).
+def azure_blob_sas_configuration_to_cbor(AzureBlobSasConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Token")
+    vals.append(cbor.cbor_text(v.Token))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AzureFederatedIdentityConfig to a CBOR map (member wire name -> value, model order).
+def azure_federated_identity_config_to_cbor(AzureFederatedIdentityConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AwsIamRole.is_some():
+        auto u0 = v.AwsIamRole.unwrap()
+        keys.append("AwsIamRole")
+        vals.append(cbor.cbor_text(u0))
+    if v.AzureOidc.is_some():
+        auto u1 = v.AzureOidc.unwrap()
+        keys.append("AzureOidc")
+        vals.append(azure_oidc_config_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateAgentRequest to a compact JSON object (declaration order).
-def create_agent_request_to_json(CreateAgentRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ActivationKey\":" + datasync_json_str(v.ActivationKey))
+# Serialize AzureOidcConfig to a CBOR map (member wire name -> value, model order).
+def azure_oidc_config_to_cbor(AzureOidcConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TenantId")
+    vals.append(cbor.cbor_text(v.TenantId))
+    keys.append("ClientId")
+    vals.append(cbor.cbor_text(v.ClientId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CancelTaskExecutionRequest to a CBOR map (member wire name -> value, model order).
+def cancel_task_execution_request_to_cbor(CancelTaskExecutionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskExecutionArn")
+    vals.append(cbor.cbor_text(v.TaskExecutionArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CmkSecretConfig to a CBOR map (member wire name -> value, model order).
+def cmk_secret_config_to_cbor(CmkSecretConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SecretArn.is_some():
+        auto u0 = v.SecretArn.unwrap()
+        keys.append("SecretArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.KmsKeyArn.is_some():
+        auto u1 = v.KmsKeyArn.unwrap()
+        keys.append("KmsKeyArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateAgentRequest to a CBOR map (member wire name -> value, model order).
+def create_agent_request_to_cbor(CreateAgentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ActivationKey")
+    vals.append(cbor.cbor_text(v.ActivationKey))
     if v.AgentName.is_some():
         auto u0 = v.AgentName.unwrap()
-        parts.append("\"AgentName\":" + datasync_json_str(u0))
+        keys.append("AgentName")
+        vals.append(cbor.cbor_text(u0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e2))
+            e2.append(tag_list_entry_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
     if v.VpcEndpointId.is_some():
         auto u3 = v.VpcEndpointId.unwrap()
-        parts.append("\"VpcEndpointId\":" + datasync_json_str(u3))
+        keys.append("VpcEndpointId")
+        vals.append(cbor.cbor_text(u3))
     if v.SubnetArns.is_some():
         auto u4 = v.SubnetArns.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(datasync_json_str(x5))
-        parts.append("\"SubnetArns\":" + datasync_json_arr(e5))
+            e5.append(cbor.cbor_text(x5))
+        keys.append("SubnetArns")
+        vals.append(cbor.cbor_list(e5))
     if v.SecurityGroupArns.is_some():
         auto u6 = v.SecurityGroupArns.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(datasync_json_str(x7))
-        parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e7))
-    return datasync_json_obj(parts)
+            e7.append(cbor.cbor_text(x7))
+        keys.append("SecurityGroupArns")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateLocationAzureBlobRequest to a compact JSON object (declaration order).
-def create_location_azure_blob_request_to_json(CreateLocationAzureBlobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ContainerUrl\":" + datasync_json_str(v.ContainerUrl))
-    parts.append("\"AuthenticationType\":" + v.AuthenticationType.to_json())
+# Serialize CreateLocationAzureBlobRequest to a CBOR map (member wire name -> value, model order).
+def create_location_azure_blob_request_to_cbor(CreateLocationAzureBlobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ContainerUrl")
+    vals.append(cbor.cbor_text(v.ContainerUrl))
+    keys.append("AuthenticationType")
+    vals.append(cbor.cbor_text(v.AuthenticationType))
     if v.SasConfiguration.is_some():
         auto u0 = v.SasConfiguration.unwrap()
-        parts.append("\"SasConfiguration\":" + u0.to_json())
+        keys.append("SasConfiguration")
+        vals.append(azure_blob_sas_configuration_to_cbor(u0))
+    if v.FederatedIdentity.is_some():
+        auto u1 = v.FederatedIdentity.unwrap()
+        keys.append("FederatedIdentity")
+        vals.append(azure_federated_identity_config_to_cbor(u1))
     if v.BlobType.is_some():
-        auto u1 = v.BlobType.unwrap()
-        parts.append("\"BlobType\":" + datasync_json_str(u1))
+        auto u2 = v.BlobType.unwrap()
+        keys.append("BlobType")
+        vals.append(cbor.cbor_text(u2))
     if v.AccessTier.is_some():
-        auto u2 = v.AccessTier.unwrap()
-        parts.append("\"AccessTier\":" + u2.to_json())
+        auto u3 = v.AccessTier.unwrap()
+        keys.append("AccessTier")
+        vals.append(cbor.cbor_text(u3))
     if v.Subdirectory.is_some():
-        auto u3 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u3))
-    if v.AgentArns.is_some():
-        auto u4 = v.AgentArns.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(datasync_json_str(x5))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e5))
-    if v.Tags.is_some():
-        auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e7))
-    if v.CmkSecretConfig.is_some():
-        auto u8 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u8.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u9 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u9.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationEfsRequest to a compact JSON object (declaration order).
-def create_location_efs_request_to_json(CreateLocationEfsRequest v) -> str:
-    list[str] parts = []
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    parts.append("\"EfsFilesystemArn\":" + datasync_json_str(v.EfsFilesystemArn))
-    parts.append("\"Ec2Config\":" + ec2_config_to_json(v.Ec2Config))
-    if v.Tags.is_some():
-        auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e2))
-    if v.AccessPointArn.is_some():
-        auto u3 = v.AccessPointArn.unwrap()
-        parts.append("\"AccessPointArn\":" + datasync_json_str(u3))
-    if v.FileSystemAccessRoleArn.is_some():
-        auto u4 = v.FileSystemAccessRoleArn.unwrap()
-        parts.append("\"FileSystemAccessRoleArn\":" + datasync_json_str(u4))
-    if v.InTransitEncryption.is_some():
-        auto u5 = v.InTransitEncryption.unwrap()
-        parts.append("\"InTransitEncryption\":" + u5.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationFsxLustreRequest to a compact JSON object (declaration order).
-def create_location_fsx_lustre_request_to_json(CreateLocationFsxLustreRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FsxFilesystemArn\":" + datasync_json_str(v.FsxFilesystemArn))
-    list[str] e0 = []
-    for x0 in v.SecurityGroupArns:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
-    if v.Subdirectory.is_some():
-        auto u1 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u1))
-    if v.Tags.is_some():
-        auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e3))
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationFsxOntapRequest to a compact JSON object (declaration order).
-def create_location_fsx_ontap_request_to_json(CreateLocationFsxOntapRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Protocol\":" + v.Protocol.to_json())
-    list[str] e0 = []
-    for x0 in v.SecurityGroupArns:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
-    parts.append("\"StorageVirtualMachineArn\":" + datasync_json_str(v.StorageVirtualMachineArn))
-    if v.Subdirectory.is_some():
-        auto u1 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u1))
-    if v.Tags.is_some():
-        auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e3))
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationFsxOpenZfsRequest to a compact JSON object (declaration order).
-def create_location_fsx_open_zfs_request_to_json(CreateLocationFsxOpenZfsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"FsxFilesystemArn\":" + datasync_json_str(v.FsxFilesystemArn))
-    parts.append("\"Protocol\":" + v.Protocol.to_json())
-    list[str] e0 = []
-    for x0 in v.SecurityGroupArns:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
-    if v.Subdirectory.is_some():
-        auto u1 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u1))
-    if v.Tags.is_some():
-        auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e3))
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationFsxWindowsRequest to a compact JSON object (declaration order).
-def create_location_fsx_windows_request_to_json(CreateLocationFsxWindowsRequest v) -> str:
-    list[str] parts = []
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    parts.append("\"FsxFilesystemArn\":" + datasync_json_str(v.FsxFilesystemArn))
-    list[str] e1 = []
-    for x1 in v.SecurityGroupArns:
-        e1.append(datasync_json_str(x1))
-    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e1))
-    if v.Tags.is_some():
-        auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e3))
-    parts.append("\"User\":" + datasync_json_str(v.User))
-    if v.Domain.is_some():
-        auto u4 = v.Domain.unwrap()
-        parts.append("\"Domain\":" + datasync_json_str(u4))
-    if v.Password.is_some():
-        auto u5 = v.Password.unwrap()
-        parts.append("\"Password\":" + datasync_json_str(u5))
-    if v.CmkSecretConfig.is_some():
-        auto u6 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u6.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u7 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u7.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationHdfsRequest to a compact JSON object (declaration order).
-def create_location_hdfs_request_to_json(CreateLocationHdfsRequest v) -> str:
-    list[str] parts = []
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    list[str] e1 = []
-    for x1 in v.NameNodes:
-        e1.append(x1.to_json())
-    parts.append("\"NameNodes\":" + datasync_json_arr(e1))
-    if v.BlockSize.is_some():
-        auto u2 = v.BlockSize.unwrap()
-        parts.append("\"BlockSize\":" + str(u2))
-    if v.ReplicationFactor.is_some():
-        auto u3 = v.ReplicationFactor.unwrap()
-        parts.append("\"ReplicationFactor\":" + str(u3))
-    if v.KmsKeyProviderUri.is_some():
-        auto u4 = v.KmsKeyProviderUri.unwrap()
-        parts.append("\"KmsKeyProviderUri\":" + datasync_json_str(u4))
-    if v.QopConfiguration.is_some():
-        auto u5 = v.QopConfiguration.unwrap()
-        parts.append("\"QopConfiguration\":" + u5.to_json())
-    parts.append("\"AuthenticationType\":" + v.AuthenticationType.to_json())
-    if v.SimpleUser.is_some():
-        auto u6 = v.SimpleUser.unwrap()
-        parts.append("\"SimpleUser\":" + datasync_json_str(u6))
-    if v.KerberosPrincipal.is_some():
-        auto u7 = v.KerberosPrincipal.unwrap()
-        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u7))
-    if v.KerberosKeytab.is_some():
-        auto u8 = v.KerberosKeytab.unwrap()
-        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u8)))
-    if v.KerberosKrb5Conf.is_some():
-        auto u9 = v.KerberosKrb5Conf.unwrap()
-        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u9)))
-    list[str] e10 = []
-    for x10 in v.AgentArns:
-        e10.append(datasync_json_str(x10))
-    parts.append("\"AgentArns\":" + datasync_json_arr(e10))
-    if v.Tags.is_some():
-        auto u11 = v.Tags.unwrap()
-        list[str] e12 = []
-        for x12 in u11:
-            e12.append(x12.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e12))
-    if v.CmkSecretConfig.is_some():
-        auto u13 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u13.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u14 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u14.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationNfsRequest to a compact JSON object (declaration order).
-def create_location_nfs_request_to_json(CreateLocationNfsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Subdirectory\":" + datasync_json_str(v.Subdirectory))
-    parts.append("\"ServerHostname\":" + datasync_json_str(v.ServerHostname))
-    parts.append("\"OnPremConfig\":" + on_prem_config_to_json(v.OnPremConfig))
-    if v.MountOptions.is_some():
-        auto u0 = v.MountOptions.unwrap()
-        parts.append("\"MountOptions\":" + u0.to_json())
-    if v.Tags.is_some():
-        auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e2))
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationObjectStorageRequest to a compact JSON object (declaration order).
-def create_location_object_storage_request_to_json(CreateLocationObjectStorageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ServerHostname\":" + datasync_json_str(v.ServerHostname))
-    if v.ServerPort.is_some():
-        auto u0 = v.ServerPort.unwrap()
-        parts.append("\"ServerPort\":" + str(u0))
-    if v.ServerProtocol.is_some():
-        auto u1 = v.ServerProtocol.unwrap()
-        parts.append("\"ServerProtocol\":" + u1.to_json())
-    if v.Subdirectory.is_some():
-        auto u2 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u2))
-    parts.append("\"BucketName\":" + datasync_json_str(v.BucketName))
-    if v.AccessKey.is_some():
-        auto u3 = v.AccessKey.unwrap()
-        parts.append("\"AccessKey\":" + datasync_json_str(u3))
-    if v.SecretKey.is_some():
-        auto u4 = v.SecretKey.unwrap()
-        parts.append("\"SecretKey\":" + datasync_json_str(u4))
+        auto u4 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u4))
     if v.AgentArns.is_some():
         auto u5 = v.AgentArns.unwrap()
-        list[str] e6 = []
+        list[cbor.CborValue] e6 = []
         for x6 in u5:
-            e6.append(datasync_json_str(x6))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
+            e6.append(cbor.cbor_text(x6))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e6))
     if v.Tags.is_some():
         auto u7 = v.Tags.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e8))
-    if v.ServerCertificate.is_some():
-        auto u9 = v.ServerCertificate.unwrap()
-        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u9)))
-    if v.CmkSecretConfig.is_some():
-        auto u10 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u10.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u11 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u11.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationS3Request to a compact JSON object (declaration order).
-def create_location_s3_request_to_json(CreateLocationS3Request v) -> str:
-    list[str] parts = []
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    parts.append("\"S3BucketArn\":" + datasync_json_str(v.S3BucketArn))
-    if v.S3StorageClass.is_some():
-        auto u1 = v.S3StorageClass.unwrap()
-        parts.append("\"S3StorageClass\":" + u1.to_json())
-    parts.append("\"S3Config\":" + v.S3Config.to_json())
-    if v.AgentArns.is_some():
-        auto u2 = v.AgentArns.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(datasync_json_str(x3))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e3))
-    if v.Tags.is_some():
-        auto u4 = v.Tags.unwrap()
-        list[str] e5 = []
-        for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e5))
-    return datasync_json_obj(parts)
-
-# Serialize CreateLocationSmbRequest to a compact JSON object (declaration order).
-def create_location_smb_request_to_json(CreateLocationSmbRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Subdirectory\":" + datasync_json_str(v.Subdirectory))
-    parts.append("\"ServerHostname\":" + datasync_json_str(v.ServerHostname))
-    if v.User.is_some():
-        auto u0 = v.User.unwrap()
-        parts.append("\"User\":" + datasync_json_str(u0))
-    if v.Domain.is_some():
-        auto u1 = v.Domain.unwrap()
-        parts.append("\"Domain\":" + datasync_json_str(u1))
-    if v.Password.is_some():
-        auto u2 = v.Password.unwrap()
-        parts.append("\"Password\":" + datasync_json_str(u2))
-    if v.CmkSecretConfig.is_some():
-        auto u3 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u3.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u4 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u4.to_json())
-    list[str] e5 = []
-    for x5 in v.AgentArns:
-        e5.append(datasync_json_str(x5))
-    parts.append("\"AgentArns\":" + datasync_json_arr(e5))
-    if v.MountOptions.is_some():
-        auto u6 = v.MountOptions.unwrap()
-        parts.append("\"MountOptions\":" + u6.to_json())
-    if v.Tags.is_some():
-        auto u7 = v.Tags.unwrap()
-        list[str] e8 = []
-        for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e8))
-    if v.AuthenticationType.is_some():
-        auto u9 = v.AuthenticationType.unwrap()
-        parts.append("\"AuthenticationType\":" + u9.to_json())
-    if v.DnsIpAddresses.is_some():
-        auto u10 = v.DnsIpAddresses.unwrap()
-        list[str] e11 = []
-        for x11 in u10:
-            e11.append(datasync_json_str(x11))
-        parts.append("\"DnsIpAddresses\":" + datasync_json_arr(e11))
-    if v.KerberosPrincipal.is_some():
-        auto u12 = v.KerberosPrincipal.unwrap()
-        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u12))
-    if v.KerberosKeytab.is_some():
-        auto u13 = v.KerberosKeytab.unwrap()
-        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u13)))
-    if v.KerberosKrb5Conf.is_some():
-        auto u14 = v.KerberosKrb5Conf.unwrap()
-        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u14)))
-    return datasync_json_obj(parts)
-
-# Serialize CreateTaskRequest to a compact JSON object (declaration order).
-def create_task_request_to_json(CreateTaskRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"SourceLocationArn\":" + datasync_json_str(v.SourceLocationArn))
-    parts.append("\"DestinationLocationArn\":" + datasync_json_str(v.DestinationLocationArn))
-    if v.CloudWatchLogGroupArn.is_some():
-        auto u0 = v.CloudWatchLogGroupArn.unwrap()
-        parts.append("\"CloudWatchLogGroupArn\":" + datasync_json_str(u0))
-    if v.Name.is_some():
-        auto u1 = v.Name.unwrap()
-        parts.append("\"Name\":" + datasync_json_str(u1))
-    if v.Options.is_some():
-        auto u2 = v.Options.unwrap()
-        parts.append("\"Options\":" + u2.to_json())
-    if v.Excludes.is_some():
-        auto u3 = v.Excludes.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Excludes\":" + datasync_json_arr(e4))
-    if v.Schedule.is_some():
-        auto u5 = v.Schedule.unwrap()
-        parts.append("\"Schedule\":" + u5.to_json())
-    if v.Tags.is_some():
-        auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e7))
-    if v.Includes.is_some():
-        auto u8 = v.Includes.unwrap()
-        list[str] e9 = []
-        for x9 in u8:
-            e9.append(x9.to_json())
-        parts.append("\"Includes\":" + datasync_json_arr(e9))
-    if v.ManifestConfig.is_some():
-        auto u10 = v.ManifestConfig.unwrap()
-        parts.append("\"ManifestConfig\":" + u10.to_json())
-    if v.TaskReportConfig.is_some():
-        auto u11 = v.TaskReportConfig.unwrap()
-        parts.append("\"TaskReportConfig\":" + u11.to_json())
-    if v.TaskMode.is_some():
-        auto u12 = v.TaskMode.unwrap()
-        parts.append("\"TaskMode\":" + u12.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize Ec2Config to a compact JSON object (declaration order).
-def ec2_config_to_json(Ec2Config v) -> str:
-    list[str] parts = []
-    parts.append("\"SubnetArn\":" + datasync_json_str(v.SubnetArn))
-    list[str] e0 = []
-    for x0 in v.SecurityGroupArns:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
-    return datasync_json_obj(parts)
-
-# Serialize ListLocationsRequest to a compact JSON object (declaration order).
-def list_locations_request_to_json(ListLocationsRequest v) -> str:
-    list[str] parts = []
-    if v.MaxResults.is_some():
-        auto u0 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u0))
-    if v.NextToken.is_some():
-        auto u1 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + datasync_json_str(u1))
-    if v.Filters.is_some():
-        auto u2 = v.Filters.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(location_filter_to_json(x3))
-        parts.append("\"Filters\":" + datasync_json_arr(e3))
-    return datasync_json_obj(parts)
-
-# Serialize ListTasksRequest to a compact JSON object (declaration order).
-def list_tasks_request_to_json(ListTasksRequest v) -> str:
-    list[str] parts = []
-    if v.MaxResults.is_some():
-        auto u0 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u0))
-    if v.NextToken.is_some():
-        auto u1 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + datasync_json_str(u1))
-    if v.Filters.is_some():
-        auto u2 = v.Filters.unwrap()
-        list[str] e3 = []
-        for x3 in u2:
-            e3.append(task_filter_to_json(x3))
-        parts.append("\"Filters\":" + datasync_json_arr(e3))
-    return datasync_json_obj(parts)
-
-# Serialize LocationFilter to a compact JSON object (declaration order).
-def location_filter_to_json(LocationFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    list[str] e0 = []
-    for x0 in v.Values:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"Values\":" + datasync_json_arr(e0))
-    parts.append("\"Operator\":" + v.Operator.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize OnPremConfig to a compact JSON object (declaration order).
-def on_prem_config_to_json(OnPremConfig v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
-    for x0 in v.AgentArns:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"AgentArns\":" + datasync_json_arr(e0))
-    return datasync_json_obj(parts)
-
-# Serialize StartTaskExecutionRequest to a compact JSON object (declaration order).
-def start_task_execution_request_to_json(StartTaskExecutionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"TaskArn\":" + datasync_json_str(v.TaskArn))
-    if v.OverrideOptions.is_some():
-        auto u0 = v.OverrideOptions.unwrap()
-        parts.append("\"OverrideOptions\":" + u0.to_json())
-    if v.Includes.is_some():
-        auto u1 = v.Includes.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Includes\":" + datasync_json_arr(e2))
-    if v.Excludes.is_some():
-        auto u3 = v.Excludes.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Excludes\":" + datasync_json_arr(e4))
-    if v.ManifestConfig.is_some():
-        auto u5 = v.ManifestConfig.unwrap()
-        parts.append("\"ManifestConfig\":" + u5.to_json())
-    if v.TaskReportConfig.is_some():
-        auto u6 = v.TaskReportConfig.unwrap()
-        parts.append("\"TaskReportConfig\":" + u6.to_json())
-    if v.Tags.is_some():
-        auto u7 = v.Tags.unwrap()
-        list[str] e8 = []
-        for x8 in u7:
-            e8.append(x8.to_json())
-        parts.append("\"Tags\":" + datasync_json_arr(e8))
-    return datasync_json_obj(parts)
-
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + datasync_json_str(v.ResourceArn))
-    list[str] e0 = []
-    for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + datasync_json_arr(e0))
-    return datasync_json_obj(parts)
-
-# Serialize TaskFilter to a compact JSON object (declaration order).
-def task_filter_to_json(TaskFilter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + v.Name.to_json())
-    list[str] e0 = []
-    for x0 in v.Values:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"Values\":" + datasync_json_arr(e0))
-    parts.append("\"Operator\":" + v.Operator.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + datasync_json_str(v.ResourceArn))
-    list[str] e0 = []
-    for x0 in v.Keys:
-        e0.append(datasync_json_str(x0))
-    parts.append("\"Keys\":" + datasync_json_arr(e0))
-    return datasync_json_obj(parts)
-
-# Serialize UpdateLocationAzureBlobRequest to a compact JSON object (declaration order).
-def update_location_azure_blob_request_to_json(UpdateLocationAzureBlobRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    if v.AuthenticationType.is_some():
-        auto u1 = v.AuthenticationType.unwrap()
-        parts.append("\"AuthenticationType\":" + u1.to_json())
-    if v.SasConfiguration.is_some():
-        auto u2 = v.SasConfiguration.unwrap()
-        parts.append("\"SasConfiguration\":" + u2.to_json())
-    if v.BlobType.is_some():
-        auto u3 = v.BlobType.unwrap()
-        parts.append("\"BlobType\":" + datasync_json_str(u3))
-    if v.AccessTier.is_some():
-        auto u4 = v.AccessTier.unwrap()
-        parts.append("\"AccessTier\":" + u4.to_json())
-    if v.AgentArns.is_some():
-        auto u5 = v.AgentArns.unwrap()
-        list[str] e6 = []
-        for x6 in u5:
-            e6.append(datasync_json_str(x6))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
-    if v.CmkSecretConfig.is_some():
-        auto u7 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u7.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u8 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u8.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize UpdateLocationHdfsRequest to a compact JSON object (declaration order).
-def update_location_hdfs_request_to_json(UpdateLocationHdfsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    if v.NameNodes.is_some():
-        auto u1 = v.NameNodes.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"NameNodes\":" + datasync_json_arr(e2))
-    if v.BlockSize.is_some():
-        auto u3 = v.BlockSize.unwrap()
-        parts.append("\"BlockSize\":" + str(u3))
-    if v.ReplicationFactor.is_some():
-        auto u4 = v.ReplicationFactor.unwrap()
-        parts.append("\"ReplicationFactor\":" + str(u4))
-    if v.KmsKeyProviderUri.is_some():
-        auto u5 = v.KmsKeyProviderUri.unwrap()
-        parts.append("\"KmsKeyProviderUri\":" + datasync_json_str(u5))
-    if v.QopConfiguration.is_some():
-        auto u6 = v.QopConfiguration.unwrap()
-        parts.append("\"QopConfiguration\":" + u6.to_json())
-    if v.AuthenticationType.is_some():
-        auto u7 = v.AuthenticationType.unwrap()
-        parts.append("\"AuthenticationType\":" + u7.to_json())
-    if v.SimpleUser.is_some():
-        auto u8 = v.SimpleUser.unwrap()
-        parts.append("\"SimpleUser\":" + datasync_json_str(u8))
-    if v.KerberosPrincipal.is_some():
-        auto u9 = v.KerberosPrincipal.unwrap()
-        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u9))
-    if v.KerberosKeytab.is_some():
-        auto u10 = v.KerberosKeytab.unwrap()
-        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u10)))
-    if v.KerberosKrb5Conf.is_some():
-        auto u11 = v.KerberosKrb5Conf.unwrap()
-        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u11)))
-    if v.AgentArns.is_some():
-        auto u12 = v.AgentArns.unwrap()
-        list[str] e13 = []
-        for x13 in u12:
-            e13.append(datasync_json_str(x13))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e13))
-    if v.CmkSecretConfig.is_some():
-        auto u14 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u14.to_json())
-    if v.CustomSecretConfig.is_some():
-        auto u15 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u15.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize UpdateLocationNfsRequest to a compact JSON object (declaration order).
-def update_location_nfs_request_to_json(UpdateLocationNfsRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
-    if v.Subdirectory.is_some():
-        auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    if v.ServerHostname.is_some():
-        auto u1 = v.ServerHostname.unwrap()
-        parts.append("\"ServerHostname\":" + datasync_json_str(u1))
-    if v.OnPremConfig.is_some():
-        auto u2 = v.OnPremConfig.unwrap()
-        parts.append("\"OnPremConfig\":" + on_prem_config_to_json(u2))
-    if v.MountOptions.is_some():
-        auto u3 = v.MountOptions.unwrap()
-        parts.append("\"MountOptions\":" + u3.to_json())
-    return datasync_json_obj(parts)
-
-# Serialize UpdateLocationObjectStorageRequest to a compact JSON object (declaration order).
-def update_location_object_storage_request_to_json(UpdateLocationObjectStorageRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
-    if v.ServerPort.is_some():
-        auto u0 = v.ServerPort.unwrap()
-        parts.append("\"ServerPort\":" + str(u0))
-    if v.ServerProtocol.is_some():
-        auto u1 = v.ServerProtocol.unwrap()
-        parts.append("\"ServerProtocol\":" + u1.to_json())
-    if v.Subdirectory.is_some():
-        auto u2 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u2))
-    if v.ServerHostname.is_some():
-        auto u3 = v.ServerHostname.unwrap()
-        parts.append("\"ServerHostname\":" + datasync_json_str(u3))
-    if v.AccessKey.is_some():
-        auto u4 = v.AccessKey.unwrap()
-        parts.append("\"AccessKey\":" + datasync_json_str(u4))
-    if v.SecretKey.is_some():
-        auto u5 = v.SecretKey.unwrap()
-        parts.append("\"SecretKey\":" + datasync_json_str(u5))
-    if v.AgentArns.is_some():
-        auto u6 = v.AgentArns.unwrap()
-        list[str] e7 = []
-        for x7 in u6:
-            e7.append(datasync_json_str(x7))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e7))
-    if v.ServerCertificate.is_some():
-        auto u8 = v.ServerCertificate.unwrap()
-        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u8)))
+            e8.append(tag_list_entry_to_cbor(x8))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e8))
     if v.CmkSecretConfig.is_some():
         auto u9 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u9.to_json())
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u9))
     if v.CustomSecretConfig.is_some():
         auto u10 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u10.to_json())
-    return datasync_json_obj(parts)
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u10))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateLocationSmbRequest to a compact JSON object (declaration order).
-def update_location_smb_request_to_json(UpdateLocationSmbRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
+# Serialize CreateLocationEfsRequest to a CBOR map (member wire name -> value, model order).
+def create_location_efs_request_to_cbor(CreateLocationEfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Subdirectory.is_some():
         auto u0 = v.Subdirectory.unwrap()
-        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
-    if v.ServerHostname.is_some():
-        auto u1 = v.ServerHostname.unwrap()
-        parts.append("\"ServerHostname\":" + datasync_json_str(u1))
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("EfsFilesystemArn")
+    vals.append(cbor.cbor_text(v.EfsFilesystemArn))
+    keys.append("Ec2Config")
+    vals.append(ec2_config_to_cbor(v.Ec2Config))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_list_entry_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    if v.AccessPointArn.is_some():
+        auto u3 = v.AccessPointArn.unwrap()
+        keys.append("AccessPointArn")
+        vals.append(cbor.cbor_text(u3))
+    if v.FileSystemAccessRoleArn.is_some():
+        auto u4 = v.FileSystemAccessRoleArn.unwrap()
+        keys.append("FileSystemAccessRoleArn")
+        vals.append(cbor.cbor_text(u4))
+    if v.InTransitEncryption.is_some():
+        auto u5 = v.InTransitEncryption.unwrap()
+        keys.append("InTransitEncryption")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationFsxLustreRequest to a CBOR map (member wire name -> value, model order).
+def create_location_fsx_lustre_request_to_cbor(CreateLocationFsxLustreRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FsxFilesystemArn")
+    vals.append(cbor.cbor_text(v.FsxFilesystemArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SecurityGroupArns")
+    vals.append(cbor.cbor_list(e0))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(tag_list_entry_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationFsxOntapRequest to a CBOR map (member wire name -> value, model order).
+def create_location_fsx_ontap_request_to_cbor(CreateLocationFsxOntapRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Protocol")
+    vals.append(fsx_protocol_to_cbor(v.Protocol))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SecurityGroupArns")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("StorageVirtualMachineArn")
+    vals.append(cbor.cbor_text(v.StorageVirtualMachineArn))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(tag_list_entry_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationFsxOpenZfsRequest to a CBOR map (member wire name -> value, model order).
+def create_location_fsx_open_zfs_request_to_cbor(CreateLocationFsxOpenZfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("FsxFilesystemArn")
+    vals.append(cbor.cbor_text(v.FsxFilesystemArn))
+    keys.append("Protocol")
+    vals.append(fsx_protocol_to_cbor(v.Protocol))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SecurityGroupArns")
+    vals.append(cbor.cbor_list(e0))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(tag_list_entry_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationFsxWindowsRequest to a CBOR map (member wire name -> value, model order).
+def create_location_fsx_windows_request_to_cbor(CreateLocationFsxWindowsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("FsxFilesystemArn")
+    vals.append(cbor.cbor_text(v.FsxFilesystemArn))
+    list[cbor.CborValue] e1 = []
+    for x1 in v.SecurityGroupArns:
+        e1.append(cbor.cbor_text(x1))
+    keys.append("SecurityGroupArns")
+    vals.append(cbor.cbor_list(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(tag_list_entry_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    keys.append("User")
+    vals.append(cbor.cbor_text(v.User))
+    if v.Domain.is_some():
+        auto u4 = v.Domain.unwrap()
+        keys.append("Domain")
+        vals.append(cbor.cbor_text(u4))
+    if v.Password.is_some():
+        auto u5 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u5))
+    if v.CmkSecretConfig.is_some():
+        auto u6 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u6))
+    if v.CustomSecretConfig.is_some():
+        auto u7 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u7))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationHdfsRequest to a CBOR map (member wire name -> value, model order).
+def create_location_hdfs_request_to_cbor(CreateLocationHdfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    list[cbor.CborValue] e1 = []
+    for x1 in v.NameNodes:
+        e1.append(hdfs_name_node_to_cbor(x1))
+    keys.append("NameNodes")
+    vals.append(cbor.cbor_list(e1))
+    if v.BlockSize.is_some():
+        auto u2 = v.BlockSize.unwrap()
+        keys.append("BlockSize")
+        vals.append(cbor.cbor_int(u2))
+    if v.ReplicationFactor.is_some():
+        auto u3 = v.ReplicationFactor.unwrap()
+        keys.append("ReplicationFactor")
+        vals.append(cbor.cbor_int(u3))
+    if v.KmsKeyProviderUri.is_some():
+        auto u4 = v.KmsKeyProviderUri.unwrap()
+        keys.append("KmsKeyProviderUri")
+        vals.append(cbor.cbor_text(u4))
+    if v.QopConfiguration.is_some():
+        auto u5 = v.QopConfiguration.unwrap()
+        keys.append("QopConfiguration")
+        vals.append(qop_configuration_to_cbor(u5))
+    keys.append("AuthenticationType")
+    vals.append(cbor.cbor_text(v.AuthenticationType))
+    if v.SimpleUser.is_some():
+        auto u6 = v.SimpleUser.unwrap()
+        keys.append("SimpleUser")
+        vals.append(cbor.cbor_text(u6))
+    if v.KerberosPrincipal.is_some():
+        auto u7 = v.KerberosPrincipal.unwrap()
+        keys.append("KerberosPrincipal")
+        vals.append(cbor.cbor_text(u7))
+    if v.KerberosKeytab.is_some():
+        auto u8 = v.KerberosKeytab.unwrap()
+        keys.append("KerberosKeytab")
+        vals.append(cbor.cbor_blob(u8))
+    if v.KerberosKrb5Conf.is_some():
+        auto u9 = v.KerberosKrb5Conf.unwrap()
+        keys.append("KerberosKrb5Conf")
+        vals.append(cbor.cbor_blob(u9))
+    list[cbor.CborValue] e10 = []
+    for x10 in v.AgentArns:
+        e10.append(cbor.cbor_text(x10))
+    keys.append("AgentArns")
+    vals.append(cbor.cbor_list(e10))
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[cbor.CborValue] e12 = []
+        for x12 in u11:
+            e12.append(tag_list_entry_to_cbor(x12))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e12))
+    if v.CmkSecretConfig.is_some():
+        auto u13 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u13))
+    if v.CustomSecretConfig.is_some():
+        auto u14 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u14))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationNfsRequest to a CBOR map (member wire name -> value, model order).
+def create_location_nfs_request_to_cbor(CreateLocationNfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Subdirectory")
+    vals.append(cbor.cbor_text(v.Subdirectory))
+    keys.append("ServerHostname")
+    vals.append(cbor.cbor_text(v.ServerHostname))
+    keys.append("OnPremConfig")
+    vals.append(on_prem_config_to_cbor(v.OnPremConfig))
+    if v.MountOptions.is_some():
+        auto u0 = v.MountOptions.unwrap()
+        keys.append("MountOptions")
+        vals.append(nfs_mount_options_to_cbor(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_list_entry_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationObjectStorageRequest to a CBOR map (member wire name -> value, model order).
+def create_location_object_storage_request_to_cbor(CreateLocationObjectStorageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ServerHostname")
+    vals.append(cbor.cbor_text(v.ServerHostname))
+    if v.ServerPort.is_some():
+        auto u0 = v.ServerPort.unwrap()
+        keys.append("ServerPort")
+        vals.append(cbor.cbor_int(u0))
+    if v.ServerProtocol.is_some():
+        auto u1 = v.ServerProtocol.unwrap()
+        keys.append("ServerProtocol")
+        vals.append(cbor.cbor_text(u1))
+    if v.Subdirectory.is_some():
+        auto u2 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("BucketName")
+    vals.append(cbor.cbor_text(v.BucketName))
+    if v.AccessKey.is_some():
+        auto u3 = v.AccessKey.unwrap()
+        keys.append("AccessKey")
+        vals.append(cbor.cbor_text(u3))
+    if v.SecretKey.is_some():
+        auto u4 = v.SecretKey.unwrap()
+        keys.append("SecretKey")
+        vals.append(cbor.cbor_text(u4))
+    if v.FederatedIdentity.is_some():
+        auto u5 = v.FederatedIdentity.unwrap()
+        keys.append("FederatedIdentity")
+        vals.append(object_storage_federated_identity_config_to_cbor(u5))
+    if v.AgentArns.is_some():
+        auto u6 = v.AgentArns.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(cbor.cbor_text(x7))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e7))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(tag_list_entry_to_cbor(x9))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e9))
+    if v.ServerCertificate.is_some():
+        auto u10 = v.ServerCertificate.unwrap()
+        keys.append("ServerCertificate")
+        vals.append(cbor.cbor_blob(u10))
+    if v.CmkSecretConfig.is_some():
+        auto u11 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u11))
+    if v.CustomSecretConfig.is_some():
+        auto u12 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u12))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationS3Request to a CBOR map (member wire name -> value, model order).
+def create_location_s3_request_to_cbor(CreateLocationS3Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("S3BucketArn")
+    vals.append(cbor.cbor_text(v.S3BucketArn))
+    if v.S3StorageClass.is_some():
+        auto u1 = v.S3StorageClass.unwrap()
+        keys.append("S3StorageClass")
+        vals.append(cbor.cbor_text(u1))
+    keys.append("S3Config")
+    vals.append(s3_config_to_cbor(v.S3Config))
+    if v.AgentArns.is_some():
+        auto u2 = v.AgentArns.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(cbor.cbor_text(x3))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[cbor.CborValue] e5 = []
+        for x5 in u4:
+            e5.append(tag_list_entry_to_cbor(x5))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateLocationSmbRequest to a CBOR map (member wire name -> value, model order).
+def create_location_smb_request_to_cbor(CreateLocationSmbRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Subdirectory")
+    vals.append(cbor.cbor_text(v.Subdirectory))
+    keys.append("ServerHostname")
+    vals.append(cbor.cbor_text(v.ServerHostname))
+    if v.User.is_some():
+        auto u0 = v.User.unwrap()
+        keys.append("User")
+        vals.append(cbor.cbor_text(u0))
+    if v.Domain.is_some():
+        auto u1 = v.Domain.unwrap()
+        keys.append("Domain")
+        vals.append(cbor.cbor_text(u1))
+    if v.Password.is_some():
+        auto u2 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u2))
+    if v.CmkSecretConfig.is_some():
+        auto u3 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u3))
+    if v.CustomSecretConfig.is_some():
+        auto u4 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u4))
+    list[cbor.CborValue] e5 = []
+    for x5 in v.AgentArns:
+        e5.append(cbor.cbor_text(x5))
+    keys.append("AgentArns")
+    vals.append(cbor.cbor_list(e5))
+    if v.MountOptions.is_some():
+        auto u6 = v.MountOptions.unwrap()
+        keys.append("MountOptions")
+        vals.append(smb_mount_options_to_cbor(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[cbor.CborValue] e8 = []
+        for x8 in u7:
+            e8.append(tag_list_entry_to_cbor(x8))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e8))
+    if v.AuthenticationType.is_some():
+        auto u9 = v.AuthenticationType.unwrap()
+        keys.append("AuthenticationType")
+        vals.append(cbor.cbor_text(u9))
+    if v.DnsIpAddresses.is_some():
+        auto u10 = v.DnsIpAddresses.unwrap()
+        list[cbor.CborValue] e11 = []
+        for x11 in u10:
+            e11.append(cbor.cbor_text(x11))
+        keys.append("DnsIpAddresses")
+        vals.append(cbor.cbor_list(e11))
+    if v.KerberosPrincipal.is_some():
+        auto u12 = v.KerberosPrincipal.unwrap()
+        keys.append("KerberosPrincipal")
+        vals.append(cbor.cbor_text(u12))
+    if v.KerberosKeytab.is_some():
+        auto u13 = v.KerberosKeytab.unwrap()
+        keys.append("KerberosKeytab")
+        vals.append(cbor.cbor_blob(u13))
+    if v.KerberosKrb5Conf.is_some():
+        auto u14 = v.KerberosKrb5Conf.unwrap()
+        keys.append("KerberosKrb5Conf")
+        vals.append(cbor.cbor_blob(u14))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateTaskRequest to a CBOR map (member wire name -> value, model order).
+def create_task_request_to_cbor(CreateTaskRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SourceLocationArn")
+    vals.append(cbor.cbor_text(v.SourceLocationArn))
+    keys.append("DestinationLocationArn")
+    vals.append(cbor.cbor_text(v.DestinationLocationArn))
+    if v.CloudWatchLogGroupArn.is_some():
+        auto u0 = v.CloudWatchLogGroupArn.unwrap()
+        keys.append("CloudWatchLogGroupArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u1))
+    if v.Options.is_some():
+        auto u2 = v.Options.unwrap()
+        keys.append("Options")
+        vals.append(options_to_cbor(u2))
+    if v.Excludes.is_some():
+        auto u3 = v.Excludes.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(filter_rule_to_cbor(x4))
+        keys.append("Excludes")
+        vals.append(cbor.cbor_list(e4))
+    if v.Schedule.is_some():
+        auto u5 = v.Schedule.unwrap()
+        keys.append("Schedule")
+        vals.append(task_schedule_to_cbor(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(tag_list_entry_to_cbor(x7))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e7))
+    if v.Includes.is_some():
+        auto u8 = v.Includes.unwrap()
+        list[cbor.CborValue] e9 = []
+        for x9 in u8:
+            e9.append(filter_rule_to_cbor(x9))
+        keys.append("Includes")
+        vals.append(cbor.cbor_list(e9))
+    if v.ManifestConfig.is_some():
+        auto u10 = v.ManifestConfig.unwrap()
+        keys.append("ManifestConfig")
+        vals.append(manifest_config_to_cbor(u10))
+    if v.TaskReportConfig.is_some():
+        auto u11 = v.TaskReportConfig.unwrap()
+        keys.append("TaskReportConfig")
+        vals.append(task_report_config_to_cbor(u11))
+    if v.TaskMode.is_some():
+        auto u12 = v.TaskMode.unwrap()
+        keys.append("TaskMode")
+        vals.append(cbor.cbor_text(u12))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CustomSecretConfig to a CBOR map (member wire name -> value, model order).
+def custom_secret_config_to_cbor(CustomSecretConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SecretArn.is_some():
+        auto u0 = v.SecretArn.unwrap()
+        keys.append("SecretArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.SecretAccessRoleArn.is_some():
+        auto u1 = v.SecretAccessRoleArn.unwrap()
+        keys.append("SecretAccessRoleArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteAgentRequest to a CBOR map (member wire name -> value, model order).
+def delete_agent_request_to_cbor(DeleteAgentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AgentArn")
+    vals.append(cbor.cbor_text(v.AgentArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteLocationRequest to a CBOR map (member wire name -> value, model order).
+def delete_location_request_to_cbor(DeleteLocationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteTaskRequest to a CBOR map (member wire name -> value, model order).
+def delete_task_request_to_cbor(DeleteTaskRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskArn")
+    vals.append(cbor.cbor_text(v.TaskArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeAgentRequest to a CBOR map (member wire name -> value, model order).
+def describe_agent_request_to_cbor(DescribeAgentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AgentArn")
+    vals.append(cbor.cbor_text(v.AgentArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationAzureBlobRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_azure_blob_request_to_cbor(DescribeLocationAzureBlobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationEfsRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_efs_request_to_cbor(DescribeLocationEfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationFsxLustreRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_fsx_lustre_request_to_cbor(DescribeLocationFsxLustreRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationFsxOntapRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_fsx_ontap_request_to_cbor(DescribeLocationFsxOntapRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationFsxOpenZfsRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_fsx_open_zfs_request_to_cbor(DescribeLocationFsxOpenZfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationFsxWindowsRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_fsx_windows_request_to_cbor(DescribeLocationFsxWindowsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationHdfsRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_hdfs_request_to_cbor(DescribeLocationHdfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationNfsRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_nfs_request_to_cbor(DescribeLocationNfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationObjectStorageRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_object_storage_request_to_cbor(DescribeLocationObjectStorageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationS3Request to a CBOR map (member wire name -> value, model order).
+def describe_location_s3_request_to_cbor(DescribeLocationS3Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeLocationSmbRequest to a CBOR map (member wire name -> value, model order).
+def describe_location_smb_request_to_cbor(DescribeLocationSmbRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTaskExecutionRequest to a CBOR map (member wire name -> value, model order).
+def describe_task_execution_request_to_cbor(DescribeTaskExecutionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskExecutionArn")
+    vals.append(cbor.cbor_text(v.TaskExecutionArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeTaskRequest to a CBOR map (member wire name -> value, model order).
+def describe_task_request_to_cbor(DescribeTaskRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskArn")
+    vals.append(cbor.cbor_text(v.TaskArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Ec2Config to a CBOR map (member wire name -> value, model order).
+def ec2_config_to_cbor(Ec2Config v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SubnetArn")
+    vals.append(cbor.cbor_text(v.SubnetArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("SecurityGroupArns")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FilterRule to a CBOR map (member wire name -> value, model order).
+def filter_rule_to_cbor(FilterRule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FilterType.is_some():
+        auto u0 = v.FilterType.unwrap()
+        keys.append("FilterType")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FsxProtocol to a CBOR map (member wire name -> value, model order).
+def fsx_protocol_to_cbor(FsxProtocol v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NFS.is_some():
+        auto u0 = v.NFS.unwrap()
+        keys.append("NFS")
+        vals.append(fsx_protocol_nfs_to_cbor(u0))
+    if v.SMB.is_some():
+        auto u1 = v.SMB.unwrap()
+        keys.append("SMB")
+        vals.append(fsx_protocol_smb_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FsxProtocolNfs to a CBOR map (member wire name -> value, model order).
+def fsx_protocol_nfs_to_cbor(FsxProtocolNfs v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MountOptions.is_some():
+        auto u0 = v.MountOptions.unwrap()
+        keys.append("MountOptions")
+        vals.append(nfs_mount_options_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FsxProtocolSmb to a CBOR map (member wire name -> value, model order).
+def fsx_protocol_smb_to_cbor(FsxProtocolSmb v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Domain.is_some():
+        auto u0 = v.Domain.unwrap()
+        keys.append("Domain")
+        vals.append(cbor.cbor_text(u0))
+    if v.MountOptions.is_some():
+        auto u1 = v.MountOptions.unwrap()
+        keys.append("MountOptions")
+        vals.append(smb_mount_options_to_cbor(u1))
+    if v.Password.is_some():
+        auto u2 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("User")
+    vals.append(cbor.cbor_text(v.User))
+    if v.ManagedSecretConfig.is_some():
+        auto u3 = v.ManagedSecretConfig.unwrap()
+        keys.append("ManagedSecretConfig")
+        vals.append(managed_secret_config_to_cbor(u3))
+    if v.CmkSecretConfig.is_some():
+        auto u4 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u4))
+    if v.CustomSecretConfig.is_some():
+        auto u5 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FsxUpdateProtocol to a CBOR map (member wire name -> value, model order).
+def fsx_update_protocol_to_cbor(FsxUpdateProtocol v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.NFS.is_some():
+        auto u0 = v.NFS.unwrap()
+        keys.append("NFS")
+        vals.append(fsx_protocol_nfs_to_cbor(u0))
+    if v.SMB.is_some():
+        auto u1 = v.SMB.unwrap()
+        keys.append("SMB")
+        vals.append(fsx_update_protocol_smb_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FsxUpdateProtocolSmb to a CBOR map (member wire name -> value, model order).
+def fsx_update_protocol_smb_to_cbor(FsxUpdateProtocolSmb v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Domain.is_some():
+        auto u0 = v.Domain.unwrap()
+        keys.append("Domain")
+        vals.append(cbor.cbor_text(u0))
+    if v.MountOptions.is_some():
+        auto u1 = v.MountOptions.unwrap()
+        keys.append("MountOptions")
+        vals.append(smb_mount_options_to_cbor(u1))
+    if v.Password.is_some():
+        auto u2 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u2))
+    if v.User.is_some():
+        auto u3 = v.User.unwrap()
+        keys.append("User")
+        vals.append(cbor.cbor_text(u3))
+    if v.CmkSecretConfig.is_some():
+        auto u4 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u4))
+    if v.CustomSecretConfig.is_some():
+        auto u5 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GoogleOidcConfig to a CBOR map (member wire name -> value, model order).
+def google_oidc_config_to_cbor(GoogleOidcConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProjectName")
+    vals.append(cbor.cbor_text(v.ProjectName))
+    keys.append("ProjectNumber")
+    vals.append(cbor.cbor_text(v.ProjectNumber))
+    keys.append("IdentityPoolName")
+    vals.append(cbor.cbor_text(v.IdentityPoolName))
+    keys.append("IdentityProviderName")
+    vals.append(cbor.cbor_text(v.IdentityProviderName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize HdfsNameNode to a CBOR map (member wire name -> value, model order).
+def hdfs_name_node_to_cbor(HdfsNameNode v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Hostname")
+    vals.append(cbor.cbor_text(v.Hostname))
+    keys.append("Port")
+    vals.append(cbor.cbor_int(v.Port))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAgentsRequest to a CBOR map (member wire name -> value, model order).
+def list_agents_request_to_cbor(ListAgentsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListLocationsRequest to a CBOR map (member wire name -> value, model order).
+def list_locations_request_to_cbor(ListLocationsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(location_filter_to_cbor(x3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTaskExecutionsRequest to a CBOR map (member wire name -> value, model order).
+def list_task_executions_request_to_cbor(ListTaskExecutionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.TaskArn.is_some():
+        auto u0 = v.TaskArn.unwrap()
+        keys.append("TaskArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTasksRequest to a CBOR map (member wire name -> value, model order).
+def list_tasks_request_to_cbor(ListTasksRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[cbor.CborValue] e3 = []
+        for x3 in u2:
+            e3.append(task_filter_to_cbor(x3))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize LocationFilter to a CBOR map (member wire name -> value, model order).
+def location_filter_to_cbor(LocationFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Values:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("Operator")
+    vals.append(cbor.cbor_text(v.Operator))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ManagedSecretConfig to a CBOR map (member wire name -> value, model order).
+def managed_secret_config_to_cbor(ManagedSecretConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SecretArn.is_some():
+        auto u0 = v.SecretArn.unwrap()
+        keys.append("SecretArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ManifestConfig to a CBOR map (member wire name -> value, model order).
+def manifest_config_to_cbor(ManifestConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        keys.append("Action")
+        vals.append(cbor.cbor_text(u0))
+    if v.Format.is_some():
+        auto u1 = v.Format.unwrap()
+        keys.append("Format")
+        vals.append(cbor.cbor_text(u1))
+    if v.Source.is_some():
+        auto u2 = v.Source.unwrap()
+        keys.append("Source")
+        vals.append(source_manifest_config_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize NfsMountOptions to a CBOR map (member wire name -> value, model order).
+def nfs_mount_options_to_cbor(NfsMountOptions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Version.is_some():
+        auto u0 = v.Version.unwrap()
+        keys.append("Version")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ObjectStorageExternalIdentityConfig to a CBOR map (member wire name -> value, model order).
+def object_storage_external_identity_config_to_cbor(ObjectStorageExternalIdentityConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.GoogleOidc.is_some():
+        auto u0 = v.GoogleOidc.unwrap()
+        keys.append("GoogleOidc")
+        vals.append(google_oidc_config_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ObjectStorageFederatedIdentityConfig to a CBOR map (member wire name -> value, model order).
+def object_storage_federated_identity_config_to_cbor(ObjectStorageFederatedIdentityConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AwsIamRole.is_some():
+        auto u0 = v.AwsIamRole.unwrap()
+        keys.append("AwsIamRole")
+        vals.append(cbor.cbor_text(u0))
+    if v.ExternalIdentity.is_some():
+        auto u1 = v.ExternalIdentity.unwrap()
+        keys.append("ExternalIdentity")
+        vals.append(object_storage_external_identity_config_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize OnPremConfig to a CBOR map (member wire name -> value, model order).
+def on_prem_config_to_cbor(OnPremConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
+    for x0 in v.AgentArns:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("AgentArns")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Options to a CBOR map (member wire name -> value, model order).
+def options_to_cbor(Options v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.VerifyMode.is_some():
+        auto u0 = v.VerifyMode.unwrap()
+        keys.append("VerifyMode")
+        vals.append(cbor.cbor_text(u0))
+    if v.OverwriteMode.is_some():
+        auto u1 = v.OverwriteMode.unwrap()
+        keys.append("OverwriteMode")
+        vals.append(cbor.cbor_text(u1))
+    if v.Atime.is_some():
+        auto u2 = v.Atime.unwrap()
+        keys.append("Atime")
+        vals.append(cbor.cbor_text(u2))
+    if v.Mtime.is_some():
+        auto u3 = v.Mtime.unwrap()
+        keys.append("Mtime")
+        vals.append(cbor.cbor_text(u3))
+    if v.Uid.is_some():
+        auto u4 = v.Uid.unwrap()
+        keys.append("Uid")
+        vals.append(cbor.cbor_text(u4))
+    if v.Gid.is_some():
+        auto u5 = v.Gid.unwrap()
+        keys.append("Gid")
+        vals.append(cbor.cbor_text(u5))
+    if v.PreserveDeletedFiles.is_some():
+        auto u6 = v.PreserveDeletedFiles.unwrap()
+        keys.append("PreserveDeletedFiles")
+        vals.append(cbor.cbor_text(u6))
+    if v.PreserveDevices.is_some():
+        auto u7 = v.PreserveDevices.unwrap()
+        keys.append("PreserveDevices")
+        vals.append(cbor.cbor_text(u7))
+    if v.PosixPermissions.is_some():
+        auto u8 = v.PosixPermissions.unwrap()
+        keys.append("PosixPermissions")
+        vals.append(cbor.cbor_text(u8))
+    if v.BytesPerSecond.is_some():
+        auto u9 = v.BytesPerSecond.unwrap()
+        keys.append("BytesPerSecond")
+        vals.append(cbor.cbor_int(u9))
+    if v.TaskQueueing.is_some():
+        auto u10 = v.TaskQueueing.unwrap()
+        keys.append("TaskQueueing")
+        vals.append(cbor.cbor_text(u10))
+    if v.LogLevel.is_some():
+        auto u11 = v.LogLevel.unwrap()
+        keys.append("LogLevel")
+        vals.append(cbor.cbor_text(u11))
+    if v.TransferMode.is_some():
+        auto u12 = v.TransferMode.unwrap()
+        keys.append("TransferMode")
+        vals.append(cbor.cbor_text(u12))
+    if v.SecurityDescriptorCopyFlags.is_some():
+        auto u13 = v.SecurityDescriptorCopyFlags.unwrap()
+        keys.append("SecurityDescriptorCopyFlags")
+        vals.append(cbor.cbor_text(u13))
+    if v.ObjectTags.is_some():
+        auto u14 = v.ObjectTags.unwrap()
+        keys.append("ObjectTags")
+        vals.append(cbor.cbor_text(u14))
+    if v.ObjectMetadata.is_some():
+        auto u15 = v.ObjectMetadata.unwrap()
+        keys.append("ObjectMetadata")
+        vals.append(cbor.cbor_text(u15))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize QopConfiguration to a CBOR map (member wire name -> value, model order).
+def qop_configuration_to_cbor(QopConfiguration v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.RpcProtection.is_some():
+        auto u0 = v.RpcProtection.unwrap()
+        keys.append("RpcProtection")
+        vals.append(cbor.cbor_text(u0))
+    if v.DataTransferProtection.is_some():
+        auto u1 = v.DataTransferProtection.unwrap()
+        keys.append("DataTransferProtection")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReportDestination to a CBOR map (member wire name -> value, model order).
+def report_destination_to_cbor(ReportDestination v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.S3.is_some():
+        auto u0 = v.S3.unwrap()
+        keys.append("S3")
+        vals.append(report_destination_s3_to_cbor(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReportDestinationS3 to a CBOR map (member wire name -> value, model order).
+def report_destination_s3_to_cbor(ReportDestinationS3 v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("S3BucketArn")
+    vals.append(cbor.cbor_text(v.S3BucketArn))
+    keys.append("BucketAccessRoleArn")
+    vals.append(cbor.cbor_text(v.BucketAccessRoleArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReportOverride to a CBOR map (member wire name -> value, model order).
+def report_override_to_cbor(ReportOverride v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ReportLevel.is_some():
+        auto u0 = v.ReportLevel.unwrap()
+        keys.append("ReportLevel")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ReportOverrides to a CBOR map (member wire name -> value, model order).
+def report_overrides_to_cbor(ReportOverrides v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Transferred.is_some():
+        auto u0 = v.Transferred.unwrap()
+        keys.append("Transferred")
+        vals.append(report_override_to_cbor(u0))
+    if v.Verified.is_some():
+        auto u1 = v.Verified.unwrap()
+        keys.append("Verified")
+        vals.append(report_override_to_cbor(u1))
+    if v.Deleted.is_some():
+        auto u2 = v.Deleted.unwrap()
+        keys.append("Deleted")
+        vals.append(report_override_to_cbor(u2))
+    if v.Skipped.is_some():
+        auto u3 = v.Skipped.unwrap()
+        keys.append("Skipped")
+        vals.append(report_override_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize S3Config to a CBOR map (member wire name -> value, model order).
+def s3_config_to_cbor(S3Config v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BucketAccessRoleArn")
+    vals.append(cbor.cbor_text(v.BucketAccessRoleArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize S3ManifestConfig to a CBOR map (member wire name -> value, model order).
+def s3_manifest_config_to_cbor(S3ManifestConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ManifestObjectPath")
+    vals.append(cbor.cbor_text(v.ManifestObjectPath))
+    keys.append("BucketAccessRoleArn")
+    vals.append(cbor.cbor_text(v.BucketAccessRoleArn))
+    keys.append("S3BucketArn")
+    vals.append(cbor.cbor_text(v.S3BucketArn))
+    if v.ManifestObjectVersionId.is_some():
+        auto u0 = v.ManifestObjectVersionId.unwrap()
+        keys.append("ManifestObjectVersionId")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SmbMountOptions to a CBOR map (member wire name -> value, model order).
+def smb_mount_options_to_cbor(SmbMountOptions v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Version.is_some():
+        auto u0 = v.Version.unwrap()
+        keys.append("Version")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize SourceManifestConfig to a CBOR map (member wire name -> value, model order).
+def source_manifest_config_to_cbor(SourceManifestConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("S3")
+    vals.append(s3_manifest_config_to_cbor(v.S3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize StartTaskExecutionRequest to a CBOR map (member wire name -> value, model order).
+def start_task_execution_request_to_cbor(StartTaskExecutionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskArn")
+    vals.append(cbor.cbor_text(v.TaskArn))
+    if v.OverrideOptions.is_some():
+        auto u0 = v.OverrideOptions.unwrap()
+        keys.append("OverrideOptions")
+        vals.append(options_to_cbor(u0))
+    if v.Includes.is_some():
+        auto u1 = v.Includes.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(filter_rule_to_cbor(x2))
+        keys.append("Includes")
+        vals.append(cbor.cbor_list(e2))
+    if v.Excludes.is_some():
+        auto u3 = v.Excludes.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(filter_rule_to_cbor(x4))
+        keys.append("Excludes")
+        vals.append(cbor.cbor_list(e4))
+    if v.ManifestConfig.is_some():
+        auto u5 = v.ManifestConfig.unwrap()
+        keys.append("ManifestConfig")
+        vals.append(manifest_config_to_cbor(u5))
+    if v.TaskReportConfig.is_some():
+        auto u6 = v.TaskReportConfig.unwrap()
+        keys.append("TaskReportConfig")
+        vals.append(task_report_config_to_cbor(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[cbor.CborValue] e8 = []
+        for x8 in u7:
+            e8.append(tag_list_entry_to_cbor(x8))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e8))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagListEntry to a CBOR map (member wire name -> value, model order).
+def tag_list_entry_to_cbor(TagListEntry v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Tags:
+        e0.append(tag_list_entry_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TaskFilter to a CBOR map (member wire name -> value, model order).
+def task_filter_to_cbor(TaskFilter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Values:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
+    keys.append("Operator")
+    vals.append(cbor.cbor_text(v.Operator))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TaskReportConfig to a CBOR map (member wire name -> value, model order).
+def task_report_config_to_cbor(TaskReportConfig v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Destination.is_some():
+        auto u0 = v.Destination.unwrap()
+        keys.append("Destination")
+        vals.append(report_destination_to_cbor(u0))
+    if v.OutputType.is_some():
+        auto u1 = v.OutputType.unwrap()
+        keys.append("OutputType")
+        vals.append(cbor.cbor_text(u1))
+    if v.ReportLevel.is_some():
+        auto u2 = v.ReportLevel.unwrap()
+        keys.append("ReportLevel")
+        vals.append(cbor.cbor_text(u2))
+    if v.ObjectVersionIds.is_some():
+        auto u3 = v.ObjectVersionIds.unwrap()
+        keys.append("ObjectVersionIds")
+        vals.append(cbor.cbor_text(u3))
+    if v.Overrides.is_some():
+        auto u4 = v.Overrides.unwrap()
+        keys.append("Overrides")
+        vals.append(report_overrides_to_cbor(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TaskSchedule to a CBOR map (member wire name -> value, model order).
+def task_schedule_to_cbor(TaskSchedule v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ScheduleExpression")
+    vals.append(cbor.cbor_text(v.ScheduleExpression))
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        keys.append("Status")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Keys:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Keys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateAgentRequest to a CBOR map (member wire name -> value, model order).
+def update_agent_request_to_cbor(UpdateAgentRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AgentArn")
+    vals.append(cbor.cbor_text(v.AgentArn))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationAzureBlobRequest to a CBOR map (member wire name -> value, model order).
+def update_location_azure_blob_request_to_cbor(UpdateLocationAzureBlobRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.AuthenticationType.is_some():
+        auto u1 = v.AuthenticationType.unwrap()
+        keys.append("AuthenticationType")
+        vals.append(cbor.cbor_text(u1))
+    if v.SasConfiguration.is_some():
+        auto u2 = v.SasConfiguration.unwrap()
+        keys.append("SasConfiguration")
+        vals.append(azure_blob_sas_configuration_to_cbor(u2))
+    if v.FederatedIdentity.is_some():
+        auto u3 = v.FederatedIdentity.unwrap()
+        keys.append("FederatedIdentity")
+        vals.append(azure_federated_identity_config_to_cbor(u3))
+    if v.BlobType.is_some():
+        auto u4 = v.BlobType.unwrap()
+        keys.append("BlobType")
+        vals.append(cbor.cbor_text(u4))
+    if v.AccessTier.is_some():
+        auto u5 = v.AccessTier.unwrap()
+        keys.append("AccessTier")
+        vals.append(cbor.cbor_text(u5))
+    if v.AgentArns.is_some():
+        auto u6 = v.AgentArns.unwrap()
+        list[cbor.CborValue] e7 = []
+        for x7 in u6:
+            e7.append(cbor.cbor_text(x7))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e7))
+    if v.CmkSecretConfig.is_some():
+        auto u8 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u8))
+    if v.CustomSecretConfig.is_some():
+        auto u9 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationEfsRequest to a CBOR map (member wire name -> value, model order).
+def update_location_efs_request_to_cbor(UpdateLocationEfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.AccessPointArn.is_some():
+        auto u1 = v.AccessPointArn.unwrap()
+        keys.append("AccessPointArn")
+        vals.append(cbor.cbor_text(u1))
+    if v.FileSystemAccessRoleArn.is_some():
+        auto u2 = v.FileSystemAccessRoleArn.unwrap()
+        keys.append("FileSystemAccessRoleArn")
+        vals.append(cbor.cbor_text(u2))
+    if v.InTransitEncryption.is_some():
+        auto u3 = v.InTransitEncryption.unwrap()
+        keys.append("InTransitEncryption")
+        vals.append(cbor.cbor_text(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationFsxLustreRequest to a CBOR map (member wire name -> value, model order).
+def update_location_fsx_lustre_request_to_cbor(UpdateLocationFsxLustreRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationFsxOntapRequest to a CBOR map (member wire name -> value, model order).
+def update_location_fsx_ontap_request_to_cbor(UpdateLocationFsxOntapRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Protocol.is_some():
+        auto u0 = v.Protocol.unwrap()
+        keys.append("Protocol")
+        vals.append(fsx_update_protocol_to_cbor(u0))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationFsxOpenZfsRequest to a CBOR map (member wire name -> value, model order).
+def update_location_fsx_open_zfs_request_to_cbor(UpdateLocationFsxOpenZfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Protocol.is_some():
+        auto u0 = v.Protocol.unwrap()
+        keys.append("Protocol")
+        vals.append(fsx_protocol_to_cbor(u0))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationFsxWindowsRequest to a CBOR map (member wire name -> value, model order).
+def update_location_fsx_windows_request_to_cbor(UpdateLocationFsxWindowsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.Domain.is_some():
+        auto u1 = v.Domain.unwrap()
+        keys.append("Domain")
+        vals.append(cbor.cbor_text(u1))
     if v.User.is_some():
         auto u2 = v.User.unwrap()
-        parts.append("\"User\":" + datasync_json_str(u2))
-    if v.Domain.is_some():
-        auto u3 = v.Domain.unwrap()
-        parts.append("\"Domain\":" + datasync_json_str(u3))
+        keys.append("User")
+        vals.append(cbor.cbor_text(u2))
     if v.Password.is_some():
-        auto u4 = v.Password.unwrap()
-        parts.append("\"Password\":" + datasync_json_str(u4))
+        auto u3 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u3))
     if v.CmkSecretConfig.is_some():
-        auto u5 = v.CmkSecretConfig.unwrap()
-        parts.append("\"CmkSecretConfig\":" + u5.to_json())
+        auto u4 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u4))
     if v.CustomSecretConfig.is_some():
-        auto u6 = v.CustomSecretConfig.unwrap()
-        parts.append("\"CustomSecretConfig\":" + u6.to_json())
+        auto u5 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationHdfsRequest to a CBOR map (member wire name -> value, model order).
+def update_location_hdfs_request_to_cbor(UpdateLocationHdfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.NameNodes.is_some():
+        auto u1 = v.NameNodes.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(hdfs_name_node_to_cbor(x2))
+        keys.append("NameNodes")
+        vals.append(cbor.cbor_list(e2))
+    if v.BlockSize.is_some():
+        auto u3 = v.BlockSize.unwrap()
+        keys.append("BlockSize")
+        vals.append(cbor.cbor_int(u3))
+    if v.ReplicationFactor.is_some():
+        auto u4 = v.ReplicationFactor.unwrap()
+        keys.append("ReplicationFactor")
+        vals.append(cbor.cbor_int(u4))
+    if v.KmsKeyProviderUri.is_some():
+        auto u5 = v.KmsKeyProviderUri.unwrap()
+        keys.append("KmsKeyProviderUri")
+        vals.append(cbor.cbor_text(u5))
+    if v.QopConfiguration.is_some():
+        auto u6 = v.QopConfiguration.unwrap()
+        keys.append("QopConfiguration")
+        vals.append(qop_configuration_to_cbor(u6))
+    if v.AuthenticationType.is_some():
+        auto u7 = v.AuthenticationType.unwrap()
+        keys.append("AuthenticationType")
+        vals.append(cbor.cbor_text(u7))
+    if v.SimpleUser.is_some():
+        auto u8 = v.SimpleUser.unwrap()
+        keys.append("SimpleUser")
+        vals.append(cbor.cbor_text(u8))
+    if v.KerberosPrincipal.is_some():
+        auto u9 = v.KerberosPrincipal.unwrap()
+        keys.append("KerberosPrincipal")
+        vals.append(cbor.cbor_text(u9))
+    if v.KerberosKeytab.is_some():
+        auto u10 = v.KerberosKeytab.unwrap()
+        keys.append("KerberosKeytab")
+        vals.append(cbor.cbor_blob(u10))
+    if v.KerberosKrb5Conf.is_some():
+        auto u11 = v.KerberosKrb5Conf.unwrap()
+        keys.append("KerberosKrb5Conf")
+        vals.append(cbor.cbor_blob(u11))
+    if v.AgentArns.is_some():
+        auto u12 = v.AgentArns.unwrap()
+        list[cbor.CborValue] e13 = []
+        for x13 in u12:
+            e13.append(cbor.cbor_text(x13))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e13))
+    if v.CmkSecretConfig.is_some():
+        auto u14 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u14))
+    if v.CustomSecretConfig.is_some():
+        auto u15 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u15))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationNfsRequest to a CBOR map (member wire name -> value, model order).
+def update_location_nfs_request_to_cbor(UpdateLocationNfsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.ServerHostname.is_some():
+        auto u1 = v.ServerHostname.unwrap()
+        keys.append("ServerHostname")
+        vals.append(cbor.cbor_text(u1))
+    if v.OnPremConfig.is_some():
+        auto u2 = v.OnPremConfig.unwrap()
+        keys.append("OnPremConfig")
+        vals.append(on_prem_config_to_cbor(u2))
+    if v.MountOptions.is_some():
+        auto u3 = v.MountOptions.unwrap()
+        keys.append("MountOptions")
+        vals.append(nfs_mount_options_to_cbor(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationObjectStorageRequest to a CBOR map (member wire name -> value, model order).
+def update_location_object_storage_request_to_cbor(UpdateLocationObjectStorageRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.ServerPort.is_some():
+        auto u0 = v.ServerPort.unwrap()
+        keys.append("ServerPort")
+        vals.append(cbor.cbor_int(u0))
+    if v.ServerProtocol.is_some():
+        auto u1 = v.ServerProtocol.unwrap()
+        keys.append("ServerProtocol")
+        vals.append(cbor.cbor_text(u1))
+    if v.Subdirectory.is_some():
+        auto u2 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u2))
+    if v.ServerHostname.is_some():
+        auto u3 = v.ServerHostname.unwrap()
+        keys.append("ServerHostname")
+        vals.append(cbor.cbor_text(u3))
+    if v.AccessKey.is_some():
+        auto u4 = v.AccessKey.unwrap()
+        keys.append("AccessKey")
+        vals.append(cbor.cbor_text(u4))
+    if v.SecretKey.is_some():
+        auto u5 = v.SecretKey.unwrap()
+        keys.append("SecretKey")
+        vals.append(cbor.cbor_text(u5))
+    if v.FederatedIdentity.is_some():
+        auto u6 = v.FederatedIdentity.unwrap()
+        keys.append("FederatedIdentity")
+        vals.append(object_storage_federated_identity_config_to_cbor(u6))
     if v.AgentArns.is_some():
         auto u7 = v.AgentArns.unwrap()
-        list[str] e8 = []
+        list[cbor.CborValue] e8 = []
         for x8 in u7:
-            e8.append(datasync_json_str(x8))
-        parts.append("\"AgentArns\":" + datasync_json_arr(e8))
+            e8.append(cbor.cbor_text(x8))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e8))
+    if v.ServerCertificate.is_some():
+        auto u9 = v.ServerCertificate.unwrap()
+        keys.append("ServerCertificate")
+        vals.append(cbor.cbor_blob(u9))
+    if v.CmkSecretConfig.is_some():
+        auto u10 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u10))
+    if v.CustomSecretConfig.is_some():
+        auto u11 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u11))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationS3Request to a CBOR map (member wire name -> value, model order).
+def update_location_s3_request_to_cbor(UpdateLocationS3Request v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.S3StorageClass.is_some():
+        auto u1 = v.S3StorageClass.unwrap()
+        keys.append("S3StorageClass")
+        vals.append(cbor.cbor_text(u1))
+    if v.S3Config.is_some():
+        auto u2 = v.S3Config.unwrap()
+        keys.append("S3Config")
+        vals.append(s3_config_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateLocationSmbRequest to a CBOR map (member wire name -> value, model order).
+def update_location_smb_request_to_cbor(UpdateLocationSmbRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LocationArn")
+    vals.append(cbor.cbor_text(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        keys.append("Subdirectory")
+        vals.append(cbor.cbor_text(u0))
+    if v.ServerHostname.is_some():
+        auto u1 = v.ServerHostname.unwrap()
+        keys.append("ServerHostname")
+        vals.append(cbor.cbor_text(u1))
+    if v.User.is_some():
+        auto u2 = v.User.unwrap()
+        keys.append("User")
+        vals.append(cbor.cbor_text(u2))
+    if v.Domain.is_some():
+        auto u3 = v.Domain.unwrap()
+        keys.append("Domain")
+        vals.append(cbor.cbor_text(u3))
+    if v.Password.is_some():
+        auto u4 = v.Password.unwrap()
+        keys.append("Password")
+        vals.append(cbor.cbor_text(u4))
+    if v.CmkSecretConfig.is_some():
+        auto u5 = v.CmkSecretConfig.unwrap()
+        keys.append("CmkSecretConfig")
+        vals.append(cmk_secret_config_to_cbor(u5))
+    if v.CustomSecretConfig.is_some():
+        auto u6 = v.CustomSecretConfig.unwrap()
+        keys.append("CustomSecretConfig")
+        vals.append(custom_secret_config_to_cbor(u6))
+    if v.AgentArns.is_some():
+        auto u7 = v.AgentArns.unwrap()
+        list[cbor.CborValue] e8 = []
+        for x8 in u7:
+            e8.append(cbor.cbor_text(x8))
+        keys.append("AgentArns")
+        vals.append(cbor.cbor_list(e8))
     if v.MountOptions.is_some():
         auto u9 = v.MountOptions.unwrap()
-        parts.append("\"MountOptions\":" + u9.to_json())
+        keys.append("MountOptions")
+        vals.append(smb_mount_options_to_cbor(u9))
     if v.AuthenticationType.is_some():
         auto u10 = v.AuthenticationType.unwrap()
-        parts.append("\"AuthenticationType\":" + u10.to_json())
+        keys.append("AuthenticationType")
+        vals.append(cbor.cbor_text(u10))
     if v.DnsIpAddresses.is_some():
         auto u11 = v.DnsIpAddresses.unwrap()
-        list[str] e12 = []
+        list[cbor.CborValue] e12 = []
         for x12 in u11:
-            e12.append(datasync_json_str(x12))
-        parts.append("\"DnsIpAddresses\":" + datasync_json_arr(e12))
+            e12.append(cbor.cbor_text(x12))
+        keys.append("DnsIpAddresses")
+        vals.append(cbor.cbor_list(e12))
     if v.KerberosPrincipal.is_some():
         auto u13 = v.KerberosPrincipal.unwrap()
-        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u13))
+        keys.append("KerberosPrincipal")
+        vals.append(cbor.cbor_text(u13))
     if v.KerberosKeytab.is_some():
         auto u14 = v.KerberosKeytab.unwrap()
-        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u14)))
+        keys.append("KerberosKeytab")
+        vals.append(cbor.cbor_blob(u14))
     if v.KerberosKrb5Conf.is_some():
         auto u15 = v.KerberosKrb5Conf.unwrap()
-        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u15)))
-    return datasync_json_obj(parts)
+        keys.append("KerberosKrb5Conf")
+        vals.append(cbor.cbor_blob(u15))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateTaskRequest to a compact JSON object (declaration order).
-def update_task_request_to_json(UpdateTaskRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"TaskArn\":" + datasync_json_str(v.TaskArn))
+# Serialize UpdateTaskExecutionRequest to a CBOR map (member wire name -> value, model order).
+def update_task_execution_request_to_cbor(UpdateTaskExecutionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskExecutionArn")
+    vals.append(cbor.cbor_text(v.TaskExecutionArn))
+    keys.append("Options")
+    vals.append(options_to_cbor(v.Options))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateTaskRequest to a CBOR map (member wire name -> value, model order).
+def update_task_request_to_cbor(UpdateTaskRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("TaskArn")
+    vals.append(cbor.cbor_text(v.TaskArn))
     if v.Options.is_some():
         auto u0 = v.Options.unwrap()
-        parts.append("\"Options\":" + u0.to_json())
+        keys.append("Options")
+        vals.append(options_to_cbor(u0))
     if v.Excludes.is_some():
         auto u1 = v.Excludes.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Excludes\":" + datasync_json_arr(e2))
+            e2.append(filter_rule_to_cbor(x2))
+        keys.append("Excludes")
+        vals.append(cbor.cbor_list(e2))
     if v.Schedule.is_some():
         auto u3 = v.Schedule.unwrap()
-        parts.append("\"Schedule\":" + u3.to_json())
+        keys.append("Schedule")
+        vals.append(task_schedule_to_cbor(u3))
     if v.Name.is_some():
         auto u4 = v.Name.unwrap()
-        parts.append("\"Name\":" + datasync_json_str(u4))
+        keys.append("Name")
+        vals.append(cbor.cbor_text(u4))
     if v.CloudWatchLogGroupArn.is_some():
         auto u5 = v.CloudWatchLogGroupArn.unwrap()
-        parts.append("\"CloudWatchLogGroupArn\":" + datasync_json_str(u5))
+        keys.append("CloudWatchLogGroupArn")
+        vals.append(cbor.cbor_text(u5))
     if v.Includes.is_some():
         auto u6 = v.Includes.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Includes\":" + datasync_json_arr(e7))
+            e7.append(filter_rule_to_cbor(x7))
+        keys.append("Includes")
+        vals.append(cbor.cbor_list(e7))
     if v.ManifestConfig.is_some():
         auto u8 = v.ManifestConfig.unwrap()
-        parts.append("\"ManifestConfig\":" + u8.to_json())
+        keys.append("ManifestConfig")
+        vals.append(manifest_config_to_cbor(u8))
     if v.TaskReportConfig.is_some():
         auto u9 = v.TaskReportConfig.unwrap()
-        parts.append("\"TaskReportConfig\":" + u9.to_json())
-    return datasync_json_obj(parts)
+        keys.append("TaskReportConfig")
+        vals.append(task_report_config_to_cbor(u9))
+    return cbor.cbor_map(keys, vals)
 
 # A bound DataSync client: credentials + region, threaded into every operation.
 struct DataSyncClient:
@@ -2378,391 +3215,480 @@ struct DataSyncClient:
 
     # CancelTaskExecution
     # errors: InternalException, InvalidRequestException
-    def cancel_task_execution(self, CancelTaskExecutionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CancelTaskExecution", body)
+    def cancel_task_execution(self, CancelTaskExecutionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(cancel_task_execution_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CancelTaskExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateAgent
     # errors: InternalException, InvalidRequestException
-    def create_agent(self, CreateAgentRequest input) -> str:
-        auto body = create_agent_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateAgent", body)
+    def create_agent(self, CreateAgentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_agent_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateAgent", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationAzureBlob
     # errors: InternalException, InvalidRequestException
-    def create_location_azure_blob(self, CreateLocationAzureBlobRequest input) -> str:
-        auto body = create_location_azure_blob_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationAzureBlob", body)
+    def create_location_azure_blob(self, CreateLocationAzureBlobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_azure_blob_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationAzureBlob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationEfs
     # errors: InternalException, InvalidRequestException
-    def create_location_efs(self, CreateLocationEfsRequest input) -> str:
-        auto body = create_location_efs_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationEfs", body)
+    def create_location_efs(self, CreateLocationEfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_efs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationEfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationFsxLustre
     # errors: InternalException, InvalidRequestException
-    def create_location_fsx_lustre(self, CreateLocationFsxLustreRequest input) -> str:
-        auto body = create_location_fsx_lustre_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxLustre", body)
+    def create_location_fsx_lustre(self, CreateLocationFsxLustreRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_fsx_lustre_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationFsxLustre", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationFsxOntap
     # errors: InternalException, InvalidRequestException
-    def create_location_fsx_ontap(self, CreateLocationFsxOntapRequest input) -> str:
-        auto body = create_location_fsx_ontap_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxOntap", body)
+    def create_location_fsx_ontap(self, CreateLocationFsxOntapRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_fsx_ontap_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationFsxOntap", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationFsxOpenZfs
     # errors: InternalException, InvalidRequestException
-    def create_location_fsx_open_zfs(self, CreateLocationFsxOpenZfsRequest input) -> str:
-        auto body = create_location_fsx_open_zfs_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxOpenZfs", body)
+    def create_location_fsx_open_zfs(self, CreateLocationFsxOpenZfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_fsx_open_zfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationFsxOpenZfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationFsxWindows
     # errors: InternalException, InvalidRequestException
-    def create_location_fsx_windows(self, CreateLocationFsxWindowsRequest input) -> str:
-        auto body = create_location_fsx_windows_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxWindows", body)
+    def create_location_fsx_windows(self, CreateLocationFsxWindowsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_fsx_windows_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationFsxWindows", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationHdfs
     # errors: InternalException, InvalidRequestException
-    def create_location_hdfs(self, CreateLocationHdfsRequest input) -> str:
-        auto body = create_location_hdfs_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationHdfs", body)
+    def create_location_hdfs(self, CreateLocationHdfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_hdfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationHdfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationNfs
     # errors: InternalException, InvalidRequestException
-    def create_location_nfs(self, CreateLocationNfsRequest input) -> str:
-        auto body = create_location_nfs_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationNfs", body)
+    def create_location_nfs(self, CreateLocationNfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_nfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationNfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationObjectStorage
     # errors: InternalException, InvalidRequestException
-    def create_location_object_storage(self, CreateLocationObjectStorageRequest input) -> str:
-        auto body = create_location_object_storage_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationObjectStorage", body)
+    def create_location_object_storage(self, CreateLocationObjectStorageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_object_storage_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationObjectStorage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationS3
     # errors: InternalException, InvalidRequestException
-    def create_location_s3(self, CreateLocationS3Request input) -> str:
-        auto body = create_location_s3_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationS3", body)
+    def create_location_s3(self, CreateLocationS3Request input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_s3_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationS3", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateLocationSmb
     # errors: InternalException, InvalidRequestException
-    def create_location_smb(self, CreateLocationSmbRequest input) -> str:
-        auto body = create_location_smb_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationSmb", body)
+    def create_location_smb(self, CreateLocationSmbRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_location_smb_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateLocationSmb", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateTask
     # errors: InternalException, InvalidRequestException
-    def create_task(self, CreateTaskRequest input) -> str:
-        auto body = create_task_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateTask", body)
+    def create_task(self, CreateTaskRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_task_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "CreateTask", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteAgent
     # errors: InternalException, InvalidRequestException
-    def delete_agent(self, DeleteAgentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DeleteAgent", body)
+    def delete_agent(self, DeleteAgentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_agent_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DeleteAgent", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteLocation
     # errors: InternalException, InvalidRequestException
-    def delete_location(self, DeleteLocationRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DeleteLocation", body)
+    def delete_location(self, DeleteLocationRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_location_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DeleteLocation", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteTask
     # errors: InternalException, InvalidRequestException
-    def delete_task(self, DeleteTaskRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DeleteTask", body)
+    def delete_task(self, DeleteTaskRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_task_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DeleteTask", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeAgent
     # errors: InternalException, InvalidRequestException
-    def describe_agent(self, DescribeAgentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeAgent", body)
+    def describe_agent(self, DescribeAgentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_agent_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeAgent", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationAzureBlob
     # errors: InternalException, InvalidRequestException
-    def describe_location_azure_blob(self, DescribeLocationAzureBlobRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationAzureBlob", body)
+    def describe_location_azure_blob(self, DescribeLocationAzureBlobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_azure_blob_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationAzureBlob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationEfs
     # errors: InternalException, InvalidRequestException
-    def describe_location_efs(self, DescribeLocationEfsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationEfs", body)
+    def describe_location_efs(self, DescribeLocationEfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_efs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationEfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationFsxLustre
     # errors: InternalException, InvalidRequestException
-    def describe_location_fsx_lustre(self, DescribeLocationFsxLustreRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationFsxLustre", body)
+    def describe_location_fsx_lustre(self, DescribeLocationFsxLustreRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_fsx_lustre_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationFsxLustre", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationFsxOntap
     # errors: InternalException, InvalidRequestException
-    def describe_location_fsx_ontap(self, DescribeLocationFsxOntapRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationFsxOntap", body)
+    def describe_location_fsx_ontap(self, DescribeLocationFsxOntapRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_fsx_ontap_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationFsxOntap", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationFsxOpenZfs
     # errors: InternalException, InvalidRequestException
-    def describe_location_fsx_open_zfs(self, DescribeLocationFsxOpenZfsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationFsxOpenZfs", body)
+    def describe_location_fsx_open_zfs(self, DescribeLocationFsxOpenZfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_fsx_open_zfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationFsxOpenZfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationFsxWindows
     # errors: InternalException, InvalidRequestException
-    def describe_location_fsx_windows(self, DescribeLocationFsxWindowsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationFsxWindows", body)
+    def describe_location_fsx_windows(self, DescribeLocationFsxWindowsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_fsx_windows_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationFsxWindows", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationHdfs
     # errors: InternalException, InvalidRequestException
-    def describe_location_hdfs(self, DescribeLocationHdfsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationHdfs", body)
+    def describe_location_hdfs(self, DescribeLocationHdfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_hdfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationHdfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationNfs
     # errors: InternalException, InvalidRequestException
-    def describe_location_nfs(self, DescribeLocationNfsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationNfs", body)
+    def describe_location_nfs(self, DescribeLocationNfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_nfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationNfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationObjectStorage
     # errors: InternalException, InvalidRequestException
-    def describe_location_object_storage(self, DescribeLocationObjectStorageRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationObjectStorage", body)
+    def describe_location_object_storage(self, DescribeLocationObjectStorageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_object_storage_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationObjectStorage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationS3
     # errors: InternalException, InvalidRequestException
-    def describe_location_s3(self, DescribeLocationS3Request input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationS3", body)
+    def describe_location_s3(self, DescribeLocationS3Request input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_s3_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationS3", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeLocationSmb
     # errors: InternalException, InvalidRequestException
-    def describe_location_smb(self, DescribeLocationSmbRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeLocationSmb", body)
+    def describe_location_smb(self, DescribeLocationSmbRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_location_smb_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeLocationSmb", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTask
     # errors: InternalException, InvalidRequestException
-    def describe_task(self, DescribeTaskRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeTask", body)
+    def describe_task(self, DescribeTaskRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_task_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeTask", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeTaskExecution
     # errors: InternalException, InvalidRequestException
-    def describe_task_execution(self, DescribeTaskExecutionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "DescribeTaskExecution", body)
+    def describe_task_execution(self, DescribeTaskExecutionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_task_execution_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "DescribeTaskExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAgents
     # errors: InternalException, InvalidRequestException
-    def list_agents(self, ListAgentsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListAgents", body)
+    def list_agents(self, ListAgentsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_agents_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "ListAgents", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListLocations
     # errors: InternalException, InvalidRequestException
-    def list_locations(self, ListLocationsRequest input) -> str:
-        auto body = list_locations_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListLocations", body)
+    def list_locations(self, ListLocationsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_locations_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "ListLocations", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: InternalException, InvalidRequestException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTaskExecutions
     # errors: InternalException, InvalidRequestException
-    def list_task_executions(self, ListTaskExecutionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTaskExecutions", body)
+    def list_task_executions(self, ListTaskExecutionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_task_executions_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "ListTaskExecutions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTasks
     # errors: InternalException, InvalidRequestException
-    def list_tasks(self, ListTasksRequest input) -> str:
-        auto body = list_tasks_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTasks", body)
+    def list_tasks(self, ListTasksRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tasks_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "ListTasks", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # StartTaskExecution
     # errors: InternalException, InvalidRequestException
-    def start_task_execution(self, StartTaskExecutionRequest input) -> str:
-        auto body = start_task_execution_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "StartTaskExecution", body)
+    def start_task_execution(self, StartTaskExecutionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(start_task_execution_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "StartTaskExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: InternalException, InvalidRequestException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: InternalException, InvalidRequestException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateAgent
     # errors: InternalException, InvalidRequestException
-    def update_agent(self, UpdateAgentRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateAgent", body)
+    def update_agent(self, UpdateAgentRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_agent_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateAgent", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationAzureBlob
     # errors: InternalException, InvalidRequestException
-    def update_location_azure_blob(self, UpdateLocationAzureBlobRequest input) -> str:
-        auto body = update_location_azure_blob_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationAzureBlob", body)
+    def update_location_azure_blob(self, UpdateLocationAzureBlobRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_azure_blob_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationAzureBlob", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationEfs
     # errors: InternalException, InvalidRequestException
-    def update_location_efs(self, UpdateLocationEfsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationEfs", body)
+    def update_location_efs(self, UpdateLocationEfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_efs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationEfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationFsxLustre
     # errors: InternalException, InvalidRequestException
-    def update_location_fsx_lustre(self, UpdateLocationFsxLustreRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationFsxLustre", body)
+    def update_location_fsx_lustre(self, UpdateLocationFsxLustreRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_fsx_lustre_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationFsxLustre", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationFsxOntap
     # errors: InternalException, InvalidRequestException
-    def update_location_fsx_ontap(self, UpdateLocationFsxOntapRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationFsxOntap", body)
+    def update_location_fsx_ontap(self, UpdateLocationFsxOntapRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_fsx_ontap_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationFsxOntap", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationFsxOpenZfs
     # errors: InternalException, InvalidRequestException
-    def update_location_fsx_open_zfs(self, UpdateLocationFsxOpenZfsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationFsxOpenZfs", body)
+    def update_location_fsx_open_zfs(self, UpdateLocationFsxOpenZfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_fsx_open_zfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationFsxOpenZfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationFsxWindows
     # errors: InternalException, InvalidRequestException
-    def update_location_fsx_windows(self, UpdateLocationFsxWindowsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationFsxWindows", body)
+    def update_location_fsx_windows(self, UpdateLocationFsxWindowsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_fsx_windows_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationFsxWindows", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationHdfs
     # errors: InternalException, InvalidRequestException
-    def update_location_hdfs(self, UpdateLocationHdfsRequest input) -> str:
-        auto body = update_location_hdfs_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationHdfs", body)
+    def update_location_hdfs(self, UpdateLocationHdfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_hdfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationHdfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationNfs
     # errors: InternalException, InvalidRequestException
-    def update_location_nfs(self, UpdateLocationNfsRequest input) -> str:
-        auto body = update_location_nfs_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationNfs", body)
+    def update_location_nfs(self, UpdateLocationNfsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_nfs_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationNfs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationObjectStorage
     # errors: InternalException, InvalidRequestException
-    def update_location_object_storage(self, UpdateLocationObjectStorageRequest input) -> str:
-        auto body = update_location_object_storage_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationObjectStorage", body)
+    def update_location_object_storage(self, UpdateLocationObjectStorageRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_object_storage_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationObjectStorage", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationS3
     # errors: InternalException, InvalidRequestException
-    def update_location_s3(self, UpdateLocationS3Request input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationS3", body)
+    def update_location_s3(self, UpdateLocationS3Request input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_s3_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationS3", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateLocationSmb
     # errors: InternalException, InvalidRequestException
-    def update_location_smb(self, UpdateLocationSmbRequest input) -> str:
-        auto body = update_location_smb_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationSmb", body)
+    def update_location_smb(self, UpdateLocationSmbRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_location_smb_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateLocationSmb", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateTask
     # errors: InternalException, InvalidRequestException
-    def update_task(self, UpdateTaskRequest input) -> str:
-        auto body = update_task_request_to_json(input)
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateTask", body)
+    def update_task(self, UpdateTaskRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_task_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateTask", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateTaskExecution
     # errors: InternalException, InvalidRequestException
-    def update_task_execution(self, UpdateTaskExecutionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateTaskExecution", body)
-
-    # Paginator for ListAgents — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Agents).
-    def paginate_list_agents(self, ListAgentsRequest input):
-        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListAgents", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListLocations — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Locations).
-    def paginate_list_locations(self, ListLocationsRequest input):
-        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
-        while True:
-            auto body = list_locations_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListLocations", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTagsForResource — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Tags).
-    def paginate_list_tags_for_resource(self, ListTagsForResourceRequest input):
-        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTagsForResource", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTaskExecutions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: TaskExecutions).
-    def paginate_list_task_executions(self, ListTaskExecutionsRequest input):
-        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTaskExecutions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTasks — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Tasks).
-    def paginate_list_tasks(self, ListTasksRequest input):
-        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
-        while True:
-            auto body = list_tasks_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTasks", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_task_execution(self, UpdateTaskExecutionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_task_execution_request_to_cbor(input))
+        auto host = endpoints.regional_host(datasync_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(datasync_service(), self.region, host, "FmrsService", "UpdateTaskExecution", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a DataSyncClient bound to credentials + region.
 def datasync_client(core.Credentials creds, str region) -> DataSyncClient:

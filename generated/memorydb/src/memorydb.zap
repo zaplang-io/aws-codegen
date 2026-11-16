@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: Amazon MemoryDB (serviceId MemoryDB, API 2021-01-01)
-# Protocol: awsJson 1.1 (targetPrefix AmazonMemoryDB)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service memorydb, service shape AmazonMemoryDB)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 45 operations — 45 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   188 structs (112 @derive(Json)), 9 enums, 57 error variants.
-#   13 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 45 operations — 45 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   188 structs (plain carriers), 9 enums, 57 error variants.
+#   0 paginators generated (13 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
+import datetime
 
-# The MemoryDB awsJson protocol: version 1.1, API id "AmazonMemoryDB".
-def memory_db_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("AmazonMemoryDB", "memory-db")
+# The MemoryDB smithy-rpc-v2-cbor protocol: SigV4 service "memorydb" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/AmazonMemoryDB/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def memory_db_service() -> str:
+    return "memorydb"
 
 # --- enums -----------------------------------------------------------------
 
@@ -111,9 +116,6 @@ enum UpdateStrategy:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) UserNames: list[str], PendingChanges: ACLPendingChanges, Clusters: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ACL:
     Optional[str] Name
     Optional[str] Status
@@ -123,70 +125,48 @@ struct ACL:
     Optional[list[str]] Clusters
     Optional[str] ARN
 
-@derive(Json)
 struct ACLAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ACLNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) UserNamesToRemove: list[str], UserNamesToAdd: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ACLPendingChanges:
     Optional[list[str]] UserNamesToRemove
     Optional[list[str]] UserNamesToAdd
 
-@derive(Json)
 struct ACLQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ACLsUpdateStatus:
     Optional[str] ACLToApply
 
-@derive(Json)
 struct APICallRateForCustomerExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Authentication:
-    Optional[AuthenticationType] Type
+    Optional[str] Type
     Optional[int64] PasswordCount
 
-# no @derive(Json): member(s) Passwords: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AuthenticationMode:
-    Optional[InputAuthenticationType] Type
+    Optional[str] Type
     Optional[list[str]] Passwords
 
-@derive(Json)
 struct AvailabilityZone:
     Optional[str] Name
 
-# no @derive(Json): member(s) ClusterNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchUpdateClusterRequest:
     list[str] ClusterNames
     Optional[ServiceUpdateRequest] ServiceUpdate
 
-# no @derive(Json): member(s) ProcessedClusters: list[Cluster], UnprocessedClusters: list[UnprocessedCluster] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct BatchUpdateClusterResponse:
     Optional[list[Cluster]] ProcessedClusters
     Optional[list[UnprocessedCluster]] UnprocessedClusters
 
-# no @derive(Json): member(s) PendingUpdates: ClusterPendingUpdates, Shards: list[Shard], SecurityGroups: list[SecurityGroupMembership] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] Name
     Optional[str] Description
@@ -195,7 +175,7 @@ struct Cluster:
     Optional[str] MultiRegionClusterName
     Optional[int64] NumberOfShards
     Optional[list[Shard]] Shards
-    Optional[AZStatus] AvailabilityMode
+    Optional[str] AvailabilityMode
     Optional[Endpoint] ClusterEndpoint
     Optional[str] NodeType
     Optional[str] Engine
@@ -215,18 +195,14 @@ struct Cluster:
     Optional[str] SnapshotWindow
     Optional[str] ACLName
     Optional[bool] AutoMinorVersionUpgrade
-    Optional[DataTieringStatus] DataTiering
-    Optional[NetworkType] NetworkType
-    Optional[IpDiscovery] IpDiscovery
+    Optional[str] DataTiering
+    Optional[str] NetworkType
+    Optional[str] IpDiscovery
 
-@derive(Json)
 struct ClusterAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Shards: list[ShardDetail] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ClusterConfiguration:
     Optional[str] Name
     Optional[str] Description
@@ -246,27 +222,19 @@ struct ClusterConfiguration:
     Optional[str] MultiRegionParameterGroupName
     Optional[str] MultiRegionClusterName
 
-@derive(Json)
 struct ClusterNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ServiceUpdates: list[PendingModifiedServiceUpdate] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ClusterPendingUpdates:
     Optional[ReshardingStatus] Resharding
     Optional[ACLsUpdateStatus] ACLs
     Optional[list[PendingModifiedServiceUpdate]] ServiceUpdates
 
-@derive(Json)
 struct ClusterQuotaForCustomerExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CopySnapshotRequest:
     str SourceSnapshotName
     str TargetSnapshotName
@@ -274,29 +242,17 @@ struct CopySnapshotRequest:
     Optional[str] KmsKeyId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CopySnapshotResponse:
     Optional[Snapshot] Snapshot
 
-# no @derive(Json): member(s) UserNames: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateACLRequest:
     str ACLName
     Optional[list[str]] UserNames
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ACL: ACL not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateACLResponse:
     Optional[ACL] ACL
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SnapshotArns: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     str ClusterName
     str NodeType
@@ -322,18 +278,12 @@ struct CreateClusterRequest:
     Optional[str] EngineVersion
     Optional[bool] AutoMinorVersionUpgrade
     Optional[bool] DataTiering
-    Optional[NetworkType] NetworkType
-    Optional[IpDiscovery] IpDiscovery
+    Optional[str] NetworkType
+    Optional[str] IpDiscovery
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] Cluster
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateMultiRegionClusterRequest:
     str MultiRegionClusterNameSuffix
     Optional[str] Description
@@ -345,173 +295,112 @@ struct CreateMultiRegionClusterRequest:
     Optional[bool] TLSEnabled
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateMultiRegionClusterResponse:
     Optional[MultiRegionCluster] MultiRegionCluster
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateParameterGroupRequest:
     str ParameterGroupName
     str Family
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateSnapshotRequest:
     str ClusterName
     str SnapshotName
     Optional[str] KmsKeyId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateSnapshotResponse:
     Optional[Snapshot] Snapshot
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateSubnetGroupRequest:
     str SubnetGroupName
     Optional[str] Description
     list[str] SubnetIds
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
-# no @derive(Json): member(s) AuthenticationMode: AuthenticationMode, Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateUserRequest:
     str UserName
     AuthenticationMode AuthenticationMode
     str AccessString
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) User: User not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateUserResponse:
     Optional[User] User
 
-@derive(Json)
 struct DefaultUserRequired:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteACLRequest:
     str ACLName
 
-# no @derive(Json): member(s) ACL: ACL not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteACLResponse:
     Optional[ACL] ACL
 
-@derive(Json)
 struct DeleteClusterRequest:
     str ClusterName
     Optional[str] MultiRegionClusterName
     Optional[str] FinalSnapshotName
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] Cluster
 
-@derive(Json)
 struct DeleteMultiRegionClusterRequest:
     str MultiRegionClusterName
 
-# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteMultiRegionClusterResponse:
     Optional[MultiRegionCluster] MultiRegionCluster
 
-@derive(Json)
 struct DeleteParameterGroupRequest:
     str ParameterGroupName
 
-@derive(Json)
 struct DeleteParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-@derive(Json)
 struct DeleteSnapshotRequest:
     str SnapshotName
 
-# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteSnapshotResponse:
     Optional[Snapshot] Snapshot
 
-@derive(Json)
 struct DeleteSubnetGroupRequest:
     str SubnetGroupName
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
-@derive(Json)
 struct DeleteUserRequest:
     str UserName
 
-# no @derive(Json): member(s) User: User not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteUserResponse:
     Optional[User] User
 
-@derive(Json)
 struct DescribeACLsRequest:
     Optional[str] ACLName
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ACLs: list[ACL] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeACLsResponse:
     Optional[list[ACL]] ACLs
     Optional[str] NextToken
 
-@derive(Json)
 struct DescribeClustersRequest:
     Optional[str] ClusterName
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[bool] ShowShardDetails
 
-# no @derive(Json): member(s) Clusters: list[Cluster] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClustersResponse:
     Optional[str] NextToken
     Optional[list[Cluster]] Clusters
 
-@derive(Json)
 struct DescribeEngineVersionsRequest:
     Optional[str] Engine
     Optional[str] EngineVersion
@@ -520,98 +409,70 @@ struct DescribeEngineVersionsRequest:
     Optional[str] NextToken
     Optional[bool] DefaultOnly
 
-# no @derive(Json): member(s) EngineVersions: list[EngineVersionInfo] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEngineVersionsResponse:
     Optional[str] NextToken
     Optional[list[EngineVersionInfo]] EngineVersions
 
-@derive(Json)
 struct DescribeEventsRequest:
     Optional[str] SourceName
-    Optional[SourceType] SourceType
+    Optional[str] SourceType
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
     Optional[int64] Duration
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEventsResponse:
     Optional[str] NextToken
     Optional[list[Event]] Events
 
-@derive(Json)
 struct DescribeMultiRegionClustersRequest:
     Optional[str] MultiRegionClusterName
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[bool] ShowClusterDetails
 
-# no @derive(Json): member(s) MultiRegionClusters: list[MultiRegionCluster] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeMultiRegionClustersResponse:
     Optional[str] NextToken
     Optional[list[MultiRegionCluster]] MultiRegionClusters
 
-@derive(Json)
 struct DescribeMultiRegionParameterGroupsRequest:
     Optional[str] MultiRegionParameterGroupName
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiRegionParameterGroups: list[MultiRegionParameterGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeMultiRegionParameterGroupsResponse:
     Optional[str] NextToken
     Optional[list[MultiRegionParameterGroup]] MultiRegionParameterGroups
 
-@derive(Json)
 struct DescribeMultiRegionParametersRequest:
     str MultiRegionParameterGroupName
     Optional[str] Source
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiRegionParameters: list[MultiRegionParameter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeMultiRegionParametersResponse:
     Optional[str] NextToken
     Optional[list[MultiRegionParameter]] MultiRegionParameters
 
-@derive(Json)
 struct DescribeParameterGroupsRequest:
     Optional[str] ParameterGroupName
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ParameterGroups: list[ParameterGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeParameterGroupsResponse:
     Optional[str] NextToken
     Optional[list[ParameterGroup]] ParameterGroups
 
-@derive(Json)
 struct DescribeParametersRequest:
     str ParameterGroupName
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: list[Parameter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeParametersResponse:
     Optional[str] NextToken
     Optional[list[Parameter]] Parameters
 
-@derive(Json)
 struct DescribeReservedNodesOfferingsRequest:
     Optional[str] ReservedNodesOfferingId
     Optional[str] NodeType
@@ -620,14 +481,10 @@ struct DescribeReservedNodesOfferingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReservedNodesOfferings: list[ReservedNodesOffering] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeReservedNodesOfferingsResponse:
     Optional[str] NextToken
     Optional[list[ReservedNodesOffering]] ReservedNodesOfferings
 
-@derive(Json)
 struct DescribeReservedNodesRequest:
     Optional[str] ReservationId
     Optional[str] ReservedNodesOfferingId
@@ -637,31 +494,21 @@ struct DescribeReservedNodesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReservedNodes: list[ReservedNode] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeReservedNodesResponse:
     Optional[str] NextToken
     Optional[list[ReservedNode]] ReservedNodes
 
-# no @derive(Json): member(s) ClusterNames: list[str], Status: list[ServiceUpdateStatus] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeServiceUpdatesRequest:
     Optional[str] ServiceUpdateName
     Optional[list[str]] ClusterNames
-    Optional[list[ServiceUpdateStatus]] Status
+    Optional[list[str]] Status
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceUpdates: list[ServiceUpdate] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeServiceUpdatesResponse:
     Optional[str] NextToken
     Optional[list[ServiceUpdate]] ServiceUpdates
 
-@derive(Json)
 struct DescribeSnapshotsRequest:
     Optional[str] ClusterName
     Optional[str] SnapshotName
@@ -670,192 +517,138 @@ struct DescribeSnapshotsRequest:
     Optional[int64] MaxResults
     Optional[bool] ShowDetail
 
-# no @derive(Json): member(s) Snapshots: list[Snapshot] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSnapshotsResponse:
     Optional[str] NextToken
     Optional[list[Snapshot]] Snapshots
 
-@derive(Json)
 struct DescribeSubnetGroupsRequest:
     Optional[str] SubnetGroupName
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SubnetGroups: list[SubnetGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSubnetGroupsResponse:
     Optional[str] NextToken
     Optional[list[SubnetGroup]] SubnetGroups
 
-# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeUsersRequest:
     Optional[str] UserName
     Optional[list[Filter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeUsersResponse:
     Optional[list[User]] Users
     Optional[str] NextToken
 
-@derive(Json)
 struct DuplicateUserNameFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Endpoint:
     Optional[str] Address
     Optional[int64] Port
 
-@derive(Json)
 struct EngineVersionInfo:
     Optional[str] Engine
     Optional[str] EngineVersion
     Optional[str] EnginePatchVersion
     Optional[str] ParameterGroupFamily
 
-@derive(Json)
 struct Event:
     Optional[str] SourceName
-    Optional[SourceType] SourceType
+    Optional[str] SourceType
     Optional[str] Message
     Optional[DateTime] Date
 
-@derive(Json)
 struct FailoverShardRequest:
     str ClusterName
     str ShardName
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct FailoverShardResponse:
     Optional[Cluster] Cluster
 
-# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Filter:
     str Name
     list[str] Values
 
-@derive(Json)
 struct InsufficientClusterCapacityFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidACLStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidARNFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidClusterStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidCredentialsException:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidKMSKeyFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidMultiRegionClusterStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidNodeStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidParameterCombinationException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidParameterGroupStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidParameterValueException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidSnapshotStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidSubnet:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidUserStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct InvalidVPCNetworkStateFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ListAllowedMultiRegionClusterUpdatesRequest:
     str MultiRegionClusterName
 
-# no @derive(Json): member(s) ScaleUpNodeTypes: list[str], ScaleDownNodeTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAllowedMultiRegionClusterUpdatesResponse:
     Optional[list[str]] ScaleUpNodeTypes
     Optional[list[str]] ScaleDownNodeTypes
 
-@derive(Json)
 struct ListAllowedNodeTypeUpdatesRequest:
     str ClusterName
 
-# no @derive(Json): member(s) ScaleUpNodeTypes: list[str], ScaleDownNodeTypes: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAllowedNodeTypeUpdatesResponse:
     Optional[list[str]] ScaleUpNodeTypes
     Optional[list[str]] ScaleDownNodeTypes
 
-@derive(Json)
 struct ListTagsRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) Clusters: list[RegionalCluster] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct MultiRegionCluster:
     Optional[str] MultiRegionClusterName
     Optional[str] Description
@@ -869,17 +662,14 @@ struct MultiRegionCluster:
     Optional[bool] TLSEnabled
     Optional[str] ARN
 
-@derive(Json)
 struct MultiRegionClusterAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct MultiRegionClusterNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct MultiRegionParameter:
     Optional[str] Name
     Optional[str] Value
@@ -889,24 +679,20 @@ struct MultiRegionParameter:
     Optional[str] AllowedValues
     Optional[str] MinimumEngineVersion
 
-@derive(Json)
 struct MultiRegionParameterGroup:
     Optional[str] Name
     Optional[str] Family
     Optional[str] Description
     Optional[str] ARN
 
-@derive(Json)
 struct MultiRegionParameterGroupNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct NoOperationFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Node:
     Optional[str] Name
     Optional[str] Status
@@ -914,17 +700,14 @@ struct Node:
     Optional[DateTime] CreateTime
     Optional[Endpoint] Endpoint
 
-@derive(Json)
 struct NodeQuotaForClusterExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct NodeQuotaForCustomerExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Parameter:
     Optional[str] Name
     Optional[str] Value
@@ -933,72 +716,54 @@ struct Parameter:
     Optional[str] AllowedValues
     Optional[str] MinimumEngineVersion
 
-@derive(Json)
 struct ParameterGroup:
     Optional[str] Name
     Optional[str] Family
     Optional[str] Description
     Optional[str] ARN
 
-@derive(Json)
 struct ParameterGroupAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ParameterGroupNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ParameterGroupQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ParameterNameValue:
     Optional[str] ParameterName
     Optional[str] ParameterValue
 
-@derive(Json)
 struct PendingModifiedServiceUpdate:
     Optional[str] ServiceUpdateName
-    Optional[ServiceUpdateStatus] Status
+    Optional[str] Status
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PurchaseReservedNodesOfferingRequest:
     str ReservedNodesOfferingId
     Optional[str] ReservationId
     Optional[int64] NodeCount
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ReservedNode: ReservedNode not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct PurchaseReservedNodesOfferingResponse:
     Optional[ReservedNode] ReservedNode
 
-@derive(Json)
 struct RecurringCharge:
     Optional[float64] RecurringChargeAmount
     Optional[str] RecurringChargeFrequency
 
-@derive(Json)
 struct RegionalCluster:
     Optional[str] ClusterName
     Optional[str] Region
     Optional[str] Status
     Optional[str] ARN
 
-@derive(Json)
 struct ReplicaConfigurationRequest:
     Optional[int64] ReplicaCount
 
-# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ReservedNode:
     Optional[str] ReservationId
     Optional[str] ReservedNodesOfferingId
@@ -1012,24 +777,18 @@ struct ReservedNode:
     Optional[list[RecurringCharge]] RecurringCharges
     Optional[str] ARN
 
-@derive(Json)
 struct ReservedNodeAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ReservedNodeNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ReservedNodeQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ReservedNodesOffering:
     Optional[str] ReservedNodesOfferingId
     Optional[str] NodeType
@@ -1038,61 +797,47 @@ struct ReservedNodesOffering:
     Optional[str] OfferingType
     Optional[list[RecurringCharge]] RecurringCharges
 
-@derive(Json)
 struct ReservedNodesOfferingNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ParameterNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ResetParameterGroupRequest:
     str ParameterGroupName
     Optional[bool] AllParameters
     Optional[list[str]] ParameterNames
 
-@derive(Json)
 struct ResetParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-@derive(Json)
 struct ReshardingStatus:
     Optional[SlotMigration] SlotMigration
 
-@derive(Json)
 struct SecurityGroupMembership:
     Optional[str] SecurityGroupId
     Optional[str] Status
 
-@derive(Json)
 struct ServiceLinkedRoleNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ServiceUpdate:
     Optional[str] ClusterName
     Optional[str] ServiceUpdateName
     Optional[DateTime] ReleaseDate
     Optional[str] Description
-    Optional[ServiceUpdateStatus] Status
+    Optional[str] Status
     Optional[str] Type
     Optional[str] Engine
     Optional[str] NodesUpdated
     Optional[DateTime] AutoUpdateStartDate
 
-@derive(Json)
 struct ServiceUpdateNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ServiceUpdateRequest:
     Optional[str] ServiceUpdateNameToApply
 
-# no @derive(Json): member(s) Nodes: list[Node] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Shard:
     Optional[str] Name
     Optional[str] Status
@@ -1100,39 +845,30 @@ struct Shard:
     Optional[list[Node]] Nodes
     Optional[int64] NumberOfNodes
 
-@derive(Json)
 struct ShardConfiguration:
     Optional[str] Slots
     Optional[int64] ReplicaCount
 
-@derive(Json)
 struct ShardConfigurationRequest:
     Optional[int64] ShardCount
 
-@derive(Json)
 struct ShardDetail:
     Optional[str] Name
     Optional[ShardConfiguration] Configuration
     Optional[str] Size
     Optional[DateTime] SnapshotCreationTime
 
-@derive(Json)
 struct ShardNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ShardsPerClusterQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SlotMigration:
     Optional[float64] ProgressPercentage
 
-# no @derive(Json): member(s) ClusterConfiguration: ClusterConfiguration not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Snapshot:
     Optional[str] Name
     Optional[str] Status
@@ -1140,146 +876,104 @@ struct Snapshot:
     Optional[str] KmsKeyId
     Optional[str] ARN
     Optional[ClusterConfiguration] ClusterConfiguration
-    Optional[DataTieringStatus] DataTiering
+    Optional[str] DataTiering
 
-@derive(Json)
 struct SnapshotAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SnapshotNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SnapshotQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) SupportedNetworkTypes: list[NetworkType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Subnet:
     Optional[str] Identifier
     Optional[AvailabilityZone] AvailabilityZone
-    Optional[list[NetworkType]] SupportedNetworkTypes
+    Optional[list[str]] SupportedNetworkTypes
 
-# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[NetworkType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SubnetGroup:
     Optional[str] Name
     Optional[str] Description
     Optional[str] VpcId
     Optional[list[Subnet]] Subnets
     Optional[str] ARN
-    Optional[list[NetworkType]] SupportedNetworkTypes
+    Optional[list[str]] SupportedNetworkTypes
 
-@derive(Json)
 struct SubnetGroupAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SubnetGroupInUseFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SubnetGroupNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SubnetGroupQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SubnetInUse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SubnetNotAllowedFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct SubnetQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-@derive(Json)
 struct TagNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TagQuotaPerResourceExceeded:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceResponse:
     Optional[list[Tag]] TagList
 
-@derive(Json)
 struct TestFailoverNotAvailableFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UnprocessedCluster:
     Optional[str] ClusterName
     Optional[str] ErrorType
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceResponse:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) UserNamesToAdd: list[str], UserNamesToRemove: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateACLRequest:
     str ACLName
     Optional[list[str]] UserNamesToAdd
     Optional[list[str]] UserNamesToRemove
 
-# no @derive(Json): member(s) ACL: ACL not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateACLResponse:
     Optional[ACL] ACL
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateClusterRequest:
     str ClusterName
     Optional[str] Description
@@ -1296,15 +990,11 @@ struct UpdateClusterRequest:
     Optional[ReplicaConfigurationRequest] ReplicaConfiguration
     Optional[ShardConfigurationRequest] ShardConfiguration
     Optional[str] ACLName
-    Optional[IpDiscovery] IpDiscovery
+    Optional[str] IpDiscovery
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[Cluster] Cluster
 
-@derive(Json)
 struct UpdateMultiRegionClusterRequest:
     str MultiRegionClusterName
     Optional[str] NodeType
@@ -1312,56 +1002,34 @@ struct UpdateMultiRegionClusterRequest:
     Optional[str] EngineVersion
     Optional[ShardConfigurationRequest] ShardConfiguration
     Optional[str] MultiRegionParameterGroupName
-    Optional[UpdateStrategy] UpdateStrategy
+    Optional[str] UpdateStrategy
 
-# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateMultiRegionClusterResponse:
     Optional[MultiRegionCluster] MultiRegionCluster
 
-# no @derive(Json): member(s) ParameterNameValues: list[ParameterNameValue] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateParameterGroupRequest:
     str ParameterGroupName
     list[ParameterNameValue] ParameterNameValues
 
-@derive(Json)
 struct UpdateParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateSubnetGroupRequest:
     str SubnetGroupName
     Optional[str] Description
     Optional[list[str]] SubnetIds
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
-# no @derive(Json): member(s) AuthenticationMode: AuthenticationMode not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateUserRequest:
     str UserName
     Optional[AuthenticationMode] AuthenticationMode
     Optional[str] AccessString
 
-# no @derive(Json): member(s) User: User not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateUserResponse:
     Optional[User] User
 
-# no @derive(Json): member(s) ACLNames: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct User:
     Optional[str] Name
     Optional[str] Status
@@ -1371,19 +1039,16 @@ struct User:
     Optional[Authentication] Authentication
     Optional[str] ARN
 
-@derive(Json)
 struct UserAlreadyExistsFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UserNotFoundFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UserQuotaExceededFault:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
 # --- errors ----------------------------------------------------------------
@@ -1393,7 +1058,7 @@ struct UserQuotaExceededFault:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -1705,498 +1370,1120 @@ def memory_db_error_name(MemoryDBErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def memory_db_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   DescribeACLs
+#   DescribeClusters
+#   DescribeEngineVersions
+#   DescribeEvents
+#   DescribeMultiRegionClusters
+#   DescribeParameterGroups
+#   DescribeParameters
+#   DescribeReservedNodes
+#   DescribeReservedNodesOfferings
+#   DescribeServiceUpdates
+#   DescribeSnapshots
+#   DescribeSubnetGroups
+#   DescribeUsers
 
-def memory_db_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def memory_db_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
-
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize AuthenticationMode to a compact JSON object (declaration order).
-def authentication_mode_to_json(AuthenticationMode v) -> str:
-    list[str] parts = []
+# Serialize AuthenticationMode to a CBOR map (member wire name -> value, model order).
+def authentication_mode_to_cbor(AuthenticationMode v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Type.is_some():
         auto u0 = v.Type.unwrap()
-        parts.append("\"Type\":" + u0.to_json())
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
     if v.Passwords.is_some():
         auto u1 = v.Passwords.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(memory_db_json_str(x2))
-        parts.append("\"Passwords\":" + memory_db_json_arr(e2))
-    return memory_db_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("Passwords")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize BatchUpdateClusterRequest to a compact JSON object (declaration order).
-def batch_update_cluster_request_to_json(BatchUpdateClusterRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize BatchUpdateClusterRequest to a CBOR map (member wire name -> value, model order).
+def batch_update_cluster_request_to_cbor(BatchUpdateClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.ClusterNames:
-        e0.append(memory_db_json_str(x0))
-    parts.append("\"ClusterNames\":" + memory_db_json_arr(e0))
+        e0.append(cbor.cbor_text(x0))
+    keys.append("ClusterNames")
+    vals.append(cbor.cbor_list(e0))
     if v.ServiceUpdate.is_some():
         auto u1 = v.ServiceUpdate.unwrap()
-        parts.append("\"ServiceUpdate\":" + u1.to_json())
-    return memory_db_json_obj(parts)
+        keys.append("ServiceUpdate")
+        vals.append(service_update_request_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CopySnapshotRequest to a compact JSON object (declaration order).
-def copy_snapshot_request_to_json(CopySnapshotRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"SourceSnapshotName\":" + memory_db_json_str(v.SourceSnapshotName))
-    parts.append("\"TargetSnapshotName\":" + memory_db_json_str(v.TargetSnapshotName))
+# Serialize CopySnapshotRequest to a CBOR map (member wire name -> value, model order).
+def copy_snapshot_request_to_cbor(CopySnapshotRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SourceSnapshotName")
+    vals.append(cbor.cbor_text(v.SourceSnapshotName))
+    keys.append("TargetSnapshotName")
+    vals.append(cbor.cbor_text(v.TargetSnapshotName))
     if v.TargetBucket.is_some():
         auto u0 = v.TargetBucket.unwrap()
-        parts.append("\"TargetBucket\":" + memory_db_json_str(u0))
+        keys.append("TargetBucket")
+        vals.append(cbor.cbor_text(u0))
     if v.KmsKeyId.is_some():
         auto u1 = v.KmsKeyId.unwrap()
-        parts.append("\"KmsKeyId\":" + memory_db_json_str(u1))
+        keys.append("KmsKeyId")
+        vals.append(cbor.cbor_text(u1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e3))
-    return memory_db_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateACLRequest to a compact JSON object (declaration order).
-def create_acl_request_to_json(CreateACLRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ACLName\":" + memory_db_json_str(v.ACLName))
+# Serialize CreateACLRequest to a CBOR map (member wire name -> value, model order).
+def create_acl_request_to_cbor(CreateACLRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ACLName")
+    vals.append(cbor.cbor_text(v.ACLName))
     if v.UserNames.is_some():
         auto u0 = v.UserNames.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(memory_db_json_str(x1))
-        parts.append("\"UserNames\":" + memory_db_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("UserNames")
+        vals.append(cbor.cbor_list(e1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e3))
-    return memory_db_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateClusterRequest to a compact JSON object (declaration order).
-def create_cluster_request_to_json(CreateClusterRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ClusterName\":" + memory_db_json_str(v.ClusterName))
-    parts.append("\"NodeType\":" + memory_db_json_str(v.NodeType))
+# Serialize CreateClusterRequest to a CBOR map (member wire name -> value, model order).
+def create_cluster_request_to_cbor(CreateClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterName")
+    vals.append(cbor.cbor_text(v.ClusterName))
+    keys.append("NodeType")
+    vals.append(cbor.cbor_text(v.NodeType))
     if v.MultiRegionClusterName.is_some():
         auto u0 = v.MultiRegionClusterName.unwrap()
-        parts.append("\"MultiRegionClusterName\":" + memory_db_json_str(u0))
+        keys.append("MultiRegionClusterName")
+        vals.append(cbor.cbor_text(u0))
     if v.ParameterGroupName.is_some():
         auto u1 = v.ParameterGroupName.unwrap()
-        parts.append("\"ParameterGroupName\":" + memory_db_json_str(u1))
+        keys.append("ParameterGroupName")
+        vals.append(cbor.cbor_text(u1))
     if v.Description.is_some():
         auto u2 = v.Description.unwrap()
-        parts.append("\"Description\":" + memory_db_json_str(u2))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u2))
     if v.NumShards.is_some():
         auto u3 = v.NumShards.unwrap()
-        parts.append("\"NumShards\":" + str(u3))
+        keys.append("NumShards")
+        vals.append(cbor.cbor_int(u3))
     if v.NumReplicasPerShard.is_some():
         auto u4 = v.NumReplicasPerShard.unwrap()
-        parts.append("\"NumReplicasPerShard\":" + str(u4))
+        keys.append("NumReplicasPerShard")
+        vals.append(cbor.cbor_int(u4))
     if v.SubnetGroupName.is_some():
         auto u5 = v.SubnetGroupName.unwrap()
-        parts.append("\"SubnetGroupName\":" + memory_db_json_str(u5))
+        keys.append("SubnetGroupName")
+        vals.append(cbor.cbor_text(u5))
     if v.SecurityGroupIds.is_some():
         auto u6 = v.SecurityGroupIds.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(memory_db_json_str(x7))
-        parts.append("\"SecurityGroupIds\":" + memory_db_json_arr(e7))
+            e7.append(cbor.cbor_text(x7))
+        keys.append("SecurityGroupIds")
+        vals.append(cbor.cbor_list(e7))
     if v.MaintenanceWindow.is_some():
         auto u8 = v.MaintenanceWindow.unwrap()
-        parts.append("\"MaintenanceWindow\":" + memory_db_json_str(u8))
+        keys.append("MaintenanceWindow")
+        vals.append(cbor.cbor_text(u8))
     if v.Port.is_some():
         auto u9 = v.Port.unwrap()
-        parts.append("\"Port\":" + str(u9))
+        keys.append("Port")
+        vals.append(cbor.cbor_int(u9))
     if v.SnsTopicArn.is_some():
         auto u10 = v.SnsTopicArn.unwrap()
-        parts.append("\"SnsTopicArn\":" + memory_db_json_str(u10))
+        keys.append("SnsTopicArn")
+        vals.append(cbor.cbor_text(u10))
     if v.TLSEnabled.is_some():
         auto u11 = v.TLSEnabled.unwrap()
-        parts.append("\"TLSEnabled\":" + json.dumps(JsonValue.Bool(u11)))
+        keys.append("TLSEnabled")
+        vals.append(cbor.cbor_bool(u11))
     if v.KmsKeyId.is_some():
         auto u12 = v.KmsKeyId.unwrap()
-        parts.append("\"KmsKeyId\":" + memory_db_json_str(u12))
+        keys.append("KmsKeyId")
+        vals.append(cbor.cbor_text(u12))
     if v.SnapshotArns.is_some():
         auto u13 = v.SnapshotArns.unwrap()
-        list[str] e14 = []
+        list[cbor.CborValue] e14 = []
         for x14 in u13:
-            e14.append(memory_db_json_str(x14))
-        parts.append("\"SnapshotArns\":" + memory_db_json_arr(e14))
+            e14.append(cbor.cbor_text(x14))
+        keys.append("SnapshotArns")
+        vals.append(cbor.cbor_list(e14))
     if v.SnapshotName.is_some():
         auto u15 = v.SnapshotName.unwrap()
-        parts.append("\"SnapshotName\":" + memory_db_json_str(u15))
+        keys.append("SnapshotName")
+        vals.append(cbor.cbor_text(u15))
     if v.SnapshotRetentionLimit.is_some():
         auto u16 = v.SnapshotRetentionLimit.unwrap()
-        parts.append("\"SnapshotRetentionLimit\":" + str(u16))
+        keys.append("SnapshotRetentionLimit")
+        vals.append(cbor.cbor_int(u16))
     if v.Tags.is_some():
         auto u17 = v.Tags.unwrap()
-        list[str] e18 = []
+        list[cbor.CborValue] e18 = []
         for x18 in u17:
-            e18.append(x18.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e18))
+            e18.append(tag_to_cbor(x18))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e18))
     if v.SnapshotWindow.is_some():
         auto u19 = v.SnapshotWindow.unwrap()
-        parts.append("\"SnapshotWindow\":" + memory_db_json_str(u19))
-    parts.append("\"ACLName\":" + memory_db_json_str(v.ACLName))
+        keys.append("SnapshotWindow")
+        vals.append(cbor.cbor_text(u19))
+    keys.append("ACLName")
+    vals.append(cbor.cbor_text(v.ACLName))
     if v.Engine.is_some():
         auto u20 = v.Engine.unwrap()
-        parts.append("\"Engine\":" + memory_db_json_str(u20))
+        keys.append("Engine")
+        vals.append(cbor.cbor_text(u20))
     if v.EngineVersion.is_some():
         auto u21 = v.EngineVersion.unwrap()
-        parts.append("\"EngineVersion\":" + memory_db_json_str(u21))
+        keys.append("EngineVersion")
+        vals.append(cbor.cbor_text(u21))
     if v.AutoMinorVersionUpgrade.is_some():
         auto u22 = v.AutoMinorVersionUpgrade.unwrap()
-        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u22)))
+        keys.append("AutoMinorVersionUpgrade")
+        vals.append(cbor.cbor_bool(u22))
     if v.DataTiering.is_some():
         auto u23 = v.DataTiering.unwrap()
-        parts.append("\"DataTiering\":" + json.dumps(JsonValue.Bool(u23)))
+        keys.append("DataTiering")
+        vals.append(cbor.cbor_bool(u23))
     if v.NetworkType.is_some():
         auto u24 = v.NetworkType.unwrap()
-        parts.append("\"NetworkType\":" + u24.to_json())
+        keys.append("NetworkType")
+        vals.append(cbor.cbor_text(u24))
     if v.IpDiscovery.is_some():
         auto u25 = v.IpDiscovery.unwrap()
-        parts.append("\"IpDiscovery\":" + u25.to_json())
-    return memory_db_json_obj(parts)
+        keys.append("IpDiscovery")
+        vals.append(cbor.cbor_text(u25))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateMultiRegionClusterRequest to a compact JSON object (declaration order).
-def create_multi_region_cluster_request_to_json(CreateMultiRegionClusterRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"MultiRegionClusterNameSuffix\":" + memory_db_json_str(v.MultiRegionClusterNameSuffix))
+# Serialize CreateMultiRegionClusterRequest to a CBOR map (member wire name -> value, model order).
+def create_multi_region_cluster_request_to_cbor(CreateMultiRegionClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MultiRegionClusterNameSuffix")
+    vals.append(cbor.cbor_text(v.MultiRegionClusterNameSuffix))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + memory_db_json_str(u0))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
     if v.Engine.is_some():
         auto u1 = v.Engine.unwrap()
-        parts.append("\"Engine\":" + memory_db_json_str(u1))
+        keys.append("Engine")
+        vals.append(cbor.cbor_text(u1))
     if v.EngineVersion.is_some():
         auto u2 = v.EngineVersion.unwrap()
-        parts.append("\"EngineVersion\":" + memory_db_json_str(u2))
-    parts.append("\"NodeType\":" + memory_db_json_str(v.NodeType))
+        keys.append("EngineVersion")
+        vals.append(cbor.cbor_text(u2))
+    keys.append("NodeType")
+    vals.append(cbor.cbor_text(v.NodeType))
     if v.MultiRegionParameterGroupName.is_some():
         auto u3 = v.MultiRegionParameterGroupName.unwrap()
-        parts.append("\"MultiRegionParameterGroupName\":" + memory_db_json_str(u3))
+        keys.append("MultiRegionParameterGroupName")
+        vals.append(cbor.cbor_text(u3))
     if v.NumShards.is_some():
         auto u4 = v.NumShards.unwrap()
-        parts.append("\"NumShards\":" + str(u4))
+        keys.append("NumShards")
+        vals.append(cbor.cbor_int(u4))
     if v.TLSEnabled.is_some():
         auto u5 = v.TLSEnabled.unwrap()
-        parts.append("\"TLSEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+        keys.append("TLSEnabled")
+        vals.append(cbor.cbor_bool(u5))
     if v.Tags.is_some():
         auto u6 = v.Tags.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e7))
-    return memory_db_json_obj(parts)
+            e7.append(tag_to_cbor(x7))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateParameterGroupRequest to a compact JSON object (declaration order).
-def create_parameter_group_request_to_json(CreateParameterGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ParameterGroupName\":" + memory_db_json_str(v.ParameterGroupName))
-    parts.append("\"Family\":" + memory_db_json_str(v.Family))
+# Serialize CreateParameterGroupRequest to a CBOR map (member wire name -> value, model order).
+def create_parameter_group_request_to_cbor(CreateParameterGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ParameterGroupName")
+    vals.append(cbor.cbor_text(v.ParameterGroupName))
+    keys.append("Family")
+    vals.append(cbor.cbor_text(v.Family))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + memory_db_json_str(u0))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e2))
-    return memory_db_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateSnapshotRequest to a compact JSON object (declaration order).
-def create_snapshot_request_to_json(CreateSnapshotRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ClusterName\":" + memory_db_json_str(v.ClusterName))
-    parts.append("\"SnapshotName\":" + memory_db_json_str(v.SnapshotName))
+# Serialize CreateSnapshotRequest to a CBOR map (member wire name -> value, model order).
+def create_snapshot_request_to_cbor(CreateSnapshotRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterName")
+    vals.append(cbor.cbor_text(v.ClusterName))
+    keys.append("SnapshotName")
+    vals.append(cbor.cbor_text(v.SnapshotName))
     if v.KmsKeyId.is_some():
         auto u0 = v.KmsKeyId.unwrap()
-        parts.append("\"KmsKeyId\":" + memory_db_json_str(u0))
+        keys.append("KmsKeyId")
+        vals.append(cbor.cbor_text(u0))
     if v.Tags.is_some():
         auto u1 = v.Tags.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(x2.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e2))
-    return memory_db_json_obj(parts)
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateSubnetGroupRequest to a compact JSON object (declaration order).
-def create_subnet_group_request_to_json(CreateSubnetGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"SubnetGroupName\":" + memory_db_json_str(v.SubnetGroupName))
+# Serialize CreateSubnetGroupRequest to a CBOR map (member wire name -> value, model order).
+def create_subnet_group_request_to_cbor(CreateSubnetGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SubnetGroupName")
+    vals.append(cbor.cbor_text(v.SubnetGroupName))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + memory_db_json_str(u0))
-    list[str] e1 = []
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
+    list[cbor.CborValue] e1 = []
     for x1 in v.SubnetIds:
-        e1.append(memory_db_json_str(x1))
-    parts.append("\"SubnetIds\":" + memory_db_json_arr(e1))
+        e1.append(cbor.cbor_text(x1))
+    keys.append("SubnetIds")
+    vals.append(cbor.cbor_list(e1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e3))
-    return memory_db_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateUserRequest to a compact JSON object (declaration order).
-def create_user_request_to_json(CreateUserRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"UserName\":" + memory_db_json_str(v.UserName))
-    parts.append("\"AuthenticationMode\":" + authentication_mode_to_json(v.AuthenticationMode))
-    parts.append("\"AccessString\":" + memory_db_json_str(v.AccessString))
+# Serialize CreateUserRequest to a CBOR map (member wire name -> value, model order).
+def create_user_request_to_cbor(CreateUserRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("UserName")
+    vals.append(cbor.cbor_text(v.UserName))
+    keys.append("AuthenticationMode")
+    vals.append(authentication_mode_to_cbor(v.AuthenticationMode))
+    keys.append("AccessString")
+    vals.append(cbor.cbor_text(v.AccessString))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e1))
-    return memory_db_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeServiceUpdatesRequest to a compact JSON object (declaration order).
-def describe_service_updates_request_to_json(DescribeServiceUpdatesRequest v) -> str:
-    list[str] parts = []
-    if v.ServiceUpdateName.is_some():
-        auto u0 = v.ServiceUpdateName.unwrap()
-        parts.append("\"ServiceUpdateName\":" + memory_db_json_str(u0))
-    if v.ClusterNames.is_some():
-        auto u1 = v.ClusterNames.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(memory_db_json_str(x2))
-        parts.append("\"ClusterNames\":" + memory_db_json_arr(e2))
-    if v.Status.is_some():
-        auto u3 = v.Status.unwrap()
-        list[str] e4 = []
-        for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Status\":" + memory_db_json_arr(e4))
+# Serialize DeleteACLRequest to a CBOR map (member wire name -> value, model order).
+def delete_acl_request_to_cbor(DeleteACLRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ACLName")
+    vals.append(cbor.cbor_text(v.ACLName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteClusterRequest to a CBOR map (member wire name -> value, model order).
+def delete_cluster_request_to_cbor(DeleteClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterName")
+    vals.append(cbor.cbor_text(v.ClusterName))
+    if v.MultiRegionClusterName.is_some():
+        auto u0 = v.MultiRegionClusterName.unwrap()
+        keys.append("MultiRegionClusterName")
+        vals.append(cbor.cbor_text(u0))
+    if v.FinalSnapshotName.is_some():
+        auto u1 = v.FinalSnapshotName.unwrap()
+        keys.append("FinalSnapshotName")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteMultiRegionClusterRequest to a CBOR map (member wire name -> value, model order).
+def delete_multi_region_cluster_request_to_cbor(DeleteMultiRegionClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MultiRegionClusterName")
+    vals.append(cbor.cbor_text(v.MultiRegionClusterName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteParameterGroupRequest to a CBOR map (member wire name -> value, model order).
+def delete_parameter_group_request_to_cbor(DeleteParameterGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ParameterGroupName")
+    vals.append(cbor.cbor_text(v.ParameterGroupName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteSnapshotRequest to a CBOR map (member wire name -> value, model order).
+def delete_snapshot_request_to_cbor(DeleteSnapshotRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SnapshotName")
+    vals.append(cbor.cbor_text(v.SnapshotName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteSubnetGroupRequest to a CBOR map (member wire name -> value, model order).
+def delete_subnet_group_request_to_cbor(DeleteSubnetGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SubnetGroupName")
+    vals.append(cbor.cbor_text(v.SubnetGroupName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteUserRequest to a CBOR map (member wire name -> value, model order).
+def delete_user_request_to_cbor(DeleteUserRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("UserName")
+    vals.append(cbor.cbor_text(v.UserName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeACLsRequest to a CBOR map (member wire name -> value, model order).
+def describe_ac_ls_request_to_cbor(DescribeACLsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ACLName.is_some():
+        auto u0 = v.ACLName.unwrap()
+        keys.append("ACLName")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
-        auto u5 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u5))
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
     if v.NextToken.is_some():
-        auto u6 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + memory_db_json_str(u6))
-    return memory_db_json_obj(parts)
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeUsersRequest to a compact JSON object (declaration order).
-def describe_users_request_to_json(DescribeUsersRequest v) -> str:
-    list[str] parts = []
-    if v.UserName.is_some():
-        auto u0 = v.UserName.unwrap()
-        parts.append("\"UserName\":" + memory_db_json_str(u0))
-    if v.Filters.is_some():
-        auto u1 = v.Filters.unwrap()
-        list[str] e2 = []
-        for x2 in u1:
-            e2.append(filter_to_json(x2))
-        parts.append("\"Filters\":" + memory_db_json_arr(e2))
+# Serialize DescribeClustersRequest to a CBOR map (member wire name -> value, model order).
+def describe_clusters_request_to_cbor(DescribeClustersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ClusterName.is_some():
+        auto u0 = v.ClusterName.unwrap()
+        keys.append("ClusterName")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.ShowShardDetails.is_some():
+        auto u3 = v.ShowShardDetails.unwrap()
+        keys.append("ShowShardDetails")
+        vals.append(cbor.cbor_bool(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeEngineVersionsRequest to a CBOR map (member wire name -> value, model order).
+def describe_engine_versions_request_to_cbor(DescribeEngineVersionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Engine.is_some():
+        auto u0 = v.Engine.unwrap()
+        keys.append("Engine")
+        vals.append(cbor.cbor_text(u0))
+    if v.EngineVersion.is_some():
+        auto u1 = v.EngineVersion.unwrap()
+        keys.append("EngineVersion")
+        vals.append(cbor.cbor_text(u1))
+    if v.ParameterGroupFamily.is_some():
+        auto u2 = v.ParameterGroupFamily.unwrap()
+        keys.append("ParameterGroupFamily")
+        vals.append(cbor.cbor_text(u2))
     if v.MaxResults.is_some():
         auto u3 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u3))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
     if v.NextToken.is_some():
         auto u4 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + memory_db_json_str(u4))
-    return memory_db_json_obj(parts)
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u4))
+    if v.DefaultOnly.is_some():
+        auto u5 = v.DefaultOnly.unwrap()
+        keys.append("DefaultOnly")
+        vals.append(cbor.cbor_bool(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize Filter to a compact JSON object (declaration order).
-def filter_to_json(Filter v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + memory_db_json_str(v.Name))
-    list[str] e0 = []
-    for x0 in v.Values:
-        e0.append(memory_db_json_str(x0))
-    parts.append("\"Values\":" + memory_db_json_arr(e0))
-    return memory_db_json_obj(parts)
+# Serialize DescribeEventsRequest to a CBOR map (member wire name -> value, model order).
+def describe_events_request_to_cbor(DescribeEventsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SourceName.is_some():
+        auto u0 = v.SourceName.unwrap()
+        keys.append("SourceName")
+        vals.append(cbor.cbor_text(u0))
+    if v.SourceType.is_some():
+        auto u1 = v.SourceType.unwrap()
+        keys.append("SourceType")
+        vals.append(cbor.cbor_text(u1))
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        keys.append("StartTime")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u2)))
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        keys.append("EndTime")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u3)))
+    if v.Duration.is_some():
+        auto u4 = v.Duration.unwrap()
+        keys.append("Duration")
+        vals.append(cbor.cbor_int(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize PurchaseReservedNodesOfferingRequest to a compact JSON object (declaration order).
-def purchase_reserved_nodes_offering_request_to_json(PurchaseReservedNodesOfferingRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ReservedNodesOfferingId\":" + memory_db_json_str(v.ReservedNodesOfferingId))
+# Serialize DescribeMultiRegionClustersRequest to a CBOR map (member wire name -> value, model order).
+def describe_multi_region_clusters_request_to_cbor(DescribeMultiRegionClustersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MultiRegionClusterName.is_some():
+        auto u0 = v.MultiRegionClusterName.unwrap()
+        keys.append("MultiRegionClusterName")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    if v.ShowClusterDetails.is_some():
+        auto u3 = v.ShowClusterDetails.unwrap()
+        keys.append("ShowClusterDetails")
+        vals.append(cbor.cbor_bool(u3))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeMultiRegionParameterGroupsRequest to a CBOR map (member wire name -> value, model order).
+def describe_multi_region_parameter_groups_request_to_cbor(DescribeMultiRegionParameterGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MultiRegionParameterGroupName.is_some():
+        auto u0 = v.MultiRegionParameterGroupName.unwrap()
+        keys.append("MultiRegionParameterGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeMultiRegionParametersRequest to a CBOR map (member wire name -> value, model order).
+def describe_multi_region_parameters_request_to_cbor(DescribeMultiRegionParametersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MultiRegionParameterGroupName")
+    vals.append(cbor.cbor_text(v.MultiRegionParameterGroupName))
+    if v.Source.is_some():
+        auto u0 = v.Source.unwrap()
+        keys.append("Source")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeParameterGroupsRequest to a CBOR map (member wire name -> value, model order).
+def describe_parameter_groups_request_to_cbor(DescribeParameterGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ParameterGroupName.is_some():
+        auto u0 = v.ParameterGroupName.unwrap()
+        keys.append("ParameterGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeParametersRequest to a CBOR map (member wire name -> value, model order).
+def describe_parameters_request_to_cbor(DescribeParametersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ParameterGroupName")
+    vals.append(cbor.cbor_text(v.ParameterGroupName))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeReservedNodesOfferingsRequest to a CBOR map (member wire name -> value, model order).
+def describe_reserved_nodes_offerings_request_to_cbor(DescribeReservedNodesOfferingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ReservedNodesOfferingId.is_some():
+        auto u0 = v.ReservedNodesOfferingId.unwrap()
+        keys.append("ReservedNodesOfferingId")
+        vals.append(cbor.cbor_text(u0))
+    if v.NodeType.is_some():
+        auto u1 = v.NodeType.unwrap()
+        keys.append("NodeType")
+        vals.append(cbor.cbor_text(u1))
+    if v.Duration.is_some():
+        auto u2 = v.Duration.unwrap()
+        keys.append("Duration")
+        vals.append(cbor.cbor_text(u2))
+    if v.OfferingType.is_some():
+        auto u3 = v.OfferingType.unwrap()
+        keys.append("OfferingType")
+        vals.append(cbor.cbor_text(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeReservedNodesRequest to a CBOR map (member wire name -> value, model order).
+def describe_reserved_nodes_request_to_cbor(DescribeReservedNodesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ReservationId.is_some():
         auto u0 = v.ReservationId.unwrap()
-        parts.append("\"ReservationId\":" + memory_db_json_str(u0))
+        keys.append("ReservationId")
+        vals.append(cbor.cbor_text(u0))
+    if v.ReservedNodesOfferingId.is_some():
+        auto u1 = v.ReservedNodesOfferingId.unwrap()
+        keys.append("ReservedNodesOfferingId")
+        vals.append(cbor.cbor_text(u1))
+    if v.NodeType.is_some():
+        auto u2 = v.NodeType.unwrap()
+        keys.append("NodeType")
+        vals.append(cbor.cbor_text(u2))
+    if v.Duration.is_some():
+        auto u3 = v.Duration.unwrap()
+        keys.append("Duration")
+        vals.append(cbor.cbor_text(u3))
+    if v.OfferingType.is_some():
+        auto u4 = v.OfferingType.unwrap()
+        keys.append("OfferingType")
+        vals.append(cbor.cbor_text(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeServiceUpdatesRequest to a CBOR map (member wire name -> value, model order).
+def describe_service_updates_request_to_cbor(DescribeServiceUpdatesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ServiceUpdateName.is_some():
+        auto u0 = v.ServiceUpdateName.unwrap()
+        keys.append("ServiceUpdateName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ClusterNames.is_some():
+        auto u1 = v.ClusterNames.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(cbor.cbor_text(x2))
+        keys.append("ClusterNames")
+        vals.append(cbor.cbor_list(e2))
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        list[cbor.CborValue] e4 = []
+        for x4 in u3:
+            e4.append(cbor.cbor_text(x4))
+        keys.append("Status")
+        vals.append(cbor.cbor_list(e4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeSnapshotsRequest to a CBOR map (member wire name -> value, model order).
+def describe_snapshots_request_to_cbor(DescribeSnapshotsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ClusterName.is_some():
+        auto u0 = v.ClusterName.unwrap()
+        keys.append("ClusterName")
+        vals.append(cbor.cbor_text(u0))
+    if v.SnapshotName.is_some():
+        auto u1 = v.SnapshotName.unwrap()
+        keys.append("SnapshotName")
+        vals.append(cbor.cbor_text(u1))
+    if v.Source.is_some():
+        auto u2 = v.Source.unwrap()
+        keys.append("Source")
+        vals.append(cbor.cbor_text(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u4))
+    if v.ShowDetail.is_some():
+        auto u5 = v.ShowDetail.unwrap()
+        keys.append("ShowDetail")
+        vals.append(cbor.cbor_bool(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeSubnetGroupsRequest to a CBOR map (member wire name -> value, model order).
+def describe_subnet_groups_request_to_cbor(DescribeSubnetGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.SubnetGroupName.is_some():
+        auto u0 = v.SubnetGroupName.unwrap()
+        keys.append("SubnetGroupName")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeUsersRequest to a CBOR map (member wire name -> value, model order).
+def describe_users_request_to_cbor(DescribeUsersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.UserName.is_some():
+        auto u0 = v.UserName.unwrap()
+        keys.append("UserName")
+        vals.append(cbor.cbor_text(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(filter_to_cbor(x2))
+        keys.append("Filters")
+        vals.append(cbor.cbor_list(e2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u4))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize FailoverShardRequest to a CBOR map (member wire name -> value, model order).
+def failover_shard_request_to_cbor(FailoverShardRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterName")
+    vals.append(cbor.cbor_text(v.ClusterName))
+    keys.append("ShardName")
+    vals.append(cbor.cbor_text(v.ShardName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Filter to a CBOR map (member wire name -> value, model order).
+def filter_to_cbor(Filter v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    list[cbor.CborValue] e0 = []
+    for x0 in v.Values:
+        e0.append(cbor.cbor_text(x0))
+    keys.append("Values")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAllowedMultiRegionClusterUpdatesRequest to a CBOR map (member wire name -> value, model order).
+def list_allowed_multi_region_cluster_updates_request_to_cbor(ListAllowedMultiRegionClusterUpdatesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MultiRegionClusterName")
+    vals.append(cbor.cbor_text(v.MultiRegionClusterName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListAllowedNodeTypeUpdatesRequest to a CBOR map (member wire name -> value, model order).
+def list_allowed_node_type_updates_request_to_cbor(ListAllowedNodeTypeUpdatesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterName")
+    vals.append(cbor.cbor_text(v.ClusterName))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_request_to_cbor(ListTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ParameterNameValue to a CBOR map (member wire name -> value, model order).
+def parameter_name_value_to_cbor(ParameterNameValue v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ParameterName.is_some():
+        auto u0 = v.ParameterName.unwrap()
+        keys.append("ParameterName")
+        vals.append(cbor.cbor_text(u0))
+    if v.ParameterValue.is_some():
+        auto u1 = v.ParameterValue.unwrap()
+        keys.append("ParameterValue")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PurchaseReservedNodesOfferingRequest to a CBOR map (member wire name -> value, model order).
+def purchase_reserved_nodes_offering_request_to_cbor(PurchaseReservedNodesOfferingRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ReservedNodesOfferingId")
+    vals.append(cbor.cbor_text(v.ReservedNodesOfferingId))
+    if v.ReservationId.is_some():
+        auto u0 = v.ReservationId.unwrap()
+        keys.append("ReservationId")
+        vals.append(cbor.cbor_text(u0))
     if v.NodeCount.is_some():
         auto u1 = v.NodeCount.unwrap()
-        parts.append("\"NodeCount\":" + str(u1))
+        keys.append("NodeCount")
+        vals.append(cbor.cbor_int(u1))
     if v.Tags.is_some():
         auto u2 = v.Tags.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Tags\":" + memory_db_json_arr(e3))
-    return memory_db_json_obj(parts)
+            e3.append(tag_to_cbor(x3))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ResetParameterGroupRequest to a compact JSON object (declaration order).
-def reset_parameter_group_request_to_json(ResetParameterGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ParameterGroupName\":" + memory_db_json_str(v.ParameterGroupName))
+# Serialize ReplicaConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def replica_configuration_request_to_cbor(ReplicaConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ReplicaCount.is_some():
+        auto u0 = v.ReplicaCount.unwrap()
+        keys.append("ReplicaCount")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ResetParameterGroupRequest to a CBOR map (member wire name -> value, model order).
+def reset_parameter_group_request_to_cbor(ResetParameterGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ParameterGroupName")
+    vals.append(cbor.cbor_text(v.ParameterGroupName))
     if v.AllParameters.is_some():
         auto u0 = v.AllParameters.unwrap()
-        parts.append("\"AllParameters\":" + json.dumps(JsonValue.Bool(u0)))
+        keys.append("AllParameters")
+        vals.append(cbor.cbor_bool(u0))
     if v.ParameterNames.is_some():
         auto u1 = v.ParameterNames.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(memory_db_json_str(x2))
-        parts.append("\"ParameterNames\":" + memory_db_json_arr(e2))
-    return memory_db_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("ParameterNames")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + memory_db_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize ServiceUpdateRequest to a CBOR map (member wire name -> value, model order).
+def service_update_request_to_cbor(ServiceUpdateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ServiceUpdateNameToApply.is_some():
+        auto u0 = v.ServiceUpdateNameToApply.unwrap()
+        keys.append("ServiceUpdateNameToApply")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ShardConfigurationRequest to a CBOR map (member wire name -> value, model order).
+def shard_configuration_request_to_cbor(ShardConfigurationRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ShardCount.is_some():
+        auto u0 = v.ShardCount.unwrap()
+        keys.append("ShardCount")
+        vals.append(cbor.cbor_int(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + memory_db_json_arr(e0))
-    return memory_db_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceArn\":" + memory_db_json_str(v.ResourceArn))
-    list[str] e0 = []
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(memory_db_json_str(x0))
-    parts.append("\"TagKeys\":" + memory_db_json_arr(e0))
-    return memory_db_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateACLRequest to a compact JSON object (declaration order).
-def update_acl_request_to_json(UpdateACLRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ACLName\":" + memory_db_json_str(v.ACLName))
+# Serialize UpdateACLRequest to a CBOR map (member wire name -> value, model order).
+def update_acl_request_to_cbor(UpdateACLRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ACLName")
+    vals.append(cbor.cbor_text(v.ACLName))
     if v.UserNamesToAdd.is_some():
         auto u0 = v.UserNamesToAdd.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(memory_db_json_str(x1))
-        parts.append("\"UserNamesToAdd\":" + memory_db_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("UserNamesToAdd")
+        vals.append(cbor.cbor_list(e1))
     if v.UserNamesToRemove.is_some():
         auto u2 = v.UserNamesToRemove.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(memory_db_json_str(x3))
-        parts.append("\"UserNamesToRemove\":" + memory_db_json_arr(e3))
-    return memory_db_json_obj(parts)
+            e3.append(cbor.cbor_text(x3))
+        keys.append("UserNamesToRemove")
+        vals.append(cbor.cbor_list(e3))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateClusterRequest to a compact JSON object (declaration order).
-def update_cluster_request_to_json(UpdateClusterRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ClusterName\":" + memory_db_json_str(v.ClusterName))
+# Serialize UpdateClusterRequest to a CBOR map (member wire name -> value, model order).
+def update_cluster_request_to_cbor(UpdateClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterName")
+    vals.append(cbor.cbor_text(v.ClusterName))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + memory_db_json_str(u0))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
     if v.SecurityGroupIds.is_some():
         auto u1 = v.SecurityGroupIds.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(memory_db_json_str(x2))
-        parts.append("\"SecurityGroupIds\":" + memory_db_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("SecurityGroupIds")
+        vals.append(cbor.cbor_list(e2))
     if v.MaintenanceWindow.is_some():
         auto u3 = v.MaintenanceWindow.unwrap()
-        parts.append("\"MaintenanceWindow\":" + memory_db_json_str(u3))
+        keys.append("MaintenanceWindow")
+        vals.append(cbor.cbor_text(u3))
     if v.SnsTopicArn.is_some():
         auto u4 = v.SnsTopicArn.unwrap()
-        parts.append("\"SnsTopicArn\":" + memory_db_json_str(u4))
+        keys.append("SnsTopicArn")
+        vals.append(cbor.cbor_text(u4))
     if v.SnsTopicStatus.is_some():
         auto u5 = v.SnsTopicStatus.unwrap()
-        parts.append("\"SnsTopicStatus\":" + memory_db_json_str(u5))
+        keys.append("SnsTopicStatus")
+        vals.append(cbor.cbor_text(u5))
     if v.ParameterGroupName.is_some():
         auto u6 = v.ParameterGroupName.unwrap()
-        parts.append("\"ParameterGroupName\":" + memory_db_json_str(u6))
+        keys.append("ParameterGroupName")
+        vals.append(cbor.cbor_text(u6))
     if v.SnapshotWindow.is_some():
         auto u7 = v.SnapshotWindow.unwrap()
-        parts.append("\"SnapshotWindow\":" + memory_db_json_str(u7))
+        keys.append("SnapshotWindow")
+        vals.append(cbor.cbor_text(u7))
     if v.SnapshotRetentionLimit.is_some():
         auto u8 = v.SnapshotRetentionLimit.unwrap()
-        parts.append("\"SnapshotRetentionLimit\":" + str(u8))
+        keys.append("SnapshotRetentionLimit")
+        vals.append(cbor.cbor_int(u8))
     if v.NodeType.is_some():
         auto u9 = v.NodeType.unwrap()
-        parts.append("\"NodeType\":" + memory_db_json_str(u9))
+        keys.append("NodeType")
+        vals.append(cbor.cbor_text(u9))
     if v.Engine.is_some():
         auto u10 = v.Engine.unwrap()
-        parts.append("\"Engine\":" + memory_db_json_str(u10))
+        keys.append("Engine")
+        vals.append(cbor.cbor_text(u10))
     if v.EngineVersion.is_some():
         auto u11 = v.EngineVersion.unwrap()
-        parts.append("\"EngineVersion\":" + memory_db_json_str(u11))
+        keys.append("EngineVersion")
+        vals.append(cbor.cbor_text(u11))
     if v.ReplicaConfiguration.is_some():
         auto u12 = v.ReplicaConfiguration.unwrap()
-        parts.append("\"ReplicaConfiguration\":" + u12.to_json())
+        keys.append("ReplicaConfiguration")
+        vals.append(replica_configuration_request_to_cbor(u12))
     if v.ShardConfiguration.is_some():
         auto u13 = v.ShardConfiguration.unwrap()
-        parts.append("\"ShardConfiguration\":" + u13.to_json())
+        keys.append("ShardConfiguration")
+        vals.append(shard_configuration_request_to_cbor(u13))
     if v.ACLName.is_some():
         auto u14 = v.ACLName.unwrap()
-        parts.append("\"ACLName\":" + memory_db_json_str(u14))
+        keys.append("ACLName")
+        vals.append(cbor.cbor_text(u14))
     if v.IpDiscovery.is_some():
         auto u15 = v.IpDiscovery.unwrap()
-        parts.append("\"IpDiscovery\":" + u15.to_json())
-    return memory_db_json_obj(parts)
+        keys.append("IpDiscovery")
+        vals.append(cbor.cbor_text(u15))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateParameterGroupRequest to a compact JSON object (declaration order).
-def update_parameter_group_request_to_json(UpdateParameterGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ParameterGroupName\":" + memory_db_json_str(v.ParameterGroupName))
-    list[str] e0 = []
+# Serialize UpdateMultiRegionClusterRequest to a CBOR map (member wire name -> value, model order).
+def update_multi_region_cluster_request_to_cbor(UpdateMultiRegionClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("MultiRegionClusterName")
+    vals.append(cbor.cbor_text(v.MultiRegionClusterName))
+    if v.NodeType.is_some():
+        auto u0 = v.NodeType.unwrap()
+        keys.append("NodeType")
+        vals.append(cbor.cbor_text(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u1))
+    if v.EngineVersion.is_some():
+        auto u2 = v.EngineVersion.unwrap()
+        keys.append("EngineVersion")
+        vals.append(cbor.cbor_text(u2))
+    if v.ShardConfiguration.is_some():
+        auto u3 = v.ShardConfiguration.unwrap()
+        keys.append("ShardConfiguration")
+        vals.append(shard_configuration_request_to_cbor(u3))
+    if v.MultiRegionParameterGroupName.is_some():
+        auto u4 = v.MultiRegionParameterGroupName.unwrap()
+        keys.append("MultiRegionParameterGroupName")
+        vals.append(cbor.cbor_text(u4))
+    if v.UpdateStrategy.is_some():
+        auto u5 = v.UpdateStrategy.unwrap()
+        keys.append("UpdateStrategy")
+        vals.append(cbor.cbor_text(u5))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateParameterGroupRequest to a CBOR map (member wire name -> value, model order).
+def update_parameter_group_request_to_cbor(UpdateParameterGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ParameterGroupName")
+    vals.append(cbor.cbor_text(v.ParameterGroupName))
+    list[cbor.CborValue] e0 = []
     for x0 in v.ParameterNameValues:
-        e0.append(x0.to_json())
-    parts.append("\"ParameterNameValues\":" + memory_db_json_arr(e0))
-    return memory_db_json_obj(parts)
+        e0.append(parameter_name_value_to_cbor(x0))
+    keys.append("ParameterNameValues")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateSubnetGroupRequest to a compact JSON object (declaration order).
-def update_subnet_group_request_to_json(UpdateSubnetGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"SubnetGroupName\":" + memory_db_json_str(v.SubnetGroupName))
+# Serialize UpdateSubnetGroupRequest to a CBOR map (member wire name -> value, model order).
+def update_subnet_group_request_to_cbor(UpdateSubnetGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("SubnetGroupName")
+    vals.append(cbor.cbor_text(v.SubnetGroupName))
     if v.Description.is_some():
         auto u0 = v.Description.unwrap()
-        parts.append("\"Description\":" + memory_db_json_str(u0))
+        keys.append("Description")
+        vals.append(cbor.cbor_text(u0))
     if v.SubnetIds.is_some():
         auto u1 = v.SubnetIds.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(memory_db_json_str(x2))
-        parts.append("\"SubnetIds\":" + memory_db_json_arr(e2))
-    return memory_db_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("SubnetIds")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateUserRequest to a compact JSON object (declaration order).
-def update_user_request_to_json(UpdateUserRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"UserName\":" + memory_db_json_str(v.UserName))
+# Serialize UpdateUserRequest to a CBOR map (member wire name -> value, model order).
+def update_user_request_to_cbor(UpdateUserRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("UserName")
+    vals.append(cbor.cbor_text(v.UserName))
     if v.AuthenticationMode.is_some():
         auto u0 = v.AuthenticationMode.unwrap()
-        parts.append("\"AuthenticationMode\":" + authentication_mode_to_json(u0))
+        keys.append("AuthenticationMode")
+        vals.append(authentication_mode_to_cbor(u0))
     if v.AccessString.is_some():
         auto u1 = v.AccessString.unwrap()
-        parts.append("\"AccessString\":" + memory_db_json_str(u1))
-    return memory_db_json_obj(parts)
+        keys.append("AccessString")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
 # A bound MemoryDB client: credentials + region, threaded into every operation.
 struct MemoryDBClient:
@@ -2205,455 +2492,408 @@ struct MemoryDBClient:
 
     # BatchUpdateCluster
     # errors: InvalidParameterValueException, ServiceUpdateNotFoundFault
-    def batch_update_cluster(self, BatchUpdateClusterRequest input) -> str:
-        auto body = batch_update_cluster_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "BatchUpdateCluster", body)
+    def batch_update_cluster(self, BatchUpdateClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(batch_update_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "BatchUpdateCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CopySnapshot
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidSnapshotStateFault, ServiceLinkedRoleNotFoundFault, SnapshotAlreadyExistsFault, SnapshotNotFoundFault, SnapshotQuotaExceededFault, TagQuotaPerResourceExceeded
-    def copy_snapshot(self, CopySnapshotRequest input) -> str:
-        auto body = copy_snapshot_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CopySnapshot", body)
+    def copy_snapshot(self, CopySnapshotRequest input) -> bytes:
+        auto body = cbor.cbor_encode(copy_snapshot_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CopySnapshot", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateACL
     # errors: ACLAlreadyExistsFault, ACLQuotaExceededFault, DefaultUserRequired, DuplicateUserNameFault, InvalidParameterValueException, TagQuotaPerResourceExceeded, UserNotFoundFault
-    def create_acl(self, CreateACLRequest input) -> str:
-        auto body = create_acl_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateACL", body)
+    def create_acl(self, CreateACLRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_acl_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateACL", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateCluster
     # errors: ACLNotFoundFault, ClusterAlreadyExistsFault, ClusterQuotaForCustomerExceededFault, InsufficientClusterCapacityFault, InvalidACLStateFault, InvalidCredentialsException, InvalidMultiRegionClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidVPCNetworkStateFault, MultiRegionClusterNotFoundFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, ShardsPerClusterQuotaExceededFault, SubnetGroupNotFoundFault, TagQuotaPerResourceExceeded
-    def create_cluster(self, CreateClusterRequest input) -> str:
-        auto body = create_cluster_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateCluster", body)
+    def create_cluster(self, CreateClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateMultiRegionCluster
     # errors: ClusterQuotaForCustomerExceededFault, InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionClusterAlreadyExistsFault, MultiRegionParameterGroupNotFoundFault, TagQuotaPerResourceExceeded
-    def create_multi_region_cluster(self, CreateMultiRegionClusterRequest input) -> str:
-        auto body = create_multi_region_cluster_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateMultiRegionCluster", body)
+    def create_multi_region_cluster(self, CreateMultiRegionClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_multi_region_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateMultiRegionCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateParameterGroup
     # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupAlreadyExistsFault, ParameterGroupQuotaExceededFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
-    def create_parameter_group(self, CreateParameterGroupRequest input) -> str:
-        auto body = create_parameter_group_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateParameterGroup", body)
+    def create_parameter_group(self, CreateParameterGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_parameter_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateParameterGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateSnapshot
     # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, SnapshotAlreadyExistsFault, SnapshotQuotaExceededFault, TagQuotaPerResourceExceeded
-    def create_snapshot(self, CreateSnapshotRequest input) -> str:
-        auto body = create_snapshot_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateSnapshot", body)
+    def create_snapshot(self, CreateSnapshotRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_snapshot_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateSnapshot", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateSubnetGroup
     # errors: InvalidSubnet, ServiceLinkedRoleNotFoundFault, SubnetGroupAlreadyExistsFault, SubnetGroupQuotaExceededFault, SubnetNotAllowedFault, SubnetQuotaExceededFault, TagQuotaPerResourceExceeded
-    def create_subnet_group(self, CreateSubnetGroupRequest input) -> str:
-        auto body = create_subnet_group_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateSubnetGroup", body)
+    def create_subnet_group(self, CreateSubnetGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_subnet_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateSubnetGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateUser
     # errors: DuplicateUserNameFault, InvalidParameterCombinationException, InvalidParameterValueException, TagQuotaPerResourceExceeded, UserAlreadyExistsFault, UserQuotaExceededFault
-    def create_user(self, CreateUserRequest input) -> str:
-        auto body = create_user_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateUser", body)
+    def create_user(self, CreateUserRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_user_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "CreateUser", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteACL
     # errors: ACLNotFoundFault, InvalidACLStateFault, InvalidParameterValueException
-    def delete_acl(self, DeleteACLRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteACL", body)
+    def delete_acl(self, DeleteACLRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_acl_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteACL", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteCluster
     # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, SnapshotAlreadyExistsFault
-    def delete_cluster(self, DeleteClusterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteCluster", body)
+    def delete_cluster(self, DeleteClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteMultiRegionCluster
     # errors: InvalidMultiRegionClusterStateFault, InvalidParameterValueException, MultiRegionClusterNotFoundFault
-    def delete_multi_region_cluster(self, DeleteMultiRegionClusterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteMultiRegionCluster", body)
+    def delete_multi_region_cluster(self, DeleteMultiRegionClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_multi_region_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteMultiRegionCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteParameterGroup
     # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def delete_parameter_group(self, DeleteParameterGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteParameterGroup", body)
+    def delete_parameter_group(self, DeleteParameterGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_parameter_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteParameterGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteSnapshot
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidSnapshotStateFault, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault
-    def delete_snapshot(self, DeleteSnapshotRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteSnapshot", body)
+    def delete_snapshot(self, DeleteSnapshotRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_snapshot_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteSnapshot", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteSubnetGroup
     # errors: ServiceLinkedRoleNotFoundFault, SubnetGroupInUseFault, SubnetGroupNotFoundFault
-    def delete_subnet_group(self, DeleteSubnetGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteSubnetGroup", body)
+    def delete_subnet_group(self, DeleteSubnetGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_subnet_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteSubnetGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteUser
     # errors: InvalidParameterValueException, InvalidUserStateFault, UserNotFoundFault
-    def delete_user(self, DeleteUserRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DeleteUser", body)
+    def delete_user(self, DeleteUserRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_user_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DeleteUser", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeACLs
     # errors: ACLNotFoundFault, InvalidParameterCombinationException
-    def describe_ac_ls(self, DescribeACLsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeACLs", body)
+    def describe_ac_ls(self, DescribeACLsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_ac_ls_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeACLs", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeClusters
     # errors: ClusterNotFoundFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
-    def describe_clusters(self, DescribeClustersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeClusters", body)
+    def describe_clusters(self, DescribeClustersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_clusters_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeClusters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEngineVersions
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
-    def describe_engine_versions(self, DescribeEngineVersionsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeEngineVersions", body)
+    def describe_engine_versions(self, DescribeEngineVersionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_engine_versions_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeEngineVersions", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEvents
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
-    def describe_events(self, DescribeEventsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeEvents", body)
+    def describe_events(self, DescribeEventsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_events_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeEvents", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeMultiRegionClusters
     # errors: ClusterNotFoundFault, InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionClusterNotFoundFault
-    def describe_multi_region_clusters(self, DescribeMultiRegionClustersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeMultiRegionClusters", body)
+    def describe_multi_region_clusters(self, DescribeMultiRegionClustersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_multi_region_clusters_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeMultiRegionClusters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeMultiRegionParameterGroups
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def describe_multi_region_parameter_groups(self, DescribeMultiRegionParameterGroupsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeMultiRegionParameterGroups", body)
+    def describe_multi_region_parameter_groups(self, DescribeMultiRegionParameterGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_multi_region_parameter_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeMultiRegionParameterGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeMultiRegionParameters
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def describe_multi_region_parameters(self, DescribeMultiRegionParametersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeMultiRegionParameters", body)
+    def describe_multi_region_parameters(self, DescribeMultiRegionParametersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_multi_region_parameters_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeMultiRegionParameters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeParameterGroups
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def describe_parameter_groups(self, DescribeParameterGroupsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeParameterGroups", body)
+    def describe_parameter_groups(self, DescribeParameterGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_parameter_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeParameterGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeParameters
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def describe_parameters(self, DescribeParametersRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeParameters", body)
+    def describe_parameters(self, DescribeParametersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_parameters_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeParameters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeReservedNodes
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ReservedNodeNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def describe_reserved_nodes(self, DescribeReservedNodesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeReservedNodes", body)
+    def describe_reserved_nodes(self, DescribeReservedNodesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_reserved_nodes_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeReservedNodes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeReservedNodesOfferings
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ReservedNodesOfferingNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def describe_reserved_nodes_offerings(self, DescribeReservedNodesOfferingsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeReservedNodesOfferings", body)
+    def describe_reserved_nodes_offerings(self, DescribeReservedNodesOfferingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_reserved_nodes_offerings_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeReservedNodesOfferings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeServiceUpdates
     # errors: InvalidParameterCombinationException, InvalidParameterValueException
-    def describe_service_updates(self, DescribeServiceUpdatesRequest input) -> str:
-        auto body = describe_service_updates_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeServiceUpdates", body)
+    def describe_service_updates(self, DescribeServiceUpdatesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_service_updates_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeServiceUpdates", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSnapshots
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault
-    def describe_snapshots(self, DescribeSnapshotsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeSnapshots", body)
+    def describe_snapshots(self, DescribeSnapshotsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_snapshots_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeSnapshots", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSubnetGroups
     # errors: ServiceLinkedRoleNotFoundFault, SubnetGroupNotFoundFault
-    def describe_subnet_groups(self, DescribeSubnetGroupsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeSubnetGroups", body)
+    def describe_subnet_groups(self, DescribeSubnetGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_subnet_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeSubnetGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeUsers
     # errors: InvalidParameterCombinationException, UserNotFoundFault
-    def describe_users(self, DescribeUsersRequest input) -> str:
-        auto body = describe_users_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeUsers", body)
+    def describe_users(self, DescribeUsersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_users_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "DescribeUsers", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # FailoverShard
     # errors: APICallRateForCustomerExceededFault, ClusterNotFoundFault, InvalidClusterStateFault, InvalidKMSKeyFault, InvalidParameterCombinationException, InvalidParameterValueException, ShardNotFoundFault, TestFailoverNotAvailableFault
-    def failover_shard(self, FailoverShardRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "FailoverShard", body)
+    def failover_shard(self, FailoverShardRequest input) -> bytes:
+        auto body = cbor.cbor_encode(failover_shard_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "FailoverShard", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAllowedMultiRegionClusterUpdates
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionClusterNotFoundFault
-    def list_allowed_multi_region_cluster_updates(self, ListAllowedMultiRegionClusterUpdatesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "ListAllowedMultiRegionClusterUpdates", body)
+    def list_allowed_multi_region_cluster_updates(self, ListAllowedMultiRegionClusterUpdatesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_allowed_multi_region_cluster_updates_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "ListAllowedMultiRegionClusterUpdates", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAllowedNodeTypeUpdates
     # errors: ClusterNotFoundFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault
-    def list_allowed_node_type_updates(self, ListAllowedNodeTypeUpdatesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "ListAllowedNodeTypeUpdates", body)
+    def list_allowed_node_type_updates(self, ListAllowedNodeTypeUpdatesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_allowed_node_type_updates_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "ListAllowedNodeTypeUpdates", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTags
     # errors: ACLNotFoundFault, ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault, SubnetGroupNotFoundFault, UserNotFoundFault
-    def list_tags(self, ListTagsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "ListTags", body)
+    def list_tags(self, ListTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "ListTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PurchaseReservedNodesOffering
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ReservedNodeAlreadyExistsFault, ReservedNodeQuotaExceededFault, ReservedNodesOfferingNotFoundFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
-    def purchase_reserved_nodes_offering(self, PurchaseReservedNodesOfferingRequest input) -> str:
-        auto body = purchase_reserved_nodes_offering_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "PurchaseReservedNodesOffering", body)
+    def purchase_reserved_nodes_offering(self, PurchaseReservedNodesOfferingRequest input) -> bytes:
+        auto body = cbor.cbor_encode(purchase_reserved_nodes_offering_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "PurchaseReservedNodesOffering", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ResetParameterGroup
     # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def reset_parameter_group(self, ResetParameterGroupRequest input) -> str:
-        auto body = reset_parameter_group_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "ResetParameterGroup", body)
+    def reset_parameter_group(self, ResetParameterGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(reset_parameter_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "ResetParameterGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: ACLNotFoundFault, ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterValueException, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault, SubnetGroupNotFoundFault, TagQuotaPerResourceExceeded, UserNotFoundFault
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: ACLNotFoundFault, ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterValueException, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault, SubnetGroupNotFoundFault, TagNotFoundFault, UserNotFoundFault
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateACL
     # errors: ACLNotFoundFault, DefaultUserRequired, DuplicateUserNameFault, InvalidACLStateFault, InvalidParameterCombinationException, InvalidParameterValueException, UserNotFoundFault
-    def update_acl(self, UpdateACLRequest input) -> str:
-        auto body = update_acl_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateACL", body)
+    def update_acl(self, UpdateACLRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_acl_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UpdateACL", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateCluster
     # errors: ACLNotFoundFault, ClusterNotFoundFault, ClusterQuotaForCustomerExceededFault, InvalidACLStateFault, InvalidClusterStateFault, InvalidKMSKeyFault, InvalidNodeStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidVPCNetworkStateFault, NoOperationFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, ShardsPerClusterQuotaExceededFault
-    def update_cluster(self, UpdateClusterRequest input) -> str:
-        auto body = update_cluster_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateCluster", body)
+    def update_cluster(self, UpdateClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UpdateCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateMultiRegionCluster
     # errors: InvalidMultiRegionClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault
-    def update_multi_region_cluster(self, UpdateMultiRegionClusterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateMultiRegionCluster", body)
+    def update_multi_region_cluster(self, UpdateMultiRegionClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_multi_region_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UpdateMultiRegionCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateParameterGroup
     # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
-    def update_parameter_group(self, UpdateParameterGroupRequest input) -> str:
-        auto body = update_parameter_group_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateParameterGroup", body)
+    def update_parameter_group(self, UpdateParameterGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_parameter_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UpdateParameterGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateSubnetGroup
     # errors: InvalidSubnet, ServiceLinkedRoleNotFoundFault, SubnetGroupNotFoundFault, SubnetInUse, SubnetNotAllowedFault, SubnetQuotaExceededFault
-    def update_subnet_group(self, UpdateSubnetGroupRequest input) -> str:
-        auto body = update_subnet_group_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateSubnetGroup", body)
+    def update_subnet_group(self, UpdateSubnetGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_subnet_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UpdateSubnetGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateUser
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidUserStateFault, UserNotFoundFault
-    def update_user(self, UpdateUserRequest input) -> str:
-        auto body = update_user_request_to_json(input)
-        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateUser", body)
-
-    # Paginator for DescribeACLs — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ACLs).
-    def paginate_describe_ac_ls(self, DescribeACLsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeACLs", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeClusters — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Clusters).
-    def paginate_describe_clusters(self, DescribeClustersRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeClusters", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeEngineVersions — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: EngineVersions).
-    def paginate_describe_engine_versions(self, DescribeEngineVersionsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeEngineVersions", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeEvents — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Events).
-    def paginate_describe_events(self, DescribeEventsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeEvents", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeMultiRegionClusters — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: MultiRegionClusters).
-    def paginate_describe_multi_region_clusters(self, DescribeMultiRegionClustersRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeMultiRegionClusters", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeParameterGroups — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ParameterGroups).
-    def paginate_describe_parameter_groups(self, DescribeParameterGroupsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeParameterGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeParameters — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Parameters).
-    def paginate_describe_parameters(self, DescribeParametersRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeParameters", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeReservedNodes — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ReservedNodes).
-    def paginate_describe_reserved_nodes(self, DescribeReservedNodesRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeReservedNodes", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeReservedNodesOfferings — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ReservedNodesOfferings).
-    def paginate_describe_reserved_nodes_offerings(self, DescribeReservedNodesOfferingsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeReservedNodesOfferings", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeServiceUpdates — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: ServiceUpdates).
-    def paginate_describe_service_updates(self, DescribeServiceUpdatesRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = describe_service_updates_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeServiceUpdates", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeSnapshots — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Snapshots).
-    def paginate_describe_snapshots(self, DescribeSnapshotsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeSnapshots", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeSubnetGroups — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: SubnetGroups).
-    def paginate_describe_subnet_groups(self, DescribeSubnetGroupsRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeSubnetGroups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeUsers — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Users).
-    def paginate_describe_users(self, DescribeUsersRequest input):
-        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
-        while True:
-            auto body = describe_users_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeUsers", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_user(self, UpdateUserRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_user_request_to_cbor(input))
+        auto host = endpoints.regional_host(memory_db_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(memory_db_service(), self.region, host, "AmazonMemoryDB", "UpdateUser", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a MemoryDBClient bound to credentials + region.
 def memory_db_client(core.Credentials creds, str region) -> MemoryDBClient:

@@ -951,6 +951,36 @@
     }
    ]
   },
+  "GetGlueFunctionSessionContext": {
+   "name": "GetGlueFunctionSessionContext",
+   "http": {
+    "method": "POST",
+    "requestUri": "/GetGlueFunctionSessionContext"
+   },
+   "input": {
+    "shape": "GetGlueFunctionSessionContextRequest"
+   },
+   "output": {
+    "shape": "GetGlueFunctionSessionContextResponse"
+   },
+   "errors": [
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "InternalServiceException"
+    },
+    {
+     "shape": "OperationTimeoutException"
+    },
+    {
+     "shape": "EntityNotFoundException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    }
+   ]
+  },
   "GetLFTag": {
    "name": "GetLFTag",
    "http": {
@@ -1208,6 +1238,39 @@
     },
     {
      "shape": "ConflictException"
+    }
+   ]
+  },
+  "GetTemporaryGlueFunctionCredentials": {
+   "name": "GetTemporaryGlueFunctionCredentials",
+   "http": {
+    "method": "POST",
+    "requestUri": "/GetTemporaryGlueFunctionCredentials"
+   },
+   "input": {
+    "shape": "GetTemporaryGlueFunctionCredentialsRequest"
+   },
+   "output": {
+    "shape": "GetTemporaryGlueFunctionCredentialsResponse"
+   },
+   "errors": [
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "InternalServiceException"
+    },
+    {
+     "shape": "OperationTimeoutException"
+    },
+    {
+     "shape": "GlueEncryptionException"
+    },
+    {
+     "shape": "EntityNotFoundException"
+    },
+    {
+     "shape": "AccessDeniedException"
     }
    ]
   },
@@ -2236,6 +2299,26 @@
    },
    "exception": true
   },
+  "AnyResource": {
+   "type": "structure",
+   "required": [
+    "ResourceType"
+   ],
+   "members": {
+    "CatalogId": {
+     "shape": "CatalogIdString"
+    },
+    "ResourceType": {
+     "shape": "AnyResourceSupportedTypes"
+    }
+   }
+  },
+  "AnyResourceSupportedTypes": {
+   "type": "string",
+   "enum": [
+    "TABLE"
+   ]
+  },
   "ApplicationArn": {
    "type": "string"
   },
@@ -2819,6 +2902,7 @@
   "DataLakeResourceType": {
    "type": "string",
    "enum": [
+    "ANY_RESOURCE",
     "CATALOG",
     "DATABASE",
     "TABLE",
@@ -2827,7 +2911,8 @@
     "LF_TAG_POLICY",
     "LF_TAG_POLICY_DATABASE",
     "LF_TAG_POLICY_TABLE",
-    "LF_NAMED_TAG_EXPRESSION"
+    "LF_NAMED_TAG_EXPRESSION",
+    "USER_DEFINED_FUNCTION"
    ]
   },
   "DataLakeSettings": {
@@ -3408,6 +3493,31 @@
     }
    }
   },
+  "GetGlueFunctionSessionContextRequest": {
+   "type": "structure",
+   "required": [
+    "UserDefinedFunctionArns"
+   ],
+   "members": {
+    "UserDefinedFunctionArns": {
+     "shape": "ResourceArnList"
+    },
+    "DurationSeconds": {
+     "shape": "SessionDurationSecondInteger"
+    }
+   }
+  },
+  "GetGlueFunctionSessionContextResponse": {
+   "type": "structure",
+   "members": {
+    "SessionContextId": {
+     "shape": "SessionContextIdString"
+    },
+    "Expiration": {
+     "shape": "ExpirationTimestamp"
+    }
+   }
+  },
   "GetLFTagExpressionRequest": {
    "type": "structure",
    "required": [
@@ -3649,6 +3759,37 @@
     },
     "CredentialsScope": {
      "shape": "CredentialsScope"
+    }
+   }
+  },
+  "GetTemporaryGlueFunctionCredentialsRequest": {
+   "type": "structure",
+   "required": [
+    "UserDefinedFunctionArn"
+   ],
+   "members": {
+    "UserDefinedFunctionArn": {
+     "shape": "ResourceArnString"
+    },
+    "AuditContext": {
+     "shape": "AuditContext"
+    }
+   }
+  },
+  "GetTemporaryGlueFunctionCredentialsResponse": {
+   "type": "structure",
+   "members": {
+    "AccessKeyId": {
+     "shape": "AccessKeyIdString"
+    },
+    "SecretAccessKey": {
+     "shape": "SecretAccessKeyString"
+    },
+    "SessionToken": {
+     "shape": "SessionTokenString"
+    },
+    "Expiration": {
+     "shape": "ExpirationTimestamp"
     }
    }
   },
@@ -4517,7 +4658,8 @@
     "GRANT_WITH_LF_TAG_EXPRESSION",
     "CREATE_LF_TAG_EXPRESSION",
     "CREATE_CATALOG",
-    "SUPER_USER"
+    "SUPER_USER",
+    "EXECUTE"
    ]
   },
   "PermissionList": {
@@ -4872,6 +5014,9 @@
   "Resource": {
    "type": "structure",
    "members": {
+    "AnyResource": {
+     "shape": "AnyResource"
+    },
     "Catalog": {
      "shape": "CatalogResource"
     },
@@ -4901,8 +5046,19 @@
     },
     "RLSPolicy": {
      "shape": "RLSPolicyResource"
+    },
+    "UserDefinedFunction": {
+     "shape": "UserDefinedFunctionResource"
     }
    }
+  },
+  "ResourceArnList": {
+   "type": "list",
+   "member": {
+    "shape": "ResourceArnString"
+   },
+   "max": 1000,
+   "min": 1
   },
   "ResourceArnString": {
    "type": "string"
@@ -5139,6 +5295,15 @@
     }
    },
    "union": true
+  },
+  "SessionContextIdString": {
+   "type": "string"
+  },
+  "SessionDurationSecondInteger": {
+   "type": "integer",
+   "box": true,
+   "max": 86400,
+   "min": 60
   },
   "SessionTokenString": {
    "type": "string"
@@ -5724,6 +5889,30 @@
      "shape": "Result"
     }
    }
+  },
+  "UserDefinedFunctionResource": {
+   "type": "structure",
+   "required": [
+    "DatabaseName"
+   ],
+   "members": {
+    "CatalogId": {
+     "shape": "CatalogIdString"
+    },
+    "DatabaseName": {
+     "shape": "NameString"
+    },
+    "Name": {
+     "shape": "NameString"
+    },
+    "UserDefinedFunctionWildcard": {
+     "shape": "UserDefinedFunctionWildcard"
+    }
+   }
+  },
+  "UserDefinedFunctionWildcard": {
+   "type": "structure",
+   "members": {}
   },
   "ValueString": {
    "type": "string"

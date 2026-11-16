@@ -246,6 +246,36 @@
     }
    ]
   },
+  "CheckSubdomainAvailability": {
+   "name": "CheckSubdomainAvailability",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "CheckSubdomainAvailabilityRequest"
+   },
+   "output": {
+    "shape": "CheckSubdomainAvailabilityResult"
+   },
+   "errors": [
+    {
+     "shape": "ServiceException"
+    },
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "OperationFailureException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "UnauthenticatedException"
+    }
+   ]
+  },
   "CloseInstancePublicPorts": {
    "name": "CloseInstancePublicPorts",
    "http": {
@@ -1206,6 +1236,39 @@
     }
    ]
   },
+  "CreateSubdomain": {
+   "name": "CreateSubdomain",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "CreateSubdomainRequest"
+   },
+   "output": {
+    "shape": "CreateSubdomainResult"
+   },
+   "errors": [
+    {
+     "shape": "ServiceException"
+    },
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "NotFoundException"
+    },
+    {
+     "shape": "OperationFailureException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "UnauthenticatedException"
+    }
+   ]
+  },
   "DeleteAlarm": {
    "name": "DeleteAlarm",
    "http": {
@@ -1974,6 +2037,39 @@
     },
     {
      "shape": "RegionSetupInProgressException"
+    },
+    {
+     "shape": "UnauthenticatedException"
+    }
+   ]
+  },
+  "DeleteSubdomain": {
+   "name": "DeleteSubdomain",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "DeleteSubdomainRequest"
+   },
+   "output": {
+    "shape": "DeleteSubdomainResult"
+   },
+   "errors": [
+    {
+     "shape": "ServiceException"
+    },
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "NotFoundException"
+    },
+    {
+     "shape": "OperationFailureException"
+    },
+    {
+     "shape": "AccessDeniedException"
     },
     {
      "shape": "UnauthenticatedException"
@@ -4713,6 +4809,36 @@
     }
    ]
   },
+  "GetSubdomains": {
+   "name": "GetSubdomains",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "GetSubdomainsRequest"
+   },
+   "output": {
+    "shape": "GetSubdomainsResult"
+   },
+   "errors": [
+    {
+     "shape": "ServiceException"
+    },
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "NotFoundException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "UnauthenticatedException"
+    }
+   ]
+  },
   "ImportKeyPair": {
    "name": "ImportKeyPair",
    "http": {
@@ -6002,6 +6128,39 @@
      "shape": "UnauthenticatedException"
     }
    ]
+  },
+  "UpdateSubdomainAssociation": {
+   "name": "UpdateSubdomainAssociation",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "UpdateSubdomainAssociationRequest"
+   },
+   "output": {
+    "shape": "UpdateSubdomainAssociationResult"
+   },
+   "errors": [
+    {
+     "shape": "ServiceException"
+    },
+    {
+     "shape": "InvalidInputException"
+    },
+    {
+     "shape": "NotFoundException"
+    },
+    {
+     "shape": "OperationFailureException"
+    },
+    {
+     "shape": "AccessDeniedException"
+    },
+    {
+     "shape": "UnauthenticatedException"
+    }
+   ]
   }
  },
  "shapes": {
@@ -6037,7 +6196,7 @@
      "shape": "IAMAccessKeyId"
     },
     "secretAccessKey": {
-     "shape": "NonEmptyString"
+     "shape": "SensitiveNonEmptyString"
     },
     "status": {
      "shape": "StatusType"
@@ -7049,6 +7208,34 @@
     "shape": "CertificateSummary"
    }
   },
+  "CheckSubdomainAvailabilityRequest": {
+   "type": "structure",
+   "required": [
+    "subdomainName"
+   ],
+   "members": {
+    "subdomainName": {
+     "shape": "string"
+    },
+    "reserve": {
+     "shape": "boolean"
+    }
+   }
+  },
+  "CheckSubdomainAvailabilityResult": {
+   "type": "structure",
+   "members": {
+    "available": {
+     "shape": "boolean"
+    },
+    "reservationExpiresAt": {
+     "shape": "IsoDate"
+    },
+    "subdomainName": {
+     "shape": "string"
+    }
+   }
+  },
   "CloseInstancePublicPortsRequest": {
    "type": "structure",
    "required": [
@@ -7554,7 +7741,7 @@
      "shape": "string"
     },
     "password": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "expiresAt": {
      "shape": "IsoDate"
@@ -8043,6 +8230,9 @@
     },
     "wafRules": {
      "shape": "WafRuleList"
+    },
+    "subdomainName": {
+     "shape": "string"
     }
    }
   },
@@ -8290,7 +8480,7 @@
      "shape": "Base64"
     },
     "privateKeyBase64": {
-     "shape": "Base64"
+     "shape": "SensitiveBase64"
     },
     "operation": {
      "shape": "Operation"
@@ -8493,6 +8683,31 @@
    "members": {
     "operations": {
      "shape": "OperationList"
+    }
+   }
+  },
+  "CreateSubdomainRequest": {
+   "type": "structure",
+   "required": [
+    "subdomainName"
+   ],
+   "members": {
+    "subdomainName": {
+     "shape": "string"
+    },
+    "tags": {
+     "shape": "TagList"
+    }
+   }
+  },
+  "CreateSubdomainResult": {
+   "type": "structure",
+   "members": {
+    "subdomain": {
+     "shape": "Subdomain"
+    },
+    "operation": {
+     "shape": "Operation"
     }
    }
   },
@@ -8928,6 +9143,28 @@
    "members": {
     "operations": {
      "shape": "OperationList"
+    }
+   }
+  },
+  "DeleteSubdomainRequest": {
+   "type": "structure",
+   "required": [
+    "subdomainName"
+   ],
+   "members": {
+    "subdomainName": {
+     "shape": "string"
+    }
+   }
+  },
+  "DeleteSubdomainResult": {
+   "type": "structure",
+   "members": {
+    "subdomain": {
+     "shape": "Subdomain"
+    },
+    "operation": {
+     "shape": "Operation"
     }
    }
   },
@@ -9448,7 +9685,7 @@
      "shape": "Base64"
     },
     "privateKeyBase64": {
-     "shape": "Base64"
+     "shape": "SensitiveBase64"
     },
     "createdAt": {
      "shape": "IsoDate"
@@ -10437,6 +10674,9 @@
    "members": {
     "instanceName": {
      "shape": "ResourceName"
+    },
+    "includeHealthStatus": {
+     "shape": "boolean"
     }
    }
   },
@@ -10510,6 +10750,9 @@
    "members": {
     "pageToken": {
      "shape": "string"
+    },
+    "includeHealthStatus": {
+     "shape": "boolean"
     }
    }
   },
@@ -11155,6 +11398,28 @@
     }
    }
   },
+  "GetSubdomainsRequest": {
+   "type": "structure",
+   "members": {
+    "subdomainName": {
+     "shape": "string"
+    },
+    "pageToken": {
+     "shape": "string"
+    }
+   }
+  },
+  "GetSubdomainsResult": {
+   "type": "structure",
+   "members": {
+    "subdomains": {
+     "shape": "SubdomainList"
+    },
+    "nextPageToken": {
+     "shape": "string"
+    }
+   }
+  },
   "HeaderEnum": {
    "type": "string",
    "enum": [
@@ -11369,6 +11634,12 @@
     },
     "metadataOptions": {
      "shape": "InstanceMetadataOptions"
+    },
+    "instanceStatus": {
+     "shape": "InstanceHealthStatus"
+    },
+    "systemStatus": {
+     "shape": "InstanceHealthStatus"
     }
    }
   },
@@ -11388,13 +11659,13 @@
      "shape": "Ipv6AddressList"
     },
     "password": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "passwordData": {
      "shape": "PasswordData"
     },
     "privateKey": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "protocol": {
      "shape": "InstanceAccessProtocol"
@@ -11496,6 +11767,62 @@
     "unused",
     "draining",
     "unavailable"
+   ]
+  },
+  "InstanceHealthStatus": {
+   "type": "structure",
+   "members": {
+    "status": {
+     "shape": "InstanceHealthStatusValue"
+    },
+    "details": {
+     "shape": "InstanceHealthStatusDetailList"
+    }
+   }
+  },
+  "InstanceHealthStatusDetail": {
+   "type": "structure",
+   "members": {
+    "name": {
+     "shape": "InstanceHealthStatusDetailName"
+    },
+    "status": {
+     "shape": "InstanceHealthStatusDetailValue"
+    },
+    "impairedSince": {
+     "shape": "IsoDate"
+    }
+   }
+  },
+  "InstanceHealthStatusDetailList": {
+   "type": "list",
+   "member": {
+    "shape": "InstanceHealthStatusDetail"
+   }
+  },
+  "InstanceHealthStatusDetailName": {
+   "type": "string",
+   "enum": [
+    "reachability"
+   ]
+  },
+  "InstanceHealthStatusDetailValue": {
+   "type": "string",
+   "enum": [
+    "passed",
+    "failed",
+    "insufficient-data",
+    "initializing"
+   ]
+  },
+  "InstanceHealthStatusValue": {
+   "type": "string",
+   "enum": [
+    "ok",
+    "impaired",
+    "initializing",
+    "insufficient-data",
+    "not-applicable"
    ]
   },
   "InstanceHealthSummary": {
@@ -11931,8 +12258,41 @@
     },
     "waf": {
      "shape": "WafConfig"
+    },
+    "subdomain": {
+     "shape": "LightsailDistributionSubdomain"
     }
    }
+  },
+  "LightsailDistributionSubdomain": {
+   "type": "structure",
+   "required": [
+    "name",
+    "state"
+   ],
+   "members": {
+    "name": {
+     "shape": "string"
+    },
+    "state": {
+     "shape": "LightsailDistributionSubdomainStateEnum"
+    },
+    "errorCode": {
+     "shape": "string"
+    },
+    "errorDetails": {
+     "shape": "string"
+    }
+   }
+  },
+  "LightsailDistributionSubdomainStateEnum": {
+   "type": "string",
+   "enum": [
+    "Creating",
+    "Attaching",
+    "Attached",
+    "Error"
+   ]
   },
   "LoadBalancer": {
    "type": "structure",
@@ -12720,7 +13080,10 @@
     "StartGUISession",
     "StopGUISession",
     "SetupInstanceHttps",
-    "GetProfile"
+    "GetProfile",
+    "CreateSubdomain",
+    "UpdateSubdomainAssociation",
+    "DeleteSubdomain"
    ]
   },
   "Origin": {
@@ -12800,7 +13163,7 @@
    "type": "structure",
    "members": {
     "ciphertext": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "keyPairName": {
      "shape": "ResourceName"
@@ -12843,7 +13206,7 @@
    "type": "structure",
    "members": {
     "masterUserPassword": {
-     "shape": "string"
+     "shape": "SensitiveString"
     },
     "engineVersion": {
      "shape": "string"
@@ -13719,7 +14082,8 @@
     "ContactMethod",
     "Distribution",
     "Certificate",
-    "Bucket"
+    "Bucket",
+    "Subdomain"
    ]
   },
   "ResourcesBudgetEstimate": {
@@ -13749,6 +14113,10 @@
      "shape": "OperationList"
     }
    }
+  },
+  "SensitiveBase64": {
+   "type": "string",
+   "sensitive": true
   },
   "SensitiveNonEmptyString": {
    "type": "string",
@@ -14207,6 +14575,88 @@
    "type": "string",
    "max": 256,
    "min": 1
+  },
+  "Subdomain": {
+   "type": "structure",
+   "members": {
+    "subdomainName": {
+     "shape": "string"
+    },
+    "arn": {
+     "shape": "NonEmptyString"
+    },
+    "fqdn": {
+     "shape": "string"
+    },
+    "depth": {
+     "shape": "integer"
+    },
+    "state": {
+     "shape": "SubdomainState"
+    },
+    "attachedResource": {
+     "shape": "SubdomainAttachableResource"
+    },
+    "attachingResource": {
+     "shape": "SubdomainAttachableResource"
+    },
+    "location": {
+     "shape": "ResourceLocation"
+    },
+    "createdAt": {
+     "shape": "IsoDate"
+    },
+    "parentFqdn": {
+     "shape": "string"
+    },
+    "children": {
+     "shape": "SubdomainList"
+    },
+    "tags": {
+     "shape": "TagList"
+    }
+   }
+  },
+  "SubdomainAssociationAction": {
+   "type": "string",
+   "enum": [
+    "ASSOCIATE",
+    "DISASSOCIATE",
+    "TRANSFER"
+   ]
+  },
+  "SubdomainAttachableResource": {
+   "type": "structure",
+   "members": {
+    "arn": {
+     "shape": "NonEmptyString"
+    },
+    "name": {
+     "shape": "ResourceName"
+    },
+    "attachedAt": {
+     "shape": "IsoDate"
+    }
+   }
+  },
+  "SubdomainList": {
+   "type": "list",
+   "member": {
+    "shape": "Subdomain"
+   }
+  },
+  "SubdomainState": {
+   "type": "string",
+   "enum": [
+    "CREATING",
+    "CREATE_FAILED",
+    "UNATTACHED",
+    "ATTACHING",
+    "ATTACHED",
+    "DETACHING",
+    "TRANSFERRING",
+    "IMPLICIT"
+   ]
   },
   "SubjectAlternativeNameList": {
    "type": "list",
@@ -14702,6 +15152,35 @@
    "members": {
     "operations": {
      "shape": "OperationList"
+    }
+   }
+  },
+  "UpdateSubdomainAssociationRequest": {
+   "type": "structure",
+   "required": [
+    "subdomainName",
+    "action"
+   ],
+   "members": {
+    "subdomainName": {
+     "shape": "string"
+    },
+    "action": {
+     "shape": "SubdomainAssociationAction"
+    },
+    "targetResourceArn": {
+     "shape": "string"
+    }
+   }
+  },
+  "UpdateSubdomainAssociationResult": {
+   "type": "structure",
+   "members": {
+    "subdomain": {
+     "shape": "Subdomain"
+    },
+    "operation": {
+     "shape": "Operation"
     }
    }
   },

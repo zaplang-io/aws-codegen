@@ -15,9 +15,9 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 51 operations — 49 with a generated method,
+# Coverage (rest-json): 52 operations — 50 with a generated method,
 #   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   197 structs (133 @derive(Json)), 33 enums, 11 error variants.
+#   209 structs (145 @derive(Json)), 38 enums, 11 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -65,6 +65,13 @@ enum AutoTuneState:
 
 @derive(Json)
 @json(open)
+enum ClonedBlueGreenScheduledActionType:
+    AutomaticCutoverToPrimaryCluster
+    DeletePrimaryCluster
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum ConfigChangeStatus:
     Pending
     Initializing
@@ -74,6 +81,21 @@ enum ConfigChangeStatus:
     Completed
     PendingUserInput
     Cancelled
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum CutoverStatus:
+    InProgress
+    Completed
+    Failed
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum CutoverTarget:
+    ClonedCluster
+    PrimaryCluster
     Unknown(str value)
 
 @derive(Json)
@@ -319,6 +341,13 @@ enum ReservedElasticsearchInstancePaymentOption:
 
 @derive(Json)
 @json(open)
+enum RetentionAction:
+    RollbackToPrimaryCluster
+    DeletePrimaryCluster
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum RollbackOnDisable:
     NO_ROLLBACK
     DEFAULT_ROLLBACK
@@ -346,6 +375,14 @@ enum TLSSecurityPolicy:
     Policy_Min_TLS_1_2_2019_07
     Policy_Min_TLS_1_2_PFS_2023_10
     Policy_Min_TLS_1_2_RFC9151_FIPS_2024_08
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum TrafficSplitStatus:
+    InProgress
+    Completed
+    Failed
     Unknown(str value)
 
 @derive(Json)
@@ -612,6 +649,22 @@ struct ChangeProgressStatusDetails:
     Optional[ConfigChangeStatus] ConfigChangeStatus
     Optional[DateTime] LastUpdatedTime
     Optional[InitiatedBy] InitiatedBy
+    Optional[ClonedBlueGreenUpgradeDetails] ClonedBlueGreenUpgradeDetails
+
+@derive(Json)
+struct ClonedBlueGreenOptions:
+    Optional[RetentionOptions] RetentionOptions
+
+@derive(Json)
+struct ClonedBlueGreenScheduledAction:
+    Optional[ClonedBlueGreenScheduledActionType] Action
+    Optional[DateTime] ScheduledTime
+
+@derive(Json)
+struct ClonedBlueGreenUpgradeDetails:
+    Optional[TrafficPercents] TrafficSplit
+    Optional[ClonedBlueGreenScheduledAction] ScheduledAction
+    Optional[int64] RetentionInHours
 
 @derive(Json)
 struct CognitoOptions:
@@ -711,6 +764,15 @@ struct CreateVpcEndpointRequest:
 struct CreateVpcEndpointResponse:
     VpcEndpoint VpcEndpoint
 
+@derive(Json)
+struct CutoverOptions:
+    CutoverTarget Target
+    CutoverStatus Status
+
+@derive(Json)
+struct CutoverRequestOptions:
+    CutoverTarget Target
+
 # rest-json request for DeleteElasticsearchDomainRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct DeleteElasticsearchDomainRequest:
@@ -766,6 +828,11 @@ struct DeploymentStrategyOptions:
 struct DeploymentStrategyOptionsStatus:
     DeploymentStrategyOptions Options
     OptionStatus Status
+
+@derive(Json)
+struct DeploymentStrategyOverrideOptions:
+    str DeploymentStrategy
+    Optional[ClonedBlueGreenOptions] ClonedBlueGreenOptions
 
 # rest-json request for DescribeDomainAutoTunesRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1483,6 +1550,11 @@ struct ResourceNotFoundException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
+@derive(Json)
+struct RetentionOptions:
+    Optional[int64] RetentionInHours
+    Optional[RetentionAction] RetentionAction
+
 # rest-json request for RevokeVpcEndpointAccessRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct RevokeVpcEndpointAccessRequest:
@@ -1573,6 +1645,38 @@ struct Tag:
     str Key
     str Value
 
+@derive(Json)
+struct TrafficPercents:
+    int64 PrimaryReadTrafficPercent
+    int64 CloneReadTrafficPercent
+
+@derive(Json)
+struct TrafficSplitOptions:
+    TrafficPercents Current
+    TrafficPercents Target
+    TrafficSplitStatus Status
+
+@derive(Json)
+struct TrafficSplitRequestOptions:
+    str Strategy
+    int64 CloneReadTrafficPercent
+
+# rest-json request for UpdateCloneRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateCloneRequest:
+    str DomainName
+    Optional[TrafficSplitRequestOptions] TrafficSplitOptions
+    Optional[CutoverRequestOptions] CutoverOptions
+    Optional[RetentionOptions] RetentionOptions
+
+@derive(Json)
+struct UpdateCloneResponse:
+    str DomainName
+    str ChangeId
+    Optional[CutoverOptions] CutoverOptions
+    Optional[TrafficSplitOptions] TrafficSplitOptions
+    Optional[RetentionOptions] RetentionOptions
+
 # rest-json request for UpdateElasticsearchDomainConfigRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct UpdateElasticsearchDomainConfigRequest:
@@ -1633,12 +1737,14 @@ struct UpgradeElasticsearchDomainRequest:
     str DomainName
     str TargetVersion
     Optional[bool] PerformCheckOnly
+    Optional[DeploymentStrategyOverrideOptions] DeploymentStrategyOptions
 
 @derive(Json)
 struct UpgradeElasticsearchDomainResponse:
     Optional[str] DomainName
     Optional[str] TargetVersion
     Optional[bool] PerformCheckOnly
+    Optional[DeploymentStrategyOverrideOptions] DeploymentStrategyOptions
     Optional[ChangeProgressDetails] ChangeProgressDetails
 
 # no @derive(Json): member(s) StepsList: list[UpgradeStepItem] not derivable (list/map collections);
@@ -1866,6 +1972,13 @@ struct StartElasticsearchServiceSoftwareUpdateDocument:
     str DomainName
 
 @derive(Json)
+struct UpdateCloneDocument:
+    # document members of UpdateClone
+    Optional[TrafficSplitRequestOptions] TrafficSplitOptions
+    Optional[CutoverRequestOptions] CutoverOptions
+    Optional[RetentionOptions] RetentionOptions
+
+@derive(Json)
 struct UpdatePackageDocument:
     # document members of UpdatePackage
     str PackageID
@@ -1879,6 +1992,7 @@ struct UpgradeElasticsearchDomainDocument:
     str DomainName
     str TargetVersion
     Optional[bool] PerformCheckOnly
+    Optional[DeploymentStrategyOverrideOptions] DeploymentStrategyOptions
 
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
@@ -2501,6 +2615,17 @@ struct Elasticsearch_ServiceClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
+    # UpdateClone  POST /2015-01-01/es/domain/{DomainName}/clone
+    # errors: BaseException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
+    def update_clone(self, UpdateCloneRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/clone", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateCloneDocument(TrafficSplitOptions=input.TrafficSplitOptions, CutoverOptions=input.CutoverOptions, RetentionOptions=input.RetentionOptions)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
     # UpdatePackage  POST /2015-01-01/packages/update
     # errors: AccessDeniedException, BaseException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def update_package(self, UpdatePackageRequest input) -> str:
@@ -2526,7 +2651,7 @@ struct Elasticsearch_ServiceClient:
     def upgrade_elasticsearch_domain(self, UpgradeElasticsearchDomainRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/upgradeDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = UpgradeElasticsearchDomainDocument(DomainName=input.DomainName, TargetVersion=input.TargetVersion, PerformCheckOnly=input.PerformCheckOnly)
+        auto doc = UpgradeElasticsearchDomainDocument(DomainName=input.DomainName, TargetVersion=input.TargetVersion, PerformCheckOnly=input.PerformCheckOnly, DeploymentStrategyOptions=input.DeploymentStrategyOptions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 

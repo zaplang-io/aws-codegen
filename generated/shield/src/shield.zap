@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS Shield (serviceId Shield, API 2016-06-02)
-# Protocol: awsJson 1.1 (targetPrefix AWSShield_20160616)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service shield, service shape AWSShield_20160616)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 36 operations — 36 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   116 structs (81 @derive(Json)), 12 enums, 13 error variants.
-#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 36 operations — 36 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   116 structs (plain carriers), 12 enums, 13 error variants.
+#   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,15 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
+import datetime
 
-# The Shield awsJson protocol: version 1.1, API id "AWSShield_20160616".
-def shield_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("AWSShield_20160616", "shield")
+# The Shield smithy-rpc-v2-cbor protocol: SigV4 service "shield" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/AWSShield_20160616/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def shield_service() -> str:
+    return "shield"
 
 # --- enums -----------------------------------------------------------------
 
@@ -139,61 +144,45 @@ enum ValidationExceptionReason:
 
 # --- shapes ----------------------------------------------------------------
 
-@derive(Json)
 struct AccessDeniedException:
     Optional[str] message
 
-@derive(Json)
 struct AccessDeniedForDependencyException:
     Optional[str] message
 
-@derive(Json)
 struct ApplicationLayerAutomaticResponseConfiguration:
-    ApplicationLayerAutomaticResponseStatus Status
+    str Status
     ResponseAction Action
 
-@derive(Json)
 struct AssociateDRTLogBucketRequest:
     str LogBucket
 
-@derive(Json)
 struct AssociateDRTLogBucketResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociateDRTRoleRequest:
     str RoleArn
 
-@derive(Json)
 struct AssociateDRTRoleResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct AssociateHealthCheckRequest:
     str ProtectionId
     str HealthCheckArn
 
-@derive(Json)
 struct AssociateHealthCheckResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AssociateProactiveEngagementDetailsRequest:
     list[EmergencyContact] EmergencyContactList
 
-@derive(Json)
 struct AssociateProactiveEngagementDetailsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) SubResources: list[SubResourceSummary], AttackCounters: list[SummarizedCounter], AttackProperties: list[AttackProperty], Mitigations: list[Mitigation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AttackDetail:
     Optional[str] AttackId
     Optional[str] ResourceArn
@@ -204,24 +193,17 @@ struct AttackDetail:
     Optional[list[AttackProperty]] AttackProperties
     Optional[list[Mitigation]] Mitigations
 
-# no @derive(Json): member(s) TopContributors: list[Contributor] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AttackProperty:
-    Optional[AttackLayer] AttackLayer
-    Optional[AttackPropertyIdentifier] AttackPropertyIdentifier
+    Optional[str] AttackLayer
+    Optional[str] AttackPropertyIdentifier
     Optional[list[Contributor]] TopContributors
-    Optional[Unit] Unit
+    Optional[str] Unit
     Optional[int64] Total
 
-@derive(Json)
 struct AttackStatisticsDataItem:
     Optional[AttackVolume] AttackVolume
     int64 AttackCount
 
-# no @derive(Json): member(s) AttackVectors: list[AttackVectorDescription] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct AttackSummary:
     Optional[str] AttackId
     Optional[str] ResourceArn
@@ -229,316 +211,231 @@ struct AttackSummary:
     Optional[DateTime] EndTime
     Optional[list[AttackVectorDescription]] AttackVectors
 
-@derive(Json)
 struct AttackVectorDescription:
     str VectorType
 
-@derive(Json)
 struct AttackVolume:
     Optional[AttackVolumeStatistics] BitsPerSecond
     Optional[AttackVolumeStatistics] PacketsPerSecond
     Optional[AttackVolumeStatistics] RequestsPerSecond
 
-@derive(Json)
 struct AttackVolumeStatistics:
     float64 Max
 
-@derive(Json)
 struct BlockAction:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct Contributor:
     Optional[str] Name
     Optional[int64] Value
 
-@derive(Json)
 struct CountAction:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Members: list[str], Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProtectionGroupRequest:
     str ProtectionGroupId
-    ProtectionGroupAggregation Aggregation
-    ProtectionGroupPattern Pattern
-    Optional[ProtectedResourceType] ResourceType
+    str Aggregation
+    str Pattern
+    Optional[str] ResourceType
     Optional[list[str]] Members
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateProtectionGroupResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateProtectionRequest:
     str Name
     str ResourceArn
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct CreateProtectionResponse:
     Optional[str] ProtectionId
 
-@derive(Json)
 struct CreateSubscriptionRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct CreateSubscriptionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteProtectionGroupRequest:
     str ProtectionGroupId
 
-@derive(Json)
 struct DeleteProtectionGroupResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteProtectionRequest:
     str ProtectionId
 
-@derive(Json)
 struct DeleteProtectionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteSubscriptionRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DeleteSubscriptionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DescribeAttackRequest:
     str AttackId
 
-# no @derive(Json): member(s) Attack: AttackDetail not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeAttackResponse:
     Optional[AttackDetail] Attack
 
-@derive(Json)
 struct DescribeAttackStatisticsRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) DataItems: list[AttackStatisticsDataItem] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeAttackStatisticsResponse:
     TimeRange TimeRange
     list[AttackStatisticsDataItem] DataItems
 
-@derive(Json)
 struct DescribeDRTAccessRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) LogBucketList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeDRTAccessResponse:
     Optional[str] RoleArn
     Optional[list[str]] LogBucketList
 
-@derive(Json)
 struct DescribeEmergencyContactSettingsRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeEmergencyContactSettingsResponse:
     Optional[list[EmergencyContact]] EmergencyContactList
 
-@derive(Json)
 struct DescribeProtectionGroupRequest:
     str ProtectionGroupId
 
-# no @derive(Json): member(s) ProtectionGroup: ProtectionGroup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProtectionGroupResponse:
     ProtectionGroup ProtectionGroup
 
-@derive(Json)
 struct DescribeProtectionRequest:
     Optional[str] ProtectionId
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) Protection: Protection not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeProtectionResponse:
     Optional[Protection] Protection
 
-@derive(Json)
 struct DescribeSubscriptionRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Subscription: Subscription not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeSubscriptionResponse:
     Optional[Subscription] Subscription
 
-@derive(Json)
 struct DisableApplicationLayerAutomaticResponseRequest:
     str ResourceArn
 
-@derive(Json)
 struct DisableApplicationLayerAutomaticResponseResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableProactiveEngagementRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisableProactiveEngagementResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateDRTLogBucketRequest:
     str LogBucket
 
-@derive(Json)
 struct DisassociateDRTLogBucketResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateDRTRoleRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateDRTRoleResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct DisassociateHealthCheckRequest:
     str ProtectionId
     str HealthCheckArn
 
-@derive(Json)
 struct DisassociateHealthCheckResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EmergencyContact:
     str EmailAddress
     Optional[str] PhoneNumber
     Optional[str] ContactNotes
 
-@derive(Json)
 struct EnableApplicationLayerAutomaticResponseRequest:
     str ResourceArn
     ResponseAction Action
 
-@derive(Json)
 struct EnableApplicationLayerAutomaticResponseResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableProactiveEngagementRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct EnableProactiveEngagementResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GetSubscriptionStateRequest:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct GetSubscriptionStateResponse:
-    SubscriptionState SubscriptionState
+    str SubscriptionState
 
-# no @derive(Json): member(s) ResourceArns: list[str], ProtectionNames: list[str], ResourceTypes: list[ProtectedResourceType] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InclusionProtectionFilters:
     Optional[list[str]] ResourceArns
     Optional[list[str]] ProtectionNames
-    Optional[list[ProtectedResourceType]] ResourceTypes
+    Optional[list[str]] ResourceTypes
 
-# no @derive(Json): member(s) ProtectionGroupIds: list[str], Patterns: list[ProtectionGroupPattern], ResourceTypes: list[ProtectedResourceType], Aggregations: list[ProtectionGroupAggregation] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InclusionProtectionGroupFilters:
     Optional[list[str]] ProtectionGroupIds
-    Optional[list[ProtectionGroupPattern]] Patterns
-    Optional[list[ProtectedResourceType]] ResourceTypes
-    Optional[list[ProtectionGroupAggregation]] Aggregations
+    Optional[list[str]] Patterns
+    Optional[list[str]] ResourceTypes
+    Optional[list[str]] Aggregations
 
-@derive(Json)
 struct InternalErrorException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidOperationException:
     Optional[str] message
 
-@derive(Json)
 struct InvalidPaginationTokenException:
     Optional[str] message
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct InvalidParameterException:
     Optional[str] message
-    Optional[ValidationExceptionReason] reason
+    Optional[str] reason
     Optional[list[ValidationExceptionField]] fields
 
-@derive(Json)
 struct InvalidResourceException:
     Optional[str] message
 
-@derive(Json)
 struct Limit:
     Optional[str] Type
     Optional[int64] Max
 
-@derive(Json)
 struct LimitsExceededException:
     Optional[str] message
     Optional[str] Type
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ResourceArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAttacksRequest:
     Optional[list[str]] ResourceArns
     Optional[TimeRange] StartTime
@@ -546,85 +443,55 @@ struct ListAttacksRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AttackSummaries: list[AttackSummary] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListAttacksResponse:
     Optional[list[AttackSummary]] AttackSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InclusionFilters: InclusionProtectionGroupFilters not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProtectionGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[InclusionProtectionGroupFilters] InclusionFilters
 
-# no @derive(Json): member(s) ProtectionGroups: list[ProtectionGroup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProtectionGroupsResponse:
     list[ProtectionGroup] ProtectionGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InclusionFilters: InclusionProtectionFilters not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProtectionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[InclusionProtectionFilters] InclusionFilters
 
-# no @derive(Json): member(s) Protections: list[Protection] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListProtectionsResponse:
     Optional[list[Protection]] Protections
     Optional[str] NextToken
 
-@derive(Json)
 struct ListResourcesInProtectionGroupRequest:
     str ProtectionGroupId
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResourceArns: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListResourcesInProtectionGroupResponse:
     list[str] ResourceArns
     Optional[str] NextToken
 
-@derive(Json)
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-@derive(Json)
 struct LockedSubscriptionException:
     Optional[str] message
 
-@derive(Json)
 struct Mitigation:
     Optional[str] MitigationName
 
-@derive(Json)
 struct NoAssociatedRoleException:
     Optional[str] message
 
-@derive(Json)
 struct OptimisticLockException:
     Optional[str] message
 
-# no @derive(Json): member(s) HealthCheckIds: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Protection:
     Optional[str] Id
     Optional[str] Name
@@ -633,88 +500,63 @@ struct Protection:
     Optional[str] ProtectionArn
     Optional[ApplicationLayerAutomaticResponseConfiguration] ApplicationLayerAutomaticResponseConfiguration
 
-# no @derive(Json): member(s) Members: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProtectionGroup:
     str ProtectionGroupId
-    ProtectionGroupAggregation Aggregation
-    ProtectionGroupPattern Pattern
-    Optional[ProtectedResourceType] ResourceType
+    str Aggregation
+    str Pattern
+    Optional[str] ResourceType
     list[str] Members
     Optional[str] ProtectionGroupArn
 
-@derive(Json)
 struct ProtectionGroupArbitraryPatternLimits:
     int64 MaxMembers
 
-@derive(Json)
 struct ProtectionGroupLimits:
     int64 MaxProtectionGroups
     ProtectionGroupPatternTypeLimits PatternTypeLimits
 
-@derive(Json)
 struct ProtectionGroupPatternTypeLimits:
     ProtectionGroupArbitraryPatternLimits ArbitraryPatternLimits
 
-# no @derive(Json): member(s) ProtectedResourceTypeLimits: list[Limit] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ProtectionLimits:
     list[Limit] ProtectedResourceTypeLimits
 
-@derive(Json)
 struct ResourceAlreadyExistsException:
     Optional[str] message
     Optional[str] resourceType
 
-@derive(Json)
 struct ResourceNotFoundException:
     Optional[str] message
     Optional[str] resourceType
 
-@derive(Json)
 struct ResponseAction:
     Optional[BlockAction] Block
     Optional[CountAction] Count
 
-# no @derive(Json): member(s) AttackVectors: list[SummarizedAttackVector], Counters: list[SummarizedCounter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SubResourceSummary:
-    Optional[SubResourceType] Type
+    Optional[str] Type
     Optional[str] Id
     Optional[list[SummarizedAttackVector]] AttackVectors
     Optional[list[SummarizedCounter]] Counters
 
-# no @derive(Json): member(s) Limits: list[Limit], SubscriptionLimits: SubscriptionLimits not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Subscription:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
     Optional[int64] TimeCommitmentInSeconds
-    Optional[AutoRenew] AutoRenew
+    Optional[str] AutoRenew
     Optional[list[Limit]] Limits
-    Optional[ProactiveEngagementStatus] ProactiveEngagementStatus
+    Optional[str] ProactiveEngagementStatus
     SubscriptionLimits SubscriptionLimits
     Optional[str] SubscriptionArn
 
-# no @derive(Json): member(s) ProtectionLimits: ProtectionLimits not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SubscriptionLimits:
     ProtectionLimits ProtectionLimits
     ProtectionGroupLimits ProtectionGroupLimits
 
-# no @derive(Json): member(s) VectorCounters: list[SummarizedCounter] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct SummarizedAttackVector:
     str VectorType
     Optional[list[SummarizedCounter]] VectorCounters
 
-@derive(Json)
 struct SummarizedCounter:
     Optional[str] Name
     Optional[float64] Max
@@ -723,86 +565,63 @@ struct SummarizedCounter:
     Optional[int64] N
     Optional[str] Unit
 
-@derive(Json)
 struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct TimeRange:
     Optional[DateTime] FromInclusive
     Optional[DateTime] ToExclusive
 
-# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateApplicationLayerAutomaticResponseRequest:
     str ResourceArn
     ResponseAction Action
 
-@derive(Json)
 struct UpdateApplicationLayerAutomaticResponseResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) EmergencyContactList: list[EmergencyContact] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateEmergencyContactSettingsRequest:
     Optional[list[EmergencyContact]] EmergencyContactList
 
-@derive(Json)
 struct UpdateEmergencyContactSettingsResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) Members: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UpdateProtectionGroupRequest:
     str ProtectionGroupId
-    ProtectionGroupAggregation Aggregation
-    ProtectionGroupPattern Pattern
-    Optional[ProtectedResourceType] ResourceType
+    str Aggregation
+    str Pattern
+    Optional[str] ResourceType
     Optional[list[str]] Members
 
-@derive(Json)
 struct UpdateProtectionGroupResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct UpdateSubscriptionRequest:
-    Optional[AutoRenew] AutoRenew
+    Optional[str] AutoRenew
 
-@derive(Json)
 struct UpdateSubscriptionResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-@derive(Json)
 struct ValidationExceptionField:
     str name
     str message
@@ -814,7 +633,7 @@ struct ValidationExceptionField:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -906,231 +725,542 @@ def shield_error_name(ShieldErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def shield_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   ListAttacks
+#   ListProtections
 
-def shield_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def shield_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize AssociateDRTLogBucketRequest to a CBOR map (member wire name -> value, model order).
+def associate_drt_log_bucket_request_to_cbor(AssociateDRTLogBucketRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LogBucket")
+    vals.append(cbor.cbor_text(v.LogBucket))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+# Serialize AssociateDRTRoleRequest to a CBOR map (member wire name -> value, model order).
+def associate_drt_role_request_to_cbor(AssociateDRTRoleRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("RoleArn")
+    vals.append(cbor.cbor_text(v.RoleArn))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize AssociateProactiveEngagementDetailsRequest to a compact JSON object (declaration order).
-def associate_proactive_engagement_details_request_to_json(AssociateProactiveEngagementDetailsRequest v) -> str:
-    list[str] parts = []
-    list[str] e0 = []
+# Serialize AssociateHealthCheckRequest to a CBOR map (member wire name -> value, model order).
+def associate_health_check_request_to_cbor(AssociateHealthCheckRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionId")
+    vals.append(cbor.cbor_text(v.ProtectionId))
+    keys.append("HealthCheckArn")
+    vals.append(cbor.cbor_text(v.HealthCheckArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize AssociateProactiveEngagementDetailsRequest to a CBOR map (member wire name -> value, model order).
+def associate_proactive_engagement_details_request_to_cbor(AssociateProactiveEngagementDetailsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    list[cbor.CborValue] e0 = []
     for x0 in v.EmergencyContactList:
-        e0.append(x0.to_json())
-    parts.append("\"EmergencyContactList\":" + shield_json_arr(e0))
-    return shield_json_obj(parts)
+        e0.append(emergency_contact_to_cbor(x0))
+    keys.append("EmergencyContactList")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProtectionGroupRequest to a compact JSON object (declaration order).
-def create_protection_group_request_to_json(CreateProtectionGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ProtectionGroupId\":" + shield_json_str(v.ProtectionGroupId))
-    parts.append("\"Aggregation\":" + v.Aggregation.to_json())
-    parts.append("\"Pattern\":" + v.Pattern.to_json())
+# Serialize BlockAction to a CBOR map (member wire name -> value, model order).
+def block_action_to_cbor(BlockAction v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CountAction to a CBOR map (member wire name -> value, model order).
+def count_action_to_cbor(CountAction v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize CreateProtectionGroupRequest to a CBOR map (member wire name -> value, model order).
+def create_protection_group_request_to_cbor(CreateProtectionGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionGroupId")
+    vals.append(cbor.cbor_text(v.ProtectionGroupId))
+    keys.append("Aggregation")
+    vals.append(cbor.cbor_text(v.Aggregation))
+    keys.append("Pattern")
+    vals.append(cbor.cbor_text(v.Pattern))
     if v.ResourceType.is_some():
         auto u0 = v.ResourceType.unwrap()
-        parts.append("\"ResourceType\":" + u0.to_json())
+        keys.append("ResourceType")
+        vals.append(cbor.cbor_text(u0))
     if v.Members.is_some():
         auto u1 = v.Members.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(shield_json_str(x2))
-        parts.append("\"Members\":" + shield_json_arr(e2))
+            e2.append(cbor.cbor_text(x2))
+        keys.append("Members")
+        vals.append(cbor.cbor_list(e2))
     if v.Tags.is_some():
         auto u3 = v.Tags.unwrap()
-        list[str] e4 = []
+        list[cbor.CborValue] e4 = []
         for x4 in u3:
-            e4.append(x4.to_json())
-        parts.append("\"Tags\":" + shield_json_arr(e4))
-    return shield_json_obj(parts)
+            e4.append(tag_to_cbor(x4))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateProtectionRequest to a compact JSON object (declaration order).
-def create_protection_request_to_json(CreateProtectionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"Name\":" + shield_json_str(v.Name))
-    parts.append("\"ResourceArn\":" + shield_json_str(v.ResourceArn))
+# Serialize CreateProtectionRequest to a CBOR map (member wire name -> value, model order).
+def create_protection_request_to_cbor(CreateProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Name")
+    vals.append(cbor.cbor_text(v.Name))
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
     if v.Tags.is_some():
         auto u0 = v.Tags.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"Tags\":" + shield_json_arr(e1))
-    return shield_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize InclusionProtectionFilters to a compact JSON object (declaration order).
-def inclusion_protection_filters_to_json(InclusionProtectionFilters v) -> str:
-    list[str] parts = []
+# Serialize CreateSubscriptionRequest to a CBOR map (member wire name -> value, model order).
+def create_subscription_request_to_cbor(CreateSubscriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProtectionGroupRequest to a CBOR map (member wire name -> value, model order).
+def delete_protection_group_request_to_cbor(DeleteProtectionGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionGroupId")
+    vals.append(cbor.cbor_text(v.ProtectionGroupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteProtectionRequest to a CBOR map (member wire name -> value, model order).
+def delete_protection_request_to_cbor(DeleteProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionId")
+    vals.append(cbor.cbor_text(v.ProtectionId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteSubscriptionRequest to a CBOR map (member wire name -> value, model order).
+def delete_subscription_request_to_cbor(DeleteSubscriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeAttackRequest to a CBOR map (member wire name -> value, model order).
+def describe_attack_request_to_cbor(DescribeAttackRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("AttackId")
+    vals.append(cbor.cbor_text(v.AttackId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeAttackStatisticsRequest to a CBOR map (member wire name -> value, model order).
+def describe_attack_statistics_request_to_cbor(DescribeAttackStatisticsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeDRTAccessRequest to a CBOR map (member wire name -> value, model order).
+def describe_drt_access_request_to_cbor(DescribeDRTAccessRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeEmergencyContactSettingsRequest to a CBOR map (member wire name -> value, model order).
+def describe_emergency_contact_settings_request_to_cbor(DescribeEmergencyContactSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProtectionGroupRequest to a CBOR map (member wire name -> value, model order).
+def describe_protection_group_request_to_cbor(DescribeProtectionGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionGroupId")
+    vals.append(cbor.cbor_text(v.ProtectionGroupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeProtectionRequest to a CBOR map (member wire name -> value, model order).
+def describe_protection_request_to_cbor(DescribeProtectionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ProtectionId.is_some():
+        auto u0 = v.ProtectionId.unwrap()
+        keys.append("ProtectionId")
+        vals.append(cbor.cbor_text(u0))
+    if v.ResourceArn.is_some():
+        auto u1 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeSubscriptionRequest to a CBOR map (member wire name -> value, model order).
+def describe_subscription_request_to_cbor(DescribeSubscriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableApplicationLayerAutomaticResponseRequest to a CBOR map (member wire name -> value, model order).
+def disable_application_layer_automatic_response_request_to_cbor(DisableApplicationLayerAutomaticResponseRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisableProactiveEngagementRequest to a CBOR map (member wire name -> value, model order).
+def disable_proactive_engagement_request_to_cbor(DisableProactiveEngagementRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateDRTLogBucketRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_drt_log_bucket_request_to_cbor(DisassociateDRTLogBucketRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("LogBucket")
+    vals.append(cbor.cbor_text(v.LogBucket))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateDRTRoleRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_drt_role_request_to_cbor(DisassociateDRTRoleRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DisassociateHealthCheckRequest to a CBOR map (member wire name -> value, model order).
+def disassociate_health_check_request_to_cbor(DisassociateHealthCheckRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionId")
+    vals.append(cbor.cbor_text(v.ProtectionId))
+    keys.append("HealthCheckArn")
+    vals.append(cbor.cbor_text(v.HealthCheckArn))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EmergencyContact to a CBOR map (member wire name -> value, model order).
+def emergency_contact_to_cbor(EmergencyContact v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("EmailAddress")
+    vals.append(cbor.cbor_text(v.EmailAddress))
+    if v.PhoneNumber.is_some():
+        auto u0 = v.PhoneNumber.unwrap()
+        keys.append("PhoneNumber")
+        vals.append(cbor.cbor_text(u0))
+    if v.ContactNotes.is_some():
+        auto u1 = v.ContactNotes.unwrap()
+        keys.append("ContactNotes")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableApplicationLayerAutomaticResponseRequest to a CBOR map (member wire name -> value, model order).
+def enable_application_layer_automatic_response_request_to_cbor(EnableApplicationLayerAutomaticResponseRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    keys.append("Action")
+    vals.append(response_action_to_cbor(v.Action))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize EnableProactiveEngagementRequest to a CBOR map (member wire name -> value, model order).
+def enable_proactive_engagement_request_to_cbor(EnableProactiveEngagementRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize GetSubscriptionStateRequest to a CBOR map (member wire name -> value, model order).
+def get_subscription_state_request_to_cbor(GetSubscriptionStateRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    return cbor.cbor_map(keys, vals)
+
+# Serialize InclusionProtectionFilters to a CBOR map (member wire name -> value, model order).
+def inclusion_protection_filters_to_cbor(InclusionProtectionFilters v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ResourceArns.is_some():
         auto u0 = v.ResourceArns.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(shield_json_str(x1))
-        parts.append("\"ResourceArns\":" + shield_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("ResourceArns")
+        vals.append(cbor.cbor_list(e1))
     if v.ProtectionNames.is_some():
         auto u2 = v.ProtectionNames.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(shield_json_str(x3))
-        parts.append("\"ProtectionNames\":" + shield_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("ProtectionNames")
+        vals.append(cbor.cbor_list(e3))
     if v.ResourceTypes.is_some():
         auto u4 = v.ResourceTypes.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"ResourceTypes\":" + shield_json_arr(e5))
-    return shield_json_obj(parts)
+            e5.append(cbor.cbor_text(x5))
+        keys.append("ResourceTypes")
+        vals.append(cbor.cbor_list(e5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize InclusionProtectionGroupFilters to a compact JSON object (declaration order).
-def inclusion_protection_group_filters_to_json(InclusionProtectionGroupFilters v) -> str:
-    list[str] parts = []
+# Serialize InclusionProtectionGroupFilters to a CBOR map (member wire name -> value, model order).
+def inclusion_protection_group_filters_to_cbor(InclusionProtectionGroupFilters v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ProtectionGroupIds.is_some():
         auto u0 = v.ProtectionGroupIds.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(shield_json_str(x1))
-        parts.append("\"ProtectionGroupIds\":" + shield_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("ProtectionGroupIds")
+        vals.append(cbor.cbor_list(e1))
     if v.Patterns.is_some():
         auto u2 = v.Patterns.unwrap()
-        list[str] e3 = []
+        list[cbor.CborValue] e3 = []
         for x3 in u2:
-            e3.append(x3.to_json())
-        parts.append("\"Patterns\":" + shield_json_arr(e3))
+            e3.append(cbor.cbor_text(x3))
+        keys.append("Patterns")
+        vals.append(cbor.cbor_list(e3))
     if v.ResourceTypes.is_some():
         auto u4 = v.ResourceTypes.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"ResourceTypes\":" + shield_json_arr(e5))
+            e5.append(cbor.cbor_text(x5))
+        keys.append("ResourceTypes")
+        vals.append(cbor.cbor_list(e5))
     if v.Aggregations.is_some():
         auto u6 = v.Aggregations.unwrap()
-        list[str] e7 = []
+        list[cbor.CborValue] e7 = []
         for x7 in u6:
-            e7.append(x7.to_json())
-        parts.append("\"Aggregations\":" + shield_json_arr(e7))
-    return shield_json_obj(parts)
+            e7.append(cbor.cbor_text(x7))
+        keys.append("Aggregations")
+        vals.append(cbor.cbor_list(e7))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListAttacksRequest to a compact JSON object (declaration order).
-def list_attacks_request_to_json(ListAttacksRequest v) -> str:
-    list[str] parts = []
+# Serialize ListAttacksRequest to a CBOR map (member wire name -> value, model order).
+def list_attacks_request_to_cbor(ListAttacksRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.ResourceArns.is_some():
         auto u0 = v.ResourceArns.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(shield_json_str(x1))
-        parts.append("\"ResourceArns\":" + shield_json_arr(e1))
+            e1.append(cbor.cbor_text(x1))
+        keys.append("ResourceArns")
+        vals.append(cbor.cbor_list(e1))
     if v.StartTime.is_some():
         auto u2 = v.StartTime.unwrap()
-        parts.append("\"StartTime\":" + u2.to_json())
+        keys.append("StartTime")
+        vals.append(time_range_to_cbor(u2))
     if v.EndTime.is_some():
         auto u3 = v.EndTime.unwrap()
-        parts.append("\"EndTime\":" + u3.to_json())
+        keys.append("EndTime")
+        vals.append(time_range_to_cbor(u3))
     if v.NextToken.is_some():
         auto u4 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + shield_json_str(u4))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u4))
     if v.MaxResults.is_some():
         auto u5 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u5))
-    return shield_json_obj(parts)
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u5))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListProtectionGroupsRequest to a compact JSON object (declaration order).
-def list_protection_groups_request_to_json(ListProtectionGroupsRequest v) -> str:
-    list[str] parts = []
+# Serialize ListProtectionGroupsRequest to a CBOR map (member wire name -> value, model order).
+def list_protection_groups_request_to_cbor(ListProtectionGroupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NextToken.is_some():
         auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + shield_json_str(u0))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
         auto u1 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u1))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
     if v.InclusionFilters.is_some():
         auto u2 = v.InclusionFilters.unwrap()
-        parts.append("\"InclusionFilters\":" + inclusion_protection_group_filters_to_json(u2))
-    return shield_json_obj(parts)
+        keys.append("InclusionFilters")
+        vals.append(inclusion_protection_group_filters_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize ListProtectionsRequest to a compact JSON object (declaration order).
-def list_protections_request_to_json(ListProtectionsRequest v) -> str:
-    list[str] parts = []
+# Serialize ListProtectionsRequest to a CBOR map (member wire name -> value, model order).
+def list_protections_request_to_cbor(ListProtectionsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NextToken.is_some():
         auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + shield_json_str(u0))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
         auto u1 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u1))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
     if v.InclusionFilters.is_some():
         auto u2 = v.InclusionFilters.unwrap()
-        parts.append("\"InclusionFilters\":" + inclusion_protection_filters_to_json(u2))
-    return shield_json_obj(parts)
+        keys.append("InclusionFilters")
+        vals.append(inclusion_protection_filters_to_cbor(u2))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceARN\":" + shield_json_str(v.ResourceARN))
-    list[str] e0 = []
+# Serialize ListResourcesInProtectionGroupRequest to a CBOR map (member wire name -> value, model order).
+def list_resources_in_protection_group_request_to_cbor(ListResourcesInProtectionGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionGroupId")
+    vals.append(cbor.cbor_text(v.ProtectionGroupId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsForResourceRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_for_resource_request_to_cbor(ListTagsForResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ResponseAction to a CBOR map (member wire name -> value, model order).
+def response_action_to_cbor(ResponseAction v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Block.is_some():
+        auto u0 = v.Block.unwrap()
+        keys.append("Block")
+        vals.append(block_action_to_cbor(u0))
+    if v.Count.is_some():
+        auto u1 = v.Count.unwrap()
+        keys.append("Count")
+        vals.append(count_action_to_cbor(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        keys.append("Key")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    list[cbor.CborValue] e0 = []
     for x0 in v.Tags:
-        e0.append(x0.to_json())
-    parts.append("\"Tags\":" + shield_json_arr(e0))
-    return shield_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("Tags")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceARN\":" + shield_json_str(v.ResourceARN))
-    list[str] e0 = []
+# Serialize TimeRange to a CBOR map (member wire name -> value, model order).
+def time_range_to_cbor(TimeRange v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.FromInclusive.is_some():
+        auto u0 = v.FromInclusive.unwrap()
+        keys.append("FromInclusive")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u0)))
+    if v.ToExclusive.is_some():
+        auto u1 = v.ToExclusive.unwrap()
+        keys.append("ToExclusive")
+        vals.append(cbor.cbor_timestamp(datetime.to_timestamp(u1)))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceARN")
+    vals.append(cbor.cbor_text(v.ResourceARN))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeys:
-        e0.append(shield_json_str(x0))
-    parts.append("\"TagKeys\":" + shield_json_arr(e0))
-    return shield_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeys")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateEmergencyContactSettingsRequest to a compact JSON object (declaration order).
-def update_emergency_contact_settings_request_to_json(UpdateEmergencyContactSettingsRequest v) -> str:
-    list[str] parts = []
+# Serialize UpdateApplicationLayerAutomaticResponseRequest to a CBOR map (member wire name -> value, model order).
+def update_application_layer_automatic_response_request_to_cbor(UpdateApplicationLayerAutomaticResponseRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceArn")
+    vals.append(cbor.cbor_text(v.ResourceArn))
+    keys.append("Action")
+    vals.append(response_action_to_cbor(v.Action))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateEmergencyContactSettingsRequest to a CBOR map (member wire name -> value, model order).
+def update_emergency_contact_settings_request_to_cbor(UpdateEmergencyContactSettingsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.EmergencyContactList.is_some():
         auto u0 = v.EmergencyContactList.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"EmergencyContactList\":" + shield_json_arr(e1))
-    return shield_json_obj(parts)
+            e1.append(emergency_contact_to_cbor(x1))
+        keys.append("EmergencyContactList")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UpdateProtectionGroupRequest to a compact JSON object (declaration order).
-def update_protection_group_request_to_json(UpdateProtectionGroupRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ProtectionGroupId\":" + shield_json_str(v.ProtectionGroupId))
-    parts.append("\"Aggregation\":" + v.Aggregation.to_json())
-    parts.append("\"Pattern\":" + v.Pattern.to_json())
+# Serialize UpdateProtectionGroupRequest to a CBOR map (member wire name -> value, model order).
+def update_protection_group_request_to_cbor(UpdateProtectionGroupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ProtectionGroupId")
+    vals.append(cbor.cbor_text(v.ProtectionGroupId))
+    keys.append("Aggregation")
+    vals.append(cbor.cbor_text(v.Aggregation))
+    keys.append("Pattern")
+    vals.append(cbor.cbor_text(v.Pattern))
     if v.ResourceType.is_some():
         auto u0 = v.ResourceType.unwrap()
-        parts.append("\"ResourceType\":" + u0.to_json())
+        keys.append("ResourceType")
+        vals.append(cbor.cbor_text(u0))
     if v.Members.is_some():
         auto u1 = v.Members.unwrap()
-        list[str] e2 = []
+        list[cbor.CborValue] e2 = []
         for x2 in u1:
-            e2.append(shield_json_str(x2))
-        parts.append("\"Members\":" + shield_json_arr(e2))
-    return shield_json_obj(parts)
+            e2.append(cbor.cbor_text(x2))
+        keys.append("Members")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize UpdateSubscriptionRequest to a CBOR map (member wire name -> value, model order).
+def update_subscription_request_to_cbor(UpdateSubscriptionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.AutoRenew.is_some():
+        auto u0 = v.AutoRenew.unwrap()
+        keys.append("AutoRenew")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
 
 # A bound Shield client: credentials + region, threaded into every operation.
 struct ShieldClient:
@@ -1139,247 +1269,327 @@ struct ShieldClient:
 
     # AssociateDRTLogBucket
     # errors: AccessDeniedForDependencyException, InternalErrorException, InvalidOperationException, InvalidParameterException, LimitsExceededException, NoAssociatedRoleException, OptimisticLockException, ResourceNotFoundException
-    def associate_drt_log_bucket(self, AssociateDRTLogBucketRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "AssociateDRTLogBucket", body)
+    def associate_drt_log_bucket(self, AssociateDRTLogBucketRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_drt_log_bucket_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "AssociateDRTLogBucket", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateDRTRole
     # errors: AccessDeniedForDependencyException, InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def associate_drt_role(self, AssociateDRTRoleRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "AssociateDRTRole", body)
+    def associate_drt_role(self, AssociateDRTRoleRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_drt_role_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "AssociateDRTRole", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateHealthCheck
     # errors: InternalErrorException, InvalidParameterException, InvalidResourceException, LimitsExceededException, OptimisticLockException, ResourceNotFoundException
-    def associate_health_check(self, AssociateHealthCheckRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "AssociateHealthCheck", body)
+    def associate_health_check(self, AssociateHealthCheckRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_health_check_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "AssociateHealthCheck", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # AssociateProactiveEngagementDetails
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def associate_proactive_engagement_details(self, AssociateProactiveEngagementDetailsRequest input) -> str:
-        auto body = associate_proactive_engagement_details_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "AssociateProactiveEngagementDetails", body)
+    def associate_proactive_engagement_details(self, AssociateProactiveEngagementDetailsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(associate_proactive_engagement_details_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "AssociateProactiveEngagementDetails", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateProtection
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, InvalidResourceException, LimitsExceededException, OptimisticLockException, ResourceAlreadyExistsException, ResourceNotFoundException
-    def create_protection(self, CreateProtectionRequest input) -> str:
-        auto body = create_protection_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "CreateProtection", body)
+    def create_protection(self, CreateProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "CreateProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateProtectionGroup
     # errors: InternalErrorException, InvalidParameterException, LimitsExceededException, OptimisticLockException, ResourceAlreadyExistsException, ResourceNotFoundException
-    def create_protection_group(self, CreateProtectionGroupRequest input) -> str:
-        auto body = create_protection_group_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "CreateProtectionGroup", body)
+    def create_protection_group(self, CreateProtectionGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_protection_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "CreateProtectionGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateSubscription
     # errors: InternalErrorException, ResourceAlreadyExistsException
-    def create_subscription(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "CreateSubscription", body)
+    def create_subscription(self, CreateSubscriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_subscription_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "CreateSubscription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProtection
     # errors: InternalErrorException, OptimisticLockException, ResourceNotFoundException
-    def delete_protection(self, DeleteProtectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DeleteProtection", body)
+    def delete_protection(self, DeleteProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DeleteProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteProtectionGroup
     # errors: InternalErrorException, OptimisticLockException, ResourceNotFoundException
-    def delete_protection_group(self, DeleteProtectionGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DeleteProtectionGroup", body)
+    def delete_protection_group(self, DeleteProtectionGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_protection_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DeleteProtectionGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteSubscription
     # errors: InternalErrorException, LockedSubscriptionException, ResourceNotFoundException
-    def delete_subscription(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DeleteSubscription", body)
+    def delete_subscription(self, DeleteSubscriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_subscription_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DeleteSubscription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeAttack
     # errors: AccessDeniedException, InternalErrorException
-    def describe_attack(self, DescribeAttackRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeAttack", body)
+    def describe_attack(self, DescribeAttackRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_attack_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeAttack", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeAttackStatistics
     # errors: InternalErrorException
-    def describe_attack_statistics(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeAttackStatistics", body)
+    def describe_attack_statistics(self, DescribeAttackStatisticsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_attack_statistics_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeAttackStatistics", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeDRTAccess
     # errors: InternalErrorException, ResourceNotFoundException
-    def describe_drt_access(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeDRTAccess", body)
+    def describe_drt_access(self, DescribeDRTAccessRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_drt_access_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeDRTAccess", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeEmergencyContactSettings
     # errors: InternalErrorException, ResourceNotFoundException
-    def describe_emergency_contact_settings(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeEmergencyContactSettings", body)
+    def describe_emergency_contact_settings(self, DescribeEmergencyContactSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_emergency_contact_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeEmergencyContactSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProtection
     # errors: InternalErrorException, InvalidParameterException, ResourceNotFoundException
-    def describe_protection(self, DescribeProtectionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeProtection", body)
+    def describe_protection(self, DescribeProtectionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_protection_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeProtection", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeProtectionGroup
     # errors: InternalErrorException, ResourceNotFoundException
-    def describe_protection_group(self, DescribeProtectionGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeProtectionGroup", body)
+    def describe_protection_group(self, DescribeProtectionGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_protection_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeProtectionGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeSubscription
     # errors: InternalErrorException, ResourceNotFoundException
-    def describe_subscription(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DescribeSubscription", body)
+    def describe_subscription(self, DescribeSubscriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_subscription_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DescribeSubscription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableApplicationLayerAutomaticResponse
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def disable_application_layer_automatic_response(self, DisableApplicationLayerAutomaticResponseRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DisableApplicationLayerAutomaticResponse", body)
+    def disable_application_layer_automatic_response(self, DisableApplicationLayerAutomaticResponseRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_application_layer_automatic_response_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DisableApplicationLayerAutomaticResponse", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisableProactiveEngagement
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def disable_proactive_engagement(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DisableProactiveEngagement", body)
+    def disable_proactive_engagement(self, DisableProactiveEngagementRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disable_proactive_engagement_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DisableProactiveEngagement", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateDRTLogBucket
     # errors: AccessDeniedForDependencyException, InternalErrorException, InvalidOperationException, NoAssociatedRoleException, OptimisticLockException, ResourceNotFoundException
-    def disassociate_drt_log_bucket(self, DisassociateDRTLogBucketRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DisassociateDRTLogBucket", body)
+    def disassociate_drt_log_bucket(self, DisassociateDRTLogBucketRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_drt_log_bucket_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DisassociateDRTLogBucket", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateDRTRole
     # errors: InternalErrorException, InvalidOperationException, OptimisticLockException, ResourceNotFoundException
-    def disassociate_drt_role(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DisassociateDRTRole", body)
+    def disassociate_drt_role(self, DisassociateDRTRoleRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_drt_role_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DisassociateDRTRole", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DisassociateHealthCheck
     # errors: InternalErrorException, InvalidParameterException, InvalidResourceException, OptimisticLockException, ResourceNotFoundException
-    def disassociate_health_check(self, DisassociateHealthCheckRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "DisassociateHealthCheck", body)
+    def disassociate_health_check(self, DisassociateHealthCheckRequest input) -> bytes:
+        auto body = cbor.cbor_encode(disassociate_health_check_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "DisassociateHealthCheck", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableApplicationLayerAutomaticResponse
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, LimitsExceededException, OptimisticLockException, ResourceNotFoundException
-    def enable_application_layer_automatic_response(self, EnableApplicationLayerAutomaticResponseRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "EnableApplicationLayerAutomaticResponse", body)
+    def enable_application_layer_automatic_response(self, EnableApplicationLayerAutomaticResponseRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_application_layer_automatic_response_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "EnableApplicationLayerAutomaticResponse", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # EnableProactiveEngagement
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def enable_proactive_engagement(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "EnableProactiveEngagement", body)
+    def enable_proactive_engagement(self, EnableProactiveEngagementRequest input) -> bytes:
+        auto body = cbor.cbor_encode(enable_proactive_engagement_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "EnableProactiveEngagement", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetSubscriptionState
     # errors: InternalErrorException
-    def get_subscription_state(self) -> str:
-        auto body = "{}"
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "GetSubscriptionState", body)
+    def get_subscription_state(self, GetSubscriptionStateRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_subscription_state_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "GetSubscriptionState", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListAttacks
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException
-    def list_attacks(self, ListAttacksRequest input) -> str:
-        auto body = list_attacks_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListAttacks", body)
+    def list_attacks(self, ListAttacksRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_attacks_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "ListAttacks", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListProtectionGroups
     # errors: InternalErrorException, InvalidPaginationTokenException, ResourceNotFoundException
-    def list_protection_groups(self, ListProtectionGroupsRequest input) -> str:
-        auto body = list_protection_groups_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListProtectionGroups", body)
+    def list_protection_groups(self, ListProtectionGroupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_protection_groups_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "ListProtectionGroups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListProtections
     # errors: InternalErrorException, InvalidPaginationTokenException, ResourceNotFoundException
-    def list_protections(self, ListProtectionsRequest input) -> str:
-        auto body = list_protections_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListProtections", body)
+    def list_protections(self, ListProtectionsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_protections_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "ListProtections", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListResourcesInProtectionGroup
     # errors: InternalErrorException, InvalidPaginationTokenException, ResourceNotFoundException
-    def list_resources_in_protection_group(self, ListResourcesInProtectionGroupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListResourcesInProtectionGroup", body)
+    def list_resources_in_protection_group(self, ListResourcesInProtectionGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_resources_in_protection_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "ListResourcesInProtectionGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTagsForResource
     # errors: InternalErrorException, InvalidResourceException, ResourceNotFoundException
-    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListTagsForResource", body)
+    def list_tags_for_resource(self, ListTagsForResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_for_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "ListTagsForResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: InternalErrorException, InvalidParameterException, InvalidResourceException, ResourceNotFoundException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: InternalErrorException, InvalidParameterException, InvalidResourceException, ResourceNotFoundException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UntagResource", body)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateApplicationLayerAutomaticResponse
     # errors: InternalErrorException, InvalidOperationException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def update_application_layer_automatic_response(self, UpdateApplicationLayerAutomaticResponseRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateApplicationLayerAutomaticResponse", body)
+    def update_application_layer_automatic_response(self, UpdateApplicationLayerAutomaticResponseRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_application_layer_automatic_response_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "UpdateApplicationLayerAutomaticResponse", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateEmergencyContactSettings
     # errors: InternalErrorException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def update_emergency_contact_settings(self, UpdateEmergencyContactSettingsRequest input) -> str:
-        auto body = update_emergency_contact_settings_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateEmergencyContactSettings", body)
+    def update_emergency_contact_settings(self, UpdateEmergencyContactSettingsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_emergency_contact_settings_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "UpdateEmergencyContactSettings", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateProtectionGroup
     # errors: InternalErrorException, InvalidParameterException, OptimisticLockException, ResourceNotFoundException
-    def update_protection_group(self, UpdateProtectionGroupRequest input) -> str:
-        auto body = update_protection_group_request_to_json(input)
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateProtectionGroup", body)
+    def update_protection_group(self, UpdateProtectionGroupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_protection_group_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "UpdateProtectionGroup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdateSubscription
     # errors: InternalErrorException, InvalidParameterException, LockedSubscriptionException, OptimisticLockException, ResourceNotFoundException
-    def update_subscription(self, UpdateSubscriptionRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "UpdateSubscription", body)
-
-    # Paginator for ListAttacks — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: AttackSummaries).
-    def paginate_list_attacks(self, ListAttacksRequest input):
-        auto host = endpoints.regional_host(shield_protocol().service, self.region)
-        while True:
-            auto body = list_attacks_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListAttacks", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListProtections — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Protections).
-    def paginate_list_protections(self, ListProtectionsRequest input):
-        auto host = endpoints.regional_host(shield_protocol().service, self.region)
-        while True:
-            auto body = list_protections_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(shield_protocol(), self.creds, self.region, "ListProtections", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def update_subscription(self, UpdateSubscriptionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(update_subscription_request_to_cbor(input))
+        auto host = endpoints.regional_host(shield_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(shield_service(), self.region, host, "AWSShield_20160616", "UpdateSubscription", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a ShieldClient bound to credentials + region.
 def shield_client(core.Credentials creds, str region) -> ShieldClient:

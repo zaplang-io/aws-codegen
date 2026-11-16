@@ -15,11 +15,11 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 6 with a generated method,
+# Coverage (rest-json): 22 operations — 22 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   22 structs (12 @derive(Json)), 7 enums, 6 error variants.
-#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
-#   0 waiters generated (0 skipped) from waiters-2.json.
+#   61 structs (39 @derive(Json)), 13 enums, 7 error variants.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   2 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -33,6 +33,7 @@ import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import aws_core.waiters
 
 # The Lambda_Core rest-json protocol: SigV4 service "lambda" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -41,6 +42,13 @@ def lambda__service() -> str:
     return "lambda"
 
 # --- enums -----------------------------------------------------------------
+
+@derive(Json)
+@json(open)
+enum CompatibilityPolicy:
+    Supported
+    NotSupported
+    Unknown(str value)
 
 @derive(Json)
 @json(open)
@@ -103,6 +111,50 @@ enum NetworkProtocol:
 
 @derive(Json)
 @json(open)
+enum RuntimeAliasState:
+    CREATING
+    ACTIVE
+    UPDATING
+    DELETING
+    PENDING_DELETION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RuntimeArchitecture:
+    x86_64
+    arm64
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RuntimeReleaseState:
+    PREVIEW
+    GA
+    DEPRECATED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RuntimeState:
+    ACTIVE
+    PENDING_DELETION
+    DELETING
+    FAILED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum RuntimeVersionState:
+    CREATING
+    ACTIVE
+    FAILED
+    DELETING
+    PENDING_DELETION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum ThrottleReason:
     ConcurrentInvocationLimitExceeded
     FunctionInvocationRateLimitExceeded
@@ -113,6 +165,14 @@ enum ThrottleReason:
     Unknown(str value)
 
 # --- shapes ----------------------------------------------------------------
+
+# no @derive(Json): member(s) IntegrationModels: list[str], Architectures: list[RuntimeArchitecture] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct Compatibility:
+    Optional[list[str]] IntegrationModels
+    Optional[list[RuntimeArchitecture]] Architectures
+    Optional[CompatibilityPolicy] ManagedInstances
 
 # rest-json request for CreateNetworkConnectorRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -136,6 +196,69 @@ struct CreateNetworkConnectorResponse:
     Optional[str] OperatorRole
     Optional[NetworkConnectorState] State
 
+# rest-json request for CreateRuntimeAliasRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct CreateRuntimeAliasRequest:
+    str RuntimeName
+    str RuntimeVersion
+    str Name
+    Optional[str] Description
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+@derive(Json)
+struct CreateRuntimeAliasResponse:
+    str Name
+    str Arn
+    str RuntimeVersion
+    str RuntimeVersionArn
+    RuntimeAliasState State
+    Optional[str] Description
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    str Created
+    str LastModified
+
+# rest-json request for CreateRuntimeRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct CreateRuntimeRequest:
+    str Name
+    Optional[dict[str, str]] Tags
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+@derive(Json)
+struct CreateRuntimeResponse:
+    str Arn
+    str Name
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    str Created
+    str LastModified
+
+# rest-json request for CreateRuntimeVersionRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct CreateRuntimeVersionRequest:
+    str RuntimeName
+    str ImageUri
+    str Name
+    Optional[str] ReleaseNotes
+    Optional[bool] DryRun
+
+# no @derive(Json): member(s) Platforms: list[Platform], Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateRuntimeVersionResponse:
+    str Name
+    str Arn
+    str ResolvedUri
+    RuntimeVersionState State
+    Optional[str] ReleaseNotes
+    Optional[list[Platform]] Platforms
+    Optional[Compatibility] Compatibility
+    str Created
+    str LastModified
+
 # rest-json request for DeleteNetworkConnectorRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
 struct DeleteNetworkConnectorRequest:
@@ -153,6 +276,41 @@ struct DeleteNetworkConnectorResponse:
     Optional[NetworkConnectorConfiguration] Configuration
     Optional[str] OperatorRole
     Optional[NetworkConnectorState] State
+
+# rest-json request for DeleteRuntimeAliasRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct DeleteRuntimeAliasRequest:
+    str RuntimeName
+    str Name
+    Optional[int64] RecoveryWindowInDays
+
+@derive(Json)
+struct DeleteRuntimeAliasResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+# rest-json request for DeleteRuntimeRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct DeleteRuntimeRequest:
+    str RuntimeName
+    Optional[int64] RecoveryWindowInDays
+
+@derive(Json)
+struct DeleteRuntimeResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+# rest-json request for DeleteRuntimeVersionRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct DeleteRuntimeVersionRequest:
+    str RuntimeName
+    str Name
+    Optional[int64] RecoveryWindowInDays
+
+@derive(Json)
+struct DeleteRuntimeVersionResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 # rest-json request for GetNetworkConnectorRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -179,6 +337,67 @@ struct GetNetworkConnectorResponse:
     Optional[str] LastUpdateStatusReason
     Optional[NetworkConnectorLastUpdateStatusReasonCode] LastUpdateStatusReasonCode
     Optional[DateTime] LastModified
+
+# rest-json request for GetRuntimeAliasRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetRuntimeAliasRequest:
+    str RuntimeName
+    str Name
+
+# no @derive(Json): member(s) Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetRuntimeAliasResponse:
+    str Name
+    str Arn
+    str RuntimeVersion
+    str RuntimeVersionArn
+    RuntimeAliasState State
+    Optional[str] PendingDeletionAt
+    Optional[str] Description
+    Optional[Compatibility] Compatibility
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    str Created
+    str LastModified
+
+# rest-json request for GetRuntimeRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetRuntimeRequest:
+    str RuntimeName
+
+@derive(Json)
+struct GetRuntimeResponse:
+    str Arn
+    str Name
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    Optional[RuntimeState] State
+    Optional[str] PendingDeletionAt
+    str Created
+    str LastModified
+    Optional[str] Id
+
+# rest-json request for GetRuntimeVersionRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct GetRuntimeVersionRequest:
+    str RuntimeName
+    str Name
+
+# no @derive(Json): member(s) Platforms: list[Platform], Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetRuntimeVersionResponse:
+    str Name
+    str Arn
+    str ResolvedUri
+    RuntimeVersionState State
+    Optional[str] PendingDeletionAt
+    Optional[str] ReleaseNotes
+    Optional[list[Platform]] Platforms
+    Optional[Compatibility] Compatibility
+    str Created
+    str LastModified
 
 @derive(Json)
 struct InvalidParameterValueException:
@@ -215,6 +434,47 @@ struct ListNetworkConnectorsRequest:
 struct ListNetworkConnectorsResponse:
     list[NetworkConnectorSummary] NetworkConnectors
     Optional[str] NextMarker
+
+# rest-json request for ListRuntimeAliasesRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct ListRuntimeAliasesRequest:
+    str RuntimeName
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+# no @derive(Json): member(s) Items: list[RuntimeAliasInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListRuntimeAliasesResponse:
+    list[RuntimeAliasInfo] Items
+    Optional[str] NextToken
+
+# rest-json request for ListRuntimeVersionsRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct ListRuntimeVersionsRequest:
+    str RuntimeName
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+# no @derive(Json): member(s) Items: list[RuntimeVersionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListRuntimeVersionsResponse:
+    list[RuntimeVersionInfo] Items
+    Optional[str] NextToken
+
+# rest-json request for ListRuntimesRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct ListRuntimesRequest:
+    Optional[str] NextToken
+    Optional[int64] MaxResults
+
+# no @derive(Json): member(s) Items: list[RuntimeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListRuntimesResponse:
+    Optional[str] NextToken
+    list[RuntimeInfo] Items
 
 # no @derive(Json): member(s) VpcEgressConfiguration: NetworkConnectorVpcEgressConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -262,6 +522,12 @@ struct NetworkConnectorVpcEgressConfiguration:
     Optional[list[ComputeResourceType]] AssociatedComputeResourceTypes
 
 @derive(Json)
+struct Platform:
+    str Architecture
+    str Os
+    str Digest
+
+@derive(Json)
 struct ResourceConflictException:
     Optional[str] Type
     Optional[str] message
@@ -271,8 +537,78 @@ struct ResourceNotFoundException:
     Optional[str] Type
     Optional[str] Message
 
+# rest-json request for RestoreRuntimeRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct RestoreRuntimeRequest:
+    str RuntimeName
+    Optional[str] RuntimeVersion
+    Optional[str] RuntimeAlias
+
+@derive(Json)
+struct RestoreRuntimeResponse:
+    str RuntimeName
+    Optional[str] RuntimeVersion
+    Optional[str] RuntimeAlias
+    str Arn
+    RuntimeState State
+    str LastModified
+
+# no @derive(Json): member(s) Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RuntimeAliasInfo:
+    str Name
+    str Arn
+    str RuntimeVersion
+    str RuntimeVersionArn
+    RuntimeAliasState State
+    Optional[str] PendingDeletionAt
+    Optional[str] Description
+    Optional[Compatibility] Compatibility
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    str Created
+    str LastModified
+
+@derive(Json)
+struct RuntimeInfo:
+    str Arn
+    str Name
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    Optional[RuntimeState] State
+    Optional[str] PendingDeletionAt
+    str Created
+    str LastModified
+
+@derive(Json)
+struct RuntimeReleaseLifecycle:
+    Optional[RuntimeReleaseState] ReleaseState
+    Optional[str] DeprecationDate
+    Optional[str] FunctionCreateBlockDate
+    Optional[str] FunctionUpdateBlockDate
+
+# no @derive(Json): member(s) Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RuntimeVersionInfo:
+    str Name
+    str Arn
+    str ResolvedUri
+    RuntimeVersionState State
+    Optional[str] PendingDeletionAt
+    Optional[str] ReleaseNotes
+    Optional[Compatibility] Compatibility
+    str Created
+    str LastModified
+
 @derive(Json)
 struct ServiceException:
+    Optional[str] Type
+    Optional[str] Message
+
+@derive(Json)
+struct ServiceQuotaExceededException:
     Optional[str] Type
     Optional[str] Message
 
@@ -307,6 +643,70 @@ struct UpdateNetworkConnectorResponse:
     Optional[str] LastUpdateStatusReason
     Optional[DateTime] LastModified
 
+# rest-json request for UpdateRuntimeAliasRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateRuntimeAliasRequest:
+    str RuntimeName
+    str Name
+    str RuntimeVersion
+    Optional[str] Description
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+# no @derive(Json): member(s) Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateRuntimeAliasResponse:
+    str RuntimeName
+    str Name
+    str Arn
+    str RuntimeVersion
+    str RuntimeVersionArn
+    RuntimeAliasState State
+    Optional[str] Description
+    Optional[Compatibility] Compatibility
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    str Created
+    str LastModified
+
+# rest-json request for UpdateRuntimeRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateRuntimeRequest:
+    str RuntimeName
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+@derive(Json)
+struct UpdateRuntimeResponse:
+    str Arn
+    str Name
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+    str Created
+    str LastModified
+
+# rest-json request for UpdateRuntimeVersionRequest: members bind to the URI/query/headers or the
+# body (see the client method). A parameter carrier, not a JSON document.
+struct UpdateRuntimeVersionRequest:
+    str RuntimeName
+    str Name
+    str ReleaseNotes
+
+# no @derive(Json): member(s) Platforms: list[Platform], Compatibility: Compatibility not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateRuntimeVersionResponse:
+    str Name
+    str Arn
+    str ResolvedUri
+    RuntimeVersionState State
+    Optional[str] ReleaseNotes
+    Optional[list[Platform]] Platforms
+    Optional[Compatibility] Compatibility
+    str Created
+    str LastModified
+
 # --- errors ----------------------------------------------------------------
 
 # Typed service errors (#361): the per-service enum + classifier + name
@@ -324,6 +724,7 @@ enum Lambda_CoreErrorKind:
     ResourceConflictException
     ResourceNotFoundException
     ServiceException
+    ServiceQuotaExceededException
     TooManyRequestsException
     Unknown(str code)
 
@@ -342,6 +743,8 @@ def lambda__error_kind(str code) -> Lambda_CoreErrorKind:
         return Lambda_CoreErrorKind.ResourceNotFoundException
     if name == "ServiceException":
         return Lambda_CoreErrorKind.ServiceException
+    if name == "ServiceQuotaExceededException":
+        return Lambda_CoreErrorKind.ServiceQuotaExceededException
     if name == "TooManyRequestsException":
         return Lambda_CoreErrorKind.TooManyRequestsException
     return Lambda_CoreErrorKind.Unknown(name)
@@ -364,12 +767,52 @@ def lambda__error_name(Lambda_CoreErrorKind k) -> str:
             return "ResourceNotFoundException"
         case Lambda_CoreErrorKind.ServiceException:
             return "ServiceException"
+        case Lambda_CoreErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
         case Lambda_CoreErrorKind.TooManyRequestsException:
             return "TooManyRequestsException"
         case Lambda_CoreErrorKind.Unknown(c):
             return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
+
+# Per-operation JSON document bodies (the unbound "document" members of an
+# operation's input, serialized with @derive(Json)).
+
+@derive(Json)
+struct CreateRuntimeAliasDocument:
+    # document members of CreateRuntimeAlias
+    str RuntimeVersion
+    str Name
+    Optional[str] Description
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+@derive(Json)
+struct CreateRuntimeVersionDocument:
+    # document members of CreateRuntimeVersion
+    str ImageUri
+    str Name
+    Optional[str] ReleaseNotes
+    Optional[bool] DryRun
+
+@derive(Json)
+struct UpdateRuntimeDocument:
+    # document members of UpdateRuntime
+    Optional[str] Description
+    Optional[str] LicenseInfo
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+@derive(Json)
+struct UpdateRuntimeAliasDocument:
+    # document members of UpdateRuntimeAlias
+    str RuntimeVersion
+    Optional[str] Description
+    Optional[RuntimeReleaseLifecycle] ReleaseLifecycle
+
+@derive(Json)
+struct UpdateRuntimeVersionDocument:
+    # document members of UpdateRuntimeVersion
+    str ReleaseNotes
 
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
@@ -463,6 +906,53 @@ struct Lambda_CoreClient:
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
+    # CreateRuntime  POST /2026-10-01/runtimes
+    # errors: InvalidParameterValueException, ResourceConflictException, ServiceException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_runtime(self, CreateRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-10-01/runtimes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lambda__json_str(input.Name))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(lambda__json_str(k1) + ":" + lambda__json_str(u0[k1]))
+            parts.append("\"Tags\":" + lambda__json_obj(m1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + lambda__json_str(u2))
+        if input.LicenseInfo.is_some():
+            auto u3 = input.LicenseInfo.unwrap()
+            parts.append("\"LicenseInfo\":" + lambda__json_str(u3))
+        if input.ReleaseLifecycle.is_some():
+            auto u4 = input.ReleaseLifecycle.unwrap()
+            parts.append("\"ReleaseLifecycle\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateRuntimeAlias  POST /2026-10-01/runtimes/{RuntimeName}/aliases
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_runtime_alias(self, CreateRuntimeAliasRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-10-01/runtimes/{RuntimeName}/aliases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CreateRuntimeAliasDocument(RuntimeVersion=input.RuntimeVersion, Name=input.Name, Description=input.Description, ReleaseLifecycle=input.ReleaseLifecycle)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateRuntimeVersion  POST /2026-10-01/runtimes/{RuntimeName}/versions
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, TooManyRequestsException
+    def create_runtime_version(self, CreateRuntimeVersionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-10-01/runtimes/{RuntimeName}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CreateRuntimeVersionDocument(ImageUri=input.ImageUri, Name=input.Name, ReleaseNotes=input.ReleaseNotes, DryRun=input.DryRun)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
     # DeleteNetworkConnector  DELETE /2026-04-04/network-connectors/{Identifier}
     # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def delete_network_connector(self, DeleteNetworkConnectorRequest input) -> str:
@@ -472,6 +962,47 @@ struct Lambda_CoreClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # DeleteRuntime  DELETE /2026-10-01/runtimes/{RuntimeName}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def delete_runtime(self, DeleteRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        dict[str, str] headers = {}
+        if input.RecoveryWindowInDays.is_some():
+            auto qt0 = str(input.RecoveryWindowInDays.unwrap_or(0))
+            headers["x-amzn-runtime-recovery-window-in-days"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-10-01/runtimes/{RuntimeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # DeleteRuntimeAlias  DELETE /2026-10-01/runtimes/{RuntimeName}/aliases/{Name}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def delete_runtime_alias(self, DeleteRuntimeAliasRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        labels["Name"] = input.Name
+        dict[str, str] headers = {}
+        if input.RecoveryWindowInDays.is_some():
+            auto qt0 = str(input.RecoveryWindowInDays.unwrap_or(0))
+            headers["x-amzn-runtime-recovery-window-in-days"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-10-01/runtimes/{RuntimeName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # DeleteRuntimeVersion  DELETE /2026-10-01/runtimes/{RuntimeName}/versions/{Name}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def delete_runtime_version(self, DeleteRuntimeVersionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        labels["Name"] = input.Name
+        dict[str, str] headers = {}
+        if input.RecoveryWindowInDays.is_some():
+            auto qt0 = str(input.RecoveryWindowInDays.unwrap_or(0))
+            headers["x-amzn-runtime-recovery-window-in-days"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-10-01/runtimes/{RuntimeName}/versions/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
     # GetNetworkConnector  GET /2026-04-04/network-connectors/{Identifier}
     # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def get_network_connector(self, GetNetworkConnectorRequest input) -> str:
@@ -479,6 +1010,35 @@ struct Lambda_CoreClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # GetRuntime  GET /2026-10-01/runtimes/{RuntimeName}
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def get_runtime(self, GetRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-10-01/runtimes/{RuntimeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # GetRuntimeAlias  GET /2026-10-01/runtimes/{RuntimeName}/aliases/{Name}
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def get_runtime_alias(self, GetRuntimeAliasRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-10-01/runtimes/{RuntimeName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # GetRuntimeVersion  GET /2026-10-01/runtimes/{RuntimeName}/versions/{Name}
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def get_runtime_version(self, GetRuntimeVersionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-10-01/runtimes/{RuntimeName}/versions/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListNetworkConnectorVersions  GET /2026-04-04/network-connectors/{Identifier}/versions
@@ -511,6 +1071,60 @@ struct Lambda_CoreClient:
         auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # ListRuntimeAliases  GET /2026-10-01/runtimes/{RuntimeName}/aliases
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def list_runtime_aliases(self, ListRuntimeAliasesRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-10-01/runtimes/{RuntimeName}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # ListRuntimeVersions  GET /2026-10-01/runtimes/{RuntimeName}/versions
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def list_runtime_versions(self, ListRuntimeVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-10-01/runtimes/{RuntimeName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # ListRuntimes  GET /2026-10-01/runtimes
+    # errors: InvalidParameterValueException, ServiceException, TooManyRequestsException
+    def list_runtimes(self, ListRuntimesRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-10-01/runtimes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # RestoreRuntime  POST /2026-10-01/runtimes/{RuntimeName}/restore
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def restore_runtime(self, RestoreRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        dict[str, str] query = {}
+        if input.RuntimeVersion.is_some():
+            query["RuntimeVersion"] = input.RuntimeVersion.unwrap_or("")
+        if input.RuntimeAlias.is_some():
+            query["RuntimeAlias"] = input.RuntimeAlias.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-10-01/runtimes/{RuntimeName}/restore", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
     # UpdateNetworkConnector  PUT /2026-04-04/network-connectors/{Identifier}
     # errors: InvalidParameterValueException, NetworkConnectorLimitExceededException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def update_network_connector(self, UpdateNetworkConnectorRequest input) -> str:
@@ -529,6 +1143,41 @@ struct Lambda_CoreClient:
             auto u2 = input.ClientToken.unwrap()
             parts.append("\"ClientToken\":" + lambda__json_str(u2))
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateRuntime  PUT /2026-10-01/runtimes/{RuntimeName}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_runtime(self, UpdateRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        auto b = binding.HttpBinding(method="PUT", path_template="/2026-10-01/runtimes/{RuntimeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateRuntimeDocument(Description=input.Description, LicenseInfo=input.LicenseInfo, ReleaseLifecycle=input.ReleaseLifecycle)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateRuntimeAlias  PUT /2026-10-01/runtimes/{RuntimeName}/aliases/{Name}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_runtime_alias(self, UpdateRuntimeAliasRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/2026-10-01/runtimes/{RuntimeName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateRuntimeAliasDocument(RuntimeVersion=input.RuntimeVersion, Description=input.Description, ReleaseLifecycle=input.ReleaseLifecycle)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateRuntimeVersion  PATCH /2026-10-01/runtimes/{RuntimeName}/versions/{Name}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_runtime_version(self, UpdateRuntimeVersionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuntimeName"] = input.RuntimeName
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2026-10-01/runtimes/{RuntimeName}/versions/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateRuntimeVersionDocument(ReleaseNotes=input.ReleaseNotes)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # Paginator for ListNetworkConnectorVersions — yields each Response page, threading the
@@ -556,6 +1205,90 @@ struct Lambda_CoreClient:
             if not np.has_more:
                 break
             input.Marker = Optional.Some(np.token)
+
+    # Paginator for ListRuntimeAliases — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Items).
+    def paginate_list_runtime_aliases(self, ListRuntimeAliasesRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.list_runtime_aliases(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRuntimeVersions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Items).
+    def paginate_list_runtime_versions(self, ListRuntimeVersionsRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.list_runtime_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRuntimes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Items).
+    def paginate_list_runtimes(self, ListRuntimesRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.list_runtimes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # One poll of GetRuntimeAlias for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_runtime_alias(self, GetRuntimeAliasRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_runtime_alias(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # One poll of GetRuntimeVersion for its waiter(s): send the signed operation request
+    # and parse the response body into the matcher DOM.
+    def _waiter_poll_get_runtime_version(self, GetRuntimeVersionRequest input) -> waiters.Poll:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto resp = core.send(host, self.get_runtime_version(input))
+        return waiters.Poll(response=resp, parsed=waiters.parse_body(resp))
+
+    # Waiter RuntimeAliasActive — polls GetRuntimeAlias until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_runtime_alias_active.
+    def wait_runtime_alias_active(self, GetRuntimeAliasRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RuntimeAliasActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ACTIVE")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_runtime_alias(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
+
+    # Waiter RuntimeVersionActive — polls GetRuntimeVersion until a success acceptor fires (delay 2s,
+    # max 60 attempts), then returns; raises on a failure acceptor or timeout.
+    # boto3: wait_runtime_version_active.
+    def wait_runtime_version_active(self, GetRuntimeVersionRequest input):
+        auto cfg = waiters.WaiterConfig(
+            name="RuntimeVersionActive",
+            delay=2,
+            max_attempts=60,
+            acceptors=[
+                waiters.acceptor_path(waiters.state_success(), "State", "ACTIVE"),
+                waiters.acceptor_path(waiters.state_failure(), "State", "FAILED")
+            ],
+        )
+        fn() -> waiters.Poll poll = lambda: self._waiter_poll_get_runtime_version(input)
+        waiters.waiter(cfg, poll).wait_or_raise()
 
 # Construct a Lambda_CoreClient bound to credentials + region.
 def lambda__client(core.Credentials creds, str region) -> Lambda_CoreClient:

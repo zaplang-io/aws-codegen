@@ -16,10 +16,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (smithy-rpc-v2-cbor): 55 operations — 55 with a generated method,
+# Coverage (smithy-rpc-v2-cbor): 59 operations — 59 with a generated method,
 #   0 skipped (input has a non-text-keyed map member).
-#   175 structs (plain carriers), 17 enums, 19 error variants.
-#   0 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   184 structs (plain carriers), 18 enums, 19 error variants.
+#   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (4 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
@@ -141,6 +141,14 @@ enum MetricStreamOutputFormat:
 enum OTelEnrichmentStatus:
     Running
     Stopped
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum QueryType:
+    PROMQL
+    SQL
+    METRIC_MATH
     Unknown(str value)
 
 @derive(Json)
@@ -368,6 +376,13 @@ struct DeleteInsightRulesInput:
 struct DeleteInsightRulesOutput:
     Optional[list[PartialFailure]] Failures
 
+struct DeleteMetricDataQueryDefinitionInput:
+    str Id
+
+struct DeleteMetricDataQueryDefinitionOutput:
+    # empty shape in the model; reserved field keeps it valid
+    Optional[str] reserved
+
 struct DeleteMetricStreamInput:
     str Name
 
@@ -565,6 +580,18 @@ struct GetMetricDataOutput:
     Optional[str] NextToken
     Optional[list[MessageData]] Messages
 
+struct GetMetricDataQueryDefinitionInput:
+    str Id
+
+struct GetMetricDataQueryDefinitionOutput:
+    str Id
+    str Arn
+    str Path
+    str Expression
+    str Type
+    DateTime CreatedAt
+    DateTime UpdatedAt
+
 struct GetMetricStatisticsInput:
     str Namespace
     str MetricName
@@ -709,6 +736,14 @@ struct ListManagedInsightRulesOutput:
     Optional[list[ManagedRuleDescription]] ManagedRules
     Optional[str] NextToken
 
+struct ListMetricDataQueryDefinitionsInput:
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+struct ListMetricDataQueryDefinitionsOutput:
+    list[MetricDataQueryDefinitionSummary] Items
+    Optional[str] NextToken
+
 struct ListMetricStreamsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -833,6 +868,12 @@ struct MetricDataQuery:
     Optional[bool] ReturnData
     Optional[int64] Period
     Optional[str] AccountId
+
+struct MetricDataQueryDefinitionSummary:
+    str Id
+    str Path
+    str Type
+    Optional[DateTime] UpdatedAt
 
 struct MetricDataResult:
     Optional[str] Id
@@ -1013,6 +1054,22 @@ struct PutMetricDataInput:
     Optional[list[MetricDatum]] MetricData
     Optional[list[EntityMetricData]] EntityMetricData
     Optional[bool] StrictEntityValidation
+
+struct PutMetricDataQueryDefinitionInput:
+    Optional[str] Id
+    str Path
+    str Expression
+    str Type
+    Optional[list[Tag]] Tags
+
+struct PutMetricDataQueryDefinitionOutput:
+    str Id
+    str Arn
+    str Path
+    str Expression
+    str Type
+    DateTime CreatedAt
+    DateTime UpdatedAt
 
 struct PutMetricStreamInput:
     str Name
@@ -1312,6 +1369,7 @@ def monitoring_error_name(CloudWatchErrorKind k) -> str:
 #   GetMetricData
 #   ListAlarmMuteRules
 #   ListDashboards
+#   ListMetricDataQueryDefinitions
 #   ListMetrics
 
 # Waiters (waiters-2.json) are not surfaced for this protocol yet — the
@@ -1499,6 +1557,14 @@ def delete_insight_rules_input_to_cbor(DeleteInsightRulesInput v) -> cbor.CborVa
         e0.append(cbor.cbor_text(x0))
     keys.append("RuleNames")
     vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteMetricDataQueryDefinitionInput to a CBOR map (member wire name -> value, model order).
+def delete_metric_data_query_definition_input_to_cbor(DeleteMetricDataQueryDefinitionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
     return cbor.cbor_map(keys, vals)
 
 # Serialize DeleteMetricStreamInput to a CBOR map (member wire name -> value, model order).
@@ -1935,6 +2001,14 @@ def get_metric_data_input_to_cbor(GetMetricDataInput v) -> cbor.CborValue:
         vals.append(label_options_to_cbor(u4))
     return cbor.cbor_map(keys, vals)
 
+# Serialize GetMetricDataQueryDefinitionInput to a CBOR map (member wire name -> value, model order).
+def get_metric_data_query_definition_input_to_cbor(GetMetricDataQueryDefinitionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Id")
+    vals.append(cbor.cbor_text(v.Id))
+    return cbor.cbor_map(keys, vals)
+
 # Serialize GetMetricStatisticsInput to a CBOR map (member wire name -> value, model order).
 def get_metric_statistics_input_to_cbor(GetMetricStatisticsInput v) -> cbor.CborValue:
     list[str] keys = []
@@ -2073,6 +2147,20 @@ def list_managed_insight_rules_input_to_cbor(ListManagedInsightRulesInput v) -> 
         auto u1 = v.MaxResults.unwrap()
         keys.append("MaxResults")
         vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListMetricDataQueryDefinitionsInput to a CBOR map (member wire name -> value, model order).
+def list_metric_data_query_definitions_input_to_cbor(ListMetricDataQueryDefinitionsInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u1))
     return cbor.cbor_map(keys, vals)
 
 # Serialize ListMetricStreamsInput to a CBOR map (member wire name -> value, model order).
@@ -2780,6 +2868,29 @@ def put_metric_data_input_to_cbor(PutMetricDataInput v) -> cbor.CborValue:
         vals.append(cbor.cbor_bool(u4))
     return cbor.cbor_map(keys, vals)
 
+# Serialize PutMetricDataQueryDefinitionInput to a CBOR map (member wire name -> value, model order).
+def put_metric_data_query_definition_input_to_cbor(PutMetricDataQueryDefinitionInput v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        keys.append("Id")
+        vals.append(cbor.cbor_text(u0))
+    keys.append("Path")
+    vals.append(cbor.cbor_text(v.Path))
+    keys.append("Expression")
+    vals.append(cbor.cbor_text(v.Expression))
+    keys.append("Type")
+    vals.append(cbor.cbor_text(v.Type))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[cbor.CborValue] e2 = []
+        for x2 in u1:
+            e2.append(tag_to_cbor(x2))
+        keys.append("Tags")
+        vals.append(cbor.cbor_list(e2))
+    return cbor.cbor_map(keys, vals)
+
 # Serialize PutMetricStreamInput to a CBOR map (member wire name -> value, model order).
 def put_metric_stream_input_to_cbor(PutMetricStreamInput v) -> cbor.CborValue:
     list[str] keys = []
@@ -3188,6 +3299,14 @@ struct CloudWatchClient:
         auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "DeleteInsightRules", body, t.amz_date)
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
+    # DeleteMetricDataQueryDefinition
+    def delete_metric_data_query_definition(self, DeleteMetricDataQueryDefinitionInput input) -> bytes:
+        auto body = cbor.cbor_encode(delete_metric_data_query_definition_input_to_cbor(input))
+        auto host = endpoints.regional_host(monitoring_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "DeleteMetricDataQueryDefinition", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
     # DeleteMetricStream
     # errors: InternalServiceFault, InvalidParameterValueException, MissingRequiredParameterException
     def delete_metric_stream(self, DeleteMetricStreamInput input) -> bytes:
@@ -3347,6 +3466,15 @@ struct CloudWatchClient:
         auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "GetMetricData", body, t.amz_date)
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
+    # GetMetricDataQueryDefinition
+    # errors: ResourceNotFoundException
+    def get_metric_data_query_definition(self, GetMetricDataQueryDefinitionInput input) -> bytes:
+        auto body = cbor.cbor_encode(get_metric_data_query_definition_input_to_cbor(input))
+        auto host = endpoints.regional_host(monitoring_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "GetMetricDataQueryDefinition", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
     # GetMetricStatistics
     # errors: InternalServiceFault, InvalidParameterCombinationException, InvalidParameterValueException, MissingRequiredParameterException
     def get_metric_statistics(self, GetMetricStatisticsInput input) -> bytes:
@@ -3415,6 +3543,14 @@ struct CloudWatchClient:
         auto host = endpoints.regional_host(monitoring_service(), self.region)
         auto t = core.signing_time_now()
         auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "ListManagedInsightRules", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # ListMetricDataQueryDefinitions
+    def list_metric_data_query_definitions(self, ListMetricDataQueryDefinitionsInput input) -> bytes:
+        auto body = cbor.cbor_encode(list_metric_data_query_definitions_input_to_cbor(input))
+        auto host = endpoints.regional_host(monitoring_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "ListMetricDataQueryDefinitions", body, t.amz_date)
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListMetricStreams
@@ -3523,6 +3659,15 @@ struct CloudWatchClient:
         auto host = endpoints.regional_host(monitoring_service(), self.region)
         auto t = core.signing_time_now()
         auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "PutMetricData", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
+
+    # PutMetricDataQueryDefinition
+    # errors: ConflictException, LimitExceededException, ResourceNotFoundException
+    def put_metric_data_query_definition(self, PutMetricDataQueryDefinitionInput input) -> bytes:
+        auto body = cbor.cbor_encode(put_metric_data_query_definition_input_to_cbor(input))
+        auto host = endpoints.regional_host(monitoring_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(monitoring_service(), self.region, host, "GraniteServiceVersion20100801", "PutMetricDataQueryDefinition", body, t.amz_date)
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutMetricStream

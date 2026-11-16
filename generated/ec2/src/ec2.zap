@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (ec2): 811 operations — 811 with a generated method,
+# Coverage (ec2): 823 operations — 823 with a generated method,
 #   0 skipped (a member type is not yet serializable (nesting/map)).
-#   2547 structs (plain carriers), 447 enums, 0 error variants.
-#   0 paginators generated (174 paginated ops skipped) from paginators-1.json.
+#   2582 structs (plain carriers), 452 enums, 0 error variants.
+#   0 paginators generated (177 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (43 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
 # method); enum-typed members are carried as their plain wire string.
@@ -1253,6 +1253,48 @@ enum FleetType:
 
 @derive(Json)
 @json(open)
+enum FlexCostAllocationAssociationMode:
+    direct
+    scope_
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FlexCostAllocationCostDimension:
+    data_transfer
+    data_processing
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FlexCostAllocationNetworkResourceScopeType:
+    account
+    vpc
+    subnet
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FlexCostAllocationNetworkResourceType:
+    natgw
+    pcx
+    ec2
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum FlexCostAllocationReportingGranularity:
+    eni
+    ec2
+    subnet
+    vpc
+    account
+    peering_id
+    cidr
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum FlexibleEnaQueuesSupport:
     unsupported
     supported
@@ -1267,6 +1309,9 @@ enum FlowLogsResourceType:
     TransitGateway
     TransitGatewayAttachment
     RegionalNatGateway
+    CoreNetwork
+    CoreNetworkEdge
+    CoreNetworkAttachment
     Unknown(str value)
 
 @derive(Json)
@@ -4339,6 +4384,7 @@ enum ResourceType:
     elastic_gpu
     export_image_task
     export_instance_task
+    fca_policy
     fleet
     fpga_image
     host_reservation
@@ -4438,6 +4484,7 @@ enum ResourceType:
     capacity_reservation_cancellation_quote
     application_status_check
     capacity_reservation_modification_quote
+    metric_category
     Unknown(str value)
 
 @derive(Json)
@@ -4926,6 +4973,7 @@ enum SupportabilityScore:
     high
     medium
     low
+    unsupported
     Unknown(str value)
 
 @derive(Json)
@@ -5747,6 +5795,8 @@ struct AccountVpcEncryptionControlExclusions:
     Optional[str] Lambda
     Optional[str] VpcLattice
     Optional[str] ElasticFileSystem
+    Optional[str] GlobalAccelerator
+    Optional[str] ApiGatewayV2
 
 struct ActiveInstance:
     Optional[str] InstanceId
@@ -6176,6 +6226,17 @@ struct AssociateNatGatewayAddressRequest:
 struct AssociateNatGatewayAddressResult:
     Optional[str] NatGatewayId
     Optional[list[NatGatewayAddress]] NatGatewayAddresses
+
+struct AssociateNetworkingFlexCostAllocationPolicyRequest:
+    str FcaPolicyId
+    Optional[list[str]] NetworkResourceIds
+    Optional[FlexCostAllocationNetworkResourceScope] NetworkResourceScope
+    Optional[str] ClientToken
+    Optional[bool] DryRun
+
+struct AssociateNetworkingFlexCostAllocationPolicyResult:
+    Optional[list[FlexCostAllocationPolicyAssociationDescription]] FcaPolicyAssociations
+    Optional[list[FlexCostAllocationOperationFailure]] FcaPolicyAssociationFailures
 
 struct AssociateRouteServerRequest:
     str RouteServerId
@@ -7907,6 +7968,15 @@ struct CreateManagedPrefixListRequest:
 struct CreateManagedPrefixListResult:
     Optional[ManagedPrefixList] PrefixList
 
+struct CreateMetricCategoryRequest:
+    list[str] Metrics
+    Optional[list[TagSpecification]] TagSpecifications
+    Optional[str] ClientToken
+    Optional[bool] DryRun
+
+struct CreateMetricCategoryResult:
+    Optional[MetricCategory] MetricCategory
+
 struct CreateNatGatewayRequest:
     Optional[str] AvailabilityMode
     Optional[str] AllocationId
@@ -8009,6 +8079,23 @@ struct CreateNetworkInterfaceRequest:
 struct CreateNetworkInterfaceResult:
     Optional[NetworkInterface] NetworkInterface
     Optional[str] ClientToken
+
+struct CreateNetworkingFlexCostAllocationPolicyRequest:
+    str NetworkResourceType
+    Optional[NatFlexCostAllocationPolicyDocument] NatFcaPolicyDocument
+    Optional[InstanceFlexCostAllocationPolicyDocument] InstanceFcaPolicyDocument
+    Optional[PcxFlexCostAllocationPolicyDocument] PcxFcaPolicyDocument
+    Optional[bool] ShowBackEnabled
+    Optional[str] Description
+    Optional[list[TagSpecification]] TagSpecifications
+    Optional[str] ClientToken
+    Optional[bool] DryRun
+
+struct CreateNetworkingFlexCostAllocationPolicyResult:
+    Optional[str] FcaPolicyId
+    Optional[str] FcaPolicyArn
+    Optional[DateTime] CreatedAt
+    Optional[DateTime] ExpectedEffectiveAt
 
 struct CreatePlacementGroupRequest:
     Optional[int64] PartitionCount
@@ -9096,6 +9183,13 @@ struct DeleteManagedPrefixListRequest:
 struct DeleteManagedPrefixListResult:
     Optional[ManagedPrefixList] PrefixList
 
+struct DeleteMetricCategoryRequest:
+    str MetricCategoryId
+    Optional[bool] DryRun
+
+struct DeleteMetricCategoryResult:
+    Optional[str] MetricCategoryId
+
 struct DeleteNatGatewayRequest:
     Optional[bool] DryRun
     str NatGatewayId
@@ -9152,6 +9246,14 @@ struct DeleteNetworkInterfacePermissionResult:
 struct DeleteNetworkInterfaceRequest:
     Optional[bool] DryRun
     str NetworkInterfaceId
+
+struct DeleteNetworkingFlexCostAllocationPoliciesRequest:
+    list[str] FcaPolicyIds
+    Optional[bool] DryRun
+
+struct DeleteNetworkingFlexCostAllocationPoliciesResult:
+    Optional[list[str]] Successful
+    Optional[list[FlexCostAllocationOperationFailure]] Failed
 
 struct DeletePlacementGroupRequest:
     Optional[bool] DryRun
@@ -10706,6 +10808,17 @@ struct DescribeManagedPrefixListsResult:
     Optional[str] NextToken
     Optional[list[ManagedPrefixList]] PrefixLists
 
+struct DescribeMetricCategoriesRequest:
+    Optional[list[str]] MetricCategoryIds
+    Optional[list[Filter]] Filters
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+    Optional[bool] DryRun
+
+struct DescribeMetricCategoriesResult:
+    Optional[list[MetricCategory]] MetricCategories
+    Optional[str] NextToken
+
 struct DescribeMovingAddressesRequest:
     Optional[bool] DryRun
     Optional[list[str]] PublicIps
@@ -10822,6 +10935,28 @@ struct DescribeNetworkInterfacesRequest:
 
 struct DescribeNetworkInterfacesResult:
     Optional[list[NetworkInterface]] NetworkInterfaces
+    Optional[str] NextToken
+
+struct DescribeNetworkingFlexCostAllocationPoliciesRequest:
+    Optional[list[str]] FcaPolicyIds
+    Optional[int64] MaxResults
+    Optional[list[Filter]] Filters
+    Optional[str] NextToken
+    Optional[bool] DryRun
+
+struct DescribeNetworkingFlexCostAllocationPoliciesResult:
+    Optional[list[FlexCostAllocationPolicyDescription]] FlexCostAllocationPolicies
+    Optional[str] NextToken
+
+struct DescribeNetworkingFlexCostAllocationPolicyAssociationsRequest:
+    Optional[list[str]] FcaPolicyAssociationIds
+    Optional[int64] MaxResults
+    Optional[list[Filter]] Filters
+    Optional[str] NextToken
+    Optional[bool] DryRun
+
+struct DescribeNetworkingFlexCostAllocationPolicyAssociationsResult:
+    Optional[list[FlexCostAllocationPolicyAssociationDescription]] FcaPolicyAssociations
     Optional[str] NextToken
 
 struct DescribeOutpostLagsRequest:
@@ -12072,6 +12207,14 @@ struct DisassociateNatGatewayAddressResult:
     Optional[str] NatGatewayId
     Optional[list[NatGatewayAddress]] NatGatewayAddresses
 
+struct DisassociateNetworkingFlexCostAllocationPolicyRequest:
+    list[str] FcaPolicyAssociationIds
+    Optional[bool] DryRun
+
+struct DisassociateNetworkingFlexCostAllocationPolicyResult:
+    Optional[list[str]] FcaPolicyDisassociations
+    Optional[list[FlexCostAllocationOperationFailure]] FcaPolicyDisassociationFailures
+
 struct DisassociateRouteServerRequest:
     str RouteServerId
     str VpcId
@@ -12929,6 +13072,62 @@ struct FleetSpotMaintenanceStrategies:
 struct FleetSpotMaintenanceStrategiesRequest:
     Optional[FleetSpotCapacityRebalanceRequest] CapacityRebalance
 
+struct FlexCostAllocationCidrMapping:
+    str CidrRange
+    str CidrLabel
+
+struct FlexCostAllocationCidrRangeSpecifications:
+    str PrefixesType
+    list[FlexCostAllocationCidrMapping] Prefixes
+
+struct FlexCostAllocationNetworkResourceScope:
+    str ResourceType
+    list[str] ResourceIds
+
+struct FlexCostAllocationOperationFailure:
+    Optional[str] ResourceId
+    Optional[str] FailureCode
+    Optional[str] FailureReason
+
+struct FlexCostAllocationPolicyAssociationDescription:
+    Optional[str] FcaPolicyAssociationId
+    Optional[str] FcaPolicyId
+    Optional[str] NetworkResourceId
+    Optional[str] OwnerAccount
+    Optional[DateTime] AssociatedAt
+    Optional[DateTime] ExpectedEffectiveAt
+    Optional[str] AssociationMode
+    Optional[str] ManagedBy
+
+struct FlexCostAllocationPolicyDescription:
+    Optional[str] FcaPolicyId
+    Optional[str] FcaPolicyArn
+    Optional[str] NetworkResourceType
+    Optional[NatFlexCostAllocationPolicyDocument] NatFcaPolicyDocument
+    Optional[InstanceFlexCostAllocationPolicyDocument] InstanceFcaPolicyDocument
+    Optional[PcxFlexCostAllocationPolicyDocument] PcxFcaPolicyDocument
+    Optional[bool] ShowBackEnabled
+    Optional[str] OwnerAccount
+    Optional[str] Description
+    Optional[int64] LatestVersion
+    Optional[DateTime] VersionExpectedEffectiveAt
+    Optional[DateTime] PolicyCreatedAt
+    Optional[DateTime] UpdatedAt
+    Optional[str] ManagedBy
+    Optional[list[Tag]] Tags
+
+struct FlexCostAllocationPolicyVersion:
+    Optional[str] FcaPolicyId
+    Optional[int64] Version
+    Optional[str] NetworkResourceType
+    Optional[NatFlexCostAllocationPolicyDocument] NatFcaPolicyDocument
+    Optional[InstanceFlexCostAllocationPolicyDocument] InstanceFcaPolicyDocument
+    Optional[PcxFlexCostAllocationPolicyDocument] PcxFcaPolicyDocument
+    Optional[bool] ShowBackEnabled
+    Optional[str] Description
+    Optional[DateTime] ExpectedEffectiveAt
+    Optional[DateTime] CreatedAt
+
 struct FlowLog:
     Optional[DateTime] CreationTime
     Optional[str] DeliverLogsErrorMessage
@@ -13576,6 +13775,14 @@ struct GetNetworkInsightsAccessScopeContentRequest:
 
 struct GetNetworkInsightsAccessScopeContentResult:
     Optional[NetworkInsightsAccessScopeContent] NetworkInsightsAccessScopeContent
+
+struct GetNetworkingFlexCostAllocationPolicyVersionsRequest:
+    str FcaPolicyId
+    Optional[list[int64]] VersionsToInclude
+    Optional[bool] DryRun
+
+struct GetNetworkingFlexCostAllocationPolicyVersionsResult:
+    Optional[list[FlexCostAllocationPolicyVersion]] FcaPolicyVersions
 
 struct GetPasswordDataRequest:
     str InstanceId
@@ -14542,6 +14749,11 @@ struct InstanceExportDetails:
 struct InstanceFamilyCreditSpecification:
     Optional[str] InstanceFamily
     Optional[str] CpuCredits
+
+struct InstanceFlexCostAllocationPolicyDocument:
+    list[str] ReportingGranularity
+    list[str] Dimensions
+    Optional[FlexCostAllocationCidrRangeSpecifications] CidrRangeSpecifications
 
 struct InstanceImageMetadata:
     Optional[str] InstanceId
@@ -15736,9 +15948,11 @@ struct LaunchTemplateVersion:
 
 struct LaunchTemplatesMonitoring:
     Optional[bool] Enabled
+    Optional[list[str]] MetricCategoryIds
 
 struct LaunchTemplatesMonitoringRequest:
     Optional[bool] Enabled
+    Optional[list[str]] MetricCategoryIds
 
 struct LicenseConfiguration:
     Optional[str] LicenseConfigurationArn
@@ -15985,6 +16199,11 @@ struct MemoryMiBRequest:
     int64 Min
     Optional[int64] Max
 
+struct MetricCategory:
+    Optional[str] MetricCategoryId
+    Optional[list[str]] Metrics
+    Optional[list[Tag]] Tags
+
 struct MetricDataResult:
     Optional[CapacityManagerDimension] Dimension
     Optional[DateTime] Timestamp
@@ -16025,6 +16244,8 @@ struct ModifyAccountVpcEncryptionControlRequest:
     Optional[str] Lambda
     Optional[str] VpcLattice
     Optional[str] ElasticFileSystem
+    Optional[str] GlobalAccelerator
+    Optional[str] ApiGatewayV2
 
 struct ModifyAccountVpcEncryptionControlResult:
     Optional[AccountVpcEncryptionControl] AccountVpcEncryptionControl
@@ -16499,6 +16720,14 @@ struct ModifyManagedResourceVisibilityRequest:
 struct ModifyManagedResourceVisibilityResult:
     Optional[ManagedResourceVisibilitySettings] Visibility
 
+struct ModifyMetricCategoryRequest:
+    str MetricCategoryId
+    list[str] Metrics
+    Optional[bool] DryRun
+
+struct ModifyMetricCategoryResult:
+    Optional[MetricCategory] MetricCategory
+
 struct ModifyNetworkInterfaceAttributeRequest:
     Optional[EnaSrdSpecification] EnaSrdSpecification
     Optional[bool] EnablePrimaryIpv6
@@ -16511,6 +16740,22 @@ struct ModifyNetworkInterfaceAttributeRequest:
     Optional[AttributeBooleanValue] SourceDestCheck
     Optional[list[str]] Groups
     Optional[NetworkInterfaceAttachmentChanges] Attachment
+
+struct ModifyNetworkingFlexCostAllocationPolicyRequest:
+    str FcaPolicyId
+    Optional[NatFlexCostAllocationPolicyDocument] NatFcaPolicyDocument
+    Optional[InstanceFlexCostAllocationPolicyDocument] InstanceFcaPolicyDocument
+    Optional[PcxFlexCostAllocationPolicyDocument] PcxFcaPolicyDocument
+    Optional[bool] ShowBackEnabled
+    Optional[str] Description
+    Optional[str] ClientToken
+    Optional[bool] DryRun
+
+struct ModifyNetworkingFlexCostAllocationPolicyResult:
+    Optional[str] FcaPolicyId
+    Optional[DateTime] UpdatedAt
+    Optional[int64] Version
+    Optional[DateTime] VersionExpectedEffectiveAt
 
 struct ModifyPrivateDnsNameOptionsRequest:
     Optional[bool] DryRun
@@ -16897,6 +17142,8 @@ struct ModifyVpcEncryptionControlRequest:
     Optional[str] LambdaExclusion
     Optional[str] VpcLatticeExclusion
     Optional[str] ElasticFileSystemExclusion
+    Optional[str] GlobalAcceleratorExclusion
+    Optional[str] ApiGatewayV2Exclusion
 
 struct ModifyVpcEncryptionControlResult:
     Optional[VpcEncryptionControl] VpcEncryptionControl
@@ -17059,12 +17306,14 @@ struct ModifyVpnTunnelOptionsSpecification:
 
 struct MonitorInstancesRequest:
     list[str] InstanceIds
+    Optional[list[str]] MetricCategoryIds
     Optional[bool] DryRun
 
 struct MonitorInstancesResult:
     Optional[list[InstanceMonitoring]] InstanceMonitorings
 
 struct Monitoring:
+    Optional[list[str]] MetricCategoryIds
     Optional[str] State
 
 struct MoveAddressToVpcRequest:
@@ -17099,6 +17348,11 @@ struct MoveCapacityReservationInstancesResult:
 struct MovingAddressStatus:
     Optional[str] MoveStatus
     Optional[str] PublicIp
+
+struct NatFlexCostAllocationPolicyDocument:
+    list[str] ReportingGranularity
+    list[str] Dimensions
+    Optional[FlexCostAllocationCidrRangeSpecifications] CidrRangeSpecifications
 
 struct NatGateway:
     Optional[DateTime] CreateTime
@@ -17502,6 +17756,11 @@ struct PciId:
     Optional[str] VendorId
     Optional[str] SubsystemId
     Optional[str] SubsystemVendorId
+
+struct PcxFlexCostAllocationPolicyDocument:
+    list[str] ReportingGranularity
+    list[str] Dimensions
+    Optional[FlexCostAllocationCidrRangeSpecifications] CidrRangeSpecifications
 
 struct PeeringAttachmentStatus:
     Optional[str] Code
@@ -18669,6 +18928,7 @@ struct RuleOption:
     Optional[list[str]] Settings
 
 struct RunInstancesMonitoringEnabled:
+    Optional[list[str]] MetricCategoryIds
     bool Enabled
 
 struct RunInstancesRequest:
@@ -20139,6 +20399,7 @@ struct UnlockSnapshotResult:
 
 struct UnmonitorInstancesRequest:
     list[str] InstanceIds
+    Optional[list[str]] MetricCategoryIds
     Optional[bool] DryRun
 
 struct UnmonitorInstancesResult:
@@ -20658,6 +20919,8 @@ struct VpcEncryptionControlConfiguration:
     Optional[str] LambdaExclusion
     Optional[str] VpcLatticeExclusion
     Optional[str] ElasticFileSystemExclusion
+    Optional[str] GlobalAcceleratorExclusion
+    Optional[str] ApiGatewayV2Exclusion
 
 struct VpcEncryptionControlExclusion:
     Optional[str] State
@@ -20672,6 +20935,8 @@ struct VpcEncryptionControlExclusions:
     Optional[VpcEncryptionControlExclusion] Lambda
     Optional[VpcEncryptionControlExclusion] VpcLattice
     Optional[VpcEncryptionControlExclusion] ElasticFileSystem
+    Optional[VpcEncryptionControlExclusion] GlobalAccelerator
+    Optional[VpcEncryptionControlExclusion] ApiGatewayV2
 
 struct VpcEncryptionNonCompliantResource:
     Optional[str] Id
@@ -20985,6 +21250,7 @@ def ec2_error_name(EC2ErrorKind k) -> str:
 #   DescribeMacHosts
 #   DescribeMacModificationTasks
 #   DescribeManagedPrefixLists
+#   DescribeMetricCategories
 #   DescribeMovingAddresses
 #   DescribeNatGateways
 #   DescribeNetworkAcls
@@ -20994,6 +21260,8 @@ def ec2_error_name(EC2ErrorKind k) -> str:
 #   DescribeNetworkInsightsPaths
 #   DescribeNetworkInterfacePermissions
 #   DescribeNetworkInterfaces
+#   DescribeNetworkingFlexCostAllocationPolicies
+#   DescribeNetworkingFlexCostAllocationPolicyAssociations
 #   DescribePrefixLists
 #   DescribePrincipalIdFormat
 #   DescribePublicIpv4Pools
@@ -22219,6 +22487,28 @@ def fleet_spot_maintenance_strategies_request_to_query(list[query.QueryPair] p, 
         p = fleet_spot_capacity_rebalance_request_to_query(p, query.query_key(prefix, "CapacityRebalance"), t0)
     return p
 
+# Serialize FlexCostAllocationCidrMapping into the query form parameters under `prefix`.
+def flex_cost_allocation_cidr_mapping_to_query(list[query.QueryPair] p, str prefix, FlexCostAllocationCidrMapping v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "CidrRange"), v.CidrRange)
+    p = query.query_scalar(p, query.query_key(prefix, "CidrLabel"), v.CidrLabel)
+    return p
+
+# Serialize FlexCostAllocationCidrRangeSpecifications into the query form parameters under `prefix`.
+def flex_cost_allocation_cidr_range_specifications_to_query(list[query.QueryPair] p, str prefix, FlexCostAllocationCidrRangeSpecifications v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "PrefixesType"), v.PrefixesType)
+    auto qi0 = 1
+    for qe1 in v.Prefixes:
+        auto t2 = qe1
+        p = flex_cost_allocation_cidr_mapping_to_query(p, query.query_key(prefix, "Prefixes") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize FlexCostAllocationNetworkResourceScope into the query form parameters under `prefix`.
+def flex_cost_allocation_network_resource_scope_to_query(list[query.QueryPair] p, str prefix, FlexCostAllocationNetworkResourceScope v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), v.ResourceType)
+    p = query.query_flat_list(p, query.query_key(prefix, "ResourceIds"), v.ResourceIds)
+    return p
+
 # Serialize GroupIdentifier into the query form parameters under `prefix`.
 def group_identifier_to_query(list[query.QueryPair] p, str prefix, GroupIdentifier v) -> list[query.QueryPair]:
     if v.GroupId.is_some():
@@ -22484,6 +22774,16 @@ def instance_event_window_time_range_request_to_query(list[query.QueryPair] p, s
     if v.EndHour.is_some():
         auto t3 = str(v.EndHour.unwrap())
         p = query.query_scalar(p, query.query_key(prefix, "EndHour"), t3)
+    return p
+
+# Serialize InstanceFlexCostAllocationPolicyDocument into the query form parameters under `prefix`.
+def instance_flex_cost_allocation_policy_document_to_query(list[query.QueryPair] p, str prefix, InstanceFlexCostAllocationPolicyDocument v) -> list[query.QueryPair]:
+    auto t0 = v.ReportingGranularity
+    p = query.query_flat_list(p, query.query_key(prefix, "ReportingGranularity"), t0)
+    p = query.query_flat_list(p, query.query_key(prefix, "Dimensions"), v.Dimensions)
+    if v.CidrRangeSpecifications.is_some():
+        auto t1 = v.CidrRangeSpecifications.unwrap()
+        p = flex_cost_allocation_cidr_range_specifications_to_query(p, query.query_key(prefix, "CidrRangeSpecifications"), t1)
     return p
 
 # Serialize InstanceIpv6Address into the query form parameters under `prefix`.
@@ -23407,6 +23707,8 @@ def launch_templates_monitoring_request_to_query(list[query.QueryPair] p, str pr
     if v.Enabled.is_some():
         auto t0 = query.query_bool(v.Enabled.unwrap())
         p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    auto t1 = v.MetricCategoryIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "MetricCategoryId"), t1)
     return p
 
 # Serialize LicenseConfigurationRequest into the query form parameters under `prefix`.
@@ -23752,6 +24054,16 @@ def modify_vpn_tunnel_options_specification_to_query(list[query.QueryPair] p, st
         p = query.query_scalar(p, query.query_key(prefix, "EnableTunnelLifecycleControl"), t33)
     return p
 
+# Serialize NatFlexCostAllocationPolicyDocument into the query form parameters under `prefix`.
+def nat_flex_cost_allocation_policy_document_to_query(list[query.QueryPair] p, str prefix, NatFlexCostAllocationPolicyDocument v) -> list[query.QueryPair]:
+    auto t0 = v.ReportingGranularity
+    p = query.query_flat_list(p, query.query_key(prefix, "ReportingGranularity"), t0)
+    p = query.query_flat_list(p, query.query_key(prefix, "Dimensions"), v.Dimensions)
+    if v.CidrRangeSpecifications.is_some():
+        auto t1 = v.CidrRangeSpecifications.unwrap()
+        p = flex_cost_allocation_cidr_range_specifications_to_query(p, query.query_key(prefix, "CidrRangeSpecifications"), t1)
+    return p
+
 # Serialize NetworkBandwidthGbps into the query form parameters under `prefix`.
 def network_bandwidth_gbps_to_query(list[query.QueryPair] p, str prefix, NetworkBandwidthGbps v) -> list[query.QueryPair]:
     if v.Min.is_some():
@@ -23879,6 +24191,16 @@ def path_statement_request_to_query(list[query.QueryPair] p, str prefix, PathSta
     if v.ResourceStatement.is_some():
         auto t1 = v.ResourceStatement.unwrap()
         p = resource_statement_request_to_query(p, query.query_key(prefix, "ResourceStatement"), t1)
+    return p
+
+# Serialize PcxFlexCostAllocationPolicyDocument into the query form parameters under `prefix`.
+def pcx_flex_cost_allocation_policy_document_to_query(list[query.QueryPair] p, str prefix, PcxFlexCostAllocationPolicyDocument v) -> list[query.QueryPair]:
+    auto t0 = v.ReportingGranularity
+    p = query.query_flat_list(p, query.query_key(prefix, "ReportingGranularity"), t0)
+    p = query.query_flat_list(p, query.query_key(prefix, "Dimensions"), v.Dimensions)
+    if v.CidrRangeSpecifications.is_some():
+        auto t1 = v.CidrRangeSpecifications.unwrap()
+        p = flex_cost_allocation_cidr_range_specifications_to_query(p, query.query_key(prefix, "CidrRangeSpecifications"), t1)
     return p
 
 # Serialize PeeringConnectionOptionsRequest into the query form parameters under `prefix`.
@@ -24373,8 +24695,10 @@ def route_server_bgp_options_request_to_query(list[query.QueryPair] p, str prefi
 
 # Serialize RunInstancesMonitoringEnabled into the query form parameters under `prefix`.
 def run_instances_monitoring_enabled_to_query(list[query.QueryPair] p, str prefix, RunInstancesMonitoringEnabled v) -> list[query.QueryPair]:
-    auto t0 = query.query_bool(v.Enabled)
-    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    auto t0 = v.MetricCategoryIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "MetricCategoryId"), t0)
+    auto t1 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t1)
     return p
 
 # Serialize S3ObjectTag into the query form parameters under `prefix`.
@@ -25327,6 +25651,12 @@ def vpc_encryption_control_configuration_to_query(list[query.QueryPair] p, str p
     if v.ElasticFileSystemExclusion.is_some():
         auto t7 = v.ElasticFileSystemExclusion.unwrap()
         p = query.query_scalar(p, query.query_key(prefix, "ElasticFileSystemExclusion"), t7)
+    if v.GlobalAcceleratorExclusion.is_some():
+        auto t8 = v.GlobalAcceleratorExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GlobalAcceleratorExclusion"), t8)
+    if v.ApiGatewayV2Exclusion.is_some():
+        auto t9 = v.ApiGatewayV2Exclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApiGatewayV2Exclusion"), t9)
     return p
 
 # Serialize VpnConnectionOptionsSpecification into the query form parameters under `prefix`.
@@ -25848,6 +26178,21 @@ struct EC2Client:
         if input.AvailabilityZoneId.is_some():
             auto t2 = input.AvailabilityZoneId.unwrap()
             p = query.query_scalar(p, "AvailabilityZoneId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AssociateNetworkingFlexCostAllocationPolicy
+    def associate_networking_flex_cost_allocation_policy(self, AssociateNetworkingFlexCostAllocationPolicyRequest input) -> str:
+        auto p = query.query_params("AssociateNetworkingFlexCostAllocationPolicy", "2016-11-15")
+        p = query.query_scalar(p, "FcaPolicyId", input.FcaPolicyId)
+        auto t0 = input.NetworkResourceIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkResourceIds", t0)
+        if input.NetworkResourceScope.is_some():
+            auto t1 = input.NetworkResourceScope.unwrap()
+            p = flex_cost_allocation_network_resource_scope_to_query(p, "NetworkResourceScope", t1)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # AssociateRouteServer
@@ -27474,6 +27819,20 @@ struct EC2Client:
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateMetricCategory
+    def create_metric_category(self, CreateMetricCategoryRequest input) -> str:
+        auto p = query.query_params("CreateMetricCategory", "2016-11-15")
+        p = query.query_flat_list(p, "Metric", input.Metrics)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateNatGateway
     def create_nat_gateway(self, CreateNatGatewayRequest input) -> str:
         auto p = query.query_params("CreateNatGateway", "2016-11-15")
@@ -27667,6 +28026,34 @@ struct EC2Client:
         if input.AwsService.is_some():
             p = query.query_scalar(p, "AwsService", input.AwsService.unwrap())
         p = query.query_scalar(p, "Permission", input.Permission)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNetworkingFlexCostAllocationPolicy
+    def create_networking_flex_cost_allocation_policy(self, CreateNetworkingFlexCostAllocationPolicyRequest input) -> str:
+        auto p = query.query_params("CreateNetworkingFlexCostAllocationPolicy", "2016-11-15")
+        p = query.query_scalar(p, "NetworkResourceType", input.NetworkResourceType)
+        if input.NatFcaPolicyDocument.is_some():
+            auto t0 = input.NatFcaPolicyDocument.unwrap()
+            p = nat_flex_cost_allocation_policy_document_to_query(p, "NatFcaPolicyDocument", t0)
+        if input.InstanceFcaPolicyDocument.is_some():
+            auto t1 = input.InstanceFcaPolicyDocument.unwrap()
+            p = instance_flex_cost_allocation_policy_document_to_query(p, "InstanceFcaPolicyDocument", t1)
+        if input.PcxFcaPolicyDocument.is_some():
+            auto t2 = input.PcxFcaPolicyDocument.unwrap()
+            p = pcx_flex_cost_allocation_policy_document_to_query(p, "PcxFcaPolicyDocument", t2)
+        if input.ShowBackEnabled.is_some():
+            auto t3 = query.query_bool(input.ShowBackEnabled.unwrap())
+            p = query.query_scalar(p, "ShowBackEnabled", t3)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi4 = 1
+        for qe5 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -29151,6 +29538,14 @@ struct EC2Client:
         p = query.query_scalar(p, "PrefixListId", input.PrefixListId)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DeleteMetricCategory
+    def delete_metric_category(self, DeleteMetricCategoryRequest input) -> str:
+        auto p = query.query_params("DeleteMetricCategory", "2016-11-15")
+        p = query.query_scalar(p, "MetricCategoryId", input.MetricCategoryId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DeleteNatGateway
     def delete_nat_gateway(self, DeleteNatGatewayRequest input) -> str:
         auto p = query.query_params("DeleteNatGateway", "2016-11-15")
@@ -29227,6 +29622,14 @@ struct EC2Client:
         p = query.query_scalar(p, "NetworkInterfacePermissionId", t0)
         if input.Force.is_some():
             p = query.query_scalar(p, "Force", query.query_bool(input.Force.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DeleteNetworkingFlexCostAllocationPolicies
+    def delete_networking_flex_cost_allocation_policies(self, DeleteNetworkingFlexCostAllocationPoliciesRequest input) -> str:
+        auto p = query.query_params("DeleteNetworkingFlexCostAllocationPolicies", "2016-11-15")
+        p = query.query_flat_list(p, "FcaPolicyIds", input.FcaPolicyIds)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -31405,6 +31808,23 @@ struct EC2Client:
         p = query.query_flat_list(p, "PrefixListId", input.PrefixListIds.unwrap_or([]))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeMetricCategories
+    def describe_metric_categories(self, DescribeMetricCategoriesRequest input) -> str:
+        auto p = query.query_params("DescribeMetricCategories", "2016-11-15")
+        auto t0 = input.MetricCategoryIds.unwrap_or([])
+        p = query.query_flat_list(p, "MetricCategoryId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeMovingAddresses
     def describe_moving_addresses(self, DescribeMovingAddressesRequest input) -> str:
         auto p = query.query_params("DescribeMovingAddresses", "2016-11-15")
@@ -31582,6 +32002,39 @@ struct EC2Client:
         for qe3 in input.Filters.unwrap_or([]):
             p = filter_to_query(p, "Filter." + str(qi2), qe3)
             qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkingFlexCostAllocationPolicies
+    def describe_networking_flex_cost_allocation_policies(self, DescribeNetworkingFlexCostAllocationPoliciesRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkingFlexCostAllocationPolicies", "2016-11-15")
+        p = query.query_flat_list(p, "FcaPolicyIds", input.FcaPolicyIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkingFlexCostAllocationPolicyAssociations
+    def describe_networking_flex_cost_allocation_policy_associations(self, DescribeNetworkingFlexCostAllocationPolicyAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkingFlexCostAllocationPolicyAssociations", "2016-11-15")
+        auto t0 = input.FcaPolicyAssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "FcaPolicyAssociationIds", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeOutpostLags
@@ -33283,6 +33736,15 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DisassociateNetworkingFlexCostAllocationPolicy
+    def disassociate_networking_flex_cost_allocation_policy(self, DisassociateNetworkingFlexCostAllocationPolicyRequest input) -> str:
+        auto p = query.query_params("DisassociateNetworkingFlexCostAllocationPolicy", "2016-11-15")
+        auto t0 = input.FcaPolicyAssociationIds
+        p = query.query_flat_list(p, "FcaPolicyAssociationIds", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DisassociateRouteServer
     def disassociate_route_server(self, DisassociateRouteServerRequest input) -> str:
         auto p = query.query_params("DisassociateRouteServer", "2016-11-15")
@@ -34424,6 +34886,18 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetNetworkingFlexCostAllocationPolicyVersions
+    def get_networking_flex_cost_allocation_policy_versions(self, GetNetworkingFlexCostAllocationPolicyVersionsRequest input) -> str:
+        auto p = query.query_params("GetNetworkingFlexCostAllocationPolicyVersions", "2016-11-15")
+        p = query.query_scalar(p, "FcaPolicyId", input.FcaPolicyId)
+        auto qi0 = 1
+        for qe1 in input.VersionsToInclude.unwrap_or([]):
+            p = query.query_scalar(p, "VersionsToInclude." + str(qi0), str(qe1))
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetPasswordData
     def get_password_data(self, GetPasswordDataRequest input) -> str:
         auto p = query.query_params("GetPasswordData", "2016-11-15")
@@ -34983,6 +35457,11 @@ struct EC2Client:
         if input.ElasticFileSystem.is_some():
             auto t2 = input.ElasticFileSystem.unwrap()
             p = query.query_scalar(p, "ElasticFileSystem", t2)
+        if input.GlobalAccelerator.is_some():
+            auto t3 = input.GlobalAccelerator.unwrap()
+            p = query.query_scalar(p, "GlobalAccelerator", t3)
+        if input.ApiGatewayV2.is_some():
+            p = query.query_scalar(p, "ApiGatewayV2", input.ApiGatewayV2.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyAddressAttribute
@@ -35782,6 +36261,15 @@ struct EC2Client:
         p = query.query_scalar(p, "DefaultVisibility", input.DefaultVisibility)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyMetricCategory
+    def modify_metric_category(self, ModifyMetricCategoryRequest input) -> str:
+        auto p = query.query_params("ModifyMetricCategory", "2016-11-15")
+        p = query.query_scalar(p, "MetricCategoryId", input.MetricCategoryId)
+        p = query.query_flat_list(p, "Metric", input.Metrics)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyNetworkInterfaceAttribute
     def modify_network_interface_attribute(self, ModifyNetworkInterfaceAttributeRequest input) -> str:
         auto p = query.query_params("ModifyNetworkInterfaceAttribute", "2016-11-15")
@@ -35811,6 +36299,30 @@ struct EC2Client:
         if input.Attachment.is_some():
             auto t6 = input.Attachment.unwrap()
             p = network_interface_attachment_changes_to_query(p, "Attachment", t6)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyNetworkingFlexCostAllocationPolicy
+    def modify_networking_flex_cost_allocation_policy(self, ModifyNetworkingFlexCostAllocationPolicyRequest input) -> str:
+        auto p = query.query_params("ModifyNetworkingFlexCostAllocationPolicy", "2016-11-15")
+        p = query.query_scalar(p, "FcaPolicyId", input.FcaPolicyId)
+        if input.NatFcaPolicyDocument.is_some():
+            auto t0 = input.NatFcaPolicyDocument.unwrap()
+            p = nat_flex_cost_allocation_policy_document_to_query(p, "NatFcaPolicyDocument", t0)
+        if input.InstanceFcaPolicyDocument.is_some():
+            auto t1 = input.InstanceFcaPolicyDocument.unwrap()
+            p = instance_flex_cost_allocation_policy_document_to_query(p, "InstanceFcaPolicyDocument", t1)
+        if input.PcxFcaPolicyDocument.is_some():
+            auto t2 = input.PcxFcaPolicyDocument.unwrap()
+            p = pcx_flex_cost_allocation_policy_document_to_query(p, "PcxFcaPolicyDocument", t2)
+        if input.ShowBackEnabled.is_some():
+            auto t3 = query.query_bool(input.ShowBackEnabled.unwrap())
+            p = query.query_scalar(p, "ShowBackEnabled", t3)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyPrivateDnsNameOptions
@@ -36361,6 +36873,12 @@ struct EC2Client:
         if input.ElasticFileSystemExclusion.is_some():
             auto t7 = input.ElasticFileSystemExclusion.unwrap()
             p = query.query_scalar(p, "ElasticFileSystemExclusion", t7)
+        if input.GlobalAcceleratorExclusion.is_some():
+            auto t8 = input.GlobalAcceleratorExclusion.unwrap()
+            p = query.query_scalar(p, "GlobalAcceleratorExclusion", t8)
+        if input.ApiGatewayV2Exclusion.is_some():
+            auto t9 = input.ApiGatewayV2Exclusion.unwrap()
+            p = query.query_scalar(p, "ApiGatewayV2Exclusion", t9)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyVpcEndpoint
@@ -36572,6 +37090,8 @@ struct EC2Client:
     def monitor_instances(self, MonitorInstancesRequest input) -> str:
         auto p = query.query_params("MonitorInstances", "2016-11-15")
         p = query.query_flat_list(p, "InstanceId", input.InstanceIds)
+        auto t0 = input.MetricCategoryIds.unwrap_or([])
+        p = query.query_flat_list(p, "MetricCategoryId", t0)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -37692,6 +38212,8 @@ struct EC2Client:
     def unmonitor_instances(self, UnmonitorInstancesRequest input) -> str:
         auto p = query.query_params("UnmonitorInstances", "2016-11-15")
         p = query.query_flat_list(p, "InstanceId", input.InstanceIds)
+        auto t0 = input.MetricCategoryIds.unwrap_or([])
+        p = query.query_flat_list(p, "MetricCategoryId", t0)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)

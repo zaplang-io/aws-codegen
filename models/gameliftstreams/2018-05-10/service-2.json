@@ -1911,6 +1911,15 @@
     },
     "DisplayConfiguration": {
      "shape": "DisplayConfiguration"
+    },
+    "ApplicationStartedAt": {
+     "shape": "Timestamp"
+    },
+    "StreamingStartedAt": {
+     "shape": "Timestamp"
+    },
+    "StreamingEndedAt": {
+     "shape": "Timestamp"
     }
    }
   },
@@ -2773,6 +2782,15 @@
     },
     "DisplayConfiguration": {
      "shape": "DisplayConfiguration"
+    },
+    "ApplicationStartedAt": {
+     "shape": "Timestamp"
+    },
+    "StreamingStartedAt": {
+     "shape": "Timestamp"
+    },
+    "StreamingEndedAt": {
+     "shape": "Timestamp"
     }
    }
   },

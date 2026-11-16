@@ -4,8 +4,9 @@
   "apiVersion": "2017-11-27",
   "endpointPrefix": "comprehend",
   "jsonVersion": "1.1",
-  "protocol": "json",
+  "protocol": "smithy-rpc-v2-cbor",
   "protocols": [
+   "smithy-rpc-v2-cbor",
    "json"
   ],
   "serviceFullName": "Amazon Comprehend",
@@ -2808,6 +2809,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "Block": {
@@ -3026,6 +3030,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -5476,6 +5483,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 500
+   },
    "exception": true,
    "fault": true
   },
@@ -5485,6 +5495,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -5518,6 +5531,9 @@
      "shape": "InvalidRequestDetail"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "InvalidRequestReason": {
@@ -5544,6 +5560,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 404
    },
    "exception": true
   },
@@ -5653,6 +5672,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -6686,6 +6708,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "ResourceLimitExceededException": {
@@ -6694,6 +6719,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -6704,6 +6732,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 404
+   },
    "exception": true
   },
   "ResourceUnavailableException": {
@@ -6712,6 +6743,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 404
    },
    "exception": true
   },
@@ -7810,6 +7844,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "Timestamp": {
@@ -7822,6 +7859,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 429
+   },
    "exception": true
   },
   "TooManyTagKeysException": {
@@ -7831,6 +7871,9 @@
      "shape": "String"
     }
    },
+   "error": {
+    "httpStatusCode": 400
+   },
    "exception": true
   },
   "TooManyTagsException": {
@@ -7839,6 +7882,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },
@@ -7949,6 +7995,9 @@
     "Message": {
      "shape": "String"
     }
+   },
+   "error": {
+    "httpStatusCode": 400
    },
    "exception": true
   },

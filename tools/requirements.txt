@@ -9,5 +9,5 @@
 #
 # Install into a throwaway venv with:
 #   python3 -m pip install --require-hashes -r tools/requirements.txt
-botocore==1.43.121 \
-    --hash=sha256:39bfd17e69f3370350e6aac2072df64045d002f9878e09115e85b87c772bd473
+botocore==1.44.3 \
+    --hash=sha256:793eac2a7ca167e9376b136cf000e1675e9ffe8d7ec609160cc1ee00b93ace28

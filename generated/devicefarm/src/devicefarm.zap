@@ -16,7 +16,7 @@
 #
 # Coverage (v0, awsJson only): 77 operations — 77 with a generated method,
 #   0 skipped (input has a non-string-keyed map or free-form document member).
-#   225 structs (133 @derive(Json)), 26 enums, 12 error variants.
+#   225 structs (133 @derive(Json)), 27 enums, 12 error variants.
 #   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -77,6 +77,7 @@ enum ArtifactType:
     CUSTOMER_ARTIFACT
     CUSTOMER_ARTIFACT_LOG
     TESTSPEC_OUTPUT
+    DEVICE_CONNECT_COMMAND_LOG
     Unknown(str value)
 
 @derive(Json)
@@ -182,6 +183,13 @@ enum ExecutionStatus:
     RUNNING
     COMPLETED
     STOPPING
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum InsightsType:
+    TEST_REPORT
+    NONE
     Unknown(str value)
 
 @derive(Json)
@@ -1475,7 +1483,7 @@ struct Rule:
     Optional[RuleOperator] operator
     Optional[str] value
 
-# no @derive(Json): member(s) customerArtifactPaths: CustomerArtifactPaths, deviceSelectionResult: DeviceSelectionResult, vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable], insightsTypes: list[str] not derivable (list/map collections);
+# no @derive(Json): member(s) customerArtifactPaths: CustomerArtifactPaths, deviceSelectionResult: DeviceSelectionResult, vpcConfig: VpcConfig, environmentVariables: list[EnvironmentVariable], insightsTypes: list[InsightsType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Run:
@@ -1510,11 +1518,12 @@ struct Run:
     Optional[str] webUrl
     Optional[bool] skipAppResign
     Optional[str] testSpecArn
+    Optional[str] testPackageArn
     Optional[DeviceSelectionResult] deviceSelectionResult
     Optional[VpcConfig] vpcConfig
     Optional[str] executionRoleArn
     Optional[list[EnvironmentVariable]] environmentVariables
-    Optional[list[str]] insightsTypes
+    Optional[list[InsightsType]] insightsTypes
     Optional[RunInsights] insights
 
 @derive(Json)
@@ -1528,7 +1537,7 @@ struct Sample:
     Optional[SampleType] type
     Optional[str] url
 
-# no @derive(Json): member(s) vpceConfigurationArns: list[str], customerArtifactPaths: CustomerArtifactPaths, auxiliaryApps: list[str], environmentVariables: list[EnvironmentVariable], insightsTypes: list[str] not derivable (list/map collections);
+# no @derive(Json): member(s) vpceConfigurationArns: list[str], customerArtifactPaths: CustomerArtifactPaths, auxiliaryApps: list[str], environmentVariables: list[EnvironmentVariable], insightsTypes: list[InsightsType] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct ScheduleRunConfiguration:
@@ -1544,7 +1553,7 @@ struct ScheduleRunConfiguration:
     Optional[BillingMethod] billingMethod
     Optional[list[EnvironmentVariable]] environmentVariables
     Optional[str] executionRoleArn
-    Optional[list[str]] insightsTypes
+    Optional[list[InsightsType]] insightsTypes
 
 # no @derive(Json): member(s) deviceSelectionConfiguration: DeviceSelectionConfiguration, test: ScheduleRunTest, configuration: ScheduleRunConfiguration not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2286,7 +2295,7 @@ def schedule_run_configuration_to_json(ScheduleRunConfiguration v) -> str:
         auto u15 = v.insightsTypes.unwrap()
         list[str] e16 = []
         for x16 in u15:
-            e16.append(devicefarm_json_str(x16))
+            e16.append(x16.to_json())
         parts.append("\"insightsTypes\":" + devicefarm_json_arr(e16))
     return devicefarm_json_obj(parts)
 

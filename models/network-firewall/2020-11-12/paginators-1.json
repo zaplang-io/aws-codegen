@@ -60,29 +60,17 @@
       "limit_key": "MaxResults",
       "result_key": "VpcEndpointAssociations"
     },
-    "ListProxies": {
-      "input_token": "NextToken",
-      "output_token": "NextToken",
-      "limit_key": "MaxResults",
-      "result_key": "Proxies"
-    },
-    "ListProxyConfigurations": {
-      "input_token": "NextToken",
-      "output_token": "NextToken",
-      "limit_key": "MaxResults",
-      "result_key": "ProxyConfigurations"
-    },
-    "ListProxyRuleGroups": {
-      "input_token": "NextToken",
-      "output_token": "NextToken",
-      "limit_key": "MaxResults",
-      "result_key": "ProxyRuleGroups"
-    },
     "ListContainerAssociations": {
       "input_token": "NextToken",
       "output_token": "NextToken",
       "limit_key": "MaxResults",
       "result_key": "ContainerAssociations"
+    },
+    "ListFirewallPoliciesV2": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "limit_key": "MaxResults",
+      "result_key": "FirewallPoliciesV2"
     }
   }
 }

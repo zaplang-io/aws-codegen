@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 96 operations — 96 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   334 structs (194 @derive(Json)), 46 enums, 7 error variants.
+#   335 structs (195 @derive(Json)), 47 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -180,8 +180,16 @@ enum ManagementType:
 
 @derive(Json)
 @json(open)
+enum MembershipType:
+    USER
+    GROUP
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum MembershipTypeFilter:
     USER
+    GROUP
     ALL
     Unknown(str value)
 
@@ -1251,7 +1259,7 @@ struct CreateMembershipRequest:
     str applicationId
     str agentSpaceId
     str membershipId
-    str memberType
+    MembershipType memberType
     Optional[MembershipConfig] config
 
 @derive(Json)
@@ -1271,6 +1279,7 @@ struct CreatePentestInput:
     Optional[VpcConfig] vpcConfig
     Optional[NetworkTrafficConfig] networkTrafficConfig
     Optional[CodeRemediationStrategy] codeRemediationStrategy
+    Optional[CleanUpStrategy] cleanUpStrategy
     Optional[list[SkillType]] disableManagedSkills
     Optional[float64] maxTaskHours
     Optional[ReportDestination] reportDestination
@@ -1486,7 +1495,7 @@ struct DeleteMembershipRequest:
     str applicationId
     str agentSpaceId
     str membershipId
-    Optional[str] memberType
+    Optional[MembershipType] memberType
 
 @derive(Json)
 struct DeleteMembershipResponse:
@@ -1780,6 +1789,11 @@ struct GitLabResourceCapabilities:
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
     Optional[bool] leaveComments
     Optional[bool] remediateCode
+
+@derive(Json)
+struct GroupMetadata:
+    Optional[str] displayName
+    Optional[str] description
 
 @derive(Json)
 struct HttpVerification:
@@ -2297,6 +2311,7 @@ struct LogLocation:
 @derive(Json)
 struct MemberMetadata:
     Optional[UserMetadata] user
+    Optional[GroupMetadata] group
 
 @derive(Json)
 struct MembershipConfig:
@@ -2307,7 +2322,7 @@ struct MembershipSummary:
     str membershipId
     str applicationId
     str agentSpaceId
-    str memberType
+    MembershipType memberType
     Optional[MembershipConfig] config
     Optional[MemberMetadata] metadata
     @json(timestamp="iso8601")
@@ -3035,6 +3050,7 @@ struct UpdatePentestInput:
     Optional[VpcConfig] vpcConfig
     Optional[NetworkTrafficConfig] networkTrafficConfig
     Optional[CodeRemediationStrategy] codeRemediationStrategy
+    Optional[CleanUpStrategy] cleanUpStrategy
     Optional[list[SkillType]] disableManagedSkills
     Optional[float64] maxTaskHours
     Optional[ReportDestination] reportDestination
@@ -3351,7 +3367,7 @@ struct CreateMembershipDocument:
     str applicationId
     str agentSpaceId
     str membershipId
-    str memberType
+    MembershipType memberType
     Optional[MembershipConfig] config
 
 @derive(Json)
@@ -3381,7 +3397,7 @@ struct DeleteMembershipDocument:
     str applicationId
     str agentSpaceId
     str membershipId
-    Optional[str] memberType
+    Optional[MembershipType] memberType
 
 @derive(Json)
 struct DeletePrivateConnectionDocument:
@@ -4609,27 +4625,30 @@ struct SecurityAgentClient:
         if input.codeRemediationStrategy.is_some():
             auto u7 = input.codeRemediationStrategy.unwrap()
             parts.append("\"codeRemediationStrategy\":" + u7.to_json())
+        if input.cleanUpStrategy.is_some():
+            auto u8 = input.cleanUpStrategy.unwrap()
+            parts.append("\"cleanUpStrategy\":" + u8.to_json())
         if input.disableManagedSkills.is_some():
-            auto u8 = input.disableManagedSkills.unwrap()
-            list[str] e9 = []
-            for x9 in u8:
-                e9.append(x9.to_json())
-            parts.append("\"disableManagedSkills\":" + securityagent_json_arr(e9))
+            auto u9 = input.disableManagedSkills.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"disableManagedSkills\":" + securityagent_json_arr(e10))
         if input.maxTaskHours.is_some():
-            auto u10 = input.maxTaskHours.unwrap()
-            parts.append("\"maxTaskHours\":" + str(u10))
+            auto u11 = input.maxTaskHours.unwrap()
+            parts.append("\"maxTaskHours\":" + str(u11))
         if input.reportDestination.is_some():
-            auto u11 = input.reportDestination.unwrap()
-            parts.append("\"reportDestination\":" + u11.to_json())
+            auto u12 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u12.to_json())
         if input.reportFilters.is_some():
-            auto u12 = input.reportFilters.unwrap()
-            parts.append("\"reportFilters\":" + report_filters_to_json(u12))
+            auto u13 = input.reportFilters.unwrap()
+            parts.append("\"reportFilters\":" + report_filters_to_json(u13))
         if input.cicdConfiguration.is_some():
-            auto u13 = input.cicdConfiguration.unwrap()
-            parts.append("\"cicdConfiguration\":" + u13.to_json())
+            auto u14 = input.cicdConfiguration.unwrap()
+            parts.append("\"cicdConfiguration\":" + u14.to_json())
         if input.testScope.is_some():
-            auto u14 = input.testScope.unwrap()
-            parts.append("\"testScope\":" + u14.to_json())
+            auto u15 = input.testScope.unwrap()
+            parts.append("\"testScope\":" + u15.to_json())
         auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
@@ -5360,27 +5379,30 @@ struct SecurityAgentClient:
         if input.codeRemediationStrategy.is_some():
             auto u8 = input.codeRemediationStrategy.unwrap()
             parts.append("\"codeRemediationStrategy\":" + u8.to_json())
+        if input.cleanUpStrategy.is_some():
+            auto u9 = input.cleanUpStrategy.unwrap()
+            parts.append("\"cleanUpStrategy\":" + u9.to_json())
         if input.disableManagedSkills.is_some():
-            auto u9 = input.disableManagedSkills.unwrap()
-            list[str] e10 = []
-            for x10 in u9:
-                e10.append(x10.to_json())
-            parts.append("\"disableManagedSkills\":" + securityagent_json_arr(e10))
+            auto u10 = input.disableManagedSkills.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"disableManagedSkills\":" + securityagent_json_arr(e11))
         if input.maxTaskHours.is_some():
-            auto u11 = input.maxTaskHours.unwrap()
-            parts.append("\"maxTaskHours\":" + str(u11))
+            auto u12 = input.maxTaskHours.unwrap()
+            parts.append("\"maxTaskHours\":" + str(u12))
         if input.reportDestination.is_some():
-            auto u12 = input.reportDestination.unwrap()
-            parts.append("\"reportDestination\":" + u12.to_json())
+            auto u13 = input.reportDestination.unwrap()
+            parts.append("\"reportDestination\":" + u13.to_json())
         if input.reportFilters.is_some():
-            auto u13 = input.reportFilters.unwrap()
-            parts.append("\"reportFilters\":" + report_filters_to_json(u13))
+            auto u14 = input.reportFilters.unwrap()
+            parts.append("\"reportFilters\":" + report_filters_to_json(u14))
         if input.cicdConfiguration.is_some():
-            auto u14 = input.cicdConfiguration.unwrap()
-            parts.append("\"cicdConfiguration\":" + u14.to_json())
+            auto u15 = input.cicdConfiguration.unwrap()
+            parts.append("\"cicdConfiguration\":" + u15.to_json())
         if input.testScope.is_some():
-            auto u15 = input.testScope.unwrap()
-            parts.append("\"testScope\":" + u15.to_json())
+            auto u16 = input.testScope.unwrap()
+            parts.append("\"testScope\":" + u16.to_json())
         auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 

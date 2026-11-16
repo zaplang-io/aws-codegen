@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 88 operations — 87 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   328 structs (227 @derive(Json)), 41 enums, 56 error variants.
+#   331 structs (230 @derive(Json)), 42 enums, 58 error variants.
 #   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
 #   6 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -184,6 +184,13 @@ enum InvocationType:
 enum InvokeMode:
     BUFFERED
     RESPONSE_STREAM
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum KafkaEventSourceMappingConsumptionMode:
+    Stream
+    Queue
     Unknown(str value)
 
 @derive(Json)
@@ -389,6 +396,7 @@ enum Runtime:
     java8_al2023
     java11_al2023
     java17_al2023
+    custom
     Unknown(str value)
 
 @derive(Json)
@@ -966,6 +974,7 @@ struct CreateFunctionRequest:
     Optional[TenancyConfig] TenancyConfig
     Optional[CapacityProviderConfig] CapacityProviderConfig
     Optional[DurableConfig] DurableConfig
+    Optional[FunctionRuntimeConfig] RuntimeConfig
 
 # rest-json request for CreateFunctionUrlConfigRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1404,6 +1413,7 @@ struct FunctionConfiguration:
     Optional[CapacityProviderConfig] CapacityProviderConfig
     Optional[str] ConfigSha256
     Optional[DurableConfig] DurableConfig
+    Optional[FunctionRuntimeConfig] RuntimeConfig
 
 @derive(Json)
 struct FunctionEventInvokeConfig:
@@ -1412,6 +1422,11 @@ struct FunctionEventInvokeConfig:
     Optional[int64] MaximumRetryAttempts
     Optional[int64] MaximumEventAgeInSeconds
     Optional[DestinationConfig] DestinationConfig
+
+@derive(Json)
+struct FunctionRuntimeConfig:
+    str RuntimeArn
+    str RuntimeAlias
 
 @derive(Json)
 struct FunctionScalingConfig:
@@ -2446,9 +2461,19 @@ struct RetryDetails:
     Optional[int64] NextAttemptDelaySeconds
 
 @derive(Json)
+struct RuntimeAliasDeletedException:
+    Optional[str] Type
+    Optional[str] message
+
+@derive(Json)
 struct RuntimeVersionConfig:
     Optional[str] RuntimeVersionArn
     Optional[RuntimeVersionError] Error
+
+@derive(Json)
+struct RuntimeVersionDeletedException:
+    Optional[str] Type
+    Optional[str] message
 
 @derive(Json)
 struct RuntimeVersionError:
@@ -2490,6 +2515,7 @@ struct SelfManagedEventSource:
 struct SelfManagedKafkaEventSourceConfig:
     Optional[str] ConsumerGroupId
     Optional[KafkaSchemaRegistryConfig] SchemaRegistryConfig
+    Optional[KafkaEventSourceMappingConsumptionMode] ConsumptionMode
 
 # rest-json request for SendDurableExecutionCallbackFailureRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -2772,6 +2798,7 @@ struct UpdateFunctionConfigurationRequest:
     Optional[LoggingConfig] LoggingConfig
     Optional[CapacityProviderConfig] CapacityProviderConfig
     Optional[DurableConfig] DurableConfig
+    Optional[FunctionRuntimeConfig] RuntimeConfig
 
 # rest-json request for UpdateFunctionEventInvokeConfigRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -2898,6 +2925,8 @@ enum LambdaErrorKind:
     ResourceInUseException
     ResourceNotFoundException
     ResourceNotReadyException
+    RuntimeAliasDeletedException
+    RuntimeVersionDeletedException
     S3FilesMountConnectivityException
     S3FilesMountFailureException
     S3FilesMountTimeoutException
@@ -3004,6 +3033,10 @@ def lambda__error_kind(str code) -> LambdaErrorKind:
         return LambdaErrorKind.ResourceNotFoundException
     if name == "ResourceNotReadyException":
         return LambdaErrorKind.ResourceNotReadyException
+    if name == "RuntimeAliasDeletedException":
+        return LambdaErrorKind.RuntimeAliasDeletedException
+    if name == "RuntimeVersionDeletedException":
+        return LambdaErrorKind.RuntimeVersionDeletedException
     if name == "S3FilesMountConnectivityException":
         return LambdaErrorKind.S3FilesMountConnectivityException
     if name == "S3FilesMountFailureException":
@@ -3126,6 +3159,10 @@ def lambda__error_name(LambdaErrorKind k) -> str:
             return "ResourceNotFoundException"
         case LambdaErrorKind.ResourceNotReadyException:
             return "ResourceNotReadyException"
+        case LambdaErrorKind.RuntimeAliasDeletedException:
+            return "RuntimeAliasDeletedException"
+        case LambdaErrorKind.RuntimeVersionDeletedException:
+            return "RuntimeVersionDeletedException"
         case LambdaErrorKind.S3FilesMountConnectivityException:
             return "S3FilesMountConnectivityException"
         case LambdaErrorKind.S3FilesMountFailureException:
@@ -3570,6 +3607,9 @@ def self_managed_kafka_event_source_config_to_json(SelfManagedKafkaEventSourceCo
     if v.SchemaRegistryConfig.is_some():
         auto u1 = v.SchemaRegistryConfig.unwrap()
         parts.append("\"SchemaRegistryConfig\":" + kafka_schema_registry_config_to_json(u1))
+    if v.ConsumptionMode.is_some():
+        auto u2 = v.ConsumptionMode.unwrap()
+        parts.append("\"ConsumptionMode\":" + u2.to_json())
     return lambda__json_obj(parts)
 
 # Serialize VpcConfig to a compact JSON object (declaration order).
@@ -3929,6 +3969,9 @@ struct LambdaClient:
         if input.DurableConfig.is_some():
             auto u28 = input.DurableConfig.unwrap()
             parts.append("\"DurableConfig\":" + u28.to_json())
+        if input.RuntimeConfig.is_some():
+            auto u29 = input.RuntimeConfig.unwrap()
+            parts.append("\"RuntimeConfig\":" + u29.to_json())
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
@@ -4329,7 +4372,7 @@ struct LambdaClient:
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # Invoke  POST /2015-03-31/functions/{FunctionName}/invocations
-    # errors: CodeArtifactUserDeletedException, CodeArtifactUserFailedException, CodeArtifactUserPendingException, DurableExecutionAlreadyStartedException, EC2AccessDeniedException, EC2ThrottledException, EC2UnexpectedException, EFSIOException, EFSMountConnectivityException, EFSMountFailureException, EFSMountTimeoutException, ENILimitReachedException, ENINotReadyException, InvalidParameterValueException, InvalidRequestContentException, InvalidRuntimeException, InvalidSecurityGroupIDException, InvalidSubnetIDException, InvalidZipFileException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ModeNotSupportedException, NoPublishedVersionException, RecursiveInvocationException, RequestTooLargeException, ResourceConflictException, ResourceNotFoundException, ResourceNotReadyException, S3FilesMountConnectivityException, S3FilesMountFailureException, S3FilesMountTimeoutException, SerializedRequestEntityTooLargeException, ServiceException, ServiceQuotaExceededException, SnapStartException, SnapStartNotReadyException, SnapStartRegenerationFailureException, SnapStartTimeoutException, SubnetIPAddressLimitReachedException, TooManyRequestsException, UnsupportedMediaTypeException
+    # errors: CodeArtifactUserDeletedException, CodeArtifactUserFailedException, CodeArtifactUserPendingException, DurableExecutionAlreadyStartedException, EC2AccessDeniedException, EC2ThrottledException, EC2UnexpectedException, EFSIOException, EFSMountConnectivityException, EFSMountFailureException, EFSMountTimeoutException, ENILimitReachedException, ENINotReadyException, InvalidParameterValueException, InvalidRequestContentException, InvalidRuntimeException, InvalidSecurityGroupIDException, InvalidSubnetIDException, InvalidZipFileException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ModeNotSupportedException, NoPublishedVersionException, RecursiveInvocationException, RequestTooLargeException, ResourceConflictException, ResourceNotFoundException, ResourceNotReadyException, RuntimeAliasDeletedException, RuntimeVersionDeletedException, S3FilesMountConnectivityException, S3FilesMountFailureException, S3FilesMountTimeoutException, SerializedRequestEntityTooLargeException, ServiceException, ServiceQuotaExceededException, SnapStartException, SnapStartNotReadyException, SnapStartRegenerationFailureException, SnapStartTimeoutException, SubnetIPAddressLimitReachedException, TooManyRequestsException, UnsupportedMediaTypeException
     def invoke(self, InvocationRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
@@ -4364,7 +4407,7 @@ struct LambdaClient:
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # InvokeWithResponseStream  POST /2021-11-15/functions/{FunctionName}/response-streaming-invocations
-    # errors: CodeArtifactUserDeletedException, CodeArtifactUserFailedException, CodeArtifactUserPendingException, EC2AccessDeniedException, EC2ThrottledException, EC2UnexpectedException, EFSIOException, EFSMountConnectivityException, EFSMountFailureException, EFSMountTimeoutException, ENILimitReachedException, InvalidParameterValueException, InvalidRequestContentException, InvalidRuntimeException, InvalidSecurityGroupIDException, InvalidSubnetIDException, InvalidZipFileException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, NoPublishedVersionException, RecursiveInvocationException, RequestTooLargeException, ResourceConflictException, ResourceNotFoundException, ResourceNotReadyException, S3FilesMountConnectivityException, S3FilesMountFailureException, S3FilesMountTimeoutException, SerializedRequestEntityTooLargeException, ServiceException, ServiceQuotaExceededException, SnapStartException, SnapStartNotReadyException, SnapStartRegenerationFailureException, SnapStartTimeoutException, SubnetIPAddressLimitReachedException, TooManyRequestsException, UnsupportedMediaTypeException
+    # errors: CodeArtifactUserDeletedException, CodeArtifactUserFailedException, CodeArtifactUserPendingException, EC2AccessDeniedException, EC2ThrottledException, EC2UnexpectedException, EFSIOException, EFSMountConnectivityException, EFSMountFailureException, EFSMountTimeoutException, ENILimitReachedException, InvalidParameterValueException, InvalidRequestContentException, InvalidRuntimeException, InvalidSecurityGroupIDException, InvalidSubnetIDException, InvalidZipFileException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, NoPublishedVersionException, RecursiveInvocationException, RequestTooLargeException, ResourceConflictException, ResourceNotFoundException, ResourceNotReadyException, RuntimeAliasDeletedException, RuntimeVersionDeletedException, S3FilesMountConnectivityException, S3FilesMountFailureException, S3FilesMountTimeoutException, SerializedRequestEntityTooLargeException, ServiceException, ServiceQuotaExceededException, SnapStartException, SnapStartNotReadyException, SnapStartRegenerationFailureException, SnapStartTimeoutException, SubnetIPAddressLimitReachedException, TooManyRequestsException, UnsupportedMediaTypeException
     def invoke_with_response_stream(self, InvokeWithResponseStreamRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
@@ -4726,7 +4769,7 @@ struct LambdaClient:
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # RemoveLayerVersionPermission  DELETE /2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy/{StatementId}
-    # errors: InvalidParameterValueException, PreconditionFailedException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    # errors: InvalidParameterValueException, PreconditionFailedException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def remove_layer_version_permission(self, RemoveLayerVersionPermissionRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
@@ -5093,6 +5136,9 @@ struct LambdaClient:
         if input.DurableConfig.is_some():
             auto u21 = input.DurableConfig.unwrap()
             parts.append("\"DurableConfig\":" + u21.to_json())
+        if input.RuntimeConfig.is_some():
+            auto u22 = input.RuntimeConfig.unwrap()
+            parts.append("\"RuntimeConfig\":" + u22.to_json())
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 

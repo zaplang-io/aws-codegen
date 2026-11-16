@@ -14,10 +14,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 306 operations — 301 with a generated method,
+# Coverage (v0, awsJson only): 314 operations — 309 with a generated method,
 #   5 skipped (input has a non-string-keyed map or free-form document member).
-#   1134 structs (632 @derive(Json)), 144 enums, 49 error variants.
-#   37 paginators generated (0 paginated ops skipped) from paginators-1.json.
+#   1157 structs (648 @derive(Json)), 152 enums, 49 error variants.
+#   38 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
@@ -81,6 +81,17 @@ enum AuthenticationType:
     OAUTH2
     CUSTOM
     IAM
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum AutoUpgradeStatus:
+    OBSERVING
+    UPGRADING
+    UPGRADE_SUCCEEDED
+    UPGRADE_FAILED
+    STOPPED
+    WAITING_FOR_CONSENT
     Unknown(str value)
 
 @derive(Json)
@@ -485,6 +496,36 @@ enum DataQualityEngine:
 
 @derive(Json)
 @json(open)
+enum DataQualityEvaluationConfigLevel:
+    CATALOG
+    DATABASE
+    TABLE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DataQualityEvaluationConfigManagedRuleset:
+    SIMPLE
+    ADVANCED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DataQualityEvaluationConfigTrigger:
+    ONCE
+    SCHEDULE
+    METADATA_CHANGE
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum DataQualityEvaluationRunMode:
+    ON_DEMAND
+    EVALUATION_CONFIG
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum DataQualityModelStatus:
     RUNNING
     SUCCEEDED
@@ -708,6 +749,13 @@ enum GlueRecordType:
 enum GlueResourceType:
     JOB
     SESSION
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum GovernanceMode:
+    IAM_ONLY
+    LAKE_FORMATION
     Unknown(str value)
 
 @derive(Json)
@@ -1297,6 +1345,18 @@ enum StatisticEvaluationLevel:
 
 @derive(Json)
 @json(open)
+enum Status:
+    OBSERVING
+    WAITING_FOR_CONSENT
+    UPGRADING
+    SUCCEEDED
+    FAILED
+    TIMEOUT
+    STOPPED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum SubObjectSourceType:
     HIVE_PARQUET
     HIVE_ORC
@@ -1451,6 +1511,13 @@ enum UpdateBehavior:
 enum UpdateCatalogBehavior:
     UPDATE_IN_DATABASE
     LOG
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum UpgradeConsent:
+    APPROVE
+    DECLINE
     Unknown(str value)
 
 @derive(Json)
@@ -1697,6 +1764,13 @@ struct AuthorizationCodeProperties:
 struct AutoDataQuality:
     Optional[bool] IsEnabled
     Optional[str] EvaluationContext
+
+@derive(Json)
+struct AutoUpgradeMetadata:
+    Optional[str] TargetVersion
+    Optional[str] SourceVersion
+    Optional[AutoUpgradeStatus] Status
+    Optional[str] AnalysisId
 
 # no @derive(Json): member(s) Partitions: list[PartitionValueList] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2979,6 +3053,32 @@ struct CreateCustomEntityTypeRequest:
 struct CreateCustomEntityTypeResponse:
     Optional[str] Name
 
+# no @derive(Json): member(s) DataSource: DataQualityEvaluationConfigDataSource, Triggers: list[DataQualityEvaluationConfigTrigger], AdditionalDataSources: dict[str, DataSource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CreateDataQualityEvaluationConfigRequest:
+    str Name
+    DataQualityEvaluationConfigLevel Level
+    DataQualityEvaluationConfigDataSource DataSource
+    Optional[str] RulesetName
+    Optional[DataQualityEvaluationConfigManagedRuleset] ManagedRulesetName
+    Optional[list[DataQualityEvaluationConfigTrigger]] Triggers
+    Optional[str] ScheduleExpression
+    Optional[DateTime] StartAt
+    Optional[DateTime] EndAt
+    str Role
+    Optional[int64] NumberOfWorkers
+    Optional[int64] Timeout
+    Optional[DataQualityEvaluationConfigAdditionalRunOptions] AdditionalRunOptions
+    Optional[dict[str, DataSource]] AdditionalDataSources
+    Optional[dict[str, str]] Tags
+    Optional[str] ClientToken
+
+@derive(Json)
+struct CreateDataQualityEvaluationConfigResponse:
+    Optional[str] Name
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+
 # no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -3585,6 +3685,58 @@ struct DataQualityEncryption:
     Optional[str] KmsKeyArn
 
 @derive(Json)
+struct DataQualityEvaluationConfigAdditionalRunOptions:
+    Optional[bool] CloudWatchMetricsEnabled
+    Optional[str] ResultsS3Prefix
+    Optional[DQCompositeRuleEvaluationMethod] CompositeRuleEvaluationMethod
+    Optional[RowLevelResultsOptions] RowLevelResults
+    Optional[ProfilingResultsOptions] ProfilingResults
+    Optional[ObservationConfiguration] ObservationScope
+    Optional[ObservationMode] ObservationMode
+    Optional[DataQualityRuleResultsOptions] DataQualityRuleResults
+    Optional[ObservationResultsOptions] ObservationResults
+    Optional[str] CustomLogGroupPrefix
+
+# no @derive(Json): member(s) GlueTables: DataQualityEvaluationConfigGlueTables not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DataQualityEvaluationConfigDataSource:
+    Optional[DataQualityEvaluationConfigGlueTables] GlueTables
+
+# no @derive(Json): member(s) AdditionalOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct DataQualityEvaluationConfigGlueTables:
+    str CatalogId
+    Optional[str] DatabaseName
+    Optional[str] TableNamePattern
+    Optional[str] PreProcessingQuery
+    Optional[str] ConnectionName
+    Optional[dict[str, str]] AdditionalOptions
+
+@derive(Json)
+struct DataQualityEvaluationConfigListDataSource:
+    Optional[DataQualityEvaluationConfigListGlueTables] GlueTables
+
+@derive(Json)
+struct DataQualityEvaluationConfigListDetails:
+    Optional[str] Name
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[DateTime] CreatedOn
+    Optional[DateTime] LastModifiedOn
+    Optional[DataQualityEvaluationConfigLevel] Level
+    Optional[DataQualityEvaluationConfigListDataSource] DataSource
+    Optional[str] RulesetName
+    Optional[DataQualityEvaluationConfigManagedRuleset] ManagedRulesetName
+    Optional[bool] PauseRuns
+
+@derive(Json)
+struct DataQualityEvaluationConfigListGlueTables:
+    str CatalogId
+    Optional[str] DatabaseName
+    Optional[str] TableNamePattern
+
+@derive(Json)
 struct DataQualityEvaluationRunAdditionalRunOptions:
     Optional[bool] CloudWatchMetricsEnabled
     Optional[str] ResultsS3Prefix
@@ -3627,6 +3779,8 @@ struct DataQualityObservation:
 # (zaplang-io/zap#424).
 struct DataQualityResult:
     Optional[str] ResultId
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
     Optional[str] ProfileId
     Optional[float64] Score
     Optional[DataSource] DataSource
@@ -3647,6 +3801,8 @@ struct DataQualityResult:
 # (zaplang-io/zap#424).
 struct DataQualityResultDescription:
     Optional[str] ResultId
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
     Optional[DataSource] DataSource
     Optional[str] JobName
     Optional[str] JobRunId
@@ -3661,12 +3817,16 @@ struct DataQualityResultFilterCriteria:
     Optional[str] JobRunId
     Optional[DateTime] StartedAfter
     Optional[DateTime] StartedBefore
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
 
 # no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Descriptors: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct DataQualityResultV2Item:
     str ResultId
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
     Optional[DataSource] DataSource
     Optional[dict[str, str]] Dimensions
     Optional[dict[str, str]] Tags
@@ -3687,6 +3847,8 @@ struct DataQualityResultV2Item:
 # (zaplang-io/zap#424).
 struct DataQualityResultsV2Description:
     Optional[str] ResultId
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
     Optional[DataSource] DataSource
     Optional[DateTime] ResultPublishedOn
     Optional[dict[str, str]] Dimensions
@@ -3702,6 +3864,8 @@ struct DataQualityResultsV2FilterCriteria:
     Optional[DateTime] PublishedBefore
     Optional[dict[str, str]] Dimensions
     Optional[str] EvaluationContext
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
 
 @derive(Json)
 struct DataQualityRuleRecommendationRunAdditionalRunOptions:
@@ -4018,6 +4182,15 @@ struct DeleteCustomEntityTypeRequest:
 @derive(Json)
 struct DeleteCustomEntityTypeResponse:
     Optional[str] Name
+
+@derive(Json)
+struct DeleteDataQualityEvaluationConfigRequest:
+    str Name
+
+@derive(Json)
+struct DeleteDataQualityEvaluationConfigResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
 
 @derive(Json)
 struct DeleteDataQualityRulesetRequest:
@@ -5122,6 +5295,33 @@ struct GetDataCatalogExportConfigurationOutput:
     Optional[DateTime] UpdatedAt
 
 @derive(Json)
+struct GetDataQualityEvaluationConfigRequest:
+    str Name
+
+# no @derive(Json): member(s) DataSource: DataQualityEvaluationConfigDataSource, Triggers: list[DataQualityEvaluationConfigTrigger], AdditionalDataSources: dict[str, DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct GetDataQualityEvaluationConfigResponse:
+    Optional[str] Name
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[DateTime] CreatedOn
+    Optional[DateTime] LastModifiedOn
+    Optional[DataQualityEvaluationConfigLevel] Level
+    Optional[DataQualityEvaluationConfigDataSource] DataSource
+    Optional[str] RulesetName
+    Optional[DataQualityEvaluationConfigManagedRuleset] ManagedRulesetName
+    Optional[list[DataQualityEvaluationConfigTrigger]] Triggers
+    Optional[str] ScheduleExpression
+    Optional[DateTime] StartAt
+    Optional[DateTime] EndAt
+    Optional[bool] PauseRuns
+    Optional[str] Role
+    Optional[int64] NumberOfWorkers
+    Optional[int64] Timeout
+    Optional[DataQualityEvaluationConfigAdditionalRunOptions] AdditionalRunOptions
+    Optional[dict[str, DataSource]] AdditionalDataSources
+
+@derive(Json)
 struct GetDataQualityModelRequest:
     Optional[str] StatisticId
     str ProfileId
@@ -5154,6 +5354,8 @@ struct GetDataQualityResultRequest:
 # (zaplang-io/zap#424).
 struct GetDataQualityResultResponse:
     Optional[str] ResultId
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
     Optional[str] ProfileId
     Optional[float64] Score
     Optional[DataSource] DataSource
@@ -5178,6 +5380,8 @@ struct GetDataQualityResultV2Request:
 # (zaplang-io/zap#424).
 struct GetDataQualityResultV2Response:
     Optional[str] ResultId
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[str] DataQualityEvaluationConfig
     Optional[DataSource] DataSource
     Optional[str] ProfileId
     Optional[dict[str, str]] Dimensions
@@ -5455,6 +5659,23 @@ struct GetJobRunsRequest:
 struct GetJobRunsResponse:
     Optional[list[JobRun]] JobRuns
     Optional[str] NextToken
+
+@derive(Json)
+struct GetJobUpgradeAnalysisRequest:
+    str analysisId
+    str jobName
+
+@derive(Json)
+struct GetJobUpgradeAnalysisResponse:
+    str jobName
+    str analysisId
+    Status status
+    Optional[str] sourceVersion
+    str targetVersion
+    Optional[str] analysisType
+    Optional[str] autoUpgradeEvaluationSummary
+    Optional[str] errorMessage
+    Optional[str] autoUpgradeEligibilitySummary
 
 @derive(Json)
 struct GetJobsRequest:
@@ -6621,6 +6842,7 @@ struct Job:
     Optional[SourceControlDetails] SourceControlDetails
     Optional[str] MaintenanceWindow
     Optional[str] ProfileName
+    Optional[AutoUpgradeMetadata] AutoUpgradeMetadata
 
 @derive(Json)
 struct JobBookmarkEntry:
@@ -6920,6 +7142,19 @@ struct ListCustomEntityTypesRequest:
 # (zaplang-io/zap#424).
 struct ListCustomEntityTypesResponse:
     Optional[list[CustomEntityType]] CustomEntityTypes
+    Optional[str] NextToken
+
+@derive(Json)
+struct ListDataQualityEvaluationConfigsRequest:
+    Optional[DataQualityEvaluationConfigLevel] Level
+    Optional[int64] MaxResults
+    Optional[str] NextToken
+
+# no @derive(Json): member(s) DataQualityEvaluationConfigs: list[DataQualityEvaluationConfigListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct ListDataQualityEvaluationConfigsResponse:
+    Optional[list[DataQualityEvaluationConfigListDetails]] DataQualityEvaluationConfigs
     Optional[str] NextToken
 
 # no @derive(Json): member(s) Filter: DataQualityResultFilterCriteria not derivable (list/map collections);
@@ -8145,6 +8380,7 @@ struct ResourceNumberLimitExceededException:
 struct ResourceUri:
     Optional[ResourceType] ResourceType
     Optional[str] Uri
+    Optional[DateTime] LastModified
 
 @derive(Json)
 struct ResponseConfiguration:
@@ -9029,6 +9265,17 @@ struct StartJobRunResponse:
     Optional[str] JobRunId
 
 @derive(Json)
+struct StartJobUpgradeAnalysisRequest:
+    str jobName
+    Optional[str] analysisId
+    Optional[UpgradeConsent] upgradeConsent
+
+@derive(Json)
+struct StartJobUpgradeAnalysisResponse:
+    Optional[str] analysisId
+    Optional[str] jobName
+
+@derive(Json)
 struct StartMLEvaluationTaskRunRequest:
     str TransformId
 
@@ -9184,6 +9431,16 @@ struct StopCrawlerScheduleRequest:
 
 @derive(Json)
 struct StopCrawlerScheduleResponse:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct StopJobUpgradeAnalysisRequest:
+    str jobName
+    str analysisId
+
+@derive(Json)
+struct StopJobUpgradeAnalysisResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -9763,6 +10020,48 @@ struct UpdateCsvClassifierRequest:
     Optional[list[str]] CustomDatatypes
     Optional[CsvSerdeOption] Serde
 
+# no @derive(Json): member(s) DataSource: DataQualityEvaluationConfigDataSource, Triggers: list[DataQualityEvaluationConfigTrigger], AdditionalDataSources: dict[str, DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateDataQualityEvaluationConfigRequest:
+    str Name
+    Optional[DataQualityEvaluationConfigDataSource] DataSource
+    Optional[str] RulesetName
+    Optional[DataQualityEvaluationConfigManagedRuleset] ManagedRulesetName
+    Optional[list[DataQualityEvaluationConfigTrigger]] Triggers
+    Optional[str] ScheduleExpression
+    Optional[DateTime] StartAt
+    Optional[DateTime] EndAt
+    Optional[bool] PauseRuns
+    Optional[str] Role
+    Optional[int64] NumberOfWorkers
+    Optional[int64] Timeout
+    Optional[DataQualityEvaluationConfigAdditionalRunOptions] AdditionalRunOptions
+    Optional[dict[str, DataSource]] AdditionalDataSources
+
+# no @derive(Json): member(s) DataSource: DataQualityEvaluationConfigDataSource, Triggers: list[DataQualityEvaluationConfigTrigger], AdditionalDataSources: dict[str, DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct UpdateDataQualityEvaluationConfigResponse:
+    Optional[str] Name
+    Optional[DataQualityEvaluationRunMode] EvaluationRunMode
+    Optional[DateTime] CreatedOn
+    Optional[DateTime] LastModifiedOn
+    Optional[DataQualityEvaluationConfigLevel] Level
+    Optional[DataQualityEvaluationConfigDataSource] DataSource
+    Optional[str] RulesetName
+    Optional[DataQualityEvaluationConfigManagedRuleset] ManagedRulesetName
+    Optional[list[DataQualityEvaluationConfigTrigger]] Triggers
+    Optional[str] ScheduleExpression
+    Optional[DateTime] StartAt
+    Optional[DateTime] EndAt
+    Optional[bool] PauseRuns
+    Optional[str] Role
+    Optional[int64] NumberOfWorkers
+    Optional[int64] Timeout
+    Optional[DataQualityEvaluationConfigAdditionalRunOptions] AdditionalRunOptions
+    Optional[dict[str, DataSource]] AdditionalDataSources
+
 @derive(Json)
 struct UpdateDataQualityRulesetRequest:
     str Name
@@ -10121,6 +10420,8 @@ struct UserDefinedFunction:
     Optional[PrincipalType] OwnerType
     Optional[DateTime] CreateTime
     Optional[list[ResourceUri]] ResourceUris
+    Optional[str] ArtifactLocation
+    Optional[GovernanceMode] GovernanceMode
     Optional[str] CatalogId
 
 # no @derive(Json): member(s) ResourceUris: list[ResourceUri] not derivable (list/map collections);
@@ -10133,6 +10434,8 @@ struct UserDefinedFunctionInput:
     Optional[FunctionType] FunctionType
     Optional[PrincipalType] OwnerType
     Optional[list[ResourceUri]] ResourceUris
+    Optional[str] ArtifactLocation
+    Optional[GovernanceMode] GovernanceMode
 
 @derive(Json)
 struct ValidationException:
@@ -11429,6 +11732,60 @@ def create_custom_entity_type_request_to_json(CreateCustomEntityTypeRequest v) -
         parts.append("\"Tags\":" + glue_json_obj(m3))
     return glue_json_obj(parts)
 
+# Serialize CreateDataQualityEvaluationConfigRequest to a compact JSON object (declaration order).
+def create_data_quality_evaluation_config_request_to_json(CreateDataQualityEvaluationConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"Level\":" + v.Level.to_json())
+    parts.append("\"DataSource\":" + data_quality_evaluation_config_data_source_to_json(v.DataSource))
+    if v.RulesetName.is_some():
+        auto u0 = v.RulesetName.unwrap()
+        parts.append("\"RulesetName\":" + glue_json_str(u0))
+    if v.ManagedRulesetName.is_some():
+        auto u1 = v.ManagedRulesetName.unwrap()
+        parts.append("\"ManagedRulesetName\":" + u1.to_json())
+    if v.Triggers.is_some():
+        auto u2 = v.Triggers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Triggers\":" + glue_json_arr(e3))
+    if v.ScheduleExpression.is_some():
+        auto u4 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + glue_json_str(u4))
+    if v.StartAt.is_some():
+        auto u5 = v.StartAt.unwrap()
+        parts.append("\"StartAt\":" + str(datetime.to_timestamp(u5)))
+    if v.EndAt.is_some():
+        auto u6 = v.EndAt.unwrap()
+        parts.append("\"EndAt\":" + str(datetime.to_timestamp(u6)))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.NumberOfWorkers.is_some():
+        auto u7 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u7))
+    if v.Timeout.is_some():
+        auto u8 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u8))
+    if v.AdditionalRunOptions.is_some():
+        auto u9 = v.AdditionalRunOptions.unwrap()
+        parts.append("\"AdditionalRunOptions\":" + u9.to_json())
+    if v.AdditionalDataSources.is_some():
+        auto u10 = v.AdditionalDataSources.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(glue_json_str(k11) + ":" + data_source_to_json(u10[k11]))
+        parts.append("\"AdditionalDataSources\":" + glue_json_obj(m11))
+    if v.Tags.is_some():
+        auto u12 = v.Tags.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(glue_json_str(k13) + ":" + glue_json_str(u12[k13]))
+        parts.append("\"Tags\":" + glue_json_obj(m13))
+    if v.ClientToken.is_some():
+        auto u14 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u14))
+    return glue_json_obj(parts)
+
 # Serialize CreateDataQualityRulesetRequest to a compact JSON object (declaration order).
 def create_data_quality_ruleset_request_to_json(CreateDataQualityRulesetRequest v) -> str:
     list[str] parts = []
@@ -11955,6 +12312,38 @@ def data_quality_analyzer_result_to_json(DataQualityAnalyzerResult v) -> str:
         parts.append("\"EvaluatedDistributions\":" + glue_json_obj(m6))
     return glue_json_obj(parts)
 
+# Serialize DataQualityEvaluationConfigDataSource to a compact JSON object (declaration order).
+def data_quality_evaluation_config_data_source_to_json(DataQualityEvaluationConfigDataSource v) -> str:
+    list[str] parts = []
+    if v.GlueTables.is_some():
+        auto u0 = v.GlueTables.unwrap()
+        parts.append("\"GlueTables\":" + data_quality_evaluation_config_glue_tables_to_json(u0))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityEvaluationConfigGlueTables to a compact JSON object (declaration order).
+def data_quality_evaluation_config_glue_tables_to_json(DataQualityEvaluationConfigGlueTables v) -> str:
+    list[str] parts = []
+    parts.append("\"CatalogId\":" + glue_json_str(v.CatalogId))
+    if v.DatabaseName.is_some():
+        auto u0 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + glue_json_str(u0))
+    if v.TableNamePattern.is_some():
+        auto u1 = v.TableNamePattern.unwrap()
+        parts.append("\"TableNamePattern\":" + glue_json_str(u1))
+    if v.PreProcessingQuery.is_some():
+        auto u2 = v.PreProcessingQuery.unwrap()
+        parts.append("\"PreProcessingQuery\":" + glue_json_str(u2))
+    if v.ConnectionName.is_some():
+        auto u3 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u3))
+    if v.AdditionalOptions.is_some():
+        auto u4 = v.AdditionalOptions.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + glue_json_str(u4[k5]))
+        parts.append("\"AdditionalOptions\":" + glue_json_obj(m5))
+    return glue_json_obj(parts)
+
 # Serialize DataQualityGlueTable to a compact JSON object (declaration order).
 def data_quality_glue_table_to_json(DataQualityGlueTable v) -> str:
     list[str] parts = []
@@ -12006,6 +12395,12 @@ def data_quality_result_filter_criteria_to_json(DataQualityResultFilterCriteria 
     if v.StartedBefore.is_some():
         auto u4 = v.StartedBefore.unwrap()
         parts.append("\"StartedBefore\":" + str(datetime.to_timestamp(u4)))
+    if v.EvaluationRunMode.is_some():
+        auto u5 = v.EvaluationRunMode.unwrap()
+        parts.append("\"EvaluationRunMode\":" + u5.to_json())
+    if v.DataQualityEvaluationConfig.is_some():
+        auto u6 = v.DataQualityEvaluationConfig.unwrap()
+        parts.append("\"DataQualityEvaluationConfig\":" + glue_json_str(u6))
     return glue_json_obj(parts)
 
 # Serialize DataQualityResultsV2FilterCriteria to a compact JSON object (declaration order).
@@ -12029,6 +12424,12 @@ def data_quality_results_v2_filter_criteria_to_json(DataQualityResultsV2FilterCr
     if v.EvaluationContext.is_some():
         auto u5 = v.EvaluationContext.unwrap()
         parts.append("\"EvaluationContext\":" + glue_json_str(u5))
+    if v.EvaluationRunMode.is_some():
+        auto u6 = v.EvaluationRunMode.unwrap()
+        parts.append("\"EvaluationRunMode\":" + u6.to_json())
+    if v.DataQualityEvaluationConfig.is_some():
+        auto u7 = v.DataQualityEvaluationConfig.unwrap()
+        parts.append("\"DataQualityEvaluationConfig\":" + glue_json_str(u7))
     return glue_json_obj(parts)
 
 # Serialize DataQualityRuleRecommendationRunFilter to a compact JSON object (declaration order).
@@ -14544,6 +14945,57 @@ def update_csv_classifier_request_to_json(UpdateCsvClassifierRequest v) -> str:
         parts.append("\"Serde\":" + u10.to_json())
     return glue_json_obj(parts)
 
+# Serialize UpdateDataQualityEvaluationConfigRequest to a compact JSON object (declaration order).
+def update_data_quality_evaluation_config_request_to_json(UpdateDataQualityEvaluationConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.DataSource.is_some():
+        auto u0 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + data_quality_evaluation_config_data_source_to_json(u0))
+    if v.RulesetName.is_some():
+        auto u1 = v.RulesetName.unwrap()
+        parts.append("\"RulesetName\":" + glue_json_str(u1))
+    if v.ManagedRulesetName.is_some():
+        auto u2 = v.ManagedRulesetName.unwrap()
+        parts.append("\"ManagedRulesetName\":" + u2.to_json())
+    if v.Triggers.is_some():
+        auto u3 = v.Triggers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Triggers\":" + glue_json_arr(e4))
+    if v.ScheduleExpression.is_some():
+        auto u5 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + glue_json_str(u5))
+    if v.StartAt.is_some():
+        auto u6 = v.StartAt.unwrap()
+        parts.append("\"StartAt\":" + str(datetime.to_timestamp(u6)))
+    if v.EndAt.is_some():
+        auto u7 = v.EndAt.unwrap()
+        parts.append("\"EndAt\":" + str(datetime.to_timestamp(u7)))
+    if v.PauseRuns.is_some():
+        auto u8 = v.PauseRuns.unwrap()
+        parts.append("\"PauseRuns\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.Role.is_some():
+        auto u9 = v.Role.unwrap()
+        parts.append("\"Role\":" + glue_json_str(u9))
+    if v.NumberOfWorkers.is_some():
+        auto u10 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u10))
+    if v.Timeout.is_some():
+        auto u11 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u11))
+    if v.AdditionalRunOptions.is_some():
+        auto u12 = v.AdditionalRunOptions.unwrap()
+        parts.append("\"AdditionalRunOptions\":" + u12.to_json())
+    if v.AdditionalDataSources.is_some():
+        auto u13 = v.AdditionalDataSources.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(glue_json_str(k14) + ":" + data_source_to_json(u13[k14]))
+        parts.append("\"AdditionalDataSources\":" + glue_json_obj(m14))
+    return glue_json_obj(parts)
+
 # Serialize UpdateDatabaseRequest to a compact JSON object (declaration order).
 def update_database_request_to_json(UpdateDatabaseRequest v) -> str:
     list[str] parts = []
@@ -14761,6 +15213,12 @@ def user_defined_function_input_to_json(UserDefinedFunctionInput v) -> str:
         for x6 in u5:
             e6.append(x6.to_json())
         parts.append("\"ResourceUris\":" + glue_json_arr(e6))
+    if v.ArtifactLocation.is_some():
+        auto u7 = v.ArtifactLocation.unwrap()
+        parts.append("\"ArtifactLocation\":" + glue_json_str(u7))
+    if v.GovernanceMode.is_some():
+        auto u8 = v.GovernanceMode.unwrap()
+        parts.append("\"GovernanceMode\":" + u8.to_json())
     return glue_json_obj(parts)
 
 # Serialize ViewDefinitionInput to a compact JSON object (declaration order).
@@ -15022,6 +15480,12 @@ struct GlueClient:
         auto body = create_custom_entity_type_request_to_json(input)
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateCustomEntityType", body)
 
+    # CreateDataQualityEvaluationConfig
+    # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_data_quality_evaluation_config(self, CreateDataQualityEvaluationConfigRequest input) -> str:
+        auto body = create_data_quality_evaluation_config_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateDataQualityEvaluationConfig", body)
+
     # CreateDataQualityRuleset
     # errors: AlreadyExistsException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def create_data_quality_ruleset(self, CreateDataQualityRulesetRequest input) -> str:
@@ -15237,6 +15701,12 @@ struct GlueClient:
     def delete_custom_entity_type(self, DeleteCustomEntityTypeRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DeleteCustomEntityType", body)
+
+    # DeleteDataQualityEvaluationConfig
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def delete_data_quality_evaluation_config(self, DeleteDataQualityEvaluationConfigRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DeleteDataQualityEvaluationConfig", body)
 
     # DeleteDataQualityRuleset
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -15574,6 +16044,12 @@ struct GlueClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetDataCatalogExportConfiguration", body)
 
+    # GetDataQualityEvaluationConfig
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_data_quality_evaluation_config(self, GetDataQualityEvaluationConfigRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetDataQualityEvaluationConfig", body)
+
     # GetDataQualityModel
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_data_quality_model(self, GetDataQualityModelRequest input) -> str:
@@ -15711,6 +16187,12 @@ struct GlueClient:
     def get_job_runs(self, GetJobRunsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetJobRuns", body)
+
+    # GetJobUpgradeAnalysis
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException
+    def get_job_upgrade_analysis(self, GetJobUpgradeAnalysisRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetJobUpgradeAnalysis", body)
 
     # GetJobs
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -16017,6 +16499,12 @@ struct GlueClient:
     def list_custom_entity_types(self, ListCustomEntityTypesRequest input) -> str:
         auto body = list_custom_entity_types_request_to_json(input)
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListCustomEntityTypes", body)
+
+    # ListDataQualityEvaluationConfigs
+    # errors: AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_data_quality_evaluation_configs(self, ListDataQualityEvaluationConfigsRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityEvaluationConfigs", body)
 
     # ListDataQualityResults
     # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -16366,6 +16854,12 @@ struct GlueClient:
         auto body = start_job_run_request_to_json(input)
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartJobRun", body)
 
+    # StartJobUpgradeAnalysis
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException, ResourceNumberLimitExceededException, ValidationException
+    def start_job_upgrade_analysis(self, StartJobUpgradeAnalysisRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartJobUpgradeAnalysis", body)
+
     # StartMLEvaluationTaskRun
     # errors: ConcurrentRunsExceededException, EntityNotFoundException, InternalServiceException, InvalidInputException, MLTransformNotReadyException, OperationTimeoutException
     def start_ml_evaluation_task_run(self, StartMLEvaluationTaskRunRequest input) -> str:
@@ -16419,6 +16913,12 @@ struct GlueClient:
     def stop_crawler_schedule(self, StopCrawlerScheduleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StopCrawlerSchedule", body)
+
+    # StopJobUpgradeAnalysis
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException, ThrottlingException
+    def stop_job_upgrade_analysis(self, StopJobUpgradeAnalysisRequest input) -> str:
+        auto body = input.to_json()
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StopJobUpgradeAnalysis", body)
 
     # StopMaterializedViewRefreshTaskRun
     # errors: AccessDeniedException, InvalidInputException, MaterializedViewRefreshTaskNotRunningException, MaterializedViewRefreshTaskStoppingException, OperationTimeoutException
@@ -16509,6 +17009,12 @@ struct GlueClient:
     def update_crawler_schedule(self, UpdateCrawlerScheduleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateCrawlerSchedule", body)
+
+    # UpdateDataQualityEvaluationConfig
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_data_quality_evaluation_config(self, UpdateDataQualityEvaluationConfigRequest input) -> str:
+        auto body = update_data_quality_evaluation_config_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateDataQualityEvaluationConfig", body)
 
     # UpdateDataQualityRuleset
     # errors: AlreadyExistsException, EntityNotFoundException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
@@ -16917,6 +17423,20 @@ struct GlueClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListConnectionTypes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDataQualityEvaluationConfigs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DataQualityEvaluationConfigs).
+    def paginate_list_data_quality_evaluation_configs(self, ListDataQualityEvaluationConfigsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityEvaluationConfigs", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

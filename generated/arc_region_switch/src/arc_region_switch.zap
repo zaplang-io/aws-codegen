@@ -18,7 +18,7 @@
 #
 # Coverage (smithy-rpc-v2-cbor): 22 operations — 22 with a generated method,
 #   0 skipped (input has a non-text-keyed map member).
-#   112 structs (plain carriers), 27 enums, 6 error variants.
+#   113 structs (plain carriers), 27 enums, 7 error variants.
 #   0 paginators generated (9 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (2 skipped) from waiters-2.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -786,6 +786,11 @@ struct ResourceWarning:
     DateTime warningUpdatedTime
     str warningMessage
 
+struct RetryableConflictException:
+    str message
+    Optional[str] resourceId
+    Optional[str] resourceType
+
 struct Route53HealthCheck:
     str hostedZoneId
     str recordName
@@ -969,6 +974,7 @@ enum ARC_Region_switchErrorKind:
     IllegalStateException
     InternalServerException
     ResourceNotFoundException
+    RetryableConflictException
     Unknown(str code)
 
 # Classify an AWS error code into `ARC_Region_switchErrorKind`,
@@ -988,6 +994,8 @@ def arc_region_switch_error_kind(str code) -> ARC_Region_switchErrorKind:
         return ARC_Region_switchErrorKind.InternalServerException
     if name == "ResourceNotFoundException":
         return ARC_Region_switchErrorKind.ResourceNotFoundException
+    if name == "RetryableConflictException":
+        return ARC_Region_switchErrorKind.RetryableConflictException
     return ARC_Region_switchErrorKind.Unknown(name)
 
 # The canonical name of a classified error. This `match` is exhaustive over
@@ -1010,6 +1018,8 @@ def arc_region_switch_error_name(ARC_Region_switchErrorKind k) -> str:
             return "InternalServerException"
         case ARC_Region_switchErrorKind.ResourceNotFoundException:
             return "ResourceNotFoundException"
+        case ARC_Region_switchErrorKind.RetryableConflictException:
+            return "RetryableConflictException"
         case ARC_Region_switchErrorKind.Unknown(c):
             return "Unknown(" + c + ")"
 
@@ -2661,7 +2671,7 @@ struct ARC_Region_switchClient:
         return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UpdatePlan
-    # errors: ResourceNotFoundException
+    # errors: ResourceNotFoundException, RetryableConflictException
     def update_plan(self, UpdatePlanRequest input) -> bytes:
         auto body = cbor.cbor_encode(update_plan_request_to_cbor(input))
         auto host = endpoints.regional_host(arc_region_switch_service(), self.region)

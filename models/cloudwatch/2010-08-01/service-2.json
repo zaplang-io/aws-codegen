@@ -182,6 +182,21 @@
     }
    ]
   },
+  "DeleteMetricDataQueryDefinition": {
+   "name": "DeleteMetricDataQueryDefinition",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "DeleteMetricDataQueryDefinitionInput"
+   },
+   "output": {
+    "shape": "DeleteMetricDataQueryDefinitionOutput",
+    "resultWrapper": "DeleteMetricDataQueryDefinitionResult"
+   },
+   "idempotent": true
+  },
   "DeleteMetricStream": {
    "name": "DeleteMetricStream",
    "http": {
@@ -545,6 +560,26 @@
     }
    ]
   },
+  "GetMetricDataQueryDefinition": {
+   "name": "GetMetricDataQueryDefinition",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "GetMetricDataQueryDefinitionInput"
+   },
+   "output": {
+    "shape": "GetMetricDataQueryDefinitionOutput",
+    "resultWrapper": "GetMetricDataQueryDefinitionResult"
+   },
+   "errors": [
+    {
+     "shape": "ResourceNotFoundException"
+    }
+   ],
+   "readonly": true
+  },
   "GetMetricStatistics": {
    "name": "GetMetricStatistics",
    "http": {
@@ -719,6 +754,21 @@
      "shape": "InvalidNextToken"
     }
    ]
+  },
+  "ListMetricDataQueryDefinitions": {
+   "name": "ListMetricDataQueryDefinitions",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "ListMetricDataQueryDefinitionsInput"
+   },
+   "output": {
+    "shape": "ListMetricDataQueryDefinitionsOutput",
+    "resultWrapper": "ListMetricDataQueryDefinitionsResult"
+   },
+   "readonly": true
   },
   "ListMetricStreams": {
    "name": "ListMetricStreams",
@@ -989,6 +1039,32 @@
      "gzip"
     ]
    }
+  },
+  "PutMetricDataQueryDefinition": {
+   "name": "PutMetricDataQueryDefinition",
+   "http": {
+    "method": "POST",
+    "requestUri": "/"
+   },
+   "input": {
+    "shape": "PutMetricDataQueryDefinitionInput"
+   },
+   "output": {
+    "shape": "PutMetricDataQueryDefinitionOutput",
+    "resultWrapper": "PutMetricDataQueryDefinitionResult"
+   },
+   "errors": [
+    {
+     "shape": "ConflictException"
+    },
+    {
+     "shape": "LimitExceededException"
+    },
+    {
+     "shape": "ResourceNotFoundException"
+    }
+   ],
+   "idempotent": true
   },
   "PutMetricStream": {
    "name": "PutMetricStream",
@@ -2012,6 +2088,18 @@
    "min": 1,
    "pattern": "(default|arn:[a-zA-Z0-9-]+:cloudwatch:[a-zA-Z0-9-]*:\\d{12}:dataset/default)"
   },
+  "DefinitionId": {
+   "type": "string",
+   "max": 64,
+   "min": 1,
+   "pattern": "[a-zA-Z0-9-]{1,64}"
+  },
+  "DefinitionPath": {
+   "type": "string",
+   "max": 1024,
+   "min": 1,
+   "pattern": "[\\p{L}\\p{M}\\p{N}\\p{P}\\p{S}\\p{Zs}]+"
+  },
   "DeleteAlarmMuteRuleInput": {
    "type": "structure",
    "required": [
@@ -2105,6 +2193,21 @@
      "shape": "BatchFailures"
     }
    }
+  },
+  "DeleteMetricDataQueryDefinitionInput": {
+   "type": "structure",
+   "required": [
+    "Id"
+   ],
+   "members": {
+    "Id": {
+     "shape": "DefinitionId"
+    }
+   }
+  },
+  "DeleteMetricDataQueryDefinitionOutput": {
+   "type": "structure",
+   "members": {}
   },
   "DeleteMetricStreamInput": {
    "type": "structure",
@@ -2850,6 +2953,52 @@
     }
    }
   },
+  "GetMetricDataQueryDefinitionInput": {
+   "type": "structure",
+   "required": [
+    "Id"
+   ],
+   "members": {
+    "Id": {
+     "shape": "DefinitionId"
+    }
+   }
+  },
+  "GetMetricDataQueryDefinitionOutput": {
+   "type": "structure",
+   "required": [
+    "Id",
+    "Arn",
+    "Path",
+    "Expression",
+    "Type",
+    "CreatedAt",
+    "UpdatedAt"
+   ],
+   "members": {
+    "Id": {
+     "shape": "DefinitionId"
+    },
+    "Arn": {
+     "shape": "AmazonResourceName"
+    },
+    "Path": {
+     "shape": "DefinitionPath"
+    },
+    "Expression": {
+     "shape": "MetricExpressionString"
+    },
+    "Type": {
+     "shape": "QueryType"
+    },
+    "CreatedAt": {
+     "shape": "Timestamp"
+    },
+    "UpdatedAt": {
+     "shape": "Timestamp"
+    }
+   }
+  },
   "GetMetricStatisticsInput": {
    "type": "structure",
    "required": [
@@ -3484,6 +3633,31 @@
     }
    }
   },
+  "ListMetricDataQueryDefinitionsInput": {
+   "type": "structure",
+   "members": {
+    "MaxResults": {
+     "shape": "MaxResults"
+    },
+    "NextToken": {
+     "shape": "MetricDataQueryDefinitionNextToken"
+    }
+   }
+  },
+  "ListMetricDataQueryDefinitionsOutput": {
+   "type": "structure",
+   "required": [
+    "Items"
+   ],
+   "members": {
+    "Items": {
+     "shape": "MetricDataQueryDefinitionSummaries"
+    },
+    "NextToken": {
+     "shape": "MetricDataQueryDefinitionNextToken"
+    }
+   }
+  },
   "ListMetricStreamsInput": {
    "type": "structure",
    "members": {
@@ -3756,6 +3930,12 @@
    "max": 100,
    "min": 1
   },
+  "MaxResults": {
+   "type": "integer",
+   "box": true,
+   "max": 100,
+   "min": 1
+  },
   "MaxReturnedResultsCount": {
    "type": "integer",
    "min": 1
@@ -3997,6 +4177,40 @@
     }
    }
   },
+  "MetricDataQueryDefinitionNextToken": {
+   "type": "string",
+   "max": 256,
+   "min": 1,
+   "pattern": "[A-Za-z0-9_-]+"
+  },
+  "MetricDataQueryDefinitionSummaries": {
+   "type": "list",
+   "member": {
+    "shape": "MetricDataQueryDefinitionSummary"
+   }
+  },
+  "MetricDataQueryDefinitionSummary": {
+   "type": "structure",
+   "required": [
+    "Id",
+    "Path",
+    "Type"
+   ],
+   "members": {
+    "Id": {
+     "shape": "DefinitionId"
+    },
+    "Path": {
+     "shape": "DefinitionPath"
+    },
+    "Type": {
+     "shape": "QueryType"
+    },
+    "UpdatedAt": {
+     "shape": "Timestamp"
+    }
+   }
+  },
   "MetricDataResult": {
    "type": "structure",
    "members": {
@@ -4071,6 +4285,12 @@
    "type": "string",
    "max": 2048,
    "min": 1
+  },
+  "MetricExpressionString": {
+   "type": "string",
+   "max": 65536,
+   "min": 1,
+   "sensitive": true
   },
   "MetricId": {
    "type": "string",
@@ -4760,6 +4980,66 @@
     }
    }
   },
+  "PutMetricDataQueryDefinitionInput": {
+   "type": "structure",
+   "required": [
+    "Path",
+    "Expression",
+    "Type"
+   ],
+   "members": {
+    "Id": {
+     "shape": "DefinitionId"
+    },
+    "Path": {
+     "shape": "DefinitionPath"
+    },
+    "Expression": {
+     "shape": "MetricExpressionString"
+    },
+    "Type": {
+     "shape": "QueryType"
+    },
+    "Tags": {
+     "shape": "TagList"
+    }
+   }
+  },
+  "PutMetricDataQueryDefinitionOutput": {
+   "type": "structure",
+   "required": [
+    "Id",
+    "Arn",
+    "Path",
+    "Expression",
+    "Type",
+    "CreatedAt",
+    "UpdatedAt"
+   ],
+   "members": {
+    "Id": {
+     "shape": "DefinitionId"
+    },
+    "Arn": {
+     "shape": "AmazonResourceName"
+    },
+    "Path": {
+     "shape": "DefinitionPath"
+    },
+    "Expression": {
+     "shape": "MetricExpressionString"
+    },
+    "Type": {
+     "shape": "QueryType"
+    },
+    "CreatedAt": {
+     "shape": "Timestamp"
+    },
+    "UpdatedAt": {
+     "shape": "Timestamp"
+    }
+   }
+  },
   "PutMetricStreamInput": {
    "type": "structure",
    "required": [
@@ -4823,6 +5103,14 @@
    "type": "string",
    "max": 10000,
    "min": 0
+  },
+  "QueryType": {
+   "type": "string",
+   "enum": [
+    "PROMQL",
+    "SQL",
+    "METRIC_MATH"
+   ]
   },
   "Range": {
    "type": "structure",

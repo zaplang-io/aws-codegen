@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 103 operations — 103 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   448 structs (216 @derive(Json)), 58 enums, 7 error variants.
+#   449 structs (217 @derive(Json)), 58 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -81,6 +81,7 @@ enum AllowedAggregateExpressionType:
 enum AnalysisFormat:
     SQL
     PYSPARK_1_0
+    PYSPARK_2_0
     Unknown(str value)
 
 @derive(Json)
@@ -3291,6 +3292,7 @@ struct ProtectedJobDirectAnalysisConfigurationDetails:
 struct ProtectedJobError:
     str message
     str code
+    Optional[RetryInfo] retry
 
 @derive(Json)
 struct ProtectedJobMemberOutputConfigurationInput:
@@ -3350,6 +3352,7 @@ struct ProtectedJobS3Output:
 
 @derive(Json)
 struct ProtectedJobS3OutputConfigurationInput:
+    Optional[ResultFormat] resultFormat
     str bucket
     Optional[str] keyPrefix
 
@@ -3427,6 +3430,7 @@ struct ProtectedQueryDistributeOutputConfigurationLocation:
 struct ProtectedQueryError:
     str message
     str code
+    Optional[RetryInfo] retry
 
 @derive(Json)
 struct ProtectedQueryMemberOutputConfiguration:
@@ -3530,6 +3534,10 @@ struct ResourceNotFoundException:
     str message
     str resourceId
     ResourceType resourceType
+
+@derive(Json)
+struct RetryInfo:
+    Optional[bool] retryable
 
 @derive(Json)
 struct S3Location:

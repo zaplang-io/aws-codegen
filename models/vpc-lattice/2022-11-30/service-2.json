@@ -2567,7 +2567,7 @@
   },
   "AuthPolicyString": {
    "type": "string",
-   "max": 36864,
+   "max": 102400,
    "min": 0
   },
   "AuthType": {
@@ -7274,6 +7274,9 @@
     },
     "securityGroupIds": {
      "shape": "UpdateResourceGatewayRequestSecurityGroupIdsList"
+    },
+    "resourceConfigDnsResolution": {
+     "shape": "ResourceConfigDnsResolution"
     }
    }
   },
@@ -7311,6 +7314,9 @@
     },
     "ipAddressType": {
      "shape": "IpAddressType"
+    },
+    "resourceConfigDnsResolution": {
+     "shape": "ResourceConfigDnsResolution"
     }
    }
   },

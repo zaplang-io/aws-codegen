@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 9 operations — 9 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   105 structs (62 @derive(Json)), 21 enums, 5 error variants.
+#   105 structs (62 @derive(Json)), 22 enums, 5 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -162,6 +162,14 @@ enum ResourceContentType:
 enum ResourceType:
     MANUFACTURER_SUPPORT
     MANUFACTURER_INSTRUCTIONS
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ReviewSourceId:
+    AWS_MARKETPLACE
+    G2
+    PEERSPOT
     Unknown(str value)
 
 @derive(Json)
@@ -913,7 +921,7 @@ struct ResourceNotFoundException:
 @derive(Json)
 struct ReviewSourceSummary:
     str sourceName
-    str sourceId
+    ReviewSourceId sourceId
     Optional[str] sourceUrl
     str averageRating
     int64 totalReviews

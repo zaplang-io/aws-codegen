@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 123 operations — 123 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   734 structs (413 @derive(Json)), 343 enums, 9 error variants.
+#   734 structs (413 @derive(Json)), 344 enums, 9 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   22 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2120,6 +2120,13 @@ enum MaintenanceDay:
 enum MediaConnectRouterOutputEncryptionType:
     AUTOMATIC
     SECRETS_MANAGER
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum MediaPackageV2CaptionLanguageSetting:
+    AUTO
+    NONE
     Unknown(str value)
 
 @derive(Json)
@@ -6832,6 +6839,7 @@ struct MediaPackageV2GroupSettings:
     Optional[CmafTimedMetadataPassthrough] TimedMetadataPassthrough
     Optional[list[MediaPackageAdditionalDestinations]] AdditionalDestinations
     Optional[MediaPackageV2WatermarkingSettings] WatermarkingSettings
+    Optional[MediaPackageV2CaptionLanguageSetting] CaptionLanguageSetting
 
 # no @derive(Json): member(s) MediaPackageV2AbWatermarkerIrdetoSettings: MediaPackageV2AbWatermarkerIrdetoSettings not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -10112,6 +10120,9 @@ def media_package_v2_group_settings_to_json(MediaPackageV2GroupSettings v) -> st
     if v.WatermarkingSettings.is_some():
         auto u13 = v.WatermarkingSettings.unwrap()
         parts.append("\"watermarkingSettings\":" + media_package_v2_watermarking_settings_to_json(u13))
+    if v.CaptionLanguageSetting.is_some():
+        auto u14 = v.CaptionLanguageSetting.unwrap()
+        parts.append("\"captionLanguageSetting\":" + u14.to_json())
     return medialive_json_obj(parts)
 
 # Serialize MediaPackageV2WatermarkingSettings to a compact JSON object (declaration order).

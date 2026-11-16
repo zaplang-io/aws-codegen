@@ -3,25 +3,26 @@
 # Regenerate with: aws-codegen <service-2.json> --package <dir> --name <name>
 #
 # Service: AWS CloudHSM V2 (serviceId CloudHSM V2, API 2017-04-28)
-# Protocol: awsJson 1.1 (targetPrefix BaldrApiService)
+# Protocol: smithy-rpc-v2-cbor (SigV4 service cloudhsm, service shape BaldrApiService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + errors + awsjson) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
-# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
+# POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
+# cbor operation returns `bytes` (not request text).
 # Paginators additionally use the live transport (core.send /
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 18 operations — 18 with a generated method,
-#   0 skipped (input has a non-string-keyed map or free-form document member).
-#   50 structs (33 @derive(Json)), 5 enums, 7 error variants.
-#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
+# Coverage (smithy-rpc-v2-cbor): 18 operations — 18 with a generated method,
+#   0 skipped (input has a non-text-keyed map member).
+#   50 structs (plain carriers), 5 enums, 7 error variants.
+#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
-# @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs with list/map members stay plain and are
-# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
+# Structs are plain data carriers (the body is built explicitly by each
+# method); enum-typed members are carried as their plain wire string.
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -30,11 +31,14 @@
 import aws_core.core
 import aws_core.errors
 import aws_core.endpoints
-import aws_core.awsjson
+import aws_core.cbor
 
-# The CloudHSM_V2 awsJson protocol: version 1.1, API id "BaldrApiService".
-def cloudhsmv2_protocol() -> awsjson.AwsJson:
-    return awsjson.awsjson_1_1("BaldrApiService", "cloudhsmv2")
+# The CloudHSM_V2 smithy-rpc-v2-cbor protocol: SigV4 service "cloudhsm" (also the endpoint
+# prefix for host resolution). Each operation POSTs the input as one canonical
+# CBOR data item to /service/BaldrApiService/operation/<Op>, signed over the CBOR body via
+# the aws.cbor codec.
+def cloudhsmv2_service() -> str:
+    return "cloudhsm"
 
 # --- enums -----------------------------------------------------------------
 
@@ -89,13 +93,10 @@ enum NetworkType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Backup:
     str BackupId
     Optional[str] BackupArn
-    Optional[BackupState] BackupState
+    Optional[str] BackupState
     Optional[str] ClusterId
     Optional[DateTime] CreateTimestamp
     Optional[DateTime] CopyTimestamp
@@ -106,14 +107,12 @@ struct Backup:
     Optional[DateTime] DeleteTimestamp
     Optional[list[Tag]] TagList
     Optional[str] HsmType
-    Optional[ClusterMode] Mode
+    Optional[str] Mode
 
-@derive(Json)
 struct BackupRetentionPolicy:
     Optional[str] Type
     Optional[str] Value
 
-@derive(Json)
 struct Certificates:
     Optional[str] ClusterCsr
     Optional[str] HsmCertificate
@@ -121,37 +120,27 @@ struct Certificates:
     Optional[str] ManufacturerHardwareCertificate
     Optional[str] ClusterCertificate
 
-@derive(Json)
 struct CloudHsmAccessDeniedException:
     Optional[str] Message
 
-@derive(Json)
 struct CloudHsmInternalFailureException:
     Optional[str] Message
 
-@derive(Json)
 struct CloudHsmInvalidRequestException:
     Optional[str] Message
 
-@derive(Json)
 struct CloudHsmResourceLimitExceededException:
     Optional[str] Message
 
-@derive(Json)
 struct CloudHsmResourceNotFoundException:
     Optional[str] Message
 
-@derive(Json)
 struct CloudHsmServiceException:
     Optional[str] Message
 
-@derive(Json)
 struct CloudHsmTagException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Hsms: list[Hsm], SubnetMapping: dict[str, str], TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] BackupPolicy
     Optional[BackupRetentionPolicy] BackupRetentionPolicy
@@ -163,98 +152,71 @@ struct Cluster:
     Optional[str] PreCoPassword
     Optional[str] SecurityGroup
     Optional[str] SourceBackupId
-    Optional[ClusterState] State
+    Optional[str] State
     Optional[str] StateMessage
     Optional[dict[str, str]] SubnetMapping
     Optional[str] VpcId
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
     Optional[Certificates] Certificates
     Optional[list[Tag]] TagList
-    Optional[ClusterMode] Mode
+    Optional[str] Mode
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CopyBackupToRegionRequest:
     str DestinationRegion
     str BackupId
     Optional[list[Tag]] TagList
 
-@derive(Json)
 struct CopyBackupToRegionResponse:
     Optional[DestinationBackup] DestinationBackup
 
-# no @derive(Json): member(s) SubnetIds: list[str], TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     Optional[BackupRetentionPolicy] BackupRetentionPolicy
     str HsmType
     Optional[str] SourceBackupId
     list[str] SubnetIds
-    Optional[NetworkType] NetworkType
+    Optional[str] NetworkType
     Optional[list[Tag]] TagList
-    Optional[ClusterMode] Mode
+    Optional[str] Mode
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] Cluster
 
-@derive(Json)
 struct CreateHsmRequest:
     str ClusterId
     str AvailabilityZone
     Optional[str] IpAddress
 
-@derive(Json)
 struct CreateHsmResponse:
     Optional[Hsm] Hsm
 
-@derive(Json)
 struct DeleteBackupRequest:
     str BackupId
 
-# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteBackupResponse:
     Optional[Backup] Backup
 
-@derive(Json)
 struct DeleteClusterRequest:
     str ClusterId
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] Cluster
 
-@derive(Json)
 struct DeleteHsmRequest:
     str ClusterId
     Optional[str] HsmId
     Optional[str] EniId
     Optional[str] EniIp
 
-@derive(Json)
 struct DeleteHsmResponse:
     Optional[str] HsmId
 
-@derive(Json)
 struct DeleteResourcePolicyRequest:
     Optional[str] ResourceArn
 
-@derive(Json)
 struct DeleteResourcePolicyResponse:
     Optional[str] ResourceArn
     Optional[str] Policy
 
-# no @derive(Json): member(s) Filters: dict[str, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeBackupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -262,44 +224,31 @@ struct DescribeBackupsRequest:
     Optional[bool] Shared
     Optional[bool] SortAscending
 
-# no @derive(Json): member(s) Backups: list[Backup] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeBackupsResponse:
     Optional[list[Backup]] Backups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: dict[str, list[str]] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClustersRequest:
     Optional[dict[str, list[str]]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Clusters: list[Cluster] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct DescribeClustersResponse:
     Optional[list[Cluster]] Clusters
     Optional[str] NextToken
 
-@derive(Json)
 struct DestinationBackup:
     Optional[DateTime] CreateTimestamp
     Optional[str] SourceRegion
     Optional[str] SourceBackup
     Optional[str] SourceCluster
 
-@derive(Json)
 struct GetResourcePolicyRequest:
     Optional[str] ResourceArn
 
-@derive(Json)
 struct GetResourcePolicyResponse:
     Optional[str] Policy
 
-@derive(Json)
 struct Hsm:
     Optional[str] AvailabilityZone
     Optional[str] ClusterId
@@ -309,103 +258,74 @@ struct Hsm:
     Optional[str] EniIpV6
     str HsmId
     Optional[str] HsmType
-    Optional[HsmState] State
+    Optional[str] State
     Optional[str] StateMessage
 
-@derive(Json)
 struct InitializeClusterRequest:
     str ClusterId
     str SignedCert
     str TrustAnchor
 
-@derive(Json)
 struct InitializeClusterResponse:
-    Optional[ClusterState] State
+    Optional[str] State
     Optional[str] StateMessage
 
-@derive(Json)
 struct ListTagsRequest:
     str ResourceId
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ListTagsResponse:
     list[Tag] TagList
     Optional[str] NextToken
 
-@derive(Json)
 struct ModifyBackupAttributesRequest:
     str BackupId
     bool NeverExpires
 
-# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifyBackupAttributesResponse:
     Optional[Backup] Backup
 
-@derive(Json)
 struct ModifyClusterRequest:
     Optional[str] HsmType
     Optional[BackupRetentionPolicy] BackupRetentionPolicy
     str ClusterId
 
-# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct ModifyClusterResponse:
     Optional[Cluster] Cluster
 
-@derive(Json)
 struct PutResourcePolicyRequest:
     Optional[str] ResourceArn
     Optional[str] Policy
 
-@derive(Json)
 struct PutResourcePolicyResponse:
     Optional[str] ResourceArn
     Optional[str] Policy
 
-@derive(Json)
 struct RestoreBackupRequest:
     str BackupId
 
-# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct RestoreBackupResponse:
     Optional[Backup] Backup
 
-@derive(Json)
 struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceId
     list[Tag] TagList
 
-@derive(Json)
 struct TagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeyList: list[str] not derivable (list/map collections);
-# serialized (when used in a request) by an explicit `<shape>_to_json`
-# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceId
     list[str] TagKeyList
 
-@derive(Json)
 struct UntagResourceResponse:
-    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
 # --- errors ----------------------------------------------------------------
@@ -415,7 +335,7 @@ struct UntagResourceResponse:
 # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
 # catch-all, so a caller built against this model keeps working when the
 # service adds an error. The raw wire code is
-# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# the smithy-rpc-v2-cbor body `__type`.
 # `errors.error_code` normalizes it to the bare shape name before matching;
 # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
 # are inherited from `aws_core.errors` and not re-emitted here.
@@ -477,142 +397,324 @@ def cloudhsmv2_error_name(CloudHSM_V2ErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# JSON body helpers (compact, declaration-order objects): the collection
-# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
-# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
-# pre-serialized members.
-def cloudhsmv2_json_str(str s) -> str:
-    return json.dumps(JsonValue.Str(s))
+# Paginated operations (paginators-1.json) are not surfaced for this protocol —
+# CBOR-response pagination (next_page_cbor) is a runtime follow-up:
+#   DescribeBackups
+#   DescribeClusters
+#   ListTags
 
-def cloudhsmv2_json_obj(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "{" + body + "}"
+# CBOR body serializers: each builds a `cbor.CborValue` map for its shape
+# (member wire name -> value, model order) for `cbor.cbor_encode` (zaplang-io/
+# zap#428).
 
-def cloudhsmv2_json_arr(list[str] parts) -> str:
-    auto body = ""
-    auto i = 0
-    for part in parts:
-        if i > 0:
-            body = body + ","
-        body = body + part
-        i = i + 1
-    return "[" + body + "]"
+# Serialize BackupRetentionPolicy to a CBOR map (member wire name -> value, model order).
+def backup_retention_policy_to_cbor(BackupRetentionPolicy v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        keys.append("Type")
+        vals.append(cbor.cbor_text(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        keys.append("Value")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
 
-# Explicit JSON serializers for input shapes with collection/nested members
-# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
-
-# Serialize CopyBackupToRegionRequest to a compact JSON object (declaration order).
-def copy_backup_to_region_request_to_json(CopyBackupToRegionRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"DestinationRegion\":" + cloudhsmv2_json_str(v.DestinationRegion))
-    parts.append("\"BackupId\":" + cloudhsmv2_json_str(v.BackupId))
+# Serialize CopyBackupToRegionRequest to a CBOR map (member wire name -> value, model order).
+def copy_backup_to_region_request_to_cbor(CopyBackupToRegionRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("DestinationRegion")
+    vals.append(cbor.cbor_text(v.DestinationRegion))
+    keys.append("BackupId")
+    vals.append(cbor.cbor_text(v.BackupId))
     if v.TagList.is_some():
         auto u0 = v.TagList.unwrap()
-        list[str] e1 = []
+        list[cbor.CborValue] e1 = []
         for x1 in u0:
-            e1.append(x1.to_json())
-        parts.append("\"TagList\":" + cloudhsmv2_json_arr(e1))
-    return cloudhsmv2_json_obj(parts)
+            e1.append(tag_to_cbor(x1))
+        keys.append("TagList")
+        vals.append(cbor.cbor_list(e1))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize CreateClusterRequest to a compact JSON object (declaration order).
-def create_cluster_request_to_json(CreateClusterRequest v) -> str:
-    list[str] parts = []
+# Serialize CreateClusterRequest to a CBOR map (member wire name -> value, model order).
+def create_cluster_request_to_cbor(CreateClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.BackupRetentionPolicy.is_some():
         auto u0 = v.BackupRetentionPolicy.unwrap()
-        parts.append("\"BackupRetentionPolicy\":" + u0.to_json())
-    parts.append("\"HsmType\":" + cloudhsmv2_json_str(v.HsmType))
+        keys.append("BackupRetentionPolicy")
+        vals.append(backup_retention_policy_to_cbor(u0))
+    keys.append("HsmType")
+    vals.append(cbor.cbor_text(v.HsmType))
     if v.SourceBackupId.is_some():
         auto u1 = v.SourceBackupId.unwrap()
-        parts.append("\"SourceBackupId\":" + cloudhsmv2_json_str(u1))
-    list[str] e2 = []
+        keys.append("SourceBackupId")
+        vals.append(cbor.cbor_text(u1))
+    list[cbor.CborValue] e2 = []
     for x2 in v.SubnetIds:
-        e2.append(cloudhsmv2_json_str(x2))
-    parts.append("\"SubnetIds\":" + cloudhsmv2_json_arr(e2))
+        e2.append(cbor.cbor_text(x2))
+    keys.append("SubnetIds")
+    vals.append(cbor.cbor_list(e2))
     if v.NetworkType.is_some():
         auto u3 = v.NetworkType.unwrap()
-        parts.append("\"NetworkType\":" + u3.to_json())
+        keys.append("NetworkType")
+        vals.append(cbor.cbor_text(u3))
     if v.TagList.is_some():
         auto u4 = v.TagList.unwrap()
-        list[str] e5 = []
+        list[cbor.CborValue] e5 = []
         for x5 in u4:
-            e5.append(x5.to_json())
-        parts.append("\"TagList\":" + cloudhsmv2_json_arr(e5))
+            e5.append(tag_to_cbor(x5))
+        keys.append("TagList")
+        vals.append(cbor.cbor_list(e5))
     if v.Mode.is_some():
         auto u6 = v.Mode.unwrap()
-        parts.append("\"Mode\":" + u6.to_json())
-    return cloudhsmv2_json_obj(parts)
+        keys.append("Mode")
+        vals.append(cbor.cbor_text(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeBackupsRequest to a compact JSON object (declaration order).
-def describe_backups_request_to_json(DescribeBackupsRequest v) -> str:
-    list[str] parts = []
+# Serialize CreateHsmRequest to a CBOR map (member wire name -> value, model order).
+def create_hsm_request_to_cbor(CreateHsmRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterId")
+    vals.append(cbor.cbor_text(v.ClusterId))
+    keys.append("AvailabilityZone")
+    vals.append(cbor.cbor_text(v.AvailabilityZone))
+    if v.IpAddress.is_some():
+        auto u0 = v.IpAddress.unwrap()
+        keys.append("IpAddress")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteBackupRequest to a CBOR map (member wire name -> value, model order).
+def delete_backup_request_to_cbor(DeleteBackupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BackupId")
+    vals.append(cbor.cbor_text(v.BackupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteClusterRequest to a CBOR map (member wire name -> value, model order).
+def delete_cluster_request_to_cbor(DeleteClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterId")
+    vals.append(cbor.cbor_text(v.ClusterId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteHsmRequest to a CBOR map (member wire name -> value, model order).
+def delete_hsm_request_to_cbor(DeleteHsmRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterId")
+    vals.append(cbor.cbor_text(v.ClusterId))
+    if v.HsmId.is_some():
+        auto u0 = v.HsmId.unwrap()
+        keys.append("HsmId")
+        vals.append(cbor.cbor_text(u0))
+    if v.EniId.is_some():
+        auto u1 = v.EniId.unwrap()
+        keys.append("EniId")
+        vals.append(cbor.cbor_text(u1))
+    if v.EniIp.is_some():
+        auto u2 = v.EniIp.unwrap()
+        keys.append("EniIp")
+        vals.append(cbor.cbor_text(u2))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DeleteResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def delete_resource_policy_request_to_cbor(DeleteResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ResourceArn.is_some():
+        auto u0 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize DescribeBackupsRequest to a CBOR map (member wire name -> value, model order).
+def describe_backups_request_to_cbor(DescribeBackupsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.NextToken.is_some():
         auto u0 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + cloudhsmv2_json_str(u0))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
     if v.MaxResults.is_some():
         auto u1 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u1))
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
     if v.Filters.is_some():
         auto u2 = v.Filters.unwrap()
-        list[str] m3 = []
+        list[str] mk3 = []
+        list[cbor.CborValue] mv3 = []
         for k3 in sorted(u2.keys()):
-            list[str] e4 = []
+            list[cbor.CborValue] e4 = []
             for x4 in u2[k3]:
-                e4.append(cloudhsmv2_json_str(x4))
-            m3.append(cloudhsmv2_json_str(k3) + ":" + cloudhsmv2_json_arr(e4))
-        parts.append("\"Filters\":" + cloudhsmv2_json_obj(m3))
+                e4.append(cbor.cbor_text(x4))
+            mk3.append(k3)
+            mv3.append(cbor.cbor_list(e4))
+        keys.append("Filters")
+        vals.append(cbor.cbor_map(mk3, mv3))
     if v.Shared.is_some():
         auto u5 = v.Shared.unwrap()
-        parts.append("\"Shared\":" + json.dumps(JsonValue.Bool(u5)))
+        keys.append("Shared")
+        vals.append(cbor.cbor_bool(u5))
     if v.SortAscending.is_some():
         auto u6 = v.SortAscending.unwrap()
-        parts.append("\"SortAscending\":" + json.dumps(JsonValue.Bool(u6)))
-    return cloudhsmv2_json_obj(parts)
+        keys.append("SortAscending")
+        vals.append(cbor.cbor_bool(u6))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize DescribeClustersRequest to a compact JSON object (declaration order).
-def describe_clusters_request_to_json(DescribeClustersRequest v) -> str:
-    list[str] parts = []
+# Serialize DescribeClustersRequest to a CBOR map (member wire name -> value, model order).
+def describe_clusters_request_to_cbor(DescribeClustersRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
     if v.Filters.is_some():
         auto u0 = v.Filters.unwrap()
-        list[str] m1 = []
+        list[str] mk1 = []
+        list[cbor.CborValue] mv1 = []
         for k1 in sorted(u0.keys()):
-            list[str] e2 = []
+            list[cbor.CborValue] e2 = []
             for x2 in u0[k1]:
-                e2.append(cloudhsmv2_json_str(x2))
-            m1.append(cloudhsmv2_json_str(k1) + ":" + cloudhsmv2_json_arr(e2))
-        parts.append("\"Filters\":" + cloudhsmv2_json_obj(m1))
+                e2.append(cbor.cbor_text(x2))
+            mk1.append(k1)
+            mv1.append(cbor.cbor_list(e2))
+        keys.append("Filters")
+        vals.append(cbor.cbor_map(mk1, mv1))
     if v.NextToken.is_some():
         auto u3 = v.NextToken.unwrap()
-        parts.append("\"NextToken\":" + cloudhsmv2_json_str(u3))
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u3))
     if v.MaxResults.is_some():
         auto u4 = v.MaxResults.unwrap()
-        parts.append("\"MaxResults\":" + str(u4))
-    return cloudhsmv2_json_obj(parts)
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u4))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize TagResourceRequest to a compact JSON object (declaration order).
-def tag_resource_request_to_json(TagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + cloudhsmv2_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize GetResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def get_resource_policy_request_to_cbor(GetResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ResourceArn.is_some():
+        auto u0 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u0))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize InitializeClusterRequest to a CBOR map (member wire name -> value, model order).
+def initialize_cluster_request_to_cbor(InitializeClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ClusterId")
+    vals.append(cbor.cbor_text(v.ClusterId))
+    keys.append("SignedCert")
+    vals.append(cbor.cbor_text(v.SignedCert))
+    keys.append("TrustAnchor")
+    vals.append(cbor.cbor_text(v.TrustAnchor))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ListTagsRequest to a CBOR map (member wire name -> value, model order).
+def list_tags_request_to_cbor(ListTagsRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        keys.append("NextToken")
+        vals.append(cbor.cbor_text(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        keys.append("MaxResults")
+        vals.append(cbor.cbor_int(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyBackupAttributesRequest to a CBOR map (member wire name -> value, model order).
+def modify_backup_attributes_request_to_cbor(ModifyBackupAttributesRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BackupId")
+    vals.append(cbor.cbor_text(v.BackupId))
+    keys.append("NeverExpires")
+    vals.append(cbor.cbor_bool(v.NeverExpires))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize ModifyClusterRequest to a CBOR map (member wire name -> value, model order).
+def modify_cluster_request_to_cbor(ModifyClusterRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.HsmType.is_some():
+        auto u0 = v.HsmType.unwrap()
+        keys.append("HsmType")
+        vals.append(cbor.cbor_text(u0))
+    if v.BackupRetentionPolicy.is_some():
+        auto u1 = v.BackupRetentionPolicy.unwrap()
+        keys.append("BackupRetentionPolicy")
+        vals.append(backup_retention_policy_to_cbor(u1))
+    keys.append("ClusterId")
+    vals.append(cbor.cbor_text(v.ClusterId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize PutResourcePolicyRequest to a CBOR map (member wire name -> value, model order).
+def put_resource_policy_request_to_cbor(PutResourcePolicyRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    if v.ResourceArn.is_some():
+        auto u0 = v.ResourceArn.unwrap()
+        keys.append("ResourceArn")
+        vals.append(cbor.cbor_text(u0))
+    if v.Policy.is_some():
+        auto u1 = v.Policy.unwrap()
+        keys.append("Policy")
+        vals.append(cbor.cbor_text(u1))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize RestoreBackupRequest to a CBOR map (member wire name -> value, model order).
+def restore_backup_request_to_cbor(RestoreBackupRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("BackupId")
+    vals.append(cbor.cbor_text(v.BackupId))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize Tag to a CBOR map (member wire name -> value, model order).
+def tag_to_cbor(Tag v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("Key")
+    vals.append(cbor.cbor_text(v.Key))
+    keys.append("Value")
+    vals.append(cbor.cbor_text(v.Value))
+    return cbor.cbor_map(keys, vals)
+
+# Serialize TagResourceRequest to a CBOR map (member wire name -> value, model order).
+def tag_resource_request_to_cbor(TagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagList:
-        e0.append(x0.to_json())
-    parts.append("\"TagList\":" + cloudhsmv2_json_arr(e0))
-    return cloudhsmv2_json_obj(parts)
+        e0.append(tag_to_cbor(x0))
+    keys.append("TagList")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
-# Serialize UntagResourceRequest to a compact JSON object (declaration order).
-def untag_resource_request_to_json(UntagResourceRequest v) -> str:
-    list[str] parts = []
-    parts.append("\"ResourceId\":" + cloudhsmv2_json_str(v.ResourceId))
-    list[str] e0 = []
+# Serialize UntagResourceRequest to a CBOR map (member wire name -> value, model order).
+def untag_resource_request_to_cbor(UntagResourceRequest v) -> cbor.CborValue:
+    list[str] keys = []
+    list[cbor.CborValue] vals = []
+    keys.append("ResourceId")
+    vals.append(cbor.cbor_text(v.ResourceId))
+    list[cbor.CborValue] e0 = []
     for x0 in v.TagKeyList:
-        e0.append(cloudhsmv2_json_str(x0))
-    parts.append("\"TagKeyList\":" + cloudhsmv2_json_arr(e0))
-    return cloudhsmv2_json_obj(parts)
+        e0.append(cbor.cbor_text(x0))
+    keys.append("TagKeyList")
+    vals.append(cbor.cbor_list(e0))
+    return cbor.cbor_map(keys, vals)
 
 # A bound CloudHSM_V2 client: credentials + region, threaded into every operation.
 struct CloudHSM_V2Client:
@@ -621,153 +723,165 @@ struct CloudHSM_V2Client:
 
     # CopyBackupToRegion
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def copy_backup_to_region(self, CopyBackupToRegionRequest input) -> str:
-        auto body = copy_backup_to_region_request_to_json(input)
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "CopyBackupToRegion", body)
+    def copy_backup_to_region(self, CopyBackupToRegionRequest input) -> bytes:
+        auto body = cbor.cbor_encode(copy_backup_to_region_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "CopyBackupToRegion", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateCluster
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def create_cluster(self, CreateClusterRequest input) -> str:
-        auto body = create_cluster_request_to_json(input)
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "CreateCluster", body)
+    def create_cluster(self, CreateClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "CreateCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # CreateHsm
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def create_hsm(self, CreateHsmRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "CreateHsm", body)
+    def create_hsm(self, CreateHsmRequest input) -> bytes:
+        auto body = cbor.cbor_encode(create_hsm_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "CreateHsm", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteBackup
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def delete_backup(self, DeleteBackupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DeleteBackup", body)
+    def delete_backup(self, DeleteBackupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_backup_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "DeleteBackup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteCluster
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def delete_cluster(self, DeleteClusterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DeleteCluster", body)
+    def delete_cluster(self, DeleteClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "DeleteCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteHsm
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def delete_hsm(self, DeleteHsmRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DeleteHsm", body)
+    def delete_hsm(self, DeleteHsmRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_hsm_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "DeleteHsm", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DeleteResourcePolicy
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
+    def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(delete_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "DeleteResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeBackups
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def describe_backups(self, DescribeBackupsRequest input) -> str:
-        auto body = describe_backups_request_to_json(input)
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeBackups", body)
+    def describe_backups(self, DescribeBackupsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_backups_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "DescribeBackups", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # DescribeClusters
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmServiceException, CloudHsmTagException
-    def describe_clusters(self, DescribeClustersRequest input) -> str:
-        auto body = describe_clusters_request_to_json(input)
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeClusters", body)
+    def describe_clusters(self, DescribeClustersRequest input) -> bytes:
+        auto body = cbor.cbor_encode(describe_clusters_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "DescribeClusters", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # GetResourcePolicy
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def get_resource_policy(self, GetResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "GetResourcePolicy", body)
+    def get_resource_policy(self, GetResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(get_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "GetResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # InitializeCluster
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def initialize_cluster(self, InitializeClusterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "InitializeCluster", body)
+    def initialize_cluster(self, InitializeClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(initialize_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "InitializeCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ListTags
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def list_tags(self, ListTagsRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "ListTags", body)
+    def list_tags(self, ListTagsRequest input) -> bytes:
+        auto body = cbor.cbor_encode(list_tags_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "ListTags", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyBackupAttributes
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def modify_backup_attributes(self, ModifyBackupAttributesRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "ModifyBackupAttributes", body)
+    def modify_backup_attributes(self, ModifyBackupAttributesRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_backup_attributes_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "ModifyBackupAttributes", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # ModifyCluster
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def modify_cluster(self, ModifyClusterRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "ModifyCluster", body)
+    def modify_cluster(self, ModifyClusterRequest input) -> bytes:
+        auto body = cbor.cbor_encode(modify_cluster_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "ModifyCluster", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # PutResourcePolicy
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+    def put_resource_policy(self, PutResourcePolicyRequest input) -> bytes:
+        auto body = cbor.cbor_encode(put_resource_policy_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "PutResourcePolicy", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # RestoreBackup
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
-    def restore_backup(self, RestoreBackupRequest input) -> str:
-        auto body = input.to_json()
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "RestoreBackup", body)
+    def restore_backup(self, RestoreBackupRequest input) -> bytes:
+        auto body = cbor.cbor_encode(restore_backup_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "RestoreBackup", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # TagResource
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceLimitExceededException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def tag_resource(self, TagResourceRequest input) -> str:
-        auto body = tag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "TagResource", body)
+    def tag_resource(self, TagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(tag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "TagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
     # UntagResource
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
-    def untag_resource(self, UntagResourceRequest input) -> str:
-        auto body = untag_resource_request_to_json(input)
-        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "UntagResource", body)
-
-    # Paginator for DescribeBackups — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Backups).
-    def paginate_describe_backups(self, DescribeBackupsRequest input):
-        auto host = endpoints.regional_host(cloudhsmv2_protocol().service, self.region)
-        while True:
-            auto body = describe_backups_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeBackups", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for DescribeClusters — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: Clusters).
-    def paginate_describe_clusters(self, DescribeClustersRequest input):
-        auto host = endpoints.regional_host(cloudhsmv2_protocol().service, self.region)
-        while True:
-            auto body = describe_clusters_request_to_json(input)
-            auto raw = awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeClusters", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
-
-    # Paginator for ListTags — yields each Response page, threading the
-    # NextToken -> NextToken continuation token until the output token is absent (result key: TagList).
-    def paginate_list_tags(self, ListTagsRequest input):
-        auto host = endpoints.regional_host(cloudhsmv2_protocol().service, self.region)
-        while True:
-            auto body = input.to_json()
-            auto raw = awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "ListTags", body)
-            auto page = core.send(host, raw)
-            yield page
-            auto np = core.next_page_json(page.body, "NextToken")
-            if not np.has_more:
-                break
-            input.NextToken = Optional.Some(np.token)
+    def untag_resource(self, UntagResourceRequest input) -> bytes:
+        auto body = cbor.cbor_encode(untag_resource_request_to_cbor(input))
+        auto host = endpoints.regional_host(cloudhsmv2_service(), self.region)
+        auto t = core.signing_time_now()
+        auto req = cbor.cbor_build_request(cloudhsmv2_service(), self.region, host, "BaldrApiService", "UntagResource", body, t.amz_date)
+        return cbor.cbor_sign(self.creds, req, body, t.amz_date, t.date_stamp)
 
 # Construct a CloudHSM_V2Client bound to credentials + region.
 def cloudhsmv2_client(core.Credentials creds, str region) -> CloudHSM_V2Client:

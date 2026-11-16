@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 48 operations — 47 with a generated method,
 #   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   170 structs (85 @derive(Json)), 33 enums, 1 error variants.
+#   171 structs (85 @derive(Json)), 33 enums, 1 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -188,6 +188,7 @@ enum EventName:
     PRE_ADS_REQUEST
     POST_ADS_RESPONSE
     PRE_MANIFEST_INSERTION
+    POST_ORIGIN_RESPONSE
     Unknown(str value)
 
 @derive(Json)
@@ -206,6 +207,7 @@ enum FunctionType:
     CONCURRENT_EXECUTOR
     SEQUENTIAL_EXECUTOR
     VAST_REQUEST
+    HLS_TAG_PROCESSOR
     Unknown(str value)
 
 @derive(Json)
@@ -267,6 +269,8 @@ enum ManifestServiceExcludeEventType:
     ERROR_BUMPER_END_INTERPOLATION
     PRE_SESSION_INIT_HOOK_ERROR
     PRE_SESSION_INIT_FUNCTION_ERROR
+    POST_ORIGIN_RESPONSE_HOOK_ERROR
+    POST_ORIGIN_RESPONSE_FUNCTION_ERROR
     Unknown(str value)
 
 @derive(Json)
@@ -274,6 +278,8 @@ enum ManifestServiceExcludeEventType:
 enum ManifestServicePublishOptInEventType:
     PRE_SESSION_INIT_HOOK_SUMMARY
     PRE_SESSION_INIT_FUNCTION_COMPLETED
+    POST_ORIGIN_RESPONSE_HOOK_SUMMARY
+    POST_ORIGIN_RESPONSE_FUNCTION_COMPLETED
     Unknown(str value)
 
 @derive(Json)
@@ -957,7 +963,7 @@ struct DescribeVodSourceResponse:
     Optional[dict[str, str]] Tags
     Optional[str] VodSourceName
 
-# no @derive(Json): member(s) HttpRequestConfiguration: HttpRequestConfiguration, AwsServiceRequestConfiguration: AwsServiceRequestConfiguration, CustomOutputConfiguration: CustomOutputConfiguration, ConcurrentExecutorConfiguration: ConcurrentExecutorConfiguration, SequentialExecutorConfiguration: SequentialExecutorConfiguration, VastRequestConfiguration: VastRequestConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) HttpRequestConfiguration: HttpRequestConfiguration, AwsServiceRequestConfiguration: AwsServiceRequestConfiguration, CustomOutputConfiguration: CustomOutputConfiguration, ConcurrentExecutorConfiguration: ConcurrentExecutorConfiguration, SequentialExecutorConfiguration: SequentialExecutorConfiguration, VastRequestConfiguration: VastRequestConfiguration, HlsTagProcessorConfiguration: HlsTagProcessorConfiguration, Tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct Function:
@@ -970,6 +976,7 @@ struct Function:
     Optional[ConcurrentExecutorConfiguration] ConcurrentExecutorConfiguration
     Optional[SequentialExecutorConfiguration] SequentialExecutorConfiguration
     Optional[VastRequestConfiguration] VastRequestConfiguration
+    Optional[HlsTagProcessorConfiguration] HlsTagProcessorConfiguration
     Optional[dict[str, str]] Tags
     Optional[str] Arn
 
@@ -1009,7 +1016,7 @@ struct GetChannelScheduleResponse:
 struct GetFunctionRequest:
     str FunctionId
 
-# no @derive(Json): member(s) HttpRequestConfiguration: HttpRequestConfiguration, AwsServiceRequestConfiguration: AwsServiceRequestConfiguration, CustomOutputConfiguration: CustomOutputConfiguration, ConcurrentExecutorConfiguration: ConcurrentExecutorConfiguration, SequentialExecutorConfiguration: SequentialExecutorConfiguration, VastRequestConfiguration: VastRequestConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) HttpRequestConfiguration: HttpRequestConfiguration, AwsServiceRequestConfiguration: AwsServiceRequestConfiguration, CustomOutputConfiguration: CustomOutputConfiguration, ConcurrentExecutorConfiguration: ConcurrentExecutorConfiguration, SequentialExecutorConfiguration: SequentialExecutorConfiguration, VastRequestConfiguration: VastRequestConfiguration, HlsTagProcessorConfiguration: HlsTagProcessorConfiguration, Tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct GetFunctionResponse:
@@ -1022,6 +1029,7 @@ struct GetFunctionResponse:
     Optional[ConcurrentExecutorConfiguration] ConcurrentExecutorConfiguration
     Optional[SequentialExecutorConfiguration] SequentialExecutorConfiguration
     Optional[VastRequestConfiguration] VastRequestConfiguration
+    Optional[HlsTagProcessorConfiguration] HlsTagProcessorConfiguration
     Optional[dict[str, str]] Tags
     Optional[str] Arn
 
@@ -1095,6 +1103,15 @@ struct HlsConfiguration:
 struct HlsPlaylistSettings:
     Optional[int64] ManifestWindowSeconds
     Optional[list[AdMarkupType]] AdMarkupType
+
+# no @derive(Json): member(s) Output: dict[str, str], TagFilter: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct HlsTagProcessorConfiguration:
+    str Runtime
+    Optional[dict[str, str]] Output
+    list[str] TagFilter
+    Optional[str] RunCondition
 
 @derive(Json)
 struct HttpConfiguration:
@@ -1402,9 +1419,10 @@ struct PutFunctionRequest:
     Optional[ConcurrentExecutorConfiguration] ConcurrentExecutorConfiguration
     Optional[SequentialExecutorConfiguration] SequentialExecutorConfiguration
     Optional[VastRequestConfiguration] VastRequestConfiguration
+    Optional[HlsTagProcessorConfiguration] HlsTagProcessorConfiguration
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) HttpRequestConfiguration: HttpRequestConfiguration, AwsServiceRequestConfiguration: AwsServiceRequestConfiguration, CustomOutputConfiguration: CustomOutputConfiguration, ConcurrentExecutorConfiguration: ConcurrentExecutorConfiguration, SequentialExecutorConfiguration: SequentialExecutorConfiguration, VastRequestConfiguration: VastRequestConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# no @derive(Json): member(s) HttpRequestConfiguration: HttpRequestConfiguration, AwsServiceRequestConfiguration: AwsServiceRequestConfiguration, CustomOutputConfiguration: CustomOutputConfiguration, ConcurrentExecutorConfiguration: ConcurrentExecutorConfiguration, SequentialExecutorConfiguration: SequentialExecutorConfiguration, VastRequestConfiguration: VastRequestConfiguration, HlsTagProcessorConfiguration: HlsTagProcessorConfiguration, Tags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct PutFunctionResponse:
@@ -1417,6 +1435,7 @@ struct PutFunctionResponse:
     Optional[ConcurrentExecutorConfiguration] ConcurrentExecutorConfiguration
     Optional[SequentialExecutorConfiguration] SequentialExecutorConfiguration
     Optional[VastRequestConfiguration] VastRequestConfiguration
+    Optional[HlsTagProcessorConfiguration] HlsTagProcessorConfiguration
     Optional[dict[str, str]] Tags
     Optional[str] Arn
 
@@ -2073,6 +2092,25 @@ def hls_playlist_settings_to_json(HlsPlaylistSettings v) -> str:
         for x2 in u1:
             e2.append(x2.to_json())
         parts.append("\"AdMarkupType\":" + api_mediatailor_json_arr(e2))
+    return api_mediatailor_json_obj(parts)
+
+# Serialize HlsTagProcessorConfiguration to a compact JSON object (declaration order).
+def hls_tag_processor_configuration_to_json(HlsTagProcessorConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Runtime\":" + api_mediatailor_json_str(v.Runtime))
+    if v.Output.is_some():
+        auto u0 = v.Output.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(api_mediatailor_json_str(k1) + ":" + api_mediatailor_json_str(u0[k1]))
+        parts.append("\"Output\":" + api_mediatailor_json_obj(m1))
+    list[str] e2 = []
+    for x2 in v.TagFilter:
+        e2.append(api_mediatailor_json_str(x2))
+    parts.append("\"TagFilter\":" + api_mediatailor_json_arr(e2))
+    if v.RunCondition.is_some():
+        auto u3 = v.RunCondition.unwrap()
+        parts.append("\"RunCondition\":" + api_mediatailor_json_str(u3))
     return api_mediatailor_json_obj(parts)
 
 # Serialize HttpRequestConfiguration to a compact JSON object (declaration order).
@@ -2799,12 +2837,15 @@ struct MediaTailorClient:
         if input.VastRequestConfiguration.is_some():
             auto u6 = input.VastRequestConfiguration.unwrap()
             parts.append("\"VastRequestConfiguration\":" + vast_request_configuration_to_json(u6))
+        if input.HlsTagProcessorConfiguration.is_some():
+            auto u7 = input.HlsTagProcessorConfiguration.unwrap()
+            parts.append("\"HlsTagProcessorConfiguration\":" + hls_tag_processor_configuration_to_json(u7))
         if input.Tags.is_some():
-            auto u7 = input.Tags.unwrap()
-            list[str] m8 = []
-            for k8 in sorted(u7.keys()):
-                m8.append(api_mediatailor_json_str(k8) + ":" + api_mediatailor_json_str(u7[k8]))
-            parts.append("\"tags\":" + api_mediatailor_json_obj(m8))
+            auto u8 = input.Tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(api_mediatailor_json_str(k9) + ":" + api_mediatailor_json_str(u8[k9]))
+            parts.append("\"tags\":" + api_mediatailor_json_obj(m9))
         auto bp = restjson.rest_json_document(b, api_mediatailor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_mediatailor_service(), self.region, host)
 

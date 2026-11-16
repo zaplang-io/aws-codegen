@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 1 operations — 1 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   17 structs (10 @derive(Json)), 4 enums, 5 error variants.
+#   21 structs (10 @derive(Json)), 5 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   0 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -77,6 +77,13 @@ enum SentimentValue:
     NEGATIVE
     Unknown(str value)
 
+@derive(Json)
+@json(open)
+enum TagComparisonType:
+    EQUALS
+    NOT_EQUALS
+    Unknown(str value)
+
 # --- shapes ----------------------------------------------------------------
 
 @derive(Json)
@@ -90,11 +97,26 @@ struct Categories:
     list[str] MatchedCategories
     dict[str, CategoryDetails] MatchedDetails
 
+# no @derive(Json): member(s) TagConditions: list[TagCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CategoriesAttributeAndCondition:
+    Optional[list[TagCondition]] TagConditions
+
+# no @derive(Json): member(s) OrConditions: list[CategoriesAttributeAndCondition], AndCondition: CategoriesAttributeAndCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct CategoriesAttributeFilter:
+    Optional[list[CategoriesAttributeAndCondition]] OrConditions
+    Optional[CategoriesAttributeAndCondition] AndCondition
+    Optional[TagCondition] TagCondition
+
 # no @derive(Json): member(s) PointsOfInterest: list[PointOfInterest] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct CategoryDetails:
     list[PointOfInterest] PointsOfInterest
+    Optional[str] RuleId
 
 @derive(Json)
 struct CharacterOffsets:
@@ -137,6 +159,7 @@ struct ListRealtimeContactAnalysisSegmentsRequest:
     str ContactId
     Optional[int64] MaxResults
     Optional[str] NextToken
+    Optional[RealTimeContactAnalysisSegmentsFilter] ListFilter
 
 # no @derive(Json): member(s) Segments: list[RealtimeContactAnalysisSegment] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -156,6 +179,12 @@ struct PostContactSummary:
     PostContactSummaryStatus Status
     Optional[PostContactSummaryFailureCode] FailureCode
 
+# no @derive(Json): member(s) CategoriesAttributeFilter: CategoriesAttributeFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RealTimeContactAnalysisSegmentsFilter:
+    Optional[CategoriesAttributeFilter] CategoriesAttributeFilter
+
 # no @derive(Json): member(s) Transcript: Transcript, Categories: Categories, ExtractedInformation: ExtractedInformation not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -168,6 +197,12 @@ struct RealtimeContactAnalysisSegment:
 @derive(Json)
 struct ResourceNotFoundException:
     Optional[str] Message
+
+@derive(Json)
+struct TagCondition:
+    Optional[str] TagKey
+    Optional[str] TagValue
+    Optional[TagComparisonType] ComparisonType
 
 @derive(Json)
 struct ThrottlingException:
@@ -245,16 +280,71 @@ def contact_lens_error_name(Connect_Contact_LensErrorKind k) -> str:
 
 # --- client ----------------------------------------------------------------
 
-# Per-operation JSON document bodies (the unbound "document" members of an
-# operation's input, serialized with @derive(Json)).
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def contact_lens_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-@derive(Json)
-struct ListRealtimeContactAnalysisSegmentsDocument:
-    # document members of ListRealtimeContactAnalysisSegments
-    str InstanceId
-    str ContactId
-    Optional[int64] MaxResults
-    Optional[str] NextToken
+def contact_lens_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def contact_lens_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CategoriesAttributeAndCondition to a compact JSON object (declaration order).
+def categories_attribute_and_condition_to_json(CategoriesAttributeAndCondition v) -> str:
+    list[str] parts = []
+    if v.TagConditions.is_some():
+        auto u0 = v.TagConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagConditions\":" + contact_lens_json_arr(e1))
+    return contact_lens_json_obj(parts)
+
+# Serialize CategoriesAttributeFilter to a compact JSON object (declaration order).
+def categories_attribute_filter_to_json(CategoriesAttributeFilter v) -> str:
+    list[str] parts = []
+    if v.OrConditions.is_some():
+        auto u0 = v.OrConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(categories_attribute_and_condition_to_json(x1))
+        parts.append("\"OrConditions\":" + contact_lens_json_arr(e1))
+    if v.AndCondition.is_some():
+        auto u2 = v.AndCondition.unwrap()
+        parts.append("\"AndCondition\":" + categories_attribute_and_condition_to_json(u2))
+    if v.TagCondition.is_some():
+        auto u3 = v.TagCondition.unwrap()
+        parts.append("\"TagCondition\":" + u3.to_json())
+    return contact_lens_json_obj(parts)
+
+# Serialize RealTimeContactAnalysisSegmentsFilter to a compact JSON object (declaration order).
+def real_time_contact_analysis_segments_filter_to_json(RealTimeContactAnalysisSegmentsFilter v) -> str:
+    list[str] parts = []
+    if v.CategoriesAttributeFilter.is_some():
+        auto u0 = v.CategoriesAttributeFilter.unwrap()
+        parts.append("\"CategoriesAttributeFilter\":" + categories_attribute_filter_to_json(u0))
+    return contact_lens_json_obj(parts)
 
 # A bound Connect_Contact_Lens client: credentials + region, threaded into every operation.
 struct Connect_Contact_LensClient:
@@ -266,8 +356,19 @@ struct Connect_Contact_LensClient:
     def list_realtime_contact_analysis_segments(self, ListRealtimeContactAnalysisSegmentsRequest input) -> str:
         auto host = endpoints.regional_host(contact_lens_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/realtime-contact-analysis/analysis-segments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = ListRealtimeContactAnalysisSegmentsDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, MaxResults=input.MaxResults, NextToken=input.NextToken)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        parts.append("\"InstanceId\":" + contact_lens_json_str(input.InstanceId))
+        parts.append("\"ContactId\":" + contact_lens_json_str(input.ContactId))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + contact_lens_json_str(u1))
+        if input.ListFilter.is_some():
+            auto u2 = input.ListFilter.unwrap()
+            parts.append("\"ListFilter\":" + real_time_contact_analysis_segments_filter_to_json(u2))
+        auto bp = restjson.rest_json_document(b, contact_lens_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, contact_lens_service(), self.region, host)
 
 # Construct a Connect_Contact_LensClient bound to credentials + region.

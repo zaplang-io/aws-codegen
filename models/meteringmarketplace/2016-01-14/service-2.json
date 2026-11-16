@@ -194,6 +194,12 @@
    "max": 2147483647,
    "min": 0
   },
+  "AllocatedUsageQuantityAsDecimalString": {
+   "type": "string",
+   "max": 17,
+   "min": 1,
+   "pattern": "^(0|[1-9][0-9]{0,9})(\\.[0-9]{1,6})?$"
+  },
   "BatchMeterUsageRequest": {
    "type": "structure",
    "required": [
@@ -414,7 +420,13 @@
      "shape": "UsageDimension"
     },
     "UsageQuantity": {
-     "shape": "UsageQuantity"
+     "shape": "UsageQuantity",
+     "deprecated": true,
+     "deprecatedMessage": "Use UsageQuantityAsDecimal instead.",
+     "deprecatedSince": "2026-10-20"
+    },
+    "UsageQuantityAsDecimal": {
+     "shape": "UsageQuantityAsDecimalString"
     },
     "DryRun": {
      "shape": "Boolean"
@@ -581,12 +593,15 @@
   },
   "UsageAllocation": {
    "type": "structure",
-   "required": [
-    "AllocatedUsageQuantity"
-   ],
    "members": {
     "AllocatedUsageQuantity": {
-     "shape": "AllocatedUsageQuantity"
+     "shape": "AllocatedUsageQuantity",
+     "deprecated": true,
+     "deprecatedMessage": "Use AllocatedUsageQuantityAsDecimal instead.",
+     "deprecatedSince": "2026-10-20"
+    },
+    "AllocatedUsageQuantityAsDecimal": {
+     "shape": "AllocatedUsageQuantityAsDecimalString"
     },
     "Tags": {
      "shape": "TagList"
@@ -612,6 +627,12 @@
    "max": 2147483647,
    "min": 0
   },
+  "UsageQuantityAsDecimalString": {
+   "type": "string",
+   "max": 17,
+   "min": 1,
+   "pattern": "^(0|[1-9][0-9]{0,9})(\\.[0-9]{1,6})?$"
+  },
   "UsageRecord": {
    "type": "structure",
    "required": [
@@ -629,7 +650,13 @@
      "shape": "UsageDimension"
     },
     "Quantity": {
-     "shape": "UsageQuantity"
+     "shape": "UsageQuantity",
+     "deprecated": true,
+     "deprecatedMessage": "Use QuantityAsDecimal instead.",
+     "deprecatedSince": "2026-10-20"
+    },
+    "QuantityAsDecimal": {
+     "shape": "UsageQuantityAsDecimalString"
     },
     "UsageAllocations": {
      "shape": "UsageAllocations"

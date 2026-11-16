@@ -17,7 +17,7 @@
 #
 # Coverage (rest-json): 96 operations — 96 with a generated method,
 #   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
-#   437 structs (283 @derive(Json)), 71 enums, 17 error variants.
+#   460 structs (301 @derive(Json)), 74 enums, 17 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 #   21 waiters generated (0 skipped) from waiters-2.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -224,6 +224,13 @@ enum FabricLatencyMode:
 
 @derive(Json)
 @json(open)
+enum FabricSwitchingMode:
+    IMMEDIATE
+    KEY_FRAME
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum FailoverInputSourcePriorityMode:
     NO_PRIORITY
     PRIMARY_SECONDARY
@@ -379,6 +386,7 @@ enum Protocol:
     fujitsu_qos
     udp
     ndi_speed_hq
+    rtmp_push
     Unknown(str value)
 
 @derive(Json)
@@ -419,6 +427,7 @@ enum RouterInputProtocol:
     RIST
     SRT_CALLER
     SRT_LISTENER
+    RTMP_PUSH
     Unknown(str value)
 
 @derive(Json)
@@ -543,6 +552,13 @@ enum RoutingScope:
 
 @derive(Json)
 @json(open)
+enum RtmpPushNamingType:
+    MANUAL
+    AUTOMATIC
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum ScanMode:
     progressive
     interlace
@@ -588,6 +604,15 @@ enum SourceEndpointRegistrationState:
 enum SourceEndpointType:
     STANDARD
     ROUTER_OUTPUT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum SourceMediaStreamType:
+    VIDEO
+    AUDIO
+    DATA
+    UNKNOWN
     Unknown(str value)
 
 @derive(Json)
@@ -863,10 +888,16 @@ struct AddOutputRequest:
     Optional[FlowTransitEncryption] RouterIntegrationTransitEncryption
     Optional[NdiOutputTimecodeSource] NdiOutputTimecodeSource
     Optional[int64] NdiAudioReferenceLevel
+    Optional[RtmpPushOutputSettings] RtmpPushSettings
 
 @derive(Json)
 struct AudioMonitoringSetting:
     Optional[SilentAudio] SilentAudio
+
+@derive(Json)
+struct AutoPidMapConfiguration:
+    int64 StartPid
+    int64 PidsPerProgram
 
 @derive(Json)
 struct AutomaticEncryptionKeyConfiguration:
@@ -875,6 +906,11 @@ struct AutomaticEncryptionKeyConfiguration:
 
 @derive(Json)
 struct AutomaticEndpointEncryptionConfiguration:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct AutomaticRtmpPushNamingConfiguration:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
@@ -1189,6 +1225,7 @@ struct CreateRouterOutputRequest:
     Optional[dict[str, str]] Tags
     Optional[FabricConfiguration] FabricConfiguration
     Optional[str] ClientToken
+    Optional[RouterOutputProcessors] Processors
 
 # no @derive(Json): member(s) RouterOutput: RouterOutput not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -1321,7 +1358,7 @@ struct DescribeFlowResponse:
 struct DescribeFlowSourceMetadataRequest:
     str FlowArn
 
-# no @derive(Json): member(s) Messages: list[MessageDetail], TransportMediaInfo: TransportMediaInfo, NdiInfo: NdiSourceMetadataInfo not derivable (list/map collections);
+# no @derive(Json): member(s) Messages: list[MessageDetail], TransportMediaInfo: TransportMediaInfo, NdiInfo: NdiSourceMetadataInfo, RtmpInfo: RtmpSourceMetadataInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct DescribeFlowSourceMetadataResponse:
@@ -1330,6 +1367,7 @@ struct DescribeFlowSourceMetadataResponse:
     Optional[DateTime] Timestamp
     Optional[TransportMediaInfo] TransportMediaInfo
     Optional[NdiSourceMetadataInfo] NdiInfo
+    Optional[RtmpSourceMetadataInfo] RtmpInfo
 
 # rest-json request for DescribeFlowSourceThumbnailRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -1539,6 +1577,13 @@ struct Entitlement:
 @derive(Json)
 struct FabricConfiguration:
     FabricLatencyMode RecoveryLatencyMode
+    Optional[FabricSwitchingMode] SwitchingMode
+    Optional[FabricSwitchingConfiguration] SwitchingConfiguration
+
+@derive(Json)
+struct FabricSwitchingConfiguration:
+    Optional[ImmediateFabricSwitchingConfiguration] Immediate
+    Optional[KeyFrameFabricSwitchingConfiguration] KeyFrame
 
 @derive(Json)
 struct FailoverConfig:
@@ -1560,11 +1605,13 @@ struct FailoverRouterInputConfiguration:
 struct FailoverRouterInputIndexedStreamDetails:
     int64 SourceIndex
     Optional[str] SourceIpAddress
+    Optional[RtmpPushStreamDetails] RtmpPush
 
 @derive(Json)
 struct FailoverRouterInputProtocolConfiguration:
     Optional[RistRouterInputConfiguration] Rist
     Optional[SrtListenerRouterInputConfiguration] SrtListener
+    Optional[RtmpPushRouterInputConfiguration] RtmpPush
     Optional[SrtCallerRouterInputConfiguration] SrtCaller
     Optional[RtpRouterInputConfiguration] Rtp
 
@@ -1790,6 +1837,11 @@ struct GrantFlowEntitlementsResponse:
     Optional[str] FlowArn
 
 @derive(Json)
+struct ImmediateFabricSwitchingConfiguration:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
 struct IngressGatewayBridge:
     Optional[str] InstanceId
     int64 MaxBitrate
@@ -1817,6 +1869,10 @@ struct InterfaceRequest:
 @derive(Json)
 struct InternalServerErrorException:
     str Message
+
+@derive(Json)
+struct KeyFrameFabricSwitchingConfiguration:
+    Optional[int64] KeyFrameWaitMilliseconds
 
 # rest-json request for ListBridgesRequest: members bind to the URI/query/headers or the
 # body (see the client method). A parameter carrier, not a JSON document.
@@ -2161,6 +2217,11 @@ struct MaintenanceSchedule:
     Optional[WindowMaintenanceSchedule] Window
 
 @derive(Json)
+struct ManualRtmpPushNamingConfiguration:
+    str ApplicationName
+    str StreamName
+
+@derive(Json)
 struct MediaConnectFlowRouterInputConfiguration:
     Optional[str] FlowArn
     Optional[str] FlowOutputArn
@@ -2287,6 +2348,8 @@ struct MergeRouterInputIndexedStreamDetails:
 struct MergeRouterInputProtocolConfiguration:
     Optional[RtpRouterInputConfiguration] Rtp
     Optional[RistRouterInputConfiguration] Rist
+    Optional[SrtListenerRouterInputConfiguration] SrtListener
+    Optional[SrtCallerRouterInputConfiguration] SrtCaller
 
 @derive(Json)
 struct MergeRouterInputStreamDetails:
@@ -2413,9 +2476,34 @@ struct OwnedResourceShareDetails:
     ResourceShareState ShareState
 
 @derive(Json)
+struct Passthrough:
+    # empty shape in the model; reserved field keeps it valid (sends nothing)
+    Optional[str] reserved
+
+@derive(Json)
+struct PidMapRule:
+    str MatchExpression
+    str Action
+
+@derive(Json)
 struct PreferredDayTimeMaintenanceConfiguration:
     Day Day
     str Time
+
+@derive(Json)
+struct ProgramClockReferencePidConfiguration:
+    Optional[Passthrough] Passthrough
+    Optional[int64] Set
+
+@derive(Json)
+struct ProgramMapTablePidConfiguration:
+    Optional[Passthrough] Passthrough
+    Optional[int64] Set
+
+@derive(Json)
+struct ProgramNumberConfiguration:
+    Optional[Passthrough] Passthrough
+    Optional[int64] Set
 
 # no @derive(Json): member(s) DestinationAllowRules: list[PublicDestinationEndpointNetworkingConfigurationAllowRule] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -2722,16 +2810,18 @@ struct RouterInputMessage:
     str Code
     str Message
 
-# no @derive(Json): member(s) TransportStreamMediaInfo: TransportMediaInfo not derivable (list/map collections);
+# no @derive(Json): member(s) TransportStreamMediaInfo: TransportMediaInfo, RtmpInfo: RtmpSourceMetadataInfo not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct RouterInputMetadata:
     Optional[TransportMediaInfo] TransportStreamMediaInfo
+    Optional[RtmpSourceMetadataInfo] RtmpInfo
 
 @derive(Json)
 struct RouterInputProtocolConfiguration:
     Optional[RistRouterInputConfiguration] Rist
     Optional[SrtListenerRouterInputConfiguration] SrtListener
+    Optional[RtmpPushRouterInputConfiguration] RtmpPush
     Optional[SrtCallerRouterInputConfiguration] SrtCaller
     Optional[RtpRouterInputConfiguration] Rtp
 
@@ -2811,7 +2901,7 @@ struct RouterNetworkInterfaceFilter:
 struct RouterNetworkInterfaceServiceQuotaExceededException:
     str Message
 
-# no @derive(Json): member(s) Messages: list[RouterOutputMessage], Tags: dict[str, str], AssociatedSourceEndpointArns: list[str] not derivable (list/map collections);
+# no @derive(Json): member(s) Messages: list[RouterOutputMessage], Tags: dict[str, str], Processors: RouterOutputProcessors, AssociatedSourceEndpointArns: list[str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
 struct RouterOutput:
@@ -2839,6 +2929,7 @@ struct RouterOutput:
     Optional[str] MaintenanceScheduleType
     Optional[MaintenanceSchedule] MaintenanceSchedule
     FabricConfiguration FabricConfiguration
+    Optional[RouterOutputProcessors] Processors
     Optional[list[str]] AssociatedSourceEndpointArns
 
 @derive(Json)
@@ -2863,6 +2954,12 @@ struct RouterOutputFilter:
 struct RouterOutputMessage:
     str Code
     str Message
+
+# no @derive(Json): member(s) SingleProgramTransportStreamPidMap: SingleProgramTransportStreamPidMapConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RouterOutputProcessors:
+    Optional[SingleProgramTransportStreamPidMapConfiguration] SingleProgramTransportStreamPidMap
 
 @derive(Json)
 struct RouterOutputProtocolConfiguration:
@@ -2902,6 +2999,43 @@ struct RouterOutputStreamDetails:
     Optional[MediaLiveInputRouterOutputStreamDetails] MediaLiveInput
     Optional[SourceEndpointRouterOutputStreamDetails] SourceEndpoint
 
+# no @derive(Json): member(s) Streams: list[RtmpMediaStreamInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RtmpMediaInfo:
+    list[RtmpMediaStreamInfo] Streams
+
+@derive(Json)
+struct RtmpMediaStreamInfo:
+    int64 StreamId
+    SourceMediaStreamType StreamType
+    str Codec
+    Optional[str] FrameRate
+    Optional[FrameResolution] FrameResolution
+    Optional[ScanMode] ScanMode
+    Optional[ColorInformation] Color
+    Optional[int64] Channels
+    Optional[int64] SampleRate
+    Optional[int64] SampleSize
+    Optional[str] Language
+
+@derive(Json)
+struct RtmpPushNamingConfiguration:
+    Optional[ManualRtmpPushNamingConfiguration] Manual
+    Optional[AutomaticRtmpPushNamingConfiguration] Automatic
+
+@derive(Json)
+struct RtmpPushOutputSettings:
+    str ApplicationName
+    str StreamName
+    Optional[TlsEncryption] TlsEncryption
+
+@derive(Json)
+struct RtmpPushRouterInputConfiguration:
+    int64 Port
+    Optional[RtmpPushNamingType] NamingType
+    RtmpPushNamingConfiguration NamingConfiguration
+
 @derive(Json)
 struct RtmpPushRouterOutputConfiguration:
     str DestinationAddress
@@ -2909,6 +3043,25 @@ struct RtmpPushRouterOutputConfiguration:
     str ApplicationName
     str StreamName
     Optional[TlsEncryption] TlsEncryption
+
+@derive(Json)
+struct RtmpPushSourceSettings:
+    str ApplicationName
+    str StreamName
+    RtmpPushNamingType NamingType
+
+@derive(Json)
+struct RtmpPushStreamDetails:
+    str ApplicationName
+    str StreamName
+
+# no @derive(Json): member(s) MediaInfo: RtmpMediaInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct RtmpSourceMetadataInfo:
+    Optional[str] ApplicationName
+    Optional[str] StreamName
+    RtmpMediaInfo MediaInfo
 
 @derive(Json)
 struct RtpRouterInputConfiguration:
@@ -2951,6 +3104,10 @@ struct SetGatewayBridgeSourceRequest:
     str BridgeArn
     Optional[VpcInterfaceAttachment] VpcInterfaceAttachment
 
+@derive(Json)
+struct SetRtmpPushSourceSettings:
+    RtmpPushNamingConfiguration NamingConfiguration
+
 # no @derive(Json): member(s) MediaStreamSourceConfigurations: list[MediaStreamSourceConfigurationRequest], SourceTags: dict[str, str] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
 # (zaplang-io/zap#424).
@@ -2978,6 +3135,7 @@ struct SetSourceRequest:
     Optional[dict[str, str]] SourceTags
     Optional[State] RouterIntegrationState
     Optional[FlowTransitEncryption] RouterIntegrationTransitDecryption
+    Optional[SetRtmpPushSourceSettings] RtmpPushSettings
 
 @derive(Json)
 struct SilentAudio:
@@ -2988,6 +3146,18 @@ struct SilentAudio:
 struct SilentAudioConfiguration:
     ContentQualityAnalysisState State
     int64 ThresholdSeconds
+
+# no @derive(Json): member(s) Rules: list[PidMapRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
+struct SingleProgramTransportStreamPidMapConfiguration:
+    list[PidMapRule] Rules
+    str DefaultAction
+    Optional[TransportStreamIdConfiguration] TransportStreamId
+    Optional[ProgramNumberConfiguration] ProgramNumber
+    Optional[ProgramMapTablePidConfiguration] ProgramMapTablePid
+    Optional[ProgramClockReferencePidConfiguration] ProgramClockReferencePid
+    Optional[AutoPidMapConfiguration] Auto
 
 # no @derive(Json): member(s) MediaStreamSourceConfigurations: list[MediaStreamSourceConfiguration], Transport: Transport not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3202,6 +3372,7 @@ struct StandardRouterInputConfiguration:
 @derive(Json)
 struct StandardRouterInputStreamDetails:
     Optional[str] SourceIpAddress
+    Optional[RtmpPushStreamDetails] RtmpPush
 
 @derive(Json)
 struct StandardRouterOutputConfiguration:
@@ -3389,6 +3560,8 @@ struct Transport:
     Optional[NdiSourceSettings] NdiSourceSettings
     Optional[NdiOutputTimecodeSource] NdiOutputTimecodeSource
     Optional[int64] NdiAudioReferenceLevel
+    Optional[RtmpPushSourceSettings] RtmpPushSourceSettings
+    Optional[RtmpPushOutputSettings] RtmpPushOutputSettings
 
 # no @derive(Json): member(s) Programs: list[TransportStreamProgram] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3407,7 +3580,14 @@ struct TransportStream:
     int64 Pid
     Optional[int64] SampleRate
     Optional[int64] SampleSize
+    Optional[ScanMode] ScanMode
     str StreamType
+    Optional[str] Language
+
+@derive(Json)
+struct TransportStreamIdConfiguration:
+    Optional[Passthrough] Passthrough
+    Optional[int64] Set
 
 # no @derive(Json): member(s) Streams: list[TransportStream] not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3598,6 +3778,7 @@ struct UpdateFlowOutputRequest:
     Optional[FlowTransitEncryption] RouterIntegrationTransitEncryption
     Optional[NdiOutputTimecodeSource] NdiOutputTimecodeSource
     Optional[int64] NdiAudioReferenceLevel
+    Optional[RtmpPushOutputSettings] RtmpPushSettings
 
 # no @derive(Json): member(s) Output: Output not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3649,6 +3830,7 @@ struct UpdateFlowSourceRequest:
     Optional[NdiSourceSettings] NdiSourceSettings
     Optional[State] RouterIntegrationState
     Optional[FlowTransitEncryption] RouterIntegrationTransitDecryption
+    Optional[SetRtmpPushSourceSettings] RtmpPushSettings
 
 # no @derive(Json): member(s) Source: Source not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3727,6 +3909,7 @@ struct UpdateRouterOutputRequest:
     Optional[RouterOutputTier] Tier
     Optional[MaintenanceConfiguration] MaintenanceConfiguration
     Optional[FabricConfiguration] FabricConfiguration
+    Optional[RouterOutputProcessors] Processors
 
 # no @derive(Json): member(s) RouterOutput: RouterOutput not derivable (list/map collections);
 # serialized (when used in a request) by an explicit `<shape>_to_json`
@@ -3988,17 +4171,6 @@ struct UpdateGatewayInstanceDocument:
     # document members of UpdateGatewayInstance
     Optional[BridgePlacement] BridgePlacement
 
-@derive(Json)
-struct UpdateRouterOutputDocument:
-    # document members of UpdateRouterOutput
-    Optional[str] Name
-    Optional[RouterOutputConfiguration] Configuration
-    Optional[int64] MaximumBitrate
-    Optional[RoutingScope] RoutingScope
-    Optional[RouterOutputTier] Tier
-    Optional[MaintenanceConfiguration] MaintenanceConfiguration
-    Optional[FabricConfiguration] FabricConfiguration
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -4136,6 +4308,9 @@ def add_output_request_to_json(AddOutputRequest v) -> str:
     if v.NdiAudioReferenceLevel.is_some():
         auto u25 = v.NdiAudioReferenceLevel.unwrap()
         parts.append("\"ndiAudioReferenceLevel\":" + str(u25))
+    if v.RtmpPushSettings.is_some():
+        auto u26 = v.RtmpPushSettings.unwrap()
+        parts.append("\"rtmpPushSettings\":" + u26.to_json())
     return mediaconnect_json_obj(parts)
 
 # Serialize DestinationEndpointConfiguration to a compact JSON object (declaration order).
@@ -4456,6 +4631,14 @@ def router_output_filter_to_json(RouterOutputFilter v) -> str:
         parts.append("\"nameContains\":" + mediaconnect_json_arr(e11))
     return mediaconnect_json_obj(parts)
 
+# Serialize RouterOutputProcessors to a compact JSON object (declaration order).
+def router_output_processors_to_json(RouterOutputProcessors v) -> str:
+    list[str] parts = []
+    if v.SingleProgramTransportStreamPidMap.is_some():
+        auto u0 = v.SingleProgramTransportStreamPidMap.unwrap()
+        parts.append("\"singleProgramTransportStreamPidMap\":" + single_program_transport_stream_pid_map_configuration_to_json(u0))
+    return mediaconnect_json_obj(parts)
+
 # Serialize SetSourceRequest to a compact JSON object (declaration order).
 def set_source_request_to_json(SetSourceRequest v) -> str:
     list[str] parts = []
@@ -4534,6 +4717,34 @@ def set_source_request_to_json(SetSourceRequest v) -> str:
     if v.RouterIntegrationTransitDecryption.is_some():
         auto u24 = v.RouterIntegrationTransitDecryption.unwrap()
         parts.append("\"routerIntegrationTransitDecryption\":" + u24.to_json())
+    if v.RtmpPushSettings.is_some():
+        auto u25 = v.RtmpPushSettings.unwrap()
+        parts.append("\"rtmpPushSettings\":" + u25.to_json())
+    return mediaconnect_json_obj(parts)
+
+# Serialize SingleProgramTransportStreamPidMapConfiguration to a compact JSON object (declaration order).
+def single_program_transport_stream_pid_map_configuration_to_json(SingleProgramTransportStreamPidMapConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(x0.to_json())
+    parts.append("\"rules\":" + mediaconnect_json_arr(e0))
+    parts.append("\"defaultAction\":" + mediaconnect_json_str(v.DefaultAction))
+    if v.TransportStreamId.is_some():
+        auto u1 = v.TransportStreamId.unwrap()
+        parts.append("\"transportStreamId\":" + u1.to_json())
+    if v.ProgramNumber.is_some():
+        auto u2 = v.ProgramNumber.unwrap()
+        parts.append("\"programNumber\":" + u2.to_json())
+    if v.ProgramMapTablePid.is_some():
+        auto u3 = v.ProgramMapTablePid.unwrap()
+        parts.append("\"programMapTablePid\":" + u3.to_json())
+    if v.ProgramClockReferencePid.is_some():
+        auto u4 = v.ProgramClockReferencePid.unwrap()
+        parts.append("\"programClockReferencePid\":" + u4.to_json())
+    if v.Auto.is_some():
+        auto u5 = v.Auto.unwrap()
+        parts.append("\"auto\":" + u5.to_json())
     return mediaconnect_json_obj(parts)
 
 # Serialize SourceEndpointConfiguration to a compact JSON object (declaration order).
@@ -5039,6 +5250,9 @@ struct MediaConnectClient:
         if input.ClientToken.is_some():
             auto u6 = input.ClientToken.unwrap()
             parts.append("\"clientToken\":" + mediaconnect_json_str(u6))
+        if input.Processors.is_some():
+            auto u7 = input.Processors.unwrap()
+            parts.append("\"processors\":" + router_output_processors_to_json(u7))
         auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
@@ -5971,6 +6185,9 @@ struct MediaConnectClient:
         if input.NdiAudioReferenceLevel.is_some():
             auto u23 = input.NdiAudioReferenceLevel.unwrap()
             parts.append("\"ndiAudioReferenceLevel\":" + str(u23))
+        if input.RtmpPushSettings.is_some():
+            auto u24 = input.RtmpPushSettings.unwrap()
+            parts.append("\"rtmpPushSettings\":" + u24.to_json())
         auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
@@ -6049,6 +6266,9 @@ struct MediaConnectClient:
         if input.RouterIntegrationTransitDecryption.is_some():
             auto u21 = input.RouterIntegrationTransitDecryption.unwrap()
             parts.append("\"routerIntegrationTransitDecryption\":" + u21.to_json())
+        if input.RtmpPushSettings.is_some():
+            auto u22 = input.RtmpPushSettings.unwrap()
+            parts.append("\"rtmpPushSettings\":" + u22.to_json())
         auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
@@ -6122,8 +6342,32 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto doc = UpdateRouterOutputDocument(Name=input.Name, Configuration=input.Configuration, MaximumBitrate=input.MaximumBitrate, RoutingScope=input.RoutingScope, Tier=input.Tier, MaintenanceConfiguration=input.MaintenanceConfiguration, FabricConfiguration=input.FabricConfiguration)
-        auto bp = restjson.rest_json_document(b, doc.to_json())
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + mediaconnect_json_str(u0))
+        if input.Configuration.is_some():
+            auto u1 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + u1.to_json())
+        if input.MaximumBitrate.is_some():
+            auto u2 = input.MaximumBitrate.unwrap()
+            parts.append("\"maximumBitrate\":" + str(u2))
+        if input.RoutingScope.is_some():
+            auto u3 = input.RoutingScope.unwrap()
+            parts.append("\"routingScope\":" + u3.to_json())
+        if input.Tier.is_some():
+            auto u4 = input.Tier.unwrap()
+            parts.append("\"tier\":" + u4.to_json())
+        if input.MaintenanceConfiguration.is_some():
+            auto u5 = input.MaintenanceConfiguration.unwrap()
+            parts.append("\"maintenanceConfiguration\":" + u5.to_json())
+        if input.FabricConfiguration.is_some():
+            auto u6 = input.FabricConfiguration.unwrap()
+            parts.append("\"fabricConfiguration\":" + u6.to_json())
+        if input.Processors.is_some():
+            auto u7 = input.Processors.unwrap()
+            parts.append("\"processors\":" + router_output_processors_to_json(u7))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
     # UpdateSourceEndpoint  PUT /v1/sourceEndpoint/{Arn}
